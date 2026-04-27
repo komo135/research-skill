@@ -141,7 +141,7 @@ quant-research-skill/
 ### From a Git repository (recommended)
 
 ```text
-/plugin marketplace add <git-url>
+/plugin marketplace add https://github.com/komo135/quant-research-skill
 /plugin install quant-research@quant-research-skill
 ```
 
