@@ -1,0 +1,25 @@
+# Experiment INDEX
+
+List of experiment notebooks with one-line conclusions. `scripts/new_experiment.py` adds
+new entries automatically.
+
+## Entries
+
+| exp_id | Purpose | Linked hypothesis | Status | Conclusion (one line) |
+|---|---|---|---|---|
+| exp_001 | (example) Define data universe | (foundation) | done | ... |
+| exp_002 | (example) Factor IC screening | H1 | done | ... |
+| exp_003 | ... | ... | in-progress | ... |
+
+## Status legend
+
+- `planned`: entry exists in hypotheses.md, notebook not created
+- `in-progress`: notebook created, conclusion not yet finalized
+- `done`: conclusion cell filled and result row appended
+- `parked`: blocked on upstream dependency
+- `dropped`: judged not worth pursuing; reason recorded in decisions.md
+
+## Order
+
+Sequential numbering, but dependencies (upstream first) take precedence. Each notebook
+states its upstream dependencies in its "Upstream dependencies" section.

@@ -1,0 +1,10 @@
+{
+  "name": "quant-research",
+  "description": "Protocol skills for algorithmic trading and quantitative finance research. Bundles `quant-research` (research design, validation, robustness, multi-agent bug-review layer with adversarial cold-eye reviewer) and `experiment-review` (multi-agent research-quality / claim-warrant review with adversarial cold-eye reviewer; mandatory co-gate with bug-review before verdict='supported').",
+  "version": "0.4.0",
+  "author": {
+    "name": "komoootv",
+    "email": "komoootv@gmail.com"
+  },
+  "license": "MIT"
+}

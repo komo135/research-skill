@@ -1,0 +1,56 @@
+# Differentiation against prior work
+
+Side-by-side comparison of this research against prior work, broken down by aspect, to
+make novelty visible.
+
+## Differentiation matrix
+
+| Aspect | [Prior A] | [Prior B] | [Prior C] | **This research** |
+|---|---|---|---|---|
+| Period | ... | ... | ... | ... |
+| Universe | ... | ... | ... | ... |
+| Frequency (timeframe) | ... | ... | ... | ... |
+| Method (model type) | ... | ... | ... | ... |
+| Features / factors | ... | ... | ... | ... |
+| Exit strategy | ... | ... | ... | ... |
+| Evaluation metric | ... | ... | ... | ... |
+| Robustness checks | ... | ... | ... | ... |
+| Claim / conclusion | ... | ... | ... | ... |
+| Cost assumptions | ... | ... | ... | ... |
+
+## Novelty check
+
+The "this research" column must contain **at least one cell that is clearly distinct** from
+the prior columns.
+
+Levels:
+
+| Level | Examples |
+|---|---|
+| Strong | New mathematical model / new ML architecture / new evaluation metric |
+| Medium | Existing method on new data or universe / a novel combination of known methods |
+| Weak | Different parameters / different period / reimplementation of the same method |
+
+A research project that only achieves "weak" tends to become a degraded reimplementation.
+Aim for "medium" or higher.
+
+## Example
+
+| Aspect | Avellaneda & Lee (2010) | Khandani & Lo (2007) | **This research** |
+|---|---|---|---|
+| Period | 1996-2007 | 1995-2007 | (your period) |
+| Universe | U.S. equities, 1417 names | U.S. equities | (your universe) |
+| Frequency | Daily EOD | Daily | (your timeframe) |
+| Method | PCA / ETF decomposition + OU | Quantile contrarian | (your method) |
+| Features | Residuals after factor decomposition | De-meaned ranks | (your features) |
+| Exit | s-score threshold | Daily rebalance | (your exit) |
+| Metrics | Sharpe, drawdown | Sharpe | (your metrics) |
+| Robustness | Per-period, ETF vs. PCA | Per-period | (your robustness) |
+| Claim | PCA 1.44 / ETF 1.10 | Contrarian collapse 2007 | (your claim) |
+| Cost | 5 bp/side | not specified | (your cost model) |
+
+## Notes
+
+- Do not list only the aspects that favor this research; include unfavorable ones too
+- Cite prior work concretely (author / year / venue)
+- If the only differences are "weak", redesign the research

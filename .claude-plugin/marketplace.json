@@ -1,0 +1,15 @@
+{
+  "name": "quant-research-skill",
+  "owner": {
+    "name": "komoootv",
+    "email": "komoootv@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "quant-research",
+      "source": "./",
+      "description": "Protocol skills for algorithmic trading and quantitative finance research. Bundles two skills: (1) `quant-research` — research design, time-series validation, robustness battery, and the multi-agent bug-review layer (5 specialists + 1 adversarial cold-eye reviewer with deliberately minimum context) for implementation correctness; (2) `experiment-review` — multi-agent specialist review (7 specialists + 1 adversarial cold-eye reviewer) of an experiment notebook for research-quality and claim-warrant, orthogonal to bug review and a mandatory co-gate before verdict='supported'.",
+      "version": "0.4.0"
+    }
+  ]
+}

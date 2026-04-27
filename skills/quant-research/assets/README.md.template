@@ -1,0 +1,47 @@
+# {{PROJECT_NAME}}
+
+## Question
+
+[Falsifiable comparison statement. See `references/research_design.md`.]
+
+## Hypotheses
+
+[List H1, H2, ... here in summary; details in `hypotheses.md`.]
+
+## Universe
+
+- Instruments: [3+ instruments, or describe the cross-section]
+- Period: {{START}} to {{END}}
+- Frequency: [primary timeframe + auxiliary]
+
+## Acceptance / rejection conditions
+
+- Acceptance: [test threshold, robustness gates, ...]
+- Rejection: [observation that would falsify the hypothesis]
+
+## Status summary
+
+- Current cycle: [N of M planned]
+- Adopted hypotheses: [IDs]
+- Rejected hypotheses: [IDs]
+
+## Navigation
+
+- [literature/](literature/papers.md) — prior papers and differentiation
+- [hypotheses.md](hypotheses.md) — hypothesis portfolio
+- [experiments/INDEX.md](experiments/INDEX.md) — list of experiment notebooks
+- [decisions.md](decisions.md) — time-ordered decision log
+- [results/](results/) — aggregated `results.parquet` and figures
+- [reproducibility/](reproducibility/) — env lock, data hashes, seed
+
+## Lifecycle
+
+```
+1. Literature review → hypothesis portfolio
+2. One notebook per hypothesis
+3. At cycle end: update hypotheses.md, decisions.md, results.parquet
+4. If a derived hypothesis can run now, start the next notebook
+5. Before completion: pass robustness battery and research-quality checklist
+```
+
+Detailed protocols live in the `quant-research` plugin's `references/` directory.

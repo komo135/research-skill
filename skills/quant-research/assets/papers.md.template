@@ -1,0 +1,64 @@
+# Prior work
+
+List of related papers with one-paragraph summaries. Collected at the start of a new
+project (5-10 papers) and extended whenever a new hypothesis is added.
+
+## Format
+
+```markdown
+## [Author (Year)] Title
+
+- **venue**: [journal / conference / arxiv id]
+- **citations**: [Google Scholar / Semantic Scholar count]
+- **URL / DOI**: [link]
+- **main claim**: [one or two sentences]
+- **method**:
+  - model type: [math / classical ML / deep learning / RL / foundation model]
+  - data: [universe, period, frequency]
+  - validation: [split, k-fold, walk-forward, ...]
+- **results**:
+  - main metric: [Sharpe X, PSR Y, etc.]
+- **limitations** (stated by the authors, or evident weaknesses):
+  - ...
+- **relation to this research**: [use / compare / differentiate from / refute]
+```
+
+## Example
+
+```markdown
+## Avellaneda & Lee (2010) Statistical arbitrage in the U.S. equities market
+
+- **venue**: Quantitative Finance 10(7): 761-782
+- **citations**: 2000+
+- **URL**: https://doi.org/10.1080/14697680903124632
+- **main claim**:
+  Models the residual returns of U.S. equities after factor decomposition as an
+  Ornstein-Uhlenbeck process; uses an s-score to generate signals for a market-neutral
+  strategy. Compares PCA decomposition with sector-ETF decomposition.
+- **method**:
+  - model type: math (OU process, AR(1) regression, PCA)
+  - data: U.S. equities (market cap > $1B), 1996-2007, daily EOD
+  - validation: time-ordered split (2000-2002 used as the training period for s-score
+    thresholds)
+- **results**:
+  - PCA Sharpe: 1.44 (1997-2007)
+  - ETF Sharpe: 1.10 (1997-2007); volume-aware variant: 1.51 (2003-2007)
+- **limitations**:
+  - performance degrades after 2003
+  - large drawdown during the August 2007 liquidity crisis
+  - more sophisticated portfolio strategies left as future work
+  - single asset class (U.S. equities only)
+- **relation to this research**:
+  Comparison reference. The differentiation is in the asset class and timeframe.
+```
+
+## Search strategy
+
+- arxiv.org (q-fin.* categories)
+- SSRN (working papers and recent activity)
+- Google Scholar — sort by citation count on the topic's base terms
+- Snowball back from recent papers' references to canonical works
+
+## When to update
+
+Whenever a new hypothesis is added, revisit this file and add new papers if needed.

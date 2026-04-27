@@ -1,0 +1,110 @@
+# Experiment review: {{EXPERIMENT_ID}}
+
+**Date.** {{ISO_DATE}}
+**Project.** {{PROJECT_NAME}}
+**Notebook reviewed.** `notebooks/{{PROJECT_NAME}}/experiments/{{EXPERIMENT_ID}}.py`
+**Reviewer protocol.** `skills/experiment-review` v{{SKILL_VERSION}}, six-specialist parallel dispatch.
+**Bug-review entry referenced.** {{BUG_REVIEW_REF or "missing — flagged as high under validation"}}
+
+## Verdict
+
+**{{VERDICT}}** — {{VERDICT_ONE_LINER}}
+
+Counts: high = {{N_HIGH}}, medium = {{N_MEDIUM}}, low = {{N_LOW}}.
+Verdict computed per `skills/experiment-review/references/severity_rubric.md`.
+
+## Paths forward (mutually exclusive — pick one before continuing)
+
+When the verdict is `partial` or `preliminary`, two paths are typically available. State
+both up front so the author can decide before reading the detailed findings.
+
+- **Path A (narrow the claim).** Rewrite the headline / abstract so it no longer depends
+  on the high-severity findings. List which specific abstract sentences change and to
+  what. This is the lower-cost path; it does not require re-running experiments.
+- **Path B (close the gaps).** Run the specific follow-up experiments that resolve the
+  high-severity findings, then re-issue the verdict. This is the higher-cost path; it
+  preserves the original claim's scope.
+
+For `ready` verdicts, this section may be omitted. For `preliminary` verdicts on
+rejection notebooks, Path A is usually narrowing the rejection's scope; Path B is
+running the experiments that would either confirm a stronger rejection or upgrade the
+result to `partial` / `supported`.
+
+{{PATH_A_DESCRIPTION}}
+
+{{PATH_B_DESCRIPTION}}
+
+## Claim under review
+
+> {{ABSTRACT_CLAIM_VERBATIM}}
+
+## Evidence summary (from the notebook)
+
+- Universe: {{UNIVERSE_SUMMARY}}
+- Period: {{PERIOD_SUMMARY}}
+- Method: {{METHOD_SUMMARY}}
+- Headline metric: {{HEADLINE_METRIC}}
+- Robustness battery: {{ROBUSTNESS_SUMMARY}}
+- Cycle: {{CYCLE_INFO}} (this is exp_{{NNN}}; prior cycles: {{PRIOR_CYCLES}})
+
+## Findings
+
+Findings are grouped by severity, then by dimension. Every finding includes the rule or
+reference it is grounded in.
+
+### High severity
+
+{{HIGH_FINDINGS_BY_DIMENSION}}
+
+(Each entry uses the schema:
+
+```
+- dimension: <name>
+  where:    <notebook>:<cell>
+  what:     <one sentence>
+  why:      <which check, which evidence>
+  fix:      <concrete remediation>
+  blocks_supported: yes
+```
+)
+
+### Medium severity
+
+{{MEDIUM_FINDINGS_BY_DIMENSION}}
+
+### Low severity
+
+{{LOW_FINDINGS_BY_DIMENSION}}
+
+## Recommended next actions
+
+Ordered by yield (highest-impact first):
+
+1. {{ACTION_1}}
+2. {{ACTION_2}}
+3. {{ACTION_3}}
+…
+
+## Parked findings
+
+If any findings are being parked rather than fixed, record them here with the narrowed
+claim and the deferred-fix justification per `severity_rubric.md`.
+
+| Severity / dimension | What | Why parked | Narrowed claim |
+|---|---|---|---|
+| {{PARKED_FINDING_1}} | … | … | … |
+
+## What this review is and is not
+
+- This review evaluates whether the **claim is warranted** by the experimental design.
+- This review does NOT evaluate implementation correctness — that is the
+  `bug_review` layer of the `quant-research` skill, which is a precondition for this
+  review.
+- A `ready` verdict here is *not* a deployment recommendation. Deployment requires
+  capital, capacity, and monitoring considerations that are out of this skill's scope.
+
+## Re-review trigger
+
+Re-run this review whenever the claim's scope changes, when a new cycle adds evidence
+that bears on a `high` or `medium` finding, or before any external sharing of the
+result.

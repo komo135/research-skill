@@ -1,0 +1,46 @@
+# Hypothesis portfolio
+
+Single source of truth for all hypotheses in this research project. Updated at the end of
+every experiment notebook.
+
+## Status legend
+
+- `planned`: stated but no validation notebook yet
+- `in-progress`: notebook running
+- `supported`: validation met the acceptance condition
+- `rejected`: validation met the rejection condition
+- `partial`: only some conditions met (e.g. positive at fee 0 but negative at fee 1 bp)
+- `parked`: blocked on upstream hypothesis or deferred to a later session
+- `dropped`: judged not worth pursuing
+
+## Entries
+
+| ID | Statement | Status | Linked experiments | Acceptance condition | Last update |
+|---|---|---|---|---|---|
+| H1 | [Falsifiable comparison statement.] | planned | (none yet) | [numeric threshold] | YYYY-MM-DD |
+| H2 | ... | ... | ... | ... | ... |
+
+## Adding hypotheses
+
+- IDs are sequential (H1, H2, ..., H10, H11, ...)
+- Each statement is a falsifiable comparison statement (see `references/research_design.md`)
+- Acceptance condition is a numeric threshold
+- Derived hypotheses keep a reference to their parent (e.g. `H10 (derived from H3): ...`)
+
+## Do not delete
+
+Even rejected and dropped hypotheses stay in this file. They are needed to trace decisions
+later. Just update the status.
+
+## Derivation tree
+
+Sketch derivation:
+
+```
+H1 (parent claim)              [supported]
+├── H2 (variant)               [rejected]
+├── H3 (alternative)           [partial]
+│   ├── H10 (refinement)       [planned]
+│   └── H11 (extension)        [parked: needs new data]
+└── H4 (combination)           [planned]
+```

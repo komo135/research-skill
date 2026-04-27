@@ -1,0 +1,47 @@
+# Decision log
+
+Time-ordered log of decisions per cycle. Used to trace why a hypothesis was dropped or
+why a particular method was chosen, after the fact.
+
+## Format
+
+```markdown
+## YYYY-MM-DD cycle <N> (exp_<NNN>_<slug>)
+
+- **Tested hypothesis**: H<id> (one-line restatement)
+- **Observation**: [observed values, anomalies]
+- **Verdict**: [supported / rejected / partial / parked]
+- **Derived hypotheses**:
+  - H<new> (run-now): ...
+  - H<new> (next-session): ...
+- **Direction rejected**: [what was tried and did not work, with reason]
+- **Robustness battery status**: [which items in robustness_battery.md passed / failed]
+```
+
+## Example
+
+```markdown
+## YYYY-MM-DD cycle 5 (exp_005_signal_flip)
+
+- **Tested hypothesis**: H3 (entry filter × signal-flip exit beats fee 0.5 bp/side)
+- **Observation**:
+  - val Sharpe +0.52 (fee 1 bp), +1.45 (fee 0)
+  - win 62.4% (val) / 62.3% (test) — preserved across the split
+  - Walk-forward mean Sharpe -0.10, pct_positive 47.4% (unstable)
+  - Bootstrap 95% CI = [0.009, 0.202], p=0.014 — significant but small effect size
+- **Verdict**: partial (negative at fee 1 bp, borderline at 0.5 bp, walk-forward unstable)
+- **Derived hypotheses**:
+  - H10 (run-now): vol-targeted size to stabilize walk-forward
+  - H11 (next-session): multi-asset generalization
+  - H12 (run-now): regime-conditional Sharpe (trending vs. ranging)
+- **Direction rejected**: time-stop alone as exit (effect size < fee). Reason: signal
+  horizon and exit horizon do not coincide.
+- **Robustness battery**: 4 of 7 passed (threshold ✓ / fee ✓ / bootstrap CI border /
+  walk-forward ✗ / DSR not computed / realistic cost not run / regime not run)
+```
+
+## Notes
+
+- Do not delete. Negative results stay.
+- Use specific numbers ("Sharpe -1.74" rather than "Sharpe was low")
+- Always classify derived hypotheses (run-now / next-session / drop)
