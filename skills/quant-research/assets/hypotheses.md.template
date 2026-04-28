@@ -1,31 +1,53 @@
 # Hypothesis portfolio
 
-Single source of truth for all hypotheses in this research project. Updated at the end of
-every experiment notebook.
+Single source of truth for all hypotheses in this research project. Updated at the
+end of every Hypothesis round.
+
+A hypothesis is one falsifiable answer to a Purpose. The Purpose lives at the
+notebook level (each `exp_NNN_*.py` is one Purpose); multiple hypotheses can
+share the same `experiment_id` because they investigate the same Purpose
+inside one notebook.
 
 ## Status legend
 
-- `planned`: stated but no validation notebook yet
-- `in-progress`: notebook running
-- `supported`: validation met the acceptance condition
+- `planned`: stated but no Hypothesis round started yet
+- `in-progress`: round running inside its notebook
+- `supported`: validation met the acceptance condition AND both review gates passed
 - `rejected`: validation met the rejection condition
 - `partial`: only some conditions met (e.g. positive at fee 0 but negative at fee 1 bp)
-- `parked`: blocked on upstream hypothesis or deferred to a later session
+- `parked`: blocked on upstream Purpose or deferred to a later session
 - `dropped`: judged not worth pursuing
 
 ## Entries
 
-| ID | Statement | Status | Linked experiments | Acceptance condition | Last update |
+| ID | Statement | Status | experiment_id (= notebook = Purpose) | Acceptance condition | Last update |
 |---|---|---|---|---|---|
-| H1 | [Falsifiable comparison statement.] | planned | (none yet) | [numeric threshold] | YYYY-MM-DD |
-| H2 | ... | ... | ... | ... | ... |
+| H1 | [Falsifiable comparison statement.] | planned | exp_001 (Purpose: …) | [numeric threshold] | YYYY-MM-DD |
+| H2 | [Derived from H1: …] | planned | exp_001 (same Purpose) | [numeric threshold] | YYYY-MM-DD |
+| H3 | [Derived from H1: different phenomenon] | planned | exp_002 (Purpose: …) | [numeric threshold] | YYYY-MM-DD |
+| ... | ... | ... | ... | ... | ... |
+
+Multiple H's that share an `experiment_id` live in the same notebook because
+they serve the same Purpose. An H whose `experiment_id` differs lives in a
+different notebook because the Purpose differs.
 
 ## Adding hypotheses
 
-- IDs are sequential (H1, H2, ..., H10, H11, ...)
+- IDs are sequential across the whole project (H1, H2, ..., H10, H11, ...) — they do not reset per Purpose
 - Each statement is a falsifiable comparison statement (see `references/research_design.md`)
 - Acceptance condition is a numeric threshold
-- Derived hypotheses keep a reference to their parent (e.g. `H10 (derived from H3): ...`)
+- The `experiment_id` column ties the H to one Purpose / notebook
+- Derived hypotheses keep a reference to their parent (e.g. `H10 (derived from H3, same Purpose)` or `H10 (derived from H3, NEW Purpose)`)
+
+## Where each new H goes (default routing)
+
+| If the new H's investigation is… | …it goes in |
+|---|---|
+| The same Purpose as an existing notebook | The same notebook (= same `experiment_id`); add a new `## H<id>` block inside it |
+| A new Purpose | A new notebook (`exp_<NNN+1>_*.py` = new `experiment_id`); add as the H1 of that notebook (or H<next-global-id>) |
+
+The Purpose-continuity test is the routing decision (see SKILL.md
+"Purpose vs. Hypothesis" and `references/experiment_protocol.md`).
 
 ## Do not delete
 
@@ -34,13 +56,15 @@ later. Just update the status.
 
 ## Derivation tree
 
-Sketch derivation:
+Sketch derivation. The tree mixes H-as-same-Purpose-extension and
+H-as-new-Purpose-spinoff; mark the difference explicitly.
 
 ```
-H1 (parent claim)              [supported]
-├── H2 (variant)               [rejected]
-├── H3 (alternative)           [partial]
-│   ├── H10 (refinement)       [planned]
-│   └── H11 (extension)        [parked: needs new data]
-└── H4 (combination)           [planned]
+H1 (parent claim, exp_001)              [supported]
+├── H2 (variant, exp_001 same Purpose)  [rejected]
+├── H3 (refinement, exp_001 same Purpose) [partial]
+│   ├── H10 (sub-refinement, exp_001 same Purpose) [planned]
+│   └── H11 (extension, exp_001 same Purpose) [parked: needs new data]
+└── H4 (NEW Purpose, exp_002)           [planned]
+    └── H12 (variant, exp_002 same Purpose) [planned]
 ```

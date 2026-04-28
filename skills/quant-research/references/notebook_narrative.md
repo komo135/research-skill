@@ -1,6 +1,8 @@
 # notebook_narrative.md
 
-A quant-research notebook is a primary research artifact. It must communicate to
+A quant-research notebook is a primary research artifact for one **Purpose**.
+It contains one or more Hypothesis rounds; the narrative layers carry both
+the Purpose-level story and per-H stories. The notebook must communicate to
 **two readers** at the same time:
 
 | Reader | Sees | Must get |
@@ -20,18 +22,30 @@ If only one reader gets the picture, the notebook is broken.
 
 These markdown cells are mandatory in *every* experiment notebook.
 
-### 1. Abstract cell at the top (200-400 words)
+### 1. Abstract cell at the top (200-400 words) — Purpose level
 
-Filled in **after** the analysis is done, but placed immediately after the title.
-Must contain:
+Filled in **after** all the H rounds are done, but placed immediately after
+the title. Must contain:
 
-- **Question** — one falsifiable sentence
-- **Conclusion** — supported / rejected / parked + the headline numbers (test
-  Sharpe, drawdown, PSR)
-- **Why this matters or doesn't** — one sentence
-- **Pointer to the headline figure** — cell number or fig name
+- **Purpose** — the open-ended investigation in one sentence
+- **Hypotheses tested** — H1, H2, …, each with its falsifiable statement
+  in one short line
+- **Conclusion** — Purpose-level synthesis: which H's were supported, which
+  rejected, what the collective answer to the Purpose is, with the
+  headline numbers per H (test Sharpe, drawdown, PSR)
+- **Why this matters or doesn't** — one sentence at the Purpose level
+- **Pointer to the headline figure** — cell number or fig name (usually a
+  multi-method comparison spanning the H's)
 
-Without this, the next reader has to scroll to cell 14 to find the answer.
+Without this, the next reader has to read every H block to know whether the
+Purpose is answered.
+
+### 1b. Per-H abstract block (one short paragraph per H, immediately above the H block)
+
+Each `## H<id>` block opens with a 2-3 sentence summary mirroring the
+Purpose-level abstract but at the H level: H statement, verdict, headline
+metric, one-sentence interpretation. This is what a reader scrolling
+through the notebook sees first about each H.
 
 ### 2. Per-section "what & why" cell
 
@@ -56,15 +70,27 @@ Examples:
 A figure with no observation cell is decoration. Either write the observation or
 remove the figure.
 
-### 4. Prose interpretation cell before the programmatic verdict
+### 4. Prose interpretation cell before each programmatic verdict (per H)
 
-Three sub-questions:
+Three sub-questions, **per H**:
 
-1. What did the numbers say?
+1. What did the numbers say (for this H)?
 2. Why is this the answer mechanistically — what is the model picking up?
-3. What is the next falsifiable question this raises?
+3. What is the next falsifiable question this H raises (next H block in this
+   notebook if same Purpose, candidate for a new notebook if new Purpose)?
 
 A `print("supported")` cell on its own is not a conclusion.
+
+### 4b. Purpose-level synthesis cell (after all H rounds)
+
+After the last H block, a synthesis cell ties the H verdicts together:
+
+1. Which H's were supported, which rejected, which parked?
+2. What does that collectively say about the Purpose?
+3. What derived **Purposes** does this raise for future notebooks?
+
+This is distinct from any individual H's interpretation — it is the answer
+the reader takes away about the Purpose itself.
 
 ## Figure rules
 
@@ -162,10 +188,14 @@ Both layers are required. Strip either and one reader loses the story.
 
 Before declaring an experiment notebook complete:
 
-- [ ] Abstract cell at the top, filled in (not stub text)
+- [ ] Purpose-level abstract cell at the top, filled in (not stub text), with
+      a per-H summary line for each H tested
+- [ ] Each `## H<id>` block opens with its own short per-H abstract
 - [ ] Every section has a what & why markdown cell
 - [ ] Every figure has an observation cell directly after it
-- [ ] At least one prose interpretation cell before the programmatic verdict
+- [ ] At least one prose interpretation cell before each per-H programmatic
+      verdict
+- [ ] Purpose-level synthesis cell after the last H block
 - [ ] Headline figures use plotly / altair (interactive)
 - [ ] Headline figure height ≥ 450 px, width = full
 - [ ] At least one `mo.ui` widget for evidence drill-down

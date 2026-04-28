@@ -29,8 +29,18 @@ def _(mo):
     ## Parent project
     notebooks/{{PROJECT_NAME}}/
 
-    ## Linked hypothesis
-    H{{HYP_ID}}: [quote the entry from hypotheses.md]
+    ## Purpose (the open-ended investigation this notebook conducts)
+
+    [An open-ended question about the world that admits multiple Hypothesis-style
+    answers. The notebook stays scoped to this Purpose; derived hypotheses
+    serving the same Purpose are added below as new `## H<id>` blocks.
+
+    Examples of correct Purpose statements:
+    - "Does mean-reversion work on EUR/USD intraday?"
+    - "Can PCA factors predict next-day stock returns?"
+    - "Does Chronos add value over a frozen-embedding baseline?"
+
+    Do NOT write the first H here. The first H goes in the H1 block below.]
     """
     )
     return
@@ -38,23 +48,32 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    # Fill this AFTER the analysis is complete. See references/notebook_narrative.md.
-    # A reader who only opens this .py file must understand the answer from this cell alone.
+    # Fill this AFTER all H rounds in this notebook are complete.
+    # See references/notebook_narrative.md.
+    # A reader who only opens this .py file must understand the Purpose-level
+    # answer from this cell alone.
     mo.md(
         r"""
-    ## Abstract (fill in last)
+    ## Abstract — Purpose level (fill in last)
 
-    **Question.** [One falsifiable sentence.]
+    **Purpose.** [One sentence — the open-ended investigation this notebook conducts.]
 
-    **Conclusion.** [supported / rejected / parked] — test Sharpe = X.XX
-    (95% CI [a, b], PSR = p), max drawdown = Y%. Headline figure: cell §X
-    "[fig name]".
+    **Hypotheses tested (in order):**
+    - H1: [one-line falsifiable statement] — [supported / rejected / parked]
+    - H2: [one-line falsifiable statement] — [supported / rejected / parked]
+    - …
+
+    **Purpose-level conclusion.** [Synthesis across the H verdicts: what does
+    the collection of H results say about the Purpose? Headline numbers per H
+    (test Sharpe with 95% CI, PSR, drawdown). Headline figure: cell §X
+    "[fig name]".]
 
     **Why this matters / doesn't.** [One sentence: the implication for
-    the project's hypothesis portfolio, or the mechanism behind the result.]
+    the project's hypothesis portfolio, or the mechanism behind the collective
+    result.]
 
     **Caveats.** [Data range, regime coverage, anything that limits
-    generalization.]
+    generalization at the Purpose level.]
     """
     )
     return
@@ -64,20 +83,48 @@ def _(mo):
 def _(mo):
     mo.md(
         r"""
-    ## Research design
+    ## Research design — shared across all H rounds in this notebook
 
-    See references/research_design.md.
+    See references/research_design.md. Per-H design (comparison / metrics /
+    acceptance / rejection thresholds) is repeated inside each `## H<id>` block
+    below; only the cross-H, shared parameters live here.
 
-    - **Question** — [falsifiable comparison statement]
-    - **Hypothesis** — [why it might or might not hold, from prior knowledge]
     - **Universe** — instruments [3+], period [start, end], frequency [primary + auxiliary]
-    - **Comparison** — [method A / method B / baseline]
-    - **Metrics** — [Sharpe / IC / AUC / calibration]
-    - **Acceptance condition** — [numeric threshold]
-    - **Rejection condition** — [numeric threshold]
     - **Data ranges** — train [d1,d2] / val [d2,d3] / test [d3,d4], embargo H bars
-    - **Robustness gates** — [walk-forward, fee sensitivity, threshold surface, ...]
-    - **Upstream dependencies** — data paths and hashes; intermediate files; upstream hypotheses
+    - **Upstream dependencies** — data paths and hashes; intermediate files; upstream Purposes
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    # FILL THIS BEFORE WRITING ANY CODE BELOW.
+    # The notebook is a communication artifact. The headline figure and the
+    # reader takeaway are pre-implementation design choices, not end-of-pipeline
+    # decoration. See references/notebook_narrative.md and SKILL.md
+    # "Notebook is a communication artifact from the start".
+    mo.md(
+        r"""
+    ## Headline figure plan (written BEFORE any code runs)
+
+    The single figure that conveys the answer to the Purpose. Sketch its shape
+    here — the data only fills in the numeric values, not the design.
+
+    - **What it shows**: [e.g. cumulative net PnL on test, all H rounds vs.
+      lower and upper baselines, with vertical shading for train/val/test]
+    - **Axes**: x = [date / regime / parameter], y = [cum PnL / Sharpe / IC]
+    - **Comparisons / overlays**: [list of series and highlights]
+    - **Observation the reader should draw from this figure alone**: [one
+      sentence — what the reader sees before reading any prose]
+    - **Library / size**: plotly or altair, full width, height ≥ 500 px
+
+    ## Reader takeaway (one sentence, written BEFORE any code runs)
+
+    [After reading this notebook end-to-end, the reader walks away knowing: …]
+
+    Each `## H<id>` block below also gets its own per-H headline figure plan,
+    filled in before that H's code runs.
     """
     )
     return
@@ -161,10 +208,43 @@ def _():
 def _(mo):
     mo.md(
         r"""
-    ## 3. Proposed method
+    # === H1 round ===
 
-    *What.* The math model or ML model under test. See references/modeling_approach.md
-    for category-specific failure modes (stationarity, leakage, label imbalance).
+    ## H1 — [one-line falsifiable statement]
+
+    See references/research_design.md for the per-H block format.
+
+    ### Linked hypothesis-portfolio entry
+    H{{HYP_ID}}: [quote the entry from hypotheses.md; same `experiment_id` =
+    `exp_{{NNN}}` as the notebook's Purpose]
+
+    ### Question for this H
+    [Falsifiable comparison statement.]
+
+    ### Hypothesis
+    [Why it might or might not hold — from prior knowledge.]
+
+    ### Design (this H only)
+    - **Comparison** — [method A / method B / baseline]
+    - **Metrics** — [Sharpe / IC / AUC / calibration]
+    - **Acceptance condition** — [numeric threshold]
+    - **Rejection condition** — [numeric threshold]
+
+    ### Per-H headline figure plan (fill BEFORE any H1 code below runs)
+    - **What it shows**: [the figure that visualises H1's answer]
+    - **Axes / overlays**: [...]
+    - **Observation the reader is supposed to draw from this figure alone**:
+      [one sentence]
+
+    ### Per-H reader takeaway (one sentence, fill BEFORE any H1 code runs)
+    [After reading this H1 block, the reader walks away knowing: …]
+
+    ## 3. Proposed method (H1)
+
+    *What.* The math model or ML model under test for H1.
+    See references/modeling_approach.md for category-specific failure modes
+    (stationarity, leakage, label imbalance). Use H-suffixed variable names
+    (e.g. `signal_h1`, `pnl_h1`) so subsequent H rounds can coexist.
     """
     )
     return
@@ -444,14 +524,17 @@ def _():
 def _(mo):
     mo.md(
         r"""
-    ## 9. Interpretation (prose conclusion — fill before the verdict cell)
+    ## 9. Interpretation for H1 (prose conclusion — fill before the verdict cell)
 
-    1. **What did the numbers say?** [Headline metrics, CI, PSR.]
+    1. **What did the numbers say (for H1)?** [Headline metrics, CI, PSR.]
     2. **Why is this the answer mechanistically?** [What is the model picking
        up? Why might it generalize, or not?]
     3. **What is the next falsifiable question this raises?**
        [Concrete, testable, with the data we have or specifying what new data
-       is needed.]
+       is needed. If the next H still serves the same Purpose, it becomes
+       the H2 block in this same notebook (see the "## H2 round" stub at the
+       bottom). If it reflects a new Purpose, it becomes a candidate for a
+       new notebook in section 14 below.]
     """
     )
     return
@@ -461,12 +544,12 @@ def _(mo):
 def _(mo):
     mo.md(
         r"""
-    ## 10a. Multi-agent bug-review checkpoint (BEFORE the verdict cell)
+    ## 10a. Multi-agent bug-review checkpoint for H1 (BEFORE H1's verdict cell)
 
-    Before setting `verdict = "supported"`, dispatch the six-reviewer multi-agent
-    bug review (5 specialists + 1 adversarial cold-eye reviewer) described in
-    `references/bug_review.md`. The trigger fires automatically if any of these
-    is true:
+    Per-Hypothesis gate. Before setting `verdict_h1 = "supported"`, dispatch the
+    six-reviewer multi-agent bug review (5 specialists + 1 adversarial cold-eye
+    reviewer) described in `references/bug_review.md`. The trigger fires
+    automatically if any of these is true:
 
     - Test Sharpe (after costs) > 3
     - Walk-forward mean Sharpe > 2 ; or headline ≥ 2 × walk-forward mean
@@ -475,8 +558,9 @@ def _(mo):
     - Any change since the last bug-review pass to: data ingestion, target,
       embargo, fold, feature scaling, signal alignment, fee model
 
-    Even if no numeric trigger fires, run the layer once before the FIRST
-    `verdict = "supported"` of the experiment.
+    Even if no numeric trigger fires, run the layer once for H1 before its
+    FIRST `verdict = "supported"`. Each later H gets its own bug-review pass
+    triggered the same way.
 
     Required outputs of this layer (delivered inline in the assistant's
     reply — the skill does NOT write to `decisions.md` or any file):
@@ -494,13 +578,14 @@ def _(mo):
     in the session transcript downgrades the conclusion to *preliminary
     screening*.
 
-    ## 10b. Multi-agent experiment-review checkpoint (BEFORE the verdict cell, AFTER 10a)
+    ## 10b. Multi-agent experiment-review checkpoint for H1 (BEFORE H1's verdict cell, AFTER 10a)
 
-    MANDATORY co-gate with section 10a. Before setting `verdict = "supported"`,
-    invoke the separate `experiment-review` skill via the Skill tool. It runs
-    7 specialist reviewers (question / scope / method / validation-sufficiency /
-    claim / literature / narrative) plus 1 adversarial cold-eye reviewer that
-    reads this `.py` file alone with deliberately minimum context.
+    Per-Hypothesis gate. MANDATORY co-gate with section 10a for this H. Before
+    setting `verdict_h1 = "supported"`, invoke the separate `experiment-review`
+    skill via the Skill tool. It runs 7 specialist reviewers
+    (question / scope / method / validation-sufficiency / claim / literature /
+    narrative) plus 1 adversarial cold-eye reviewer that reads this `.py` file
+    alone with deliberately minimum context.
 
     Required outputs (delivered inline in the assistant's reply — the skill
     does NOT write a review report file or modify any project artifact):
@@ -517,7 +602,7 @@ def _(mo):
     layers answer different questions (correctness vs. claim-warrant) — both
     required.
 
-    ## 11. Programmatic verdict
+    ## 11. Programmatic verdict for H1
     """
     )
     return
@@ -526,55 +611,41 @@ def _(mo):
 @app.cell
 def _():
     # Compare the test-set metric against the acceptance / rejection thresholds
-    # from the research design and assign a verdict.
-    # verdict = "supported" | "rejected" | "parked"
+    # from the H1 design block and assign a per-H verdict.
+    # verdict_h1 = "supported" | "rejected" | "parked"
     # PRECONDITION: BOTH section 10a (bug-review) AND section 10b (experiment-
-    # review skill) checklists are satisfied. Setting "supported" without both
-    # is a protocol violation — see SKILL.md Completion gate.
-    verdict = "parked"
-    print(f"verdict: {verdict}")
-    return (verdict,)
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(
-        r"""
-    ## 12. Derived hypotheses
-
-    | New hypothesis | Run-now / next-session / drop | Reason |
-    |---|---|---|
-    | H{{NEW_HYP_ID}}: ... | run-now | testable with current data |
-    | ... | next-session | needs new data |
-    """
-    )
-    return
+    # review skill) checklists are satisfied for H1. Setting "supported"
+    # without both is a protocol violation — see SKILL.md Completion gate.
+    verdict_h1 = "parked"
+    print(f"verdict_h1: {verdict_h1}")
+    return (verdict_h1,)
 
 
 @app.cell
-def _(np, pl, verdict):
-    # === Append to results aggregation ===
+def _(np, pl, verdict_h1):
+    # === Append H1's row to results aggregation ===
+    # ONE ROW PER HYPOTHESIS — not one row per notebook.
     # See references/results_db_schema.md. Required.
     from datetime import datetime, timezone
     import os
 
-    result_row = {
+    result_row_h1 = {
         "project": "{{PROJECT_NAME}}",
-        "experiment_id": "exp_{{NNN}}_{{SLUG}}",
-        "hypothesis_id": "H{{HYP_ID}}",
+        "experiment_id": "exp_{{NNN}}_{{SLUG}}",   # the notebook = the Purpose
+        "hypothesis_id": "H{{HYP_ID}}",            # the H within the Purpose
         "run_timestamp": datetime.now(timezone.utc),
-        "verdict": verdict,
+        "verdict": verdict_h1,
         # Fill in the rest per results_db_schema.md
     }
 
     db_path = "../../results/results.parquet"
     if os.path.exists(db_path):
         existing = pl.read_parquet(db_path)
-        new = pl.concat([existing, pl.DataFrame([result_row])], how="diagonal_relaxed")
+        new = pl.concat([existing, pl.DataFrame([result_row_h1])], how="diagonal_relaxed")
     else:
-        new = pl.DataFrame([result_row])
+        new = pl.DataFrame([result_row_h1])
     new.write_parquet(db_path)
-    print(f"appended to {db_path} (total rows: {new.height})")
+    print(f"appended H1 row to {db_path} (total rows: {new.height})")
     _ = np  # keep marimo dependency graph happy
     return
 
@@ -583,16 +654,91 @@ def _(np, pl, verdict):
 def _(mo):
     mo.md(
         r"""
-    ## 13. Reminder to update hypotheses.md and decisions.md
+    # === H2 round (only if a derived hypothesis serves the SAME Purpose) ===
 
-    - [ ] Update H{{HYP_ID}} status (in-progress → supported / rejected / parked)
-    - [ ] Append a time-ordered entry to decisions.md
-    - [ ] If verdict = "supported", confirm BOTH the bug-review entry from
-          section 10a AND the experiment-review entry from section 10b are
-          present in decisions.md and all high/medium findings are resolved
-    - [ ] Fill the one-line conclusion in experiments/INDEX.md
-    - [ ] Add any derived hypotheses to hypotheses.md
-    - [ ] Confirm the abstract cell at the top has been filled in
+    Stub for the next H round inside this notebook. Copy the block format from
+    the H1 round above and replace H1 with H2 throughout. Use H-suffixed
+    variable names (`signal_h2`, `pnl_h2`, …) so cells from H1 and H2 coexist
+    in marimo's dataflow graph.
+
+    Routing reminder (see references/hypothesis_cycles.md and SKILL.md "Purpose
+    vs. Hypothesis"):
+
+    - Same Purpose → next H block in THIS notebook (default case)
+    - New Purpose → new notebook (`exp_<NNN+1>_*.py`); leave the new H here
+      only as a one-liner in section 14 ("Derived Purposes") below
+
+    ## H2 — [one-line falsifiable statement]
+
+    ### Why H2 follows H1
+    [One sentence: which observation from H1 motivated this H, what
+    information gain is expected, and the explicit confirmation that the
+    notebook's Purpose still covers H2.]
+
+    [...repeat the H1 round structure for H2: design block / proposed method /
+    evaluation / sanity / robustness / interpretation / 10a bug-review /
+    10b experiment-review / verdict_h2 / append H2 result row...]
+
+    Repeat for H3, H4, … as more derived H's emerge under the same Purpose.
+
+    ## 14. Derived hypotheses (= candidates) — classify and route
+
+    Two routing destinations. Be explicit about which:
+
+    **Same notebook (next H<id> block, run-now)** — if Purpose unchanged:
+    | New H | Where | When | Reason |
+    |---|---|---|---|
+    | H<new>: ... | this notebook | run-now | sensitivity / refinement / failure-diagnosis / follow-on; same Purpose |
+
+    **New notebook (= new Purpose)** — if Purpose changed:
+    | Candidate Purpose | When | Reason |
+    |---|---|---|
+    | P<new>: ... | run-now / next-session | phenomenon / cross-section / question changed |
+
+    **Drop** — refuted in prior work or out of scope:
+    | Dropped H | Reason |
+    |---|---|
+    | H<old>: ... | refuted by [paper / prior cycle] |
+    """
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(
+        r"""
+    ## 15. Purpose-level conclusion (after the last H round)
+
+    Synthesis across H1…HN inside this notebook. Distinct from any individual
+    H's interpretation.
+
+    1. **Which H's were supported, which rejected, which parked?**
+    2. **What does that collectively say about the Purpose?**
+       [Two or three sentences answering the open-ended Purpose question
+       using the evidence assembled across the H's.]
+    3. **What derived Purposes does this raise for future notebooks?**
+       [Concrete candidates for `exp_<NNN+1>_*.py`; reflect the Purpose
+       changes — phenomenon / cross-section / question.]
+
+    ## 16. Reminder — update hypotheses.md, decisions.md, INDEX.md
+
+    - [ ] For every H tested in this notebook, update its status in
+          `hypotheses.md` (in-progress → supported / rejected / parked) and
+          confirm each H's `experiment_id` matches `exp_{{NNN}}`
+    - [ ] Append a time-ordered entry to `decisions.md` for this Purpose
+          (one entry per cycle), with H sub-bullets per H tested
+    - [ ] For every H whose verdict is "supported", confirm BOTH the
+          bug-review entry from section 10a AND the experiment-review entry
+          from section 10b were run for that H and all high / medium
+          findings are resolved
+    - [ ] Fill the one-line Purpose-level conclusion in `experiments/INDEX.md`
+    - [ ] Add any derived hypotheses (same Purpose) to `hypotheses.md` with
+          this notebook's `experiment_id`
+    - [ ] Add any derived Purposes (new notebook candidates) to the
+          "Derived Purposes" section of `decisions.md`; do not add them as
+          H entries under this notebook's `experiment_id`
+    - [ ] Confirm the Purpose-level abstract cell at the top has been filled in
     """
     )
     return

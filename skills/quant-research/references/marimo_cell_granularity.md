@@ -56,11 +56,22 @@ df = load_data_a()  # defines df
 df = load_data_b()  # error: df is multiply defined
 ```
 
-Avoidance options:
+Avoidance options (in order of preference inside one notebook with multiple
+H rounds):
 
-1. **One experiment = one notebook** (primary mitigation)
-2. Inside one notebook, use cell-private names with a leading underscore (`_df`)
-3. Disambiguate with distinct names (`df_a`, `df_b`)
+1. **H-suffixed public names** for cross-cell variables that differ per
+   round — `signal_h1`, `signal_h2`, `pnl_h1`, `pnl_h2`. This is the primary
+   pattern that lets multi-Hypothesis notebooks coexist with marimo's
+   dataflow rule. (See `references/experiment_protocol.md` for why
+   multi-Hypothesis notebooks are the default unit.)
+2. **Cell-private names** with a leading underscore (`_df`) for purely
+   intra-cell intermediates that do not need to escape the cell.
+3. Disambiguate with otherwise distinct names (`df_a`, `df_b`) when the
+   variable is not naturally tied to an H round.
+
+Splitting the file is **not** an avoidance option for global-name collisions
+inside one Purpose. The above patterns make multi-Hypothesis notebooks work
+without splitting.
 
 ## Sweep / grid-search structure
 
@@ -87,25 +98,32 @@ This is acceptable as one cell because the sweep itself is one evaluation. But:
 - After choosing the best from the sweep, the chosen configuration is re-run as its own
   separate cell (one fit / one evaluation)
 
-## Final two cells
+## Per-H closing cells (one set per Hypothesis round)
 
-The last two cells of every experiment notebook are not optional:
+At the end of each Hypothesis round inside the notebook, append a result row
+for that H:
 
 ```python
-# Cell N-1: append to results.parquet (see results_db_schema.md)
+# Per-H closing cell: append to results.parquet (see results_db_schema.md)
 append_to_results_db(
     project="<name>",
-    experiment_id="exp_005",
-    hypothesis_id="H3",
+    experiment_id="exp_005",     # the notebook = the Purpose
+    hypothesis_id="H3",          # the individual H within the Purpose
     metrics={"sharpe": ..., "win_rate": ..., ...},
 )
 ```
 
+The append happens **per H**, not once at the bottom of the file.
+
+## Final notebook reminder cell
+
+After the last H round, a single reminder cell:
+
 ```python
-# Cell N: reminder to update hypotheses.md and decisions.md
 print("REMINDER: update hypotheses.md and decisions.md")
-print("  - Update hypothesis H3 status")
-print("  - Add derived hypotheses H10, H11 to hypotheses.md")
+print("  - Update hypothesis status for every H tested in this notebook")
+print("  - Add derived hypotheses (same Purpose) and derived Purposes")
+print("    (new notebooks) to hypotheses.md")
 ```
 
 ## Multi-fit exception
@@ -122,14 +140,24 @@ Multiple **models × multiple settings** is what should be split into multiple c
 
 ## Cell-count guidance
 
-- 10 to 30 cells per experiment notebook is typical
-- More than 30 suggests the experiment should be split
+There is no upper bound on cell count under the per-Purpose protocol. A
+notebook with several H rounds legitimately runs 60-200 cells; size is
+whatever the Purpose requires. The old "10-30 cells per notebook" guidance
+applied to the prior one-H-per-notebook unit and no longer applies.
+
+The lower bound still holds: each cell does one fit / one evaluation, so
+even a single-H notebook will have on the order of 20-40 cells once
+imports, data load, baselines, sanity checks, and robustness battery are
+counted.
 
 ## Warning signs
 
-- Loop with 10+ fits in one cell → split
-- Same name overwritten across cells → use cell-private (`_`) or rename
-- Cells cannot be re-run independently → save intermediates as named variables
+- Loop with 10+ fits in one cell → split into multiple cells
+- Same name overwritten across cells → use H-suffixed public names
+  (`signal_h1`, `signal_h2`) or cell-private (`_`) names; do not split
+  the file
+- Cells cannot be re-run independently → save intermediates as named
+  variables
 
 ## See also
 

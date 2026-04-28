@@ -1,43 +1,77 @@
 # Decision log
 
-Time-ordered log of decisions per cycle. Used to trace why a hypothesis was dropped or
-why a particular method was chosen, after the fact.
+Time-ordered log of decisions per Purpose / cycle. Used to trace why a hypothesis was
+dropped, why a Purpose was opened or split off, or why a particular method was chosen,
+after the fact.
+
+A "cycle" here is one notebook (= one Purpose). A Purpose with multiple H's
+yields a single cycle entry with H sub-bullets, not one entry per H.
 
 ## Format
 
 ```markdown
-## YYYY-MM-DD cycle <N> (exp_<NNN>_<slug>)
+## YYYY-MM-DD cycle <N> (exp_<NNN>_<purpose-slug>) — Purpose: <one-line>
 
-- **Tested hypothesis**: H<id> (one-line restatement)
-- **Observation**: [observed values, anomalies]
-- **Verdict**: [supported / rejected / partial / parked]
-- **Derived hypotheses**:
+- **Tested H<id>**: [one-line restatement]
+  - Observation: [observed values, anomalies]
+  - Verdict: [supported / rejected / partial / parked]
+  - Robustness battery (this H): [pass / fail per item in robustness_battery.md]
+- **Tested H<id+1> (derived from H<id>, same Purpose)**: [one-line restatement]
+  - Observation: ...
+  - Verdict: ...
+  - Robustness battery (this H): ...
+- **Tested H<id+2>** (...): ...
+
+- **Purpose-level synthesis**: [one or two sentences across all H's tested]
+
+- **Derived hypotheses for this Purpose** (= future H rounds in this notebook):
   - H<new> (run-now): ...
   - H<new> (next-session): ...
-- **Direction rejected**: [what was tried and did not work, with reason]
-- **Robustness battery status**: [which items in robustness_battery.md passed / failed]
+
+- **Derived Purposes** (= candidates for new notebooks):
+  - P<new> (run-now): ...
+  - P<new> (next-session): ...
+
+- **Direction rejected**: [what was tried inside this Purpose and did not work,
+  with reason]
 ```
 
 ## Example
 
 ```markdown
-## YYYY-MM-DD cycle 5 (exp_005_signal_flip)
+## YYYY-MM-DD cycle 5 (exp_005_mean_reversion_eurusd_intraday) — Purpose: does mean-reversion work on EUR/USD intraday?
 
-- **Tested hypothesis**: H3 (entry filter × signal-flip exit beats fee 0.5 bp/side)
-- **Observation**:
-  - val Sharpe +0.52 (fee 1 bp), +1.45 (fee 0)
-  - win 62.4% (val) / 62.3% (test) — preserved across the split
-  - Walk-forward mean Sharpe -0.10, pct_positive 47.4% (unstable)
-  - Bootstrap 95% CI = [0.009, 0.202], p=0.014 — significant but small effect size
-- **Verdict**: partial (negative at fee 1 bp, borderline at 0.5 bp, walk-forward unstable)
-- **Derived hypotheses**:
-  - H10 (run-now): vol-targeted size to stabilize walk-forward
-  - H11 (next-session): multi-asset generalization
-  - H12 (run-now): regime-conditional Sharpe (trending vs. ranging)
+- **Tested H3**: entry filter × signal-flip exit beats fee 0.5 bp/side
+  - Observation:
+    - val Sharpe +0.52 (fee 1 bp), +1.45 (fee 0)
+    - win 62.4 % (val) / 62.3 % (test) — preserved across the split
+    - Walk-forward mean Sharpe -0.10, pct_positive 47.4 % (unstable)
+    - Bootstrap 95 % CI = [0.009, 0.202], p = 0.014 — significant but small effect size
+  - Verdict: partial (negative at fee 1 bp, borderline at 0.5 bp, walk-forward unstable)
+  - Robustness battery (H3): 4 of 7 passed (threshold ✓ / fee ✓ / bootstrap CI border /
+    walk-forward ✗ / DSR not computed / realistic cost not run / regime not run)
+
+- **Tested H10 (derived from H3, same Purpose)**: vol-targeted size to stabilize walk-forward
+  - Observation: walk-forward pct_positive 0.474 → 0.71, val Sharpe slightly down (1.45 → 1.18)
+    at fee 0; test Sharpe 0.62 → 0.55
+  - Verdict: supported (walk-forward stability gate met; test Sharpe acceptable)
+  - Robustness battery (H10): 6 of 7 passed (regime not run)
+
+- **Purpose-level synthesis**: mean-reversion works on EUR/USD intraday only with
+  vol-targeted sizing (H10); fixed sizing (H3) is fragile across walk-forward windows.
+
+- **Derived hypotheses for this Purpose**:
+  - H12 (run-now): regime-conditional Sharpe (trending vs. ranging) on H10's strategy
+  - H13 (next-session): multi-asset generalization within FX majors
+
+- **Derived Purposes**:
+  - P_momentum_eurusd_intraday (run-now): is the inverse phenomenon (continuation)
+    profitable on the same universe? Different phenomenon, so a new notebook.
+  - P_meanrev_jpypairs (next-session): same Purpose grain on JPY-cross intraday;
+    different cross-section ⇒ new notebook.
+
 - **Direction rejected**: time-stop alone as exit (effect size < fee). Reason: signal
   horizon and exit horizon do not coincide.
-- **Robustness battery**: 4 of 7 passed (threshold ✓ / fee ✓ / bootstrap CI border /
-  walk-forward ✗ / DSR not computed / realistic cost not run / regime not run)
 ```
 
 ## Notes
@@ -45,3 +79,6 @@ why a particular method was chosen, after the fact.
 - Do not delete. Negative results stay.
 - Use specific numbers ("Sharpe -1.74" rather than "Sharpe was low")
 - Always classify derived hypotheses (run-now / next-session / drop)
+- Always classify derived Purposes (run-now / next-session / drop)
+- Per-Purpose entries replace the older per-H entries; multiple H's belong as
+  sub-bullets under one Purpose entry

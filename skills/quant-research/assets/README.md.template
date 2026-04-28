@@ -37,11 +37,12 @@
 ## Lifecycle
 
 ```
-1. Literature review → hypothesis portfolio
-2. One notebook per hypothesis
-3. At cycle end: update hypotheses.md, decisions.md, results.parquet
-4. If a derived hypothesis can run now, start the next notebook
-5. Before completion: pass robustness battery and research-quality checklist
+1. Literature review → hypothesis portfolio (first H per Purpose)
+2. One notebook per Purpose; one or more H rounds tested inside it
+3. At each H round: bug_review → robustness battery → experiment-review → per-H verdict → append per-H row to results.parquet
+4. If a derived H serves the same Purpose: continue with the next H round inside the SAME notebook
+5. If the next investigation reflects a new Purpose: open the next notebook
+6. Before completion: pass robustness battery (per H whose verdict is supported) and research-quality checklist
 ```
 
 Detailed protocols live in the `quant-research` plugin's `references/` directory.

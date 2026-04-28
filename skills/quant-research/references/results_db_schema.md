@@ -1,18 +1,29 @@
 # results_db_schema.md
 
-Common schema for appending each experiment notebook's results to
+Common schema for appending each Hypothesis result to
 `results/results.parquet`.
 
 ## When to read
 
-- Writing the final cell of an experiment notebook
-- Aggregating or comparing results across experiments
+- Closing a Hypothesis round inside an experiment notebook
+- Aggregating or comparing results across Hypotheses or across notebooks
 
 ## Principle
 
-The final cell of every experiment notebook appends a row to `results/results.parquet`
-using a shared schema. Without this, cross-experiment comparison and synthesis are
-impossible.
+**One row per Hypothesis tested** (not one row per notebook). A notebook
+conducts one Purpose containing one or more H's; each H produces its own row
+in `results/results.parquet`. The append happens at the end of each H's
+round inside the notebook, not once at the bottom of the file.
+
+The schema below already carries `experiment_id` (= the notebook = the
+Purpose) and `hypothesis_id` (= the individual H within the Purpose) as
+separate columns; a notebook with three H's emits three rows that share
+`experiment_id` and differ in `hypothesis_id`. Cross-H aggregation queries
+group by `hypothesis_id`; cross-Purpose aggregation queries group by
+`experiment_id`.
+
+Without per-H rows, no cross-H comparison or per-H verdict tracking is
+possible.
 
 ## Common schema
 
@@ -72,7 +83,7 @@ impossible.
 }
 ```
 
-## Append pattern at end of notebook
+## Append pattern at the end of each H round (NOT at the end of the notebook)
 
 ```python
 import polars as pl
@@ -163,8 +174,12 @@ Topic-specific metrics may be added, with rules:
 
 ## Warning signs
 
-- Forgot to append the row → no aggregation possible; force the append in every cycle
-- Same `experiment_id` appended multiple times → decide whether overwriting or duplicating
-  is intended, and document
-- Schema changes per experiment → cross-experiment queries break; keep the common part
-  fixed
+- Forgot to append a row for some H → that H is invisible to aggregation; force
+  the append at the end of every H round
+- Same `(experiment_id, hypothesis_id)` pair appended multiple times → decide
+  whether overwriting or duplicating is intended, and document
+- A notebook emits only one row when its hypothesis log clearly shows multiple
+  H's tested → likely a stale "one row per notebook" mental model; emit one
+  row per H
+- Schema changes per H → cross-H queries break; keep the common part fixed
+  (extra metrics use the `extra_<name>` prefix per the Extension section)

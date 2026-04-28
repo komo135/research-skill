@@ -1,25 +1,30 @@
 # Experiment INDEX
 
-List of experiment notebooks with one-line conclusions. `scripts/new_experiment.py` adds
-new entries automatically.
+List of notebooks, one per **Purpose**, with their hypothesis verdicts and
+the Purpose-level conclusion. `scripts/new_experiment.py` adds new entries
+automatically.
 
 ## Entries
 
-| exp_id | Purpose | Linked hypothesis | Status | Conclusion (one line) |
+| exp_id | Purpose (one line) | Hypotheses (H<id>: verdict) | Status | Purpose-level conclusion (one line) |
 |---|---|---|---|---|
-| exp_001 | (example) Define data universe | (foundation) | done | ... |
-| exp_002 | (example) Factor IC screening | H1 | done | ... |
+| exp_001 | (example) Define data universe | H1: foundation | done | universe of N instruments × T period defined; data hashes recorded |
+| exp_002 | (example) Does PCA factor IC screening yield robust factors? | H2: supported · H3: rejected · H4: parked | done | top-3 PCA factors hold val IC ≥ 0.03 but not on test |
 | exp_003 | ... | ... | in-progress | ... |
 
-## Status legend
+## Status legend (per notebook)
 
-- `planned`: entry exists in hypotheses.md, notebook not created
-- `in-progress`: notebook created, conclusion not yet finalized
-- `done`: conclusion cell filled and result row appended
+- `planned`: Purpose stated, notebook not created
+- `in-progress`: notebook created, at least one H not yet at a final verdict
+- `done`: every H inside the notebook is at a final verdict (supported / rejected / partial / parked) and a Purpose-level conclusion exists
 - `parked`: blocked on upstream dependency
 - `dropped`: judged not worth pursuing; reason recorded in decisions.md
 
+A notebook is `done` when its Purpose has been answered (per the Purpose-level
+synthesis) — not when one specific H is final.
+
 ## Order
 
-Sequential numbering, but dependencies (upstream first) take precedence. Each notebook
-states its upstream dependencies in its "Upstream dependencies" section.
+Sequential numbering, but dependencies (upstream Purposes first) take precedence.
+Each notebook states its upstream dependencies in its "Upstream dependencies"
+section.
