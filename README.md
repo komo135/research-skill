@@ -3,10 +3,14 @@
 A Claude Code plugin that bundles two protocol skills for **agent-driven quantitative
 finance research**:
 
-- `quant-research` — research lifecycle (hypothesis → notebook → validation →
-  robustness battery), with a multi-agent **bug-review** layer (5 specialists +
-  1 adversarial cold-eye reviewer) that fires on numeric red flags or before any
-  `verdict = "supported"` decision.
+- `quant-research` — research lifecycle organised around one **Purpose** per
+  notebook (an open-ended investigation), with one or more falsifiable
+  **Hypotheses** tested as successive rounds inside it. Each H gets its own
+  per-Hypothesis verdict gate, robustness battery, and result row. Includes
+  a multi-agent **bug-review** layer (5 specialists + 1 adversarial cold-eye
+  reviewer) that fires per Hypothesis on numeric red flags or before any
+  `verdict = "supported"` decision. Headline-figure plan and reader takeaway
+  are required pre-implementation items, not end-of-pipeline decoration.
 - `experiment-review` — a separate, parallel-dispatched **claim-warrant review**
   (7 specialists + 1 adversarial cold-eye reviewer) that asks not "is the code
   correct?" but "is the conclusion warranted by what was actually tested?"
@@ -74,24 +78,34 @@ If you want Jupyter, you will be fighting the skill, not using it.
 
 Start a project → the skill scaffolds a folder with `hypotheses.md`,
 `literature/papers.md`, `literature/differentiation.md`, `experiments/`,
-`results/`, `decisions.md`, and `reproducibility/`. For each hypothesis,
-one experiment = one notebook (no exceptions). The notebook template
-forces a *design cell* up front: question, falsifiable hypothesis, universe
-(≥ 3 instruments or a cross-section), acceptance / rejection thresholds,
-data range with embargo. Validation is time-series only: time-ordered
-split, embargo ≥ target horizon, walk-forward, and purged k-fold or CPCV
-for ML. Exits are a first-class design choice — time-stop alone is
-rejected. When numeric red flags fire (test Sharpe > 3, walk-forward mean
-> 2, ML AUC on return-sign > 0.65, headline outside bootstrap 95 % CI,
-…), or before a `verdict = "supported"`, the bug-review layer dispatches
-six sub-agents in parallel; the adversarial sub-agent gets a deliberately
-minimum bundle (code + headline numbers, no other reviewers' findings, no
-`decisions.md`, no `hypotheses.md`). After bug-review passes and the
-robustness battery (sensitivity, fee, bootstrap, PSR / DSR, regime
-conditional) is green, the `experiment-review` skill dispatches eight
-sub-agents in parallel for the claim-warrant review — its adversarial
-reviewer gets the `.py` file alone, no other inputs. A result becomes
-*supported* only when both review layers pass.
+`results/`, `decisions.md`, and `reproducibility/`. **One notebook = one
+Purpose** (an open-ended investigation about the world); one or more
+falsifiable Hypotheses are tested as successive `## H<id>` rounds inside
+it. New H emerging during the run continues in the same notebook as long
+as the Purpose is unchanged; only a Purpose change opens a new notebook.
+The notebook template forces a *design cell* up front: Purpose, first
+hypothesis (H1), universe (≥ 3 instruments or a cross-section),
+acceptance / rejection thresholds, data range with embargo, **headline
+figure plan**, and **reader takeaway** — the last two are required
+pre-implementation items so the notebook is designed as a communication
+artifact from the start, not retrofitted with charts at the end.
+Validation is time-series only: time-ordered split, embargo ≥ target
+horizon, walk-forward, and purged k-fold or CPCV for ML. Exits are a
+first-class design choice — time-stop alone is rejected. When numeric red
+flags fire (test Sharpe > 3, walk-forward mean > 2, ML AUC on return-sign
+> 0.65, headline outside bootstrap 95 % CI, …), or before a
+`verdict = "supported"` for any individual Hypothesis, the bug-review
+layer dispatches six sub-agents in parallel; the adversarial sub-agent
+gets a deliberately minimum bundle (code + headline numbers, no other
+reviewers' findings, no `decisions.md`, no `hypotheses.md`). After
+bug-review passes for that H and the robustness battery (sensitivity,
+fee, bootstrap, PSR / DSR, regime conditional) is green, the
+`experiment-review` skill dispatches eight sub-agents in parallel for the
+claim-warrant review — its adversarial reviewer gets the `.py` file
+alone, no other inputs. A H becomes *supported* only when both review
+layers pass; one notebook can contain a mix of supported / rejected /
+parked verdicts across its H rounds, synthesised in a Purpose-level
+conclusion.
 
 ## The two review layers, side by side
 
@@ -161,31 +175,41 @@ A typical research session, end-to-end:
 1. **Bootstrap a project.** Tell Claude what you want to investigate. The
    skill auto-activates; it runs `scripts/new_project.py` to scaffold the
    folder, asks you to fill `hypotheses.md` and `literature/`.
-2. **Pick a hypothesis and create an experiment notebook.**
-   `scripts/new_experiment.py` generates `experiments/exp_NNN_<slug>.py`
-   from the template with the design-cell skeleton already in place.
-3. **Iterate inside the notebook.** Cells run reactively in marimo. The
-   skill enforces the "one fit / one evaluation per cell" rule and the
-   "self-contained communication artifact" rule via per-section *what &
-   why* cells and per-figure *observation* cells.
-4. **Run the robustness battery** when the notebook is otherwise complete:
-   threshold sensitivity grid, fee sensitivity sweep, walk-forward Sharpe
-   distribution, block-bootstrap CI, PSR / DSR, regime-conditional metrics.
-5. **Trigger bug-review.** Either Claude detects a numeric red flag and
-   fires it automatically, or you fire it manually before declaring a
-   verdict. Six parallel sub-agents return severity-tagged findings.
-   `high` / `medium` block the verdict until resolved.
-6. **Trigger experiment-review.** Eight parallel sub-agents return
+2. **Pick a Purpose and create the notebook for it.**
+   `scripts/new_experiment.py` generates
+   `experiments/exp_NNN_<purpose-slug>.py` from the template with the
+   Purpose header, the headline-figure plan, the reader takeaway, and the
+   first H block (H1) skeleton already in place — to be filled in before
+   any code runs.
+3. **Run H1 inside the notebook.** Cells run reactively in marimo. The
+   skill enforces "one fit / one evaluation per cell", H-suffixed variable
+   naming (`signal_h1`, `pnl_h1`), and the "self-contained communication
+   artifact" rule via per-section *what & why* cells and per-figure
+   *observation* cells.
+4. **Run the robustness battery for H1**: threshold sensitivity grid, fee
+   sensitivity sweep, walk-forward Sharpe distribution, block-bootstrap
+   CI, PSR / DSR, regime-conditional metrics.
+5. **Trigger bug-review for H1.** Either Claude detects a numeric red
+   flag and fires it automatically, or you fire it manually before
+   declaring H1's verdict. Six parallel sub-agents return severity-tagged
+   findings. `high` / `medium` block H1's verdict until resolved.
+6. **Trigger experiment-review for H1.** Eight parallel sub-agents return
    severity-tagged findings on hypothesis falsifiability, scope,
    methodology, validation sufficiency, claim calibration, literature
    coverage, notebook narrative, and an adversarial cold-eye pass.
-7. **Aggregate the result.** The final notebook cell appends to
-   `results/results.parquet` with a shared schema. The verdict is
-   recorded in `decisions.md` with timestamps and reviewer agent IDs as
-   the audit trail.
-8. **Iterate cycles.** At the end of each notebook, classify derived
-   hypotheses as "run now / next session / drop" — the skill rejects the
-   habit of stopping after one cycle.
+7. **Aggregate H1's result.** Append a row to `results/results.parquet`
+   for H1 (one row per Hypothesis, not per notebook) under the shared
+   schema. The verdict is recorded in `decisions.md` for this Purpose's
+   cycle entry, with H1 as a sub-bullet.
+8. **Did a derived H emerge?** If yes and the Purpose is unchanged,
+   continue inside the same notebook with a new `## H2` block (and repeat
+   steps 3–7 for H2, then H3, …). If a new investigation reflects a new
+   Purpose, open the next notebook (`exp_<NNN+1>_*.py`).
+9. **Synthesise across H1…HN.** At the end of the notebook, write the
+   Purpose-level conclusion (which H worked, which didn't, what the
+   collective answer to the Purpose is) and the derived Purposes for
+   future notebooks — the skill rejects the habit of stopping after one
+   cycle.
 
 ## Bundled helper scripts
 
@@ -236,9 +260,26 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- Version 0.4.0
+- Version 0.5.0
 - Two skills, two review layers, both required as co-gate.
+- Notebook unit is one Purpose (open-ended investigation); per-Hypothesis
+  verdict gates and result rows.
 - Adversarial-reviewer mechanism backed by Song (2026); see *References*.
+
+### Changelog
+
+**0.5.0** — Notebook unit reframed from "1 hypothesis" to "1 Purpose"
+(an open-ended investigation). Multiple Hypotheses serving the same
+Purpose now live as successive `## H<id>` rounds inside one notebook;
+verdicts and `results.parquet` rows are per-Hypothesis. Headline-figure
+plan and reader takeaway promoted to required pre-implementation items
+(no longer end-of-pipeline decoration). Both changes validated by
+RED-GREEN-REFACTOR via subagent pressure scenarios.
+
+**0.4.0** — Initial public release with `quant-research` and
+`experiment-review` skills, multi-agent bug-review and claim-warrant
+review layers, adversarial cold-eye reviewer with deliberately minimum
+context bundle.
 
 ## License
 
