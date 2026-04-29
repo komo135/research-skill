@@ -449,7 +449,14 @@ evidence. Both readers must reach the same conclusion. Required: an abstract cel
 top, per-section *what & why* cells, per-figure *observation* cells, prose interpretation
 before the programmatic verdict, headline figures in plotly / altair at full width and
 ≥ 450 px height, and at least one `mo.ui` widget for evidence drill-down (widgets must
-not select numbers that flow into `results.parquet`).
+not select numbers that flow into `results.parquet`). Every figure is either intuitive
+at a glance or carries an embedded read-out (title naming the comparison, annotation
+stating how to read the encoding, or a one-line conclusion in the figure); sweep
+figures mark the adopted configuration when one exists. Every helper function defined
+in the notebook has a docstring stating intent, the responsibility split, args / returns
+with producing / consuming cells, and side effects. Each H block opens with a config
+cell naming sweep grids and chosen-configuration constants; downstream cells reference
+the names, not raw literals.
 
 ### 17. Iterate hypothesis cycles
 

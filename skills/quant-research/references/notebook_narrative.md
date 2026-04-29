@@ -104,6 +104,49 @@ For every figure, you must be able to answer:
 
 If a figure cannot answer all three, delete it.
 
+### A figure must be self-explanatory at figure-time
+
+The reader must understand *what is shown* and *how to read it* without
+cross-referencing the surrounding prose. Two acceptable shapes:
+
+1. **Intuitive figure** — axes, units, color encoding, and a baseline /
+   reference make the answer obvious at a glance. Examples: cumulative-PnL
+   line chart colored by method; calibration plot with a `y = x` reference;
+   rolling Sharpe with a horizontal zero line. The visual idiom is standard,
+   so no extra read-out instruction is needed.
+2. **Annotated figure** — when the encoding is not standard (heatmap of a
+   non-standard quantity, multi-panel diagnostic, projection of a high-dim
+   space), the figure itself carries the read-out:
+   - **Title** names both the quantity and the comparison — not "Heatmap" but
+     "Sharpe by (threshold, hold) on val (2022-2023)"
+   - **Subtitle / footnote / annotation** states the read-out rule —
+     "blue = better; the white midline = zero", "diagonal = perfect
+     calibration", "shaded = 95 % bootstrap band". A divergent color scale
+     (`RdBu`, `RdYlGn`) is intuitive *only* if the rule is also stated in the
+     legend or annotation.
+   - **OR** a one-line conclusion baked into the figure (text annotation,
+     callout, or `mo.md` cell *immediately above* the figure with the
+     take-away in one sentence)
+
+**Conditional rule — chosen-point marker.** When a sweep figure (heatmap,
+fee curve, threshold surface) is paired with a specific configuration that
+the notebook adopts elsewhere (e.g. H1 reports threshold=30 and the heatmap
+sweeps over thresholds), mark that point on the figure (annotation, scatter
+overlay, vertical line). A reader looking at the surface should be able to
+locate "this is the configuration H1 used" without reading prose. If the
+sweep is purely surface-level evidence with no adopted point, this rule does
+not apply.
+
+The observation cell that follows (mandated by *Per-figure observation cell*
+above) carries the *observation* — what we infer. The read-out instruction
+is different: it tells the reader how to *look* at the picture so they can
+verify the observation against the visual instead of trusting the prose
+blindly. Both are required when the figure is not intuitive.
+
+If a figure cannot be made self-explanatory by either route, the figure is
+trying to carry too much — split it into two simpler figures, each of which
+can.
+
 ### Required figures per experiment
 
 | Figure | Purpose |
@@ -184,6 +227,97 @@ appears in `results.parquet`.
 
 Both layers are required. Strip either and one reader loses the story.
 
+## Code-level conventions (for the `.py`-source reader)
+
+The prose-anchor rules above target both readers. The rules in this section
+target the `.py`-source reader: the code itself must explain its intent so a
+colleague reading the file (in an editor, in a diff, in a code review) can
+follow the H's pipeline without running the notebook.
+
+### Function docstrings — intent and responsibility
+
+Every helper function defined inside the notebook must carry a docstring
+covering all four of these. A one-line docstring that paraphrases the body
+(e.g. `"""RSI mean-reversion: long when RSI <= threshold, exit on cross-back."""`)
+does not satisfy this rule — it restates *what* the code does, which the
+code already says, and omits the *why* and the *contract*.
+
+1. **Intent (the role)** — one sentence: what this function is responsible
+   for in the pipeline. Not a paraphrase of the body — the *role* it plays
+   relative to the rest of the H's cells.
+2. **Why this responsibility lives in its own function** — one phrase: what
+   would become unclear or break if this were inlined into the calling cell.
+   This is what justifies the abstraction; without it, the function tends to
+   accrete unrelated logic over time.
+3. **Args / Returns** — names with type or shape if non-obvious; mention the
+   producing/consuming cell or section number when the binding is non-local
+   (e.g. "consumed by §6 robustness battery"). The reader should be able to
+   trace the function's inputs and outputs through the notebook by reading
+   only the docstring.
+4. **Side effects** — file writes, `results.parquet` appends, plot displays,
+   global RNG mutation. State `Side effects: none.` explicitly when there
+   are none. marimo's reactive graph hides side-effect ordering; a function
+   that writes a file *must* declare it so the reader knows the cell is not
+   idempotent.
+
+```python
+def fit_rsi_meanrev(prices, rsi_threshold, fee_per_side):
+    """Fit one (threshold, fee) configuration of the H1 RSI mean-reversion
+    strategy and emit the per-bar net-PnL series.
+
+    Lives in its own function so the H1 sweep cell stays at one fit per call
+    (see references/marimo_cell_granularity.md); inlining would mix
+    parameter setup with sweep-loop bookkeeping.
+
+    Args:
+        prices         — close-price series (cell §1 output: `eurusd_5m`)
+        rsi_threshold  — RSI level for the long entry (configured in the
+                         H1 config cell, swept in §6)
+        fee_per_side   — round-trip half-fee (configured in the H1 config
+                         cell, swept in §7)
+
+    Returns:
+        pl.Series of per-bar net returns, consumed by the §6 sweep table and
+        the §7 fee-sensitivity cell.
+
+    Side effects: none.
+    """
+    ...
+```
+
+Lambdas and one-line helpers are exempt only when the name is fully
+self-describing AND the helper is local to one cell. Anything that crosses
+cells gets a docstring.
+
+### Magic numbers belong in a config cell at the top of the H block
+
+Bare numeric literals (`14`, `0.0001`, `"5min"`, `30`) buried mid-pipeline
+force the reader to hunt for the value's meaning. Concentrate them in a
+**config cell at the top of the H block**, named with a short comment:
+
+```python
+# H1 config — sweep ranges and chosen point
+RSI_WINDOW       = 14            # standard RSI lookback (Wilder)
+RSI_TAU_GRID     = [25, 30, 35, 40]
+RSI_TAU_CHOSEN   = 30            # H1's reported configuration
+HOLD_HORIZONS    = [6, 12, 24, 48]   # max-hold caps in 5-min bars
+FEE_GRID         = [1e-4, 2e-4, 5e-4, 1e-3]  # per-side
+FEE_CHOSEN       = 1e-4
+BAR_FREQ         = "5min"
+```
+
+Cell-private grid lists (`_thresholds = [25, 30, 35, 40]` defined inside
+the sweep cell itself) are not a substitute — the chosen configuration
+constants and their semantic names belong at the top of the H block where
+the reader meets them first. Downstream cells reference the named
+constants, never raw literals.
+
+This is also a **no-new-external-dependency** notebook: stay expressive
+within the project's existing imports (marimo / polars / numpy / plotly /
+altair / matplotlib). Reaching for a new library to make one figure prettier
+propagates that dependency to every future notebook in the project — a
+wrong trade.
+
 ## Quick checklist
 
 Before declaring an experiment notebook complete:
@@ -198,5 +332,18 @@ Before declaring an experiment notebook complete:
 - [ ] Purpose-level synthesis cell after the last H block
 - [ ] Headline figures use plotly / altair (interactive)
 - [ ] Headline figure height ≥ 450 px, width = full
+- [ ] Every figure is either intuitive at a glance OR carries an embedded
+      read-out (title naming the quantity + comparison, annotation stating
+      how to read the encoding, or a one-line conclusion in the figure)
+- [ ] When a sweep figure is paired with an adopted configuration elsewhere
+      in the notebook, that point is marked on the figure
 - [ ] At least one `mo.ui` widget for evidence drill-down
 - [ ] No `mo.ui` widget controls a number that lands in `results.parquet`
+- [ ] Every helper function defined in the notebook has a docstring stating
+      intent, the responsibility split, args/returns with their producing /
+      consuming cells, and side effects (`Side effects: none.` when none)
+- [ ] H block opens with a config cell naming all sweep grids and chosen
+      configuration constants; downstream cells reference the names, not
+      raw literals
+- [ ] No new external library is required beyond the project's existing
+      imports
