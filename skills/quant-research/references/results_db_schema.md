@@ -76,12 +76,92 @@ possible.
     "psr":              float | None,
     "dsr":              float | None,
 
+    # Generation pathway (from `hypothesis_generation.md`, Step 1.5) ----------
+    "pathway":          str,    # 1-data-driven / 2-literature-extension /
+                                # 3-literature-refutation / 4-failure-derived /
+                                # 5-cross-asset-extension / 6-mechanism-driven /
+                                # ad-hoc
+    "parent_hypothesis_id": str | None,  # required when pathway=4 (the H_n
+                                         # whose named failure axis sourced
+                                         # this H_{n+1}); otherwise None
+
+    # Verdict and tier (verdict and achieved_tier are filled post-review) ----
+    "verdict":          str,    # supported / rejected / parked / preliminary
+                                # provisional at append-time, finalized after
+                                # bug_review + experiment-review pass
+    "failure_mode":     str | None,  # required when verdict=rejected;
+                                     # controlled vocabulary (see below);
+                                     # None for verdict in {supported, parked}
+    "forecasted_tier":  str,    # strong / medium / weak / variable — from
+                                # the H's pathway forecast (B's table). Known
+                                # at append-time.
+    "achieved_tier":    str | None,  # strong / medium / weak — filled by
+                                     # the experiment-review literature
+                                     # dimension's novelty check (E). Null at
+                                     # append-time, updated after Step 13.
+
     # Meta ----------
     "n_hyperparams_tried": int,    # used for DSR
     "notebook_path":    str,
     "notes":            str,
 }
 ```
+
+### `failure_mode` controlled vocabulary
+
+Required when `verdict == "rejected"`. One value per row; the *primary*
+failure axis (the one that, if fixed, would most plausibly change the
+verdict). Free-text elaboration goes in `notes`.
+
+| Value | Meaning | Typical fix |
+|---|---|---|
+| `leakage` | Look-ahead, target leak, or feature-scaling leak detected by `bug_review` or sanity checks | Fix the data flow; re-run |
+| `regime_mismatch` | Held only in one regime; failed under regime-conditional sweep | Either narrow the H's claim to that regime or redesign |
+| `fee_model` | Gross alpha exists but realistic fees consume it; break-even fee below realistic | Either change horizon / sizing to reduce trading frequency or close the H |
+| `wrong_horizon` | Position held too long / too short for the signal's information half-life | Re-derive H4 (Pathway 4) targeting horizon as the named axis |
+| `wrong_universe` | Signal exists in a narrow subset; failed on the declared universe | Either narrow the H or test universe-specific |
+| `wrong_baseline` | Beat lower-bound but failed against hand-crafted upper-bound | Strengthen method beyond linear / GBT baseline |
+| `threshold_brittleness` | Single peak in 2D sensitivity surface; failed outside the optimum | Likely overfit; reject or redesign with plateau-finding |
+| `capacity_constraint` | Sharpe degrades sharply with notional | Either shrink the deployment claim or close |
+| `signal_weakness` | No bug, no leak, just no alpha | Close the H; meta-knowledge that this direction does not work |
+| `mechanism_misspecification` | Pathway 6 H: the declared cause-mechanism-observable chain did not predict the data | Re-examine the mechanism; do not silently switch pathways |
+| `power_insufficient` | Test sample too small to distinguish from noise; not a true rejection | Re-collect data or close as inconclusive (verdict=parked rather than rejected) |
+| `other` | None of the above | **Requires** a free-text paragraph in `notes` naming the axis explicitly. `other` without a `notes` paragraph is a schema-protocol violation. |
+
+The vocabulary is extensible per the existing `extra_*` rule for
+project-specific axes; the listed values are the protocol's defaults
+and should be preferred when they fit.
+
+### Post-review update pattern for `verdict` and `achieved_tier`
+
+`verdict` and `achieved_tier` carry provisional values at append-time
+(end of H round in the notebook) and are **updated** after both review
+layers pass:
+
+```python
+import polars as pl
+
+db_path = "results/results.parquet"
+db = pl.read_parquet(db_path)
+
+# After bug_review + experiment-review for H3 in exp_007 complete and
+# the literature dimension reports achieved_tier=medium (forecast was
+# strong for a Pathway-6 H — tier downgrade)
+mask = (pl.col("experiment_id") == "exp_007") & (pl.col("hypothesis_id") == "H3")
+db = db.with_columns([
+    pl.when(mask).then(pl.lit("rejected")).otherwise(pl.col("verdict")).alias("verdict"),
+    pl.when(mask).then(pl.lit("medium")).otherwise(pl.col("achieved_tier")).alias("achieved_tier"),
+    pl.when(mask).then(pl.lit("mechanism_misspecification")).otherwise(pl.col("failure_mode")).alias("failure_mode"),
+])
+db.write_parquet(db_path)
+```
+
+A row whose `verdict` was set to `supported` at append-time but whose
+final review verdict is `partial` or `preliminary` (per the
+experiment-review verdict tiers) has the schema field `verdict`
+*updated to match the review's final verdict*. The append-time value
+is provisional precisely because the protocol's verdict gates fire
+after the H's primary metrics are computed.
 
 ## Append pattern at the end of each H round (NOT at the end of the notebook)
 
@@ -163,6 +243,63 @@ db.group_by("hypothesis_id").agg(
     .select(["fee_bp_per_side", "split", "sharpe"])
 )
 ```
+
+### Cross-H meta-knowledge queries (using the new fields)
+
+These queries are the queryable surface that the cross-H synthesis
+(see `cross_h_synthesis.md`) consumes:
+
+```python
+# Distribution of failure modes within one Purpose
+(
+    db
+    .filter(pl.col("experiment_id") == "exp_007")
+    .filter(pl.col("verdict") == "rejected")
+    .group_by("failure_mode")
+    .agg(pl.col("hypothesis_id").alias("rejected_H_ids"))
+)
+
+# All H's that lost on fee_model across the whole project — candidates
+# for "lower-frequency" pivot
+(
+    db
+    .filter(pl.col("failure_mode") == "fee_model")
+    .select(["experiment_id", "hypothesis_id", "fee_bp_per_side", "sharpe"])
+)
+
+# H's that achieved Weak tier despite forecasting Medium or Strong —
+# tier-downgrade audit
+(
+    db
+    .filter(pl.col("achieved_tier") == "weak")
+    .filter(pl.col("forecasted_tier").is_in(["medium", "strong"]))
+    .select(["experiment_id", "hypothesis_id", "pathway",
+             "forecasted_tier", "achieved_tier"])
+)
+
+# Derivation chain for a Pathway-4 H — what failure axis was the
+# parent's, and did the derived H actually address it
+(
+    db
+    .filter(pl.col("pathway") == "4-failure-derived")
+    .join(
+        db.select([
+            pl.col("hypothesis_id").alias("parent_hypothesis_id"),
+            pl.col("failure_mode").alias("parent_failure_mode"),
+            pl.col("verdict").alias("parent_verdict"),
+        ]),
+        on="parent_hypothesis_id",
+        how="left",
+    )
+    .select(["experiment_id", "hypothesis_id", "parent_hypothesis_id",
+             "parent_failure_mode", "verdict", "failure_mode"])
+)
+```
+
+The first three queries are the primary cross-H meta-learning surface;
+the fourth verifies the Pathway-4 derivation chain is well-formed
+(every Pathway-4 H names a parent that exists and has a recorded
+failure mode).
 
 ## Extension
 

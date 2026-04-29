@@ -260,13 +260,69 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- Version 0.6.0
+- Version 0.7.0
 - Two skills, two review layers, both required as co-gate.
 - Notebook unit is one Purpose (open-ended investigation); per-Hypothesis
   verdict gates and result rows.
+- R-side R&D protocol: Stage 0 (pre-hypothesis exploration), Step 1.5
+  (hypothesis generation pathways), cross-H synthesis, exhaustion trigger,
+  novelty / knowledge-advance gate.
 - Adversarial-reviewer mechanism backed by Song (2026); see *References*.
 
 ### Changelog
+
+**0.7.0** — R-side R&D protocol added. Five interventions, validated
+together by RED-GREEN-REFACTOR (5 RED + 5 GREEN + 16 loophole pressure
+tests, all passing):
+
+- **Stage 0 — pre-hypothesis exploration** (new
+  `references/pre_hypothesis_exploration.md`, conditional on the
+  data-without-candidate-phenomenon start state). Four mandatory
+  protocol inventions: an exploration set (held-out 20 % default,
+  never used in train / val / test), structural-only observations
+  (existence, not parameter values), EDA → H provenance, and a
+  stop rule.
+- **Step 1.5 — hypothesis generation** (new
+  `references/hypothesis_generation.md`). Six legal generation
+  pathways — data-driven, literature-extension, literature-refutation,
+  failure-derived, cross-asset extension, mechanism-driven — each
+  with required citations, tier expectation, and a common-failure-mode
+  table. Ad-hoc generation is a legal escape hatch with a higher
+  differentiation hurdle.
+- **Novelty / knowledge-advance gate** (edits to
+  `experiment-review/references/review_dimensions.md`'s `literature`
+  and `claim` dimensions, plus a 4th completion-gate condition in
+  `quant-research/SKILL.md`). The literature dimension is split into
+  coverage and novelty; novelty checks compare achieved differentiation
+  tier against the H's pathway-forecasted tier. The claim dimension
+  gains a symmetric "does not rebrand local replication as novel
+  finding" check, addressing the prior asymmetry where only the
+  underclaim direction was caught.
+- **Cross-H learning** (new `references/cross_h_synthesis.md` plus
+  6 schema fields in `results_db_schema.md`). Schema additions
+  (`pathway`, `parent_hypothesis_id`, `verdict`, `failure_mode` with
+  controlled vocabulary, `forecasted_tier`, `achieved_tier`) turn
+  `results.parquet` into a queryable surface for cross-H meta-knowledge.
+  The synthesis reference defines five recurring patterns (A: same
+  axis fails everything; B: different axes, no convergence; C: Pareto
+  re-allocation, not progress; D: monotonic improvement with
+  selection caveat; E: one supported, others rejected on same axis)
+  and prescribes the action for each.
+- **Exhaustion trigger** (Exhaustion-criteria section in
+  `references/hypothesis_cycles.md`). Hard trigger: 5 H tested under
+  one Purpose without a four-gate-clean `verdict='supported'` →
+  cross-H synthesis is mandatory before any H6 can be appended. Hard
+  cap at N=8: the Purpose closes mechanically, further work opens a
+  new Purpose with the previous synthesis as documented prior. Reset
+  rule is gated on the same four-gate machinery as real verdicts so
+  it cannot be escaped by a provisional `supported` label.
+
+The five interventions compose end-to-end: Stage 0 produces a
+candidate phenomenon; Step 1.5 declares its pathway and provenance;
+the experiment runs; the novelty gate verifies achieved tier matches
+forecast; multiple H's accumulate as queryable rows; cross-H synthesis
+extracts the cluster's meta-finding; the exhaustion trigger forces
+synthesis at the right moment and prevents sunk-cost iteration.
 
 **0.6.0** — Notebook readability conventions added to
 `notebook_narrative.md`: figures must be self-explanatory at figure-time

@@ -130,7 +130,14 @@ Out of scope: pure implementation tasks (CRUD, bug fix, refactor).
 ```
 [New project]
        ↓
+  (Stage 0: Pre-hypothesis exploration) — IF the start state is
+    data-without-candidate-phenomenon. Skipped when the researcher
+    arrives with a candidate from prior intuition, a paper to
+    extend, or a derived Purpose handed off from a previous notebook.
+       ↓
   Literature review (literature/)
+       ↓
+  (Hypothesis generation: declare pathway 1-6 OR ad-hoc-with-provenance)
        ↓
   Hypothesis portfolio (hypotheses.md) — first H per Purpose
        ↓
@@ -185,11 +192,82 @@ notebooks/<project-name>/
 
 ## Mandatory order before touching code
 
+### 0. Pre-hypothesis exploration (conditional — only when no candidate phenomenon yet)
+
+See `references/pre_hypothesis_exploration.md`. Run this stage **only**
+when the start state is *data without a candidate phenomenon* (new
+dataset, new exchange, new asset class, ambient curiosity). Skip when
+the researcher arrives with a candidate from prior intuition, a paper
+to extend, or a derived Purpose handed off from a previous notebook —
+in which case the H's origin is recorded in `decisions.md` and the
+researcher proceeds directly to Step 1.
+
+The stage's job is to produce a candidate H1 from data without
+contaminating the data that the rest of the lifecycle will use to test
+that H1. Four protocol inventions (all mandatory when the stage runs):
+
+- **Exploration set**: a held-out fraction (default 20 %) of the data
+  reserved for EDA. Never used in train / val / test of any H produced
+  from this stage. Committed to `reproducibility/exploration_set.txt`.
+- **Structural-only observations**: EDA records the *existence* of a
+  phenomenon, not its *parameter values*. Recording the values turns
+  Stage 0 into in-sample fit on the exploration set.
+- **EDA → H provenance**: every candidate H cites the EDA observation
+  that motivated it. Captured in `eda/findings.md` per phenomenon.
+- **Stop rule**: N ≤ 5 candidates, time-boxed; lock H1 when a candidate
+  clears Strong/Medium tier in literature differentiation.
+
+An H produced without Stage 0 (or its conditional-skip equivalent) and
+without any traceable origin in either an EDA finding or a literature
+paper is treated as Stage-0-required — i.e. the researcher loops back
+into Stage 0 before Step 1 proceeds.
+
 ### 1. Literature review (avoid producing a degraded reimplementation)
 
 See `references/literature_review.md`. Collect 5-10 prior papers and write the
 differentiation against them in `literature/differentiation.md`. Skipping this makes the
 research likely to reinvent or weaken known results.
+
+### 1.5. Hypothesis generation — declare the pathway
+
+See `references/hypothesis_generation.md`. Every H declares **exactly one
+primary pathway** chosen from a taxonomy of six legal generation
+pathways, plus an ad-hoc escape hatch that pays a higher
+differentiation hurdle. The pathway determines which provenance files
+the H must point to and what differentiation tier is forecasted.
+
+Pathways:
+
+1. **Data-driven** — EDA finding from Stage 0 (provenance:
+   `eda/findings.md` Phenomenon entry).
+2. **Literature-extension** — re-test a paper's claim in a new
+   universe / period / frequency / asset class (provenance: paper +
+   section/page + differentiation matrix row).
+3. **Literature-refutation** — test a paper's claim under stricter,
+   adversarial conditions argued *a priori* to be where it fails
+   (provenance: paper + a-priori argument).
+4. **Failure-derived** — H_n's named failure axis → H_{n+1} that
+   targets that one axis (provenance: parent H row + failure-mode
+   analysis entry in `decisions.md`). Routing of H_{n+1} (same
+   notebook vs. new) is owned by `hypothesis_cycles.md`; this pathway
+   owns *content*.
+5. **Cross-asset / cross-regime extension** — known phenomenon in
+   market A → test in market B or regime R (provenance: source-market
+   evidence + transfer-mechanism argument).
+6. **Mechanism-driven** — causal mechanism (economic /
+   microstructural / behavioural) implies an observable, H tests the
+   observable (provenance: mechanism description, *not* retrofit to
+   data).
+
+An H with no declared pathway and no documented ad-hoc origin defaults
+to Stage 0. An ad-hoc H (legal escape hatch) is allowed when origin is
+documented in `decisions.md`, the differentiation matrix is filled,
+and the H clears at least Medium tier in differentiation.
+
+The pathway taxonomy makes generation provenance explicit *before*
+Step 2 (research design) tries to formalize the H. Without it, content
+is filled silently from the researcher's background and the protocol's
+review layers cannot tell where the H came from.
 
 ### 2. Write the research design first in Markdown — including the figure plan
 
@@ -424,15 +502,30 @@ screening*.
 Common rationalization to resist: "`bug_review` already ran, that is the review layer."
 Different question (correctness vs. claim-warrant); both required.
 
-### 14. Result aggregation (per Hypothesis)
+### 14. Result aggregation (per Hypothesis) and Purpose-level synthesis
 
 See `references/results_db_schema.md`. **Each Hypothesis in the notebook produces
-its own row** in `results/results.parquet`. The schema already carries
-`experiment_id` (= the notebook = the Purpose) and `hypothesis_id` (= the
-individual H within the Purpose) as separate columns; a notebook with three
-H's emits three rows. The append happens at the end of each H's round inside
-the notebook, not once at the end of the file. Without per-H rows, cross-H and
-cross-experiment comparison is impossible.
+its own row** in `results/results.parquet`. The schema carries `experiment_id`
+(= the notebook = the Purpose), `hypothesis_id` (= the individual H within the
+Purpose), the H's `pathway` declaration (from Step 1.5), `forecasted_tier`,
+and — filled post-review — `verdict`, `failure_mode` (controlled vocabulary
+when verdict=rejected), `parent_hypothesis_id` (when pathway=4), and
+`achieved_tier` (from the experiment-review literature dimension's novelty
+check). A notebook with three H's emits three rows. The append happens at the
+end of each H's round inside the notebook; `verdict` and `achieved_tier` are
+*updated* after Steps 11 and 13 finalize them.
+
+When the Purpose closes (or when N ≥ 3 H have been tested under it), the
+notebook also writes a **Purpose-level conclusion** following
+`references/cross_h_synthesis.md`. The conclusion reads H1…HN's rows together
+and extracts the *meta-finding* — what the cluster says about the world that
+no single H said (e.g. Pattern A: "all H's failed on the same `fee_model`
+axis → fees are the binding constraint here"). Without this synthesis,
+`results.parquet` accumulates per-H rows but the project carries no durable
+cross-H knowledge forward to derived Purposes. The synthesis itself is prose
+in the notebook plus an entry in `decisions.md`; the cross-H query surface
+the synthesis runs on is provided by the schema's pathway / verdict /
+failure_mode / tier fields.
 
 ### 15. marimo cell granularity
 
@@ -458,7 +551,7 @@ with producing / consuming cells, and side effects. Each H block opens with a co
 cell naming sweep grids and chosen-configuration constants; downstream cells reference
 the names, not raw literals.
 
-### 17. Iterate hypothesis cycles
+### 17. Iterate hypothesis cycles — and stop on the synthesis trigger
 
 See `references/hypothesis_cycles.md`. Do not stop after one cycle. After each H
 inside the notebook, classify derived hypotheses as "run now / next session / drop"
@@ -471,10 +564,20 @@ and log them in `hypotheses.md` and `decisions.md`.
 - "Run-now derived hypothesis = next notebook" is the **old** rule and has been
   discarded. The new rule routes by Purpose continuity, not by run-readiness.
 
+But cycles are not unbounded. The exhaustion-trigger rule (in
+`hypothesis_cycles.md`) fires **before any H6 can be appended** when a Purpose
+has 5 H tested without a four-gate-clean `verdict='supported'`. At the trigger,
+cross-H synthesis (per `references/cross_h_synthesis.md`) is mandatory — its
+Pattern match (A-E) determines whether the next move is close, derive, split,
+or narrow. The hard cap at N=8 closes the Purpose mechanically; further work
+opens a new Purpose with the previous Purpose's synthesis as documented prior.
+Without the trigger, sunk-cost continuation is the modal failure of long
+Purposes.
+
 ## Completion gate (per Hypothesis)
 
 Before declaring `verdict = "supported"` on **any individual hypothesis**, all
-**three** gates must pass for that H — *in this order*:
+**four** gates must pass for that H — *in this order*:
 
 1. **Step 11 — `bug_review` (in this skill)**: 5 specialist reviewers + 1 adversarial
    cold-eye reviewer, no unresolved `high` or `medium` findings for this H.
@@ -484,8 +587,20 @@ Before declaring `verdict = "supported"` on **any individual hypothesis**, all
 3. **`references/research_quality_checklist.md`**: passes as final self-check for
    the H (and at project level, the Purpose-level synthesis the notebook produces
    from the H's it contains).
+4. **Achieved differentiation tier ≥ Medium, matching or exceeding the H's
+   pathway-forecasted tier (declared in Step 1.5 via
+   `references/hypothesis_generation.md`)**. A Weak-tier achievement is a
+   degraded reimplementation, not a research advance, regardless of how clean
+   the bug_review and experiment-review passes look. A tier downgrade (e.g.
+   Pathway 6 forecasted Strong but the differentiation matrix shows Medium) is
+   not a moral failure — the right next move is usually to narrow the abstract
+   to match the achieved tier and re-run the relevant gates, not to relitigate
+   the pathway choice. This gate is mechanically subsumed by gate 2 (the
+   `literature` dimension's novelty check fires `high` on a sub-Medium tier),
+   but is listed explicitly here so the load-bearing rule is visible to the
+   researcher *before* the review fires.
 
-Setting `verdict = "supported"` on any H without all three is a protocol violation
+Setting `verdict = "supported"` on any H without all four is a protocol violation
 that downgrades that H's result to *preliminary screening*. Each gate's pass/fail
 must be visible in the assistant's reply (trigger, reviewer roster, findings,
 resolution) — the skills do not write to `decisions.md`. If the user wants a

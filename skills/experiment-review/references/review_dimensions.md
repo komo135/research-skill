@@ -223,6 +223,7 @@ systematically blind to their own overstatement.
 | Effect size in the abstract matches the test-set effect size, not the in-sample | Quoting an in-sample number in the abstract | high |
 | Verdict matches the *honest* DSR | `verdict = "supported"` with DSR < 0.95 after trial-count audit | high |
 | Conclusion does not rebrand a fail as a "novel insight" | "We could not predict returns; this contributes to the literature on weak-form efficiency" without a counter-evidence design | medium |
+| Conclusion does not rebrand a *local replication* (Weak-tier achievement) as a *novel finding* | Abstract says "this work shows that momentum predicts returns in US large-caps 2010-2024" framed as a contribution, when the H's pathway-forecasted tier was Medium and the achieved differentiation against Jegadeesh 1990 / Lehmann 1990 / Carhart 1997 is only the period extension — the work confirmed an established result; the abstract must say so | high |
 | Forward-looking claims separated from backward-looking findings | Mixing "the model achieved Sharpe 1.4" with "we expect Sharpe 1.4 going forward" | medium |
 
 ### Notes
@@ -233,41 +234,69 @@ co-occurs with at least one other gap.
 
 ---
 
-## 6. literature — paper count, differentiation depth, missed prior work
+## 6. literature — coverage, novelty, differentiation depth
 
 ### Scope
 
 Whether the experiment is positioned against the relevant published frontier or against
-a frontier of convenience. The modal failure: a four-source bibliography that does not
-intersect the research question's actual literature, plus a one-paragraph
-differentiation that handles only the most superficial dimensions of difference. Does
-NOT cover whether the literature claims are *correct* (the reviewer is not adjudicating
-against the original papers); only whether the *coverage and differentiation depth* are
-sufficient.
+a frontier of convenience, and whether the work *advances knowledge* given the cited
+prior work or merely replicates it locally. Two questions live here, deliberately
+labeled separately so that "right papers cited" (coverage) and "result adds something
+new given those papers" (novelty) are not silently merged. Does NOT cover whether the
+literature claims are *correct* (the reviewer is not adjudicating against the original
+papers); only whether the *coverage and novelty* are sufficient.
 
 ### Inputs
 
 - `literature/papers.md`
 - `literature/differentiation.md`
 - The notebook's introduction / motivation cells
+- The H's pathway declaration in `hypotheses.md` (the `pathway:` field
+  introduced by the `quant-research` skill's `hypothesis_generation.md`
+  Step 1.5) — used to read the *forecasted* tier the H committed to at
+  generation time
 
-### Checks
+### Coverage checks (did you cite the right prior work?)
 
 | Check | Failure mode | Default severity |
 |---|---|---|
 | `literature/papers.md` has 5–10 entries with one-paragraph summaries | 4 entries, or 10 entries that are blog posts | high |
 | `literature/differentiation.md` is a *matrix*, not a paragraph | One-sentence differentiation | high |
-| Differentiation tier is medium or higher | Differences are only parameter / period changes | high |
 | The most relevant adjacent literature is cited, not just the most famous | Variance-risk-premium / VIX-term-structure literature missing for a VIX-features experiment | high |
 | Prior work that previously refuted the method is acknowledged and addressed | A method previously refuted is revived without new justification | high |
 | The published frontier's effect size on this question is named | The reviewer cannot tell whether reported Sharpe is at, above, or below the published net-of-cost frontier | medium |
 
+### Novelty checks (does the conclusion advance knowledge given the cited work?)
+
+| Check | Failure mode | Default severity |
+|---|---|---|
+| Achieved differentiation tier is at least Medium | Achieved tier is Weak (parameter / period changes only on a method documented in the cited papers) — this is a degraded reimplementation, not a research advance | high |
+| Achieved tier matches or exceeds the H's *forecasted* tier from its declared pathway | H declared `pathway: 6-mechanism-driven` (Strong forecast) but the achieved differentiation matrix shows only Medium-tier difference — the pathway's promise was not met; either the achieved tier is the new claim or the H re-runs | high |
+| The "what is new given the cited literature?" question has a one-paragraph answer in the introduction or interpretation cell | The notebook does not state what knowledge it adds that was not already in `literature/papers.md`; novelty is asserted by silence | high |
+| For an H declaring Pathway 1 (Data-driven), the achieved tier is gated on the *achieved* differentiation, not on Pathway 1's "Variable" forecast | Researcher declared Pathway 1 to skirt a Strong-pathway forecast, then claimed novelty in the abstract | high |
+| For an H declaring Pathway 2 (literature-extension), the achieved tier is at least Medium *and* the differentiator named in `differentiation.md` is genuinely different in the cell argued | Pathway-2 H whose only differentiator turns out to be a parameter retune of the cited paper | high |
+
 ### Notes
 
-The literature dimension's most useful finding is "you missed paper X" with a one-line
-explanation of why X is the relevant adjacent work. The reviewer is not expected to be
-omniscient; they are expected to ask "what is the literature on the *exact* mechanism
-this experiment claims to exploit?" and verify it shows up in `papers.md`.
+The coverage / novelty split makes two distinct findings independently
+visible. A coverage failure ("you missed paper X") and a novelty
+failure ("given papers X and Y, your result is a local replication
+not an advance") are different problems requiring different fixes.
+Merging them produces under-informed feedback.
+
+The literature dimension's most useful coverage finding remains "you
+missed paper X" with a one-line explanation of why X is the relevant
+adjacent work. The reviewer is not expected to be omniscient; they are
+expected to ask "what is the literature on the *exact* mechanism this
+experiment claims to exploit?" and verify it shows up in `papers.md`.
+
+The literature dimension's most useful novelty finding is the
+forecast-vs-achieved tier comparison. The pathway declaration commits
+the researcher *before running* to a tier; the experiment either
+delivers it or downgrades. A downgrade is not a moral failure — it is
+the protocol's normal operation, and the right next move is usually to
+narrow the abstract to match the achieved tier rather than to relitigate
+the pathway choice.
 
 ---
 

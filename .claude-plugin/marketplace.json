@@ -9,7 +9,7 @@
       "name": "quant-research",
       "source": "./",
       "description": "Protocol skills for algorithmic trading and quantitative finance research. The notebook unit is one Purpose (an open-ended investigation); one or more falsifiable Hypotheses are tested as successive rounds inside it, with per-Hypothesis verdict gates and one result-row per Hypothesis. Bundles two skills: (1) `quant-research` — research design with up-front headline-figure plan and reader-takeaway, time-series validation, robustness battery, and the multi-agent bug-review layer (5 specialists + 1 adversarial cold-eye reviewer with deliberately minimum context) for implementation correctness; (2) `experiment-review` — multi-agent specialist review (7 specialists + 1 adversarial cold-eye reviewer) of an experiment notebook for research-quality and claim-warrant, orthogonal to bug review and a mandatory co-gate before verdict='supported'.",
-      "version": "0.6.0"
+      "version": "0.7.0"
     }
   ]
 }
