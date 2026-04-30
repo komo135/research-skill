@@ -1,7 +1,7 @@
 {
   "name": "quant-research",
   "description": "Protocol skills for algorithmic trading and quantitative finance research. One notebook = one Purpose (an open-ended investigation), with one or more falsifiable Hypotheses tested as successive rounds inside it; per-Hypothesis verdict gates and result rows. Bundles `quant-research` (research design with up-front headline-figure plan, time-series validation, robustness, multi-agent bug-review layer with adversarial cold-eye reviewer) and `experiment-review` (multi-agent research-quality / claim-warrant review with adversarial cold-eye reviewer; mandatory co-gate with bug-review before verdict='supported').",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"

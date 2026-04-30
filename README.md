@@ -260,7 +260,7 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- Version 0.8.1
+- Version 0.9.0
 - Two skills, two review layers, both required as co-gate.
 - Notebook unit is one Purpose (open-ended investigation); per-Hypothesis
   verdict gates and result rows.
@@ -270,6 +270,57 @@ The skill leans on a small number of well-known references:
 - Adversarial-reviewer mechanism backed by Song (2026); see *References*.
 
 ### Changelog
+
+**0.9.0** — Introduces a **four-layer model** (Research goal / Design
+hypothesis / Purpose / Hypothesis) that anchors every derived hypothesis
+to a project-level research-goal sub-claim, closes the F12–F16 family
+of failure modes in derived-hypothesis routing and Purpose handoff.
+Validated by TDD over five scenarios (run-now promotion / multi-round
+table accumulation / new-Purpose handoff / derivation root-cause
+absence / Purpose-close research-goal-distance absence).
+
+- **Layered model.** New `references/research_goal_layer.md` adds the
+  upper two layers above the existing Purpose / Hypothesis pair. The
+  project README now carries a research-goal sub-claim list with stable
+  IDs (`G1.1`, `G1.2`, …); each Purpose declares its
+  `target_sub_claim_id` as the **5th item** of the cycle goal in
+  `references/cycle_purpose_and_goal.md`; each H row in `hypotheses.md`
+  carries its own `target_sub_claim_id` (inherited from the parent H by
+  default, override recorded in the Statement column with reason).
+- **Derived-hypothesis table template removed** from
+  `references/hypothesis_cycles.md` (closes F12–F14). Per-H planning
+  state (`planned-runnow` / `planned-nextsession` / `planned-drop`) is
+  now recorded as a single source of truth in the `Status` column of
+  `hypotheses.md` rather than as a `### Derived hypotheses` table in the
+  notebook body. The cross-notebook handoff rule for derived Purposes
+  is moved into a new section of `references/cross_h_synthesis.md`
+  ("Handoff to the next notebook"): old-Purpose synthesis, Pattern
+  labels, binding-axis prose, and `## Origin` sections are forbidden in
+  the new notebook's body. Minimal cross-references conveying research
+  content (e.g. comparison-series names in a Figure plan) remain
+  permitted.
+- **Design-hypothesis bookkeeping at Purpose closure** (closes F15–F16).
+  `assets/decisions.md.template`'s Purpose entry gains three mandatory
+  sections: **Design hypothesis at open** (the prediction "this Purpose
+  closes such-and-such sub-claims"), **Research-goal sub-claim progress
+  update** (the transition for every sub-claim this Purpose touched —
+  unchanged sub-claims listed too, so the project's running state is
+  fully visible), and **Design hypothesis at close** (CONFIRMED /
+  FALSIFIED / PARTIAL). The next Purpose's selection is justified from
+  the sub-claim status table in the project README, not from per-H
+  numeric observations alone.
+- **Schema extensions kept aligned across templates and helpers.**
+  `assets/hypotheses.md.template` adds `target_sub_claim_id` and
+  `pathway` columns; `assets/INDEX.md.template` adds
+  `target_sub_claim_id` per notebook; `assets/experiment.py.template`'s
+  Purpose header gains the Cycle goal 5-item block, the per-H result
+  row gains `target_sub_claim_id` / `pathway` / `parent_hypothesis_id`,
+  and the closing checklist is updated to drive the new bookkeeping;
+  `references/results_db_schema.md` adds the `target_sub_claim_id`
+  column to the per-H row schema; `scripts/aggregate_results.py`'s
+  `REQUIRED_FIELDS` is extended accordingly. `SKILL.md` step 2 declares
+  the Cycle goal as 5 items; step 14 documents the sub-claim progress
+  update + design hypothesis at close as part of result aggregation.
 
 **0.8.1** — Patch: closes meta-leak (F9–F11) loophole in the post-review
 reconciliation pass. Reviewer vocabulary was already banned in 0.8.0 but
