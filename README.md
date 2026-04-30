@@ -260,7 +260,7 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- Version 0.8.0
+- Version 0.8.1
 - Two skills, two review layers, both required as co-gate.
 - Notebook unit is one Purpose (open-ended investigation); per-Hypothesis
   verdict gates and result rows.
@@ -270,6 +270,29 @@ The skill leans on a small number of well-known references:
 - Adversarial-reviewer mechanism backed by Song (2026); see *References*.
 
 ### Changelog
+
+**0.8.1** — Patch: closes meta-leak (F9–F11) loophole in the post-review
+reconciliation pass. Reviewer vocabulary was already banned in 0.8.0 but
+the reconciliation rules did not cover skill versioning, pivot history,
+migration changelogs, reference-file attributions, or cross-skill API
+tutorials leaking into the notebook body. Augments
+`references/post_review_reconciliation.md`'s "本文に書かない語彙" table
+with seven new categories (skill version numbers / compliance tags;
+skill or process internal terms in body prose; reference-file
+attributions; pivot / narrowing rationale sections; migration / upgrade
+history; cross-skill / library API tutorials), adds four rationalization
+counters covering the case where a user prompt directly asks for
+migration / pivot / API-diff to be readable in the body (resolution:
+preserve body cleanliness, route the requested information to git log /
+README changelog / `decisions.md` / inline summary instead), extends the
+why-quality self-test from three to four questions (4: skill / library /
+process の固有名詞を全部マスクしたら、何が研究 claim として残るか), and
+adds matching checklist items in `notebook_narrative.md`. Validated by
+RED-GREEN-REFACTOR over three scenarios (skill upgrade migration /
+mid-cycle pivot / cross-skill API change); F10 (pivot history) and F11
+(cross-skill API tutorials) closed on the initial GREEN, F9 (skill
+versioning) closed in REFACTOR after the user-instruction-override
+loophole was patched.
 
 **0.8.0** — Two complementary R-side protocol additions.
 
