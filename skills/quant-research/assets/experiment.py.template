@@ -251,6 +251,39 @@ def _(mo):
 
     See references/research_design.md for the per-H block format.
 
+    ### H1 abstract (filled AFTER H1 cells run; placed first in the H1 block)
+
+    See references/notebook_narrative.md 1b "Format rule — first sentence
+    is the market claim, not the implementation".
+
+    [**First sentence — the answer to the falsifiable comparison this H
+    stated, in the H's own terms (mechanism / market / regime /
+    instrument).** This is NOT an implementation property (computation
+    correctness, library reconciliation, numerical stability). The
+    reader scrolling through the notebook sees this first about H1; it
+    must name the world's answer, not the engineering deliverable.
+
+    Examples (good lead):
+    - "Cross-sectional 20-day momentum on SP500 LS-decile produced test
+      Sharpe of 0.62 — the +0.30 gate vs 5-day momentum is met."
+    - "TOPIX500 ROE quintile long-only delivered WF mean Sharpe of
+      0.18 — the 0.4 gate is missed because turnover (45 % monthly)
+      eats the edge."
+
+    Examples (anti-pattern, do NOT use):
+    - "The PCA decomposition was computed with sklearn and verified
+      against a from-scratch eigendecomposition; eigenvalues are
+      non-negative."
+    - "The signal pipeline is leak-free and the fee model reconciles
+      to within 1e-6 relative."]
+
+    [Sentence 2-3 — headline metric, per-H verdict, one-sentence
+    interpretation.]
+
+    [Reproducibility note (optional closing sentence or short trailing
+    paragraph) — library version pin, leak-check assertion result,
+    reconciliation residual. This is a footer, never the lead.]
+
     ### Linked hypothesis-portfolio entry
     H{{HYP_ID}}: [quote the entry from hypotheses.md; same `experiment_id` =
     `exp_{{NNN}}` as the notebook's Purpose; cite the row's `target_sub_claim_id`

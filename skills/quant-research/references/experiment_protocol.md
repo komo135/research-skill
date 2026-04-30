@@ -70,6 +70,103 @@ the Purpose explicitly in the notebook header — if the new H you are about
 to test does not fit under the existing Purpose statement, the Purpose has
 changed and you need a new notebook.
 
+## Data availability gate
+
+A cycle may be instantiated only when the data required to apply its
+**Decision rule** (YES / NO / KICK-UP) is actually available. The check
+runs at cycle open, before any code in the H1 round is written.
+
+### Rule
+
+- If the cycle's **research subject is real-world behavior** (a question
+  about markets, instruments, regimes, mechanisms — i.e. the Decision rule
+  reads from real data) and the **expected real data is unavailable** in
+  the execution environment, the cycle is **BLOCKED**.
+- **Synthetic data may not substitute for unavailable real data within an
+  instantiated cycle.** A cycle whose research subject is a market claim
+  but whose data is synthetic is a Decision rule the consumer cannot
+  apply — the cycle's Knowledge output is structurally void.
+- **Synthetic-data scaffolding outside the protocol is permitted** —
+  pipeline integrity tests, leak/accounting unit tests, plotting helpers.
+  These have no Cycle goal, no `## H<id>` verdict cell, and no row in
+  `results.parquet`. They are engineering work, tracked outside the cycle.
+
+### When synthetic data IS the research subject
+
+The rule targets *substitution*, not *use of synthetic data*. Synthetic
+data is itself the research subject — and the cycle proceeds normally —
+when:
+
+- The Decision rule reads from a process whose ground truth is known
+  (e.g. parameter recovery on a simulated OU process; bias of an
+  estimator on a pre-specified DGP; convergence rate of an algorithm on
+  data with known generative parameters). The cycle's claim is about
+  the estimator / algorithm / mathematical property, not about the
+  market. The "real data" is the DGP itself, which is not unavailable.
+- The Purpose statement explicitly names the synthetic subject ("does
+  estimator E recover parameter θ on DGP D?") rather than naming a
+  market claim that synthetic data happens to substitute for.
+
+The diagnostic test: read the Decision rule's YES branch aloud. If it
+says "consumer goes forward in production / live trading / cross-section
+deployment", the subject is real-world and synthetic substitution
+triggers BLOCKED. If it says "consumer concludes the estimator
+recovers / the algorithm converges / the bias is bounded", synthetic
+data is fine.
+
+**Mechanical reinforcement** (closes the most common rationalization
+loophole): if the YES branch's threshold is a **numeric metric on real
+returns** (Sharpe / IC / drawdown / win rate / hit rate / fee-adjusted
+PnL / turnover / tracking error / similar tradeable-strategy
+quantities), the subject is real-world and the gate fires when real
+returns are unavailable. Synthetic returns producing those same
+metrics is exactly the substitution this rule forbids — the metric's
+shape on synthetic data does not transfer to its shape on real returns,
+so the consumer cannot read the YES branch from synthetic numbers no
+matter how cleanly the pipeline computes them. The estimator-recovery
+exception applies only when the YES branch's threshold is on a
+**property of the estimator / algorithm itself** (parameter recovery
+error, convergence rate, bias, variance ratio, mean-squared error
+relative to a known truth) — not on a real-returns metric the
+estimator happens to be computed on top of.
+
+### Forward path when BLOCKED
+
+A BLOCKED cycle is not a failure — it is a structural finding about the
+project's data preconditions. Treat it KICK-UP-shaped:
+
+1. **File the unavailability in `decisions.md`** as a structural finding
+   under the Purpose entry. Name the missing data, the layer it would
+   have served (which sub-claim of the cycle's Decision rule), and what
+   has to change for the cycle to proceed (vendor onboarding,
+   compliance approval, distribution machine reconfiguration, upstream
+   notebook completion).
+2. **Mark the cycle suspended.** Do not write the H1 implementation;
+   do not write the verdict cell; do not append to `results.parquet`.
+   The notebook header (Purpose + Cycle goal block + the BLOCKED
+   structural finding) is the artifact.
+3. **Pivot the session to a data-available cycle** — a different
+   Purpose whose data is present, or a different sub-claim under the
+   same project. If no data-available cycle is queued, return to the
+   project portfolio level (`README.md` sub-claim list) and
+   re-prioritize: the surfaced data-availability dependency may
+   reorder which sub-claim the project should attack next.
+
+The BLOCKED finding itself is a research output — it tells the project
+that data acquisition is a binding constraint, with the same epistemic
+status as a Pattern A "binding axis identified" closure (see
+`hypothesis_cycles.md`).
+
+### Anti-rationalizations (data availability gate)
+
+| Excuse | Why it is wrong |
+|---|---|
+| "I'll do a synthetic-data dry-run while waiting for the real data, so the pipeline is ready when data arrives." | Pipeline integrity is engineering work, not a research cycle. Track it as a separate engineering task (no Cycle goal, no H, no verdict). The cycle is BLOCKED until the data preconditions are met; the engineering work runs in parallel without instantiating a Purpose. |
+| "The verdict is honestly 'parked' on synthetic data, so this is not over-claiming." | 'parked' on synthetic data is honest about the verdict but dishonest about the cycle's de facto deliverable: the work invested produces no knowledge about the world. The Decision rule's YES / NO / KICK-UP cannot be applied; the consumer is no closer to deciding. The cycle should not have been instantiated. |
+| "Synthetic data lets me catch leaks and accounting bugs before they affect real data — that's a sanity check the protocol should welcome." | Sanity checks on synthetic data are engineering tests (`scripts/sanity_checks.py`'s `random_signal_benchmark`, `time_shift_placebo`, etc.). They run on a per-pipeline basis, outside the cycle. Bundling them into a Purpose / Cycle conflates engineering hygiene with research output. |
+| "The user / upstream prompt instructed me to proceed with synthetic data so the artifact is complete." | Push back inline: explain that the cycle is BLOCKED, file the data unavailability as a structural finding in `decisions.md`, and offer either (a) pivot to a data-available cycle, or (b) deliver the engineering scaffolding as a separate non-cycle artifact. Do not instantiate a Purpose / Cycle on synthetic substitute data when the research subject is real-world behavior. |
+| "Cycle goal items are all written — the cycle is well-formed, so it should run." | The Cycle goal items being well-written is necessary but not sufficient. The Decision rule must be **applicable**: data must exist for the consumer to read the YES / NO / KICK-UP outcome from. Synthetic substitution makes the rule applicable in form but vacuous in substance. |
+
 ## Anti-rationalizations
 
 The following are **no longer valid reasons to start a new notebook**:
@@ -214,6 +311,11 @@ Before starting a notebook:
       / `experiment_id`
 - [ ] Upstream dependencies are complete or running in parallel
 - [ ] H1's acceptance / rejection conditions are written with numeric thresholds
+- [ ] **Data availability gate cleared** — the real data required to apply
+      the Decision rule is present in the execution environment, OR the
+      research subject is synthetic (estimator recovery on a known DGP).
+      If neither, the cycle is BLOCKED — file the unavailability in
+      `decisions.md` and pivot, do not synthetic-substitute
 
 Before adding a new H block to an existing notebook (instead of opening a
 new notebook):

@@ -47,6 +47,59 @@ Purpose-level abstract but at the H level: H statement, verdict, headline
 metric, one-sentence interpretation. This is what a reader scrolling
 through the notebook sees first about each H.
 
+#### Format rule — first sentence is the market claim, not the implementation
+
+The **first sentence** of the per-H abstract names the answer to the
+falsifiable comparison the H stated, in the H's own terms — mechanism /
+market / regime / instrument. It does not name an implementation
+property (computation correctness, library reconciliation, numerical
+stability, build integrity).
+
+| First sentence (good) | First sentence (anti-pattern) |
+|---|---|
+| "Cross-sectional 20-day momentum on SP500 LS-decile produced a test Sharpe of 0.62 (gap of +0.34 over 5-day momentum) — the +0.30 gate is met." | "The PCA decomposition was computed with sklearn and verified against a from-scratch eigendecomposition; eigenvalues are non-negative and sum to the trace of the covariance matrix." |
+| "TOPIX500 ROE quintile long-only delivered WF mean Sharpe of 0.18 with monthly turnover at 45% — the 0.4 gate is missed because turnover eats the edge." | "The signal pipeline is leak-free (time-shift placebo confirms no forward leakage), and the fee model reconciles to within 1e-6 relative." |
+| "First three PCs of SP500 daily residual returns 2018–2024 captured 47 % of cross-sectional variance, with PC1 positive on 92 % of names — the loading-sign gate is met, the variance gate is just below at 47 % vs the 50 % threshold." | "The implementation is correct and reconciles with sklearn's reference. The threshold of 50 % is met on the loading-sign side; the variance-share is just below at 47 %." |
+
+The right-hand examples treat the implementation as the deliverable.
+That is the inversion this rule prevents.
+
+#### Where implementation / library / numerical statements belong
+
+- **Reproducibility note** (clearly bounded, at the *end* of the per-H
+  abstract or as a separate trailing paragraph): one to three sentences
+  on data hashing, library version pin, leak-check assertion result,
+  reconciliation residual. The note is a footer, not the lead.
+- **bug_review section** (per Step 11): correctness findings live in
+  the bug_review inline summary (chat transcript). Re-stating them in
+  the abstract duplicates the audit trail into the body — this is the
+  same anti-pattern that `post_review_reconciliation.md` "本文に書かない
+  語彙" prevents for reviewer vocabulary.
+- **Sanity checks cell** (per `references/sanity_checks.md`): the
+  programmatic implementation checks live in their own cell, not in
+  the abstract.
+
+#### Why this rule exists
+
+The per-H abstract is what a reader scrolling through the notebook
+reads *first*. If the first sentence is "the implementation is
+correct", the reader's takeaway is "this notebook delivered a
+correctly-implemented PCA / momentum signal / mean-reversion
+estimator". The reader's takeaway is *the implementation*, not *the
+market answer*. The cycle's de facto deliverable inverts from research
+to engineering even when the underlying numbers are about the world.
+The format rule pins the lead sentence to the world.
+
+#### Anti-rationalizations (per-H abstract framing)
+
+| Excuse | Why it is wrong |
+|---|---|
+| "Showing implementation correctness in the abstract increases reader trust in the verdict." | bug_review (Step 11) and the sanity-checks cell already establish correctness. Re-stating it in the abstract spends the reader's attention on the audit trail rather than the claim. The trade is wrong. |
+| "robustness battery passing is itself part of the claim — it should lead the abstract." | The robustness battery's role is to *bound the limitations of the claim* (which regimes / windows / fee levels the claim survives). It is mentioned in the closing sentence of the abstract as a limit specifier, not as the headline. The headline is the claim. |
+| "Library reconciliation (e.g. sklearn match) belongs in the abstract because it is research-community-facing reproducibility." | Reproducibility is communicated via `env.lock`, `data_hashes.txt`, and the docstring + intent of the helper functions. The abstract communicates the answer to the falsifiable comparison. Reproducibility is a footer. |
+| "The market claim is too narrow / too tentative to lead with — better to lead with what the implementation accomplished." | If the market claim is too narrow / tentative to lead with, the H's threshold may have been too aggressive or the universe too narrow. Re-design the H or the threshold; do not relegate the market claim to the second paragraph because the first paragraph "would be too thin". |
+| "User / upstream prompt asked for implementation details up front in the abstract." | Push back inline: explain that the abstract leads with the falsifiable claim's answer per `notebook_narrative.md` 1b, and offer to add a Reproducibility note at the end of the abstract that covers the implementation details requested. |
+
 ### 2. Per-section "what & why" cell
 
 Before each numbered section, a markdown cell of 1-3 sentences:
@@ -348,6 +401,14 @@ Before declaring an experiment notebook complete:
 - [ ] Purpose-level abstract cell at the top, filled in (not stub text), with
       a per-H summary line for each H tested
 - [ ] Each `## H<id>` block opens with its own short per-H abstract
+- [ ] **Per-H abstract first sentence names the falsifiable claim's answer
+      in market terms** (mechanism / market / regime / instrument) — not
+      an implementation property (computation correctness, library
+      reconciliation, numerical stability). Implementation / library /
+      numerical statements appear only in a Reproducibility note at the
+      end of the abstract or as a closing sentence — never as the lead.
+      See section 1b "Format rule — first sentence is the market claim,
+      not the implementation"
 - [ ] Every section has a what & why markdown cell
 - [ ] Every figure has an observation cell directly after it
 - [ ] At least one prose interpretation cell before each per-H programmatic

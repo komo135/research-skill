@@ -383,6 +383,29 @@ the cycle goal exists and how to fill the five items, and
 `references/notebook_narrative.md` for the full communication-artifact
 spec. Read all three before writing H1's first code cell.
 
+#### 2.5. Data availability gate (verified before instantiating the cycle)
+
+If the real data required to apply the Decision rule is **unavailable**
+in the execution environment AND the cycle's research subject is
+real-world behavior (markets, instruments, regimes, mechanisms), the
+cycle is **BLOCKED**. Synthetic substitution within an instantiated
+cycle is forbidden; synthetic-data scaffolding outside the protocol
+(no Cycle goal, no verdict cell, no `results.parquet` row) is
+engineering work, tracked separately. Synthetic data IS the research
+subject only when the Decision rule is about an estimator / algorithm /
+mathematical property whose ground truth lives in the DGP itself
+(parameter recovery, convergence rate, estimator bias on a known DGP).
+
+A BLOCKED cycle is itself a research output — it surfaces a
+data-acquisition dependency the project must address before the
+cycle's sub-claim can be attacked. File the unavailability in
+`decisions.md` as a structural finding, mark the cycle suspended, and
+pivot to a data-available cycle (or return to project portfolio
+re-prioritization). See `references/experiment_protocol.md`
+"Data availability gate" for the full rule, the diagnostic test
+distinguishing real-world subjects from estimator-recovery subjects,
+the forward path when BLOCKED, and the anti-rationalization table.
+
 ### 3. One Purpose = one notebook
 
 See `references/experiment_protocol.md`. The unit of one notebook is one
@@ -691,6 +714,16 @@ in the notebook has a docstring stating intent, the responsibility split, args /
 with producing / consuming cells, and side effects. Each H block opens with a config
 cell naming sweep grids and chosen-configuration constants; downstream cells reference
 the names, not raw literals.
+
+**Per-H abstract leads with the falsifiable claim's answer** in the H's own terms
+(mechanism / market / regime / instrument). Implementation, library, and numerical
+correctness statements (computation reconciliation, leak-check residuals, library
+version match) belong in a clearly-bounded *Reproducibility note* at the end of the
+abstract — never as the lead. The first sentence is the answer to the world the H
+asked about; if that sentence is "the implementation is correct" or "the decomposition
+matches sklearn", the cycle's de facto deliverable has inverted from research to
+engineering. See `references/notebook_narrative.md` 1b "Format rule — first sentence
+is the market claim, not the implementation".
 
 ### 17. Iterate hypothesis cycles — and stop on the synthesis trigger
 
