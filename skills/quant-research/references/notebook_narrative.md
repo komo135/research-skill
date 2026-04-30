@@ -374,6 +374,18 @@ Before declaring an experiment notebook complete:
       reviewer dimension names, severity labels, step / case numbers,
       planning labels (`parked` / `follow-up` / `next-session`), or
       edit-history language ("after bug_review fix", "~~2.4~~", etc.)
+- [ ] Notebook body contains no skill version numbers or compliance tags
+      (`skill v0.X.0`, `(added in v0.Y.0)`, `v0.X.0 規約に準拠`),
+      no `<reference>.md` attributions in prose ("`cycle_purpose_and_goal.md`
+      に従い…"), no pivot / narrowing history sections
+      ("Purpose narrowing — pivot rationale", "当初の Purpose は…",
+      "narrowed from X to Y"), no migration / upgrade history
+      ("v0.X.0 当時に書かれた", "migration note", "後付けで追加"),
+      and no cross-skill / library API tutorials in the body
+      (widget option-format spec, step-rule explanation, new-vs-old API
+      diff). Skill change history lives in git log and the project
+      README changelog; planning / pivot history lives in `decisions.md`;
+      library API behavior lives in the library's own docs.
 - [ ] Chapter numbering is `§1, §2, …, §N`, `## H<id>`, or
       `## Post-review addenda` only; no lowercase / decimal suffix chapters
       (`§6a`, `§7b`, `§7.1`); figure numbers stay within the up-front figure
