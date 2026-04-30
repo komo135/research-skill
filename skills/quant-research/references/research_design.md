@@ -20,11 +20,13 @@ apply to it*. Individual H's get their own per-H block lower in the
 notebook.
 
 The cycle-goal items (Consumer / Decision / Decision rule / Knowledge
-output) are pre-implementation required. They are what H1's design is
-derived from — without them, the H portfolio is improvised per Purpose
-and downstream judgment becomes inconsistent. See
-`cycle_purpose_and_goal.md` for the derivation of why these four items
-exist and how to fill them.
+output / target_sub_claim_id) are pre-implementation required. They are
+what H1's design is derived from — without them, the H portfolio is
+improvised per Purpose and downstream judgment becomes inconsistent. See
+`cycle_purpose_and_goal.md` for the derivation of why these five items
+exist and how to fill them, and `research_goal_layer.md` for the
+four-layer model that the 5th item (`target_sub_claim_id`) ties this
+notebook into.
 
 ```markdown
 ## exp_NNN: <one-line purpose-slug>
@@ -39,7 +41,7 @@ notebooks/<project-name>/
 "Does Chronos add value over a frozen-embedding baseline?"
 Multiple Hypotheses serving this Purpose live as `## H<id>` blocks below.]
 
-### Cycle goal (four items — see cycle_purpose_and_goal.md)
+### Cycle goal (five items — see cycle_purpose_and_goal.md)
 
 #### Consumer
 [Concretely named — the next derived Purpose, the production
@@ -66,6 +68,14 @@ this cycle's output.]
 [What the cycle produces — typically per-H rows in results.parquet
 + Purpose-level synthesis paragraph + headline figure. State it
 explicitly so the H portfolio below can be checked against it.]
+
+#### Target sub-claim id (research-goal anchor)
+[The project README's research-goal sub-claim ID(s) this Purpose is
+expected to advance. Primary: 1 sub-claim. Secondary: 0-2.
+A Purpose targeting > 3 sub-claims is too broad; split before opening.
+Example: "Primary G1.1 (`quality factor yields net edge in TOPIX500`).
+Secondary: none."
+See `cycle_purpose_and_goal.md` and `research_goal_layer.md`.]
 
 ### Universe (shared across all H's in this notebook)
 - Instruments: [list at least three, or describe the cross-section]

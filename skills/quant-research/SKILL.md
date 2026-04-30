@@ -193,17 +193,17 @@ When starting a new research project, create this layout (the helper script
 
 ```
 notebooks/<project-name>/
-├── README.md                 # Question, status summary, links to sub-files
+├── README.md                 # Research goal + sub-claim list (G1.1, G1.2, ...) with status
 ├── literature/
 │   ├── papers.md             # Related papers with one-paragraph summaries
 │   └── differentiation.md    # Differentiation matrix vs. prior work
-├── hypotheses.md             # H1, H2, ... with state (in-progress / supported / rejected / parked)
+├── hypotheses.md             # H rows with target_sub_claim_id / pathway / Status (planned-runnow / ... / supported / rejected)
 ├── experiments/
 │   ├── INDEX.md              # List of experiment notebooks with one-line conclusions
 │   ├── exp_001_<slug>.py
 │   ├── exp_002_<slug>.py
 │   └── ...
-├── decisions.md              # Time-ordered decision log
+├── decisions.md              # Per-Purpose entries with design hypothesis (open/close) + sub-claim progress update
 ├── results/
 │   ├── results.parquet       # Aggregated numeric results across all experiments
 │   └── figures/              # Figures intended for a report or paper
@@ -212,6 +212,23 @@ notebooks/<project-name>/
     ├── data_hashes.txt       # SHA-256 of input data files
     └── seed.txt
 ```
+
+The four-layer model (Research goal → Design hypothesis → Purpose →
+Hypothesis) ties these files together. See
+`references/research_goal_layer.md`. Briefly:
+
+| Layer | Lives in | Question it answers |
+|---|---|---|
+| Research goal | `README.md` (sub-claim list with stable IDs `G1.1`, `G1.2`, …) | What is this project trying to find out? |
+| Design hypothesis | `decisions.md` Purpose entries (at-open prediction, at-close verification) | Why this Purpose, in what order, given the research goal? |
+| Purpose | Notebook header (Cycle goal 5th item: `target_sub_claim_id`) | What open-ended question does this notebook investigate? |
+| Hypothesis | Notebook `## H<id>` blocks; `hypotheses.md` rows with `target_sub_claim_id` | What falsifiable claim does this round test? |
+
+Each derived hypothesis carries an explicit `target_sub_claim_id`
+(inherited from parent or overridden with reason in `hypotheses.md`).
+This is what prevents derived H's from drifting into "the natural next
+test" status without an anchor in the project's research goal — the
+failure mode the four-layer model exists to prevent.
 
 ## Mandatory order before touching code
 
@@ -298,7 +315,7 @@ See `references/research_design.md` and `references/cycle_purpose_and_goal.md`.
 At the top of each notebook, write:
 
 - **Purpose** — the open-ended question the notebook investigates
-- **Cycle goal — four items, see `cycle_purpose_and_goal.md`** (mandatory,
+- **Cycle goal — five items, see `cycle_purpose_and_goal.md`** (mandatory,
   pre-implementation):
   - **Consumer** — concretely named (next derived Purpose, production
     strategy build, paper section, portfolio-sizing decision). "The
@@ -319,6 +336,14 @@ At the top of each notebook, write:
   - **Knowledge output** — the artifact (per-H rows in results.parquet
     + Purpose-level synthesis paragraph + headline figure) onto which
     the decision rule is applied.
+  - **Target sub-claim id** — the project README's research-goal
+    sub-claim ID(s) this Purpose is expected to advance. Primary: 1
+    sub-claim; secondary: 0-2. The link from this notebook to the
+    project's running question. See `references/research_goal_layer.md`
+    for the four-layer model (Research goal / Design hypothesis /
+    Purpose / Hypothesis) — without `target_sub_claim_id`, the
+    Purpose's relationship to the project's research goal is implicit
+    and the next Purpose's selection becomes invisible.
 - **First Hypothesis (H1)** — a specific falsifiable comparison statement
   serving the Purpose, with numeric acceptance / rejection thresholds.
   H1 is *derived from* the decision rule above: it tests one or more
@@ -347,9 +372,11 @@ consumer's decision when I see H1's result" are the failure modes this
 step is built to prevent.
 
 See `references/cycle_purpose_and_goal.md` for the derivation of why
-the cycle goal exists and how to fill the four items, and
+the cycle goal exists and how to fill the five items, and
+`references/research_goal_layer.md` for the four-layer model that the
+5th item (`target_sub_claim_id`) ties the notebook into, and
 `references/notebook_narrative.md` for the full communication-artifact
-spec. Read both before writing H1's first code cell.
+spec. Read all three before writing H1's first code cell.
 
 ### 3. One Purpose = one notebook
 
@@ -616,6 +643,25 @@ cross-H knowledge forward to derived Purposes. The synthesis itself is prose
 in the notebook plus an entry in `decisions.md`; the cross-H query surface
 the synthesis runs on is provided by the schema's pathway / verdict /
 failure_mode / tier fields.
+
+At Purpose closure, `decisions.md`'s Purpose entry also carries the
+**research-goal layer's bookkeeping** (see `references/research_goal_layer.md`):
+
+- **Research-goal sub-claim progress update** — for each sub-claim this
+  Purpose touched, the transition (e.g., G1.1: in progress → confirmed).
+  Sub-claims not touched are listed unchanged so the project's running
+  state is fully visible at every cycle.
+- **Design hypothesis at close** — verification of the prediction
+  recorded at Purpose open (CONFIRMED / FALSIFIED / PARTIAL with a
+  one-phrase reason). Falsified is a legitimate research output, not a
+  process failure.
+
+These two items are what the next Purpose's selection reads. Without
+them, the next Purpose is chosen from per-H numeric observations alone
+and the project's relationship to its research goal collapses into
+implicit reasoning. Per-H planning state (run-now / next-session / drop)
+lives in `hypotheses.md`'s `Status` column (`planned-runnow` /
+`planned-nextsession` / `planned-drop`), single source of truth.
 
 ### 15. marimo cell granularity
 

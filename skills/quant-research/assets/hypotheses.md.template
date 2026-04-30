@@ -8,28 +8,68 @@ notebook level (each `exp_NNN_*.py` is one Purpose); multiple hypotheses can
 share the same `experiment_id` because they investigate the same Purpose
 inside one notebook.
 
+Each H is anchored in a research-goal sub-claim via `target_sub_claim_id`.
+Sub-claims are defined in the project README. See
+`references/research_goal_layer.md` for the four-layer model.
+
 ## Status legend
 
-- `planned`: stated but no Hypothesis round started yet
+A row's `Status` column carries either an *outcome* (after the H has run)
+or a *planning state* (before the H has run):
+
+**Planning states (before the H runs):**
+
+- `planned`: stated, no work begun, no scheduled timing
+- `planned-runnow`: testable in the current session with current data /
+  features / compute
+- `planned-nextsession`: requires data acquisition, new feature
+  construction, or hours of compute
+- `planned-drop`: judged not worth the effort; refuted in prior work,
+  out of scope, or duplicates an existing H
+
+**Outcomes (after the H runs):**
+
 - `in-progress`: round running inside its notebook
 - `supported`: validation met the acceptance condition AND both review gates passed
 - `rejected`: validation met the rejection condition
 - `partial`: only some conditions met (e.g. positive at fee 0 but negative at fee 1 bp)
-- `parked`: blocked on upstream Purpose or deferred to a later session
-- `dropped`: judged not worth pursuing
+- `parked`: blocked on upstream Purpose or deferred to a later session (rare;
+  most parked work routes to `planned-nextsession` instead)
+
+The planning states are the single source of truth for run-now /
+next-session / drop classification of derived H's. The notebook body
+does NOT carry these states (see `references/post_review_reconciliation.md`
+F5 counter and `references/hypothesis_cycles.md`); the row here is where
+they live.
 
 ## Entries
 
-| ID | Statement | Status | experiment_id (= notebook = Purpose) | Acceptance condition | Last update |
-|---|---|---|---|---|---|
-| H1 | [Falsifiable comparison statement.] | planned | exp_001 (Purpose: …) | [numeric threshold] | YYYY-MM-DD |
-| H2 | [Derived from H1: …] | planned | exp_001 (same Purpose) | [numeric threshold] | YYYY-MM-DD |
-| H3 | [Derived from H1: different phenomenon] | planned | exp_002 (Purpose: …) | [numeric threshold] | YYYY-MM-DD |
-| ... | ... | ... | ... | ... | ... |
+| ID | Statement | Status | experiment_id (= notebook = Purpose) | target_sub_claim_id | pathway | Acceptance condition | Last update |
+|---|---|---|---|---|---|---|---|
+| H1 | [Falsifiable comparison statement.] | planned | exp_001 (Purpose: …) | G1.1 | 2 | [numeric threshold] | YYYY-MM-DD |
+| H2 | [Derived from H1, same Purpose: …] | planned-runnow | exp_001 (same Purpose) | G1.1 | 4 | [numeric threshold] | YYYY-MM-DD |
+| H3 | [Derived from H2, same Purpose; targets G1.2 instead because turnover-cap is in the live-tradeability layer] | planned-nextsession | exp_001 (same Purpose) | G1.2 | 4 | [numeric threshold] | YYYY-MM-DD |
+| H4 | [Derived from H1, NEW Purpose: …] | planned | exp_002 (Purpose: …) | G1.3 | 4 | [numeric threshold] | YYYY-MM-DD |
+| ... | ... | ... | ... | ... | ... | ... | ... |
 
 Multiple H's that share an `experiment_id` live in the same notebook because
 they serve the same Purpose. An H whose `experiment_id` differs lives in a
 different notebook because the Purpose differs.
+
+### Column meanings
+
+- **`target_sub_claim_id`** (research-goal layer link): the project README's
+  sub-claim ID this H produces evidence for. A derived H inherits its
+  parent's `target_sub_claim_id` by default; an override is recorded in
+  the Statement column with a one-phrase reason (see H3 example above).
+- **`pathway`** (generation provenance): one of 1-6 from
+  `references/hypothesis_generation.md` — 1 = data-driven (EDA finding),
+  2 = literature-extension, 3 = literature-refutation, 4 = failure-derived
+  (= derived from a previous H's failure axis), 5 = cross-asset / cross-regime
+  extension, 6 = mechanism-driven. An ad-hoc H records `ad-hoc` here and
+  must clear at least Medium tier in differentiation.
+- **`Acceptance condition`**: numeric / structural threshold the H is
+  tested against.
 
 ## Adding hypotheses
 
@@ -37,7 +77,11 @@ different notebook because the Purpose differs.
 - Each statement is a falsifiable comparison statement (see `references/research_design.md`)
 - Acceptance condition is a numeric threshold
 - The `experiment_id` column ties the H to one Purpose / notebook
-- Derived hypotheses keep a reference to their parent (e.g. `H10 (derived from H3, same Purpose)` or `H10 (derived from H3, NEW Purpose)`)
+- The `target_sub_claim_id` column ties the H to one research-goal sub-claim;
+  inheritance from parent is the default for derived H's
+- The `pathway` column records the H's generation provenance (1-6 or ad-hoc)
+- Derived hypotheses keep a reference to their parent in the Statement column
+  (e.g. `H10 [Derived from H3, same Purpose: …]` or `H10 [Derived from H3, NEW Purpose: …]`)
 
 ## Where each new H goes (default routing)
 
@@ -49,6 +93,10 @@ different notebook because the Purpose differs.
 The Purpose-continuity test is the routing decision (see SKILL.md
 "Purpose vs. Hypothesis" and `references/experiment_protocol.md`).
 
+The `target_sub_claim_id` does **not** route the H; an H targeting G1.2
+can live inside a Purpose nominally about G1.1, as long as the override
+reason is recorded in the Statement column.
+
 ## Do not delete
 
 Even rejected and dropped hypotheses stay in this file. They are needed to trace decisions
@@ -57,14 +105,16 @@ later. Just update the status.
 ## Derivation tree
 
 Sketch derivation. The tree mixes H-as-same-Purpose-extension and
-H-as-new-Purpose-spinoff; mark the difference explicitly.
+H-as-new-Purpose-spinoff; mark the difference explicitly. Annotate the
+target sub-claim per node so the tree reads as a research-goal map, not
+just a derivation list.
 
 ```
-H1 (parent claim, exp_001)              [supported]
-├── H2 (variant, exp_001 same Purpose)  [rejected]
-├── H3 (refinement, exp_001 same Purpose) [partial]
-│   ├── H10 (sub-refinement, exp_001 same Purpose) [planned]
-│   └── H11 (extension, exp_001 same Purpose) [parked: needs new data]
-└── H4 (NEW Purpose, exp_002)           [planned]
-    └── H12 (variant, exp_002 same Purpose) [planned]
+H1 (parent claim, exp_001, G1.1)              [supported]
+├── H2 (variant, exp_001 same Purpose, G1.1)  [rejected]
+├── H3 (refinement, exp_001 same Purpose, G1.1) [partial]
+│   ├── H10 (sub-refinement, exp_001 same Purpose, G1.1) [planned-runnow]
+│   └── H11 (extension, exp_001 same Purpose, G1.2 — turnover-cap shifts to live-tradeability layer) [planned-nextsession]
+└── H4 (NEW Purpose, exp_002, G1.3)           [planned]
+    └── H12 (variant, exp_002 same Purpose, G1.3) [planned]
 ```

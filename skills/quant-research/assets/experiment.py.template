@@ -41,6 +41,43 @@ def _(mo):
     - "Does Chronos add value over a frozen-embedding baseline?"
 
     Do NOT write the first H here. The first H goes in the H1 block below.]
+
+    ## Cycle goal — 5 items (mandatory, pre-implementation)
+
+    See `references/cycle_purpose_and_goal.md` and
+    `references/research_goal_layer.md`.
+
+    ### Consumer
+    [Concretely named — the next derived Purpose, the production strategy
+    build, the paper section, the portfolio-sizing decision. "The research
+    community" / "future researchers" / "myself someday" are NOT acceptable;
+    if the only consumer is that vague, return to Stage 0. "My own next
+    Purpose, named as <slug>" is a legal escape hatch when the next Purpose
+    is *nameable in one phrase*.]
+
+    ### Decision the consumer is blocked on
+    [One sentence: the yes/no/pivot the consumer cannot make without this
+    cycle's output.]
+
+    ### Decision rule (committed BEFORE the cycle runs)
+    - YES (consumer goes forward): [numeric / structural threshold]
+    - NO (consumer does not go forward, with binding axis): [numeric /
+      structural threshold + which `failure_mode` would be the binding axis]
+    - KICK-UP (frame is wrong, return to upstream): [structural condition —
+      e.g., bug_review surfaces unresolvable upstream data issue]
+
+    ### Knowledge output (artifact that lets consumer apply the rule)
+    [What the cycle produces — typically per-H rows in results.parquet +
+    Purpose-level synthesis paragraph + headline figure. State it explicitly
+    so the H portfolio below can be checked against it.]
+
+    ### Target sub-claim id (research-goal anchor)
+    [The project README's research-goal sub-claim ID(s) this Purpose is
+    expected to advance. Primary: 1 sub-claim. Secondary: 0-2.
+    Example: "Primary G1.1 (`quality factor yields net edge`). Secondary: none."
+    Each H inside this notebook inherits this `target_sub_claim_id` by default;
+    overrides are recorded in `hypotheses.md`'s row Statement column.
+    See `references/research_goal_layer.md` for the four-layer model.]
     """
     )
     return
@@ -216,7 +253,11 @@ def _(mo):
 
     ### Linked hypothesis-portfolio entry
     H{{HYP_ID}}: [quote the entry from hypotheses.md; same `experiment_id` =
-    `exp_{{NNN}}` as the notebook's Purpose]
+    `exp_{{NNN}}` as the notebook's Purpose; cite the row's `target_sub_claim_id`
+    (= the research-goal sub-claim this H produces evidence for; inherited
+    from Purpose-level Cycle goal 5th item by default) and `pathway`
+    (= 1-data-driven / 2-literature-extension / 3-literature-refutation /
+    4-failure-derived / 5-cross-asset-extension / 6-mechanism-driven / ad-hoc)]
 
     ### Question for this H
     [Falsifiable comparison statement.]
@@ -634,6 +675,19 @@ def _(np, pl, verdict_h1):
         "experiment_id": "exp_{{NNN}}_{{SLUG}}",   # the notebook = the Purpose
         "hypothesis_id": "H{{HYP_ID}}",            # the H within the Purpose
         "run_timestamp": datetime.now(timezone.utc),
+        "target_sub_claim_id": "G{{SUB_CLAIM_ID}}",  # research-goal anchor
+                                                     # (research_goal_layer.md);
+                                                     # inherited from parent H
+                                                     # unless overridden in
+                                                     # hypotheses.md row
+        "pathway": "{{PATHWAY}}",                    # 1-data-driven / 2-literature-extension /
+                                                     # 3-literature-refutation / 4-failure-derived /
+                                                     # 5-cross-asset-extension / 6-mechanism-driven /
+                                                     # ad-hoc
+        "parent_hypothesis_id": None,                # required when pathway=4
+                                                     # (the H_n whose failure
+                                                     # axis sourced this H);
+                                                     # otherwise None
         "verdict": verdict_h1,
         # Fill in the rest per results_db_schema.md
     }
@@ -681,24 +735,21 @@ def _(mo):
 
     Repeat for H3, H4, … as more derived H's emerge under the same Purpose.
 
-    ## 14. Derived hypotheses (= candidates) — classify and route
+    ## 14. Derived hypotheses (= candidates) — record outside the notebook
 
-    Two routing destinations. Be explicit about which:
+    Derived hypotheses are NOT listed in this notebook (= research artifact).
+    They are recorded as rows in `hypotheses.md` (planning artifact),
+    single source of truth, with the appropriate `Status` (`planned-runnow` /
+    `planned-nextsession` / `planned-drop`), `experiment_id` (= same notebook
+    if Purpose unchanged, next notebook if Purpose changed), `target_sub_claim_id`
+    (= inherited from the parent H by default), and `pathway` (= typically 4
+    for failure-derived).
 
-    **Same notebook (next H<id> block, run-now)** — if Purpose unchanged:
-    | New H | Where | When | Reason |
-    |---|---|---|---|
-    | H<new>: ... | this notebook | run-now | sensitivity / refinement / failure-diagnosis / follow-on; same Purpose |
-
-    **New notebook (= new Purpose)** — if Purpose changed:
-    | Candidate Purpose | When | Reason |
-    |---|---|---|
-    | P<new>: ... | run-now / next-session | phenomenon / cross-section / question changed |
-
-    **Drop** — refuted in prior work or out of scope:
-    | Dropped H | Reason |
-    |---|---|
-    | H<old>: ... | refuted by [paper / prior cycle] |
+    See `references/hypothesis_cycles.md` "Outside the notebook — hypotheses.md
+    and decisions.md" and `references/research_goal_layer.md` for the four-layer
+    model. The notebook body's role is research record (what this H said and
+    what it did not say); the planning record (what comes next) lives in
+    `hypotheses.md`.
     """
     )
     return
@@ -721,23 +772,38 @@ def _(mo):
        [Concrete candidates for `exp_<NNN+1>_*.py`; reflect the Purpose
        changes — phenomenon / cross-section / question.]
 
-    ## 16. Reminder — update hypotheses.md, decisions.md, INDEX.md
+    ## 16. Reminder — update hypotheses.md, decisions.md, INDEX.md, README.md
 
     - [ ] For every H tested in this notebook, update its status in
-          `hypotheses.md` (in-progress → supported / rejected / parked) and
-          confirm each H's `experiment_id` matches `exp_{{NNN}}`
+          `hypotheses.md` (planning state → in-progress → supported / rejected /
+          parked) and confirm each H's `experiment_id` matches `exp_{{NNN}}`
+          and `target_sub_claim_id` is set (inherited from Purpose-level Cycle
+          goal unless overridden with reason in the row's Statement column)
     - [ ] Append a time-ordered entry to `decisions.md` for this Purpose
-          (one entry per cycle), with H sub-bullets per H tested
+          (one entry per cycle), with H sub-bullets per H tested AND the three
+          mandatory sections from `references/research_goal_layer.md`:
+          (a) Design hypothesis at open (= the prediction made before the
+          cycle ran), (b) Research-goal sub-claim progress update (= transition
+          per sub-claim this Purpose touched, with sub-claims not touched
+          listed unchanged), (c) Design hypothesis at close (= CONFIRMED /
+          FALSIFIED / PARTIAL with one-phrase reason)
+    - [ ] Update the project README's sub-claim status table to reflect the
+          transitions recorded in `decisions.md`'s sub-claim progress update
     - [ ] For every H whose verdict is "supported", confirm BOTH the
           bug-review entry from section 10a AND the experiment-review entry
           from section 10b were run for that H and all high / medium
           findings are resolved
     - [ ] Fill the one-line Purpose-level conclusion in `experiments/INDEX.md`
-    - [ ] Add any derived hypotheses (same Purpose) to `hypotheses.md` with
-          this notebook's `experiment_id`
-    - [ ] Add any derived Purposes (new notebook candidates) to the
-          "Derived Purposes" section of `decisions.md`; do not add them as
-          H entries under this notebook's `experiment_id`
+          (with `target_sub_claim_id` column)
+    - [ ] Add any derived hypotheses (same Purpose OR new Purpose) to
+          `hypotheses.md` with the appropriate `experiment_id`,
+          `target_sub_claim_id`, `pathway`, and Status (planned-runnow /
+          planned-nextsession / planned-drop). Do NOT list derived H's in this
+          notebook body.
+    - [ ] Add any derived Purposes (= new notebook candidates) to the
+          "Derived Purposes" section of `decisions.md`'s Purpose entry above,
+          with `target_sub_claim_id` per derived Purpose. Do NOT add them as
+          H entries under this notebook's `experiment_id`.
     - [ ] Confirm the Purpose-level abstract cell at the top has been filled in
     """
     )

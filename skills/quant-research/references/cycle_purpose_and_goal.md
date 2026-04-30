@@ -7,7 +7,7 @@ is *derived* from it rather than improvised per Purpose.
 ## When to read
 
 - **Before** writing the Purpose header of a new notebook (Step 2 in
-  `SKILL.md`) — the four items defined here are pre-implementation
+  `SKILL.md`) — the five items defined here are pre-implementation
   required, alongside Purpose / Universe / data ranges
 - Before adding the *first* H to a notebook (the H portfolio is decomposed
   from the goal defined here, not invented per H)
@@ -51,11 +51,18 @@ It is *not*:
 These are forms in which the answer arrives. The goal itself is the
 *decision-supporting knowledge artifact*.
 
-## How to set the goal — four required items, before any code
+## How to set the goal — five required items, before any code
 
-At the top of every notebook, alongside the Purpose statement, four items
+At the top of every notebook, alongside the Purpose statement, five items
 are mandatory. They are written *before* H1 is designed; they are what
 H1's design is derived from.
+
+The first four items (Consumer / Decision / Decision rule / Knowledge
+output) define the *cycle's internal logic*. The fifth item
+(`target_sub_claim_id`) anchors the cycle in the project's research goal
+— the four-layer model in `references/research_goal_layer.md`. Without
+the fifth item, the cycle's relationship to the project's running
+question is implicit and the next Purpose's selection becomes invisible.
 
 ```markdown
 ### Consumer
@@ -114,6 +121,22 @@ plus a Purpose-level synthesis naming Pattern (A-E) and binding
 axis (if any), plus the headline cumulative-PnL-with-baselines
 figure. Together, these let the consumer apply the YES/NO/KICK-UP
 predicate."]
+
+### Target sub-claim id (research-goal anchor)
+[The project README's research-goal sub-claim ID(s) this Purpose is
+expected to advance — the link from this notebook to the project's
+running question. Primary: 1 sub-claim. Secondary: 0-2 sub-claims.
+A Purpose targeting > 3 sub-claims is too broad (Pattern B per
+`cross_h_synthesis.md`); split before opening.
+Example: "Primary G1.1 (`quality factor yields net edge in TOPIX500`).
+Secondary: none — turnover / live-tradeability is G1.2 territory and
+is left to a derived Purpose."
+The Purpose's design hypothesis at open (in `decisions.md`) restates
+this in prediction form ("opening this Purpose will close G1.1 to
+confirmed or falsified"). Each H inside the notebook inherits this
+`target_sub_claim_id` by default; an override is recorded in
+`hypotheses.md`'s row Statement column with a one-phrase reason.
+See `references/research_goal_layer.md` for the four-layer model.]
 ```
 
 ## How to plan the H portfolio — sub-claim decomposition

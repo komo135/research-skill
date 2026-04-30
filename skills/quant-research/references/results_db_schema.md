@@ -85,6 +85,14 @@ possible.
                                          # whose named failure axis sourced
                                          # this H_{n+1}); otherwise None
 
+    # Research-goal anchor (from `research_goal_layer.md` four-layer model) -----
+    "target_sub_claim_id": str,  # required — the project README sub-claim
+                                 # ID this H produces evidence for (e.g.
+                                 # "G1.1"). Inherited from parent H when
+                                 # the H is derived (pathway=4) unless the
+                                 # row's `notes` records an override reason.
+                                 # See `research_goal_layer.md`.
+
     # Verdict and tier (verdict and achieved_tier are filled post-review) ----
     "verdict":          str,    # supported / rejected / parked / preliminary
                                 # provisional at append-time, finalized after

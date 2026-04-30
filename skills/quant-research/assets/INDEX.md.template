@@ -6,11 +6,11 @@ automatically.
 
 ## Entries
 
-| exp_id | Purpose (one line) | Hypotheses (H<id>: verdict) | Status | Purpose-level conclusion (one line) |
-|---|---|---|---|---|
-| exp_001 | (example) Define data universe | H1: foundation | done | universe of N instruments × T period defined; data hashes recorded |
-| exp_002 | (example) Does PCA factor IC screening yield robust factors? | H2: supported · H3: rejected · H4: parked | done | top-3 PCA factors hold val IC ≥ 0.03 but not on test |
-| exp_003 | ... | ... | in-progress | ... |
+| exp_id | target_sub_claim_id | Purpose (one line) | Hypotheses (H<id>: verdict) | Status | Purpose-level conclusion (one line) |
+|---|---|---|---|---|---|
+| exp_001 | G1.0 (foundation) | (example) Define data universe | H1: foundation | done | universe of N instruments × T period defined; data hashes recorded |
+| exp_002 | G1.1 | (example) Does PCA factor IC screening yield robust factors? | H2: supported · H3: rejected · H4: parked | done | top-3 PCA factors hold val IC ≥ 0.03 but not on test |
+| exp_003 | G1.2 | ... | ... | in-progress | ... |
 
 ## Status legend (per notebook)
 

@@ -53,7 +53,7 @@ durable enough that a downstream consumer can act on it. The cycle's goal
 is therefore **the knowledge output that closes the consumer's decision
 gap** — not "a `verdict='supported'` on H1", not "a Pattern A-E label",
 not "publication-grade evidence in the abstract". See
-`references/cycle_purpose_and_goal.md` for the four pre-cycle items
+`references/cycle_purpose_and_goal.md` for the five pre-cycle items
 (Consumer / Decision / Decision rule / Knowledge output) that pin this
 frame.
 
@@ -107,7 +107,9 @@ The fact that a cycle hits the emergency stop at all is a signal worth
 recording in `decisions.md` — it indicates a frame mismatch that the
 project should learn from, not just a stop event.
 
-## What to write at the end of each H round (inside the current notebook)
+## What to write at the end of each H round
+
+### Inside the notebook body
 
 ```markdown
 ### H<id> conclusion
@@ -116,16 +118,32 @@ project should learn from, not just a stop event.
 
 ### Cannot conclude
 - [State which dimensions are not tested by this H specifically]
-
-### Derived hypotheses (next rounds inside THIS notebook, or candidates for
-### new notebooks)
-| New hypothesis | Where | Run-now / next-session / drop | Reason |
-|---|---|---|---|
-| H<new>: …                          | same notebook | run-now      | same Purpose, sensitivity / refinement / failure-diagnosis / follow-on |
-| H<new>: …                          | same notebook | next-session | same Purpose but needs more compute |
-| H<new>: …  (= candidate Purpose P) | new notebook  | run-now      | new Purpose: phenomenon / cross-section / question changed |
-| …                                  | drop          | —            | refuted in prior work (papers.md) |
 ```
+
+That is all the notebook body carries about derived hypotheses. The
+notebook's research record stops at "what this H said and what it did
+not say". Where the next H will live and when it will run is *planning
+state*, not research record, and is kept out of the notebook (see
+`references/post_review_reconciliation.md` F5 counter and the four-layer
+model in `references/research_goal_layer.md`).
+
+### Outside the notebook — hypotheses.md and decisions.md
+
+Each derived hypothesis becomes a row in `hypotheses.md`:
+
+| Where the derived H goes (per the routing rule below) | What `hypotheses.md` carries |
+|---|---|
+| Same notebook (Purpose unchanged) | New row, same `experiment_id` as the parent; Status = `planned-runnow` / `planned-nextsession`; `target_sub_claim_id` inherited from parent unless overridden in Statement column with reason; `pathway` declared (typically 4 = failure-derived) |
+| New notebook (Purpose changed) | New row, new `experiment_id` (the next `exp_<NNN+1>_*.py`); Status = `planned`; `target_sub_claim_id` chosen from sub-claims still `not started` or `in progress`; `pathway` declared |
+| Dropped | New row, Status = `planned-drop`; reason in the Statement column ("dropped: refuted in `papers.md`") |
+
+Each Purpose closure also appends to `decisions.md` (see "Updating
+decisions.md" below) — including the Research-goal sub-claim progress
+update and the design-hypothesis verification at close. Derived
+*Purposes* (= candidates for new notebooks) are listed in the Purpose
+entry's "Derived Purposes" section there. Derived *Hypotheses* are not
+re-listed in `decisions.md` — they live as rows in `hypotheses.md`,
+single source of truth.
 
 ## Routing rule (the most important rule in this file)
 
@@ -149,45 +167,90 @@ The old rule "run-now derived hypothesis ⇒ start the next notebook" has
 been **replaced**. Run-readiness no longer routes the H to a new file; only
 Purpose change does.
 
+The classification (run-now / next-session / drop) is recorded in
+`hypotheses.md`'s `Status` column as `planned-runnow` / `planned-nextsession`
+/ `planned-drop` — single source of truth for H-level planning state.
+Notebook body, `decisions.md`, and any other derived-H listing must not
+duplicate the classification (= avoid sync drift; the row is the
+authoritative state).
+
 ## Updating hypotheses.md
 
-At the end of every H round, update `hypotheses.md`:
+At the end of every H round (and whenever a derived H is generated),
+update `hypotheses.md`:
 
 ```markdown
-| ID | Statement | Status | experiment_id (= notebook = Purpose) | Last update |
-|---|---|---|---|---|
-| H1 | ... | supported | exp_001 (mean-reversion EUR/USD intraday) | 2026-04-28 |
-| H2 | ... | supported | exp_001                                  | 2026-04-28 |
-| H3 | ... | rejected  | exp_001                                  | 2026-04-28 |
-| H4 | ... | planned   | exp_002 (momentum EUR/USD intraday)      | 2026-04-28 |
+| ID | Statement | Status | experiment_id (= notebook = Purpose) | target_sub_claim_id | pathway | Acceptance condition | Last update |
+|---|---|---|---|---|---|---|---|
+| H1 | ... | supported           | exp_001 (mean-reversion EUR/USD intraday) | G1.1 | 2 | test PSR ≥ 0.95 | 2026-04-28 |
+| H2 | (Derived from H1, same Purpose) ... | supported | exp_001 | G1.1 | 4 | ... | 2026-04-28 |
+| H3 | (Derived from H2, same Purpose; targets G1.2: turnover-cap is in live-tradeability layer) ... | rejected | exp_001 | G1.2 | 4 | ... | 2026-04-28 |
+| H4 | (Derived from H1, NEW Purpose) ... | planned-runnow | exp_002 (momentum EUR/USD intraday) | G1.3 | 5 | ... | 2026-04-28 |
+| H5 | ... | planned-drop | n/a | n/a | n/a | n/a | 2026-04-28 |
 ```
 
 Each H row points to the `experiment_id` (= notebook = Purpose) it lives
 under. Multiple H's per Purpose share the same `experiment_id`.
 
+Three columns are load-bearing for the four-layer model
+(`references/research_goal_layer.md`):
+
+- **`Status`** carries the planning state (`planned-runnow` /
+  `planned-nextsession` / `planned-drop`) for derived H's that have not
+  yet run. This is the single source of truth for run-now / next-session
+  / drop classification. The notebook body and `decisions.md` do not
+  duplicate this.
+- **`target_sub_claim_id`** anchors the H in the project's research-goal
+  sub-claim list (project README). A derived H inherits its parent's
+  value by default; an override is recorded in the Statement column with
+  a one-phrase reason (see H3 in the example above).
+- **`pathway`** declares the H's generation provenance (1-6 from
+  `hypothesis_generation.md`, or `ad-hoc`). Derived H's typically have
+  `pathway = 4` (failure-derived) but may be 5 (cross-asset) or 6
+  (mechanism-driven) depending on the mechanism that motivated them.
+
 ## Updating decisions.md
 
 Append a time-ordered entry per Purpose / cycle. A Purpose with multiple H's
-yields one entry with H sub-bullets:
+yields one entry with H sub-bullets. The Purpose entry also carries the
+research-goal layer's bookkeeping (design hypothesis at open, sub-claim
+progress update at close, design hypothesis at close — see
+`references/research_goal_layer.md`):
 
 ```markdown
 ## YYYY-MM-DD cycle <N> (exp_<NNN>_<purpose-slug>) — Purpose: <one-line>
 
-- Tested H1: [one-line restatement]
+- Design hypothesis at open: [the prediction made BEFORE the cycle ran —
+  which research-goal sub-claim(s) this Purpose is expected to advance,
+  and in what direction]
+- Tested H1 (target_sub_claim_id = G1.<X>): [one-line restatement]
   - Observation: [observed values, anomalies]
   - Verdict: [supported / rejected / partially supported / parked]
-- Tested H2 (derived from H1): [one-line restatement]
-  - Observation: [observed values, anomalies]
-  - Verdict: [supported / rejected / partially supported / parked]
-- Tested H3 (derived from H2): …
-- Purpose-level synthesis: [one or two sentences across H1…HN]
+  - Robustness battery (this H): [pass / fail per item]
+- Tested H2 (derived from H1, target_sub_claim_id = G1.<X> inherited): …
+- Tested H3 (derived from H2, target_sub_claim_id = G1.<Y> overridden — reason): …
+- Purpose-level synthesis: [one or two sentences across H1…HN; Pattern (A-E)
+  match per `cross_h_synthesis.md`; primary closure form (Primary YES /
+  Fallback NO with binding axis / KICK-UP)]
+- Research-goal sub-claim progress update: [transition for each sub-claim
+  this Purpose touched; sub-claims not touched are still listed as
+  unchanged so the project's running state is fully visible]
+  - G1.1: in progress → confirmed
+  - G1.2: not started → not started
+  - G1.3: not started → not started
+- Design hypothesis at close: [verification of the at-open prediction —
+  CONFIRMED / FALSIFIED / PARTIAL with one-phrase reason]
 - Derived Purposes for the next notebook:
-  - P<id> (run-now): …
-  - P<id> (next-session): …
+  - P<id> (target_sub_claim_id = G1.<X>): …
+  - P<id> (target_sub_claim_id = G1.<Y>): …
 - Direction rejected: [what was tried inside this Purpose and did not work,
   with reason]
-- Robustness battery status (per H): H1 — [pass/fail per item], H2 — …
 ```
+
+Note: derived *Hypotheses* (= future H rounds) are NOT listed in
+`decisions.md`. They live as rows in `hypotheses.md` with the appropriate
+`Status` (`planned-runnow` / `planned-nextsession` / `planned-drop`).
+Single source of truth for H-level planning state.
 
 ## Run-now vs. next-session classification
 

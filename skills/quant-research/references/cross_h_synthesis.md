@@ -181,7 +181,9 @@ prior. Examples:
   along this axis."]
 
 ### Derived Purposes proposed (= candidate next notebooks)
-[List with one-sentence justification each. Classified per
+[List with one-sentence justification each, plus the
+`target_sub_claim_id` each derived Purpose will attack (referencing
+the project README's sub-claim list). Classified per
 hypothesis_cycles.md as run-now / next-session / drop.]
 ```
 
@@ -195,8 +197,62 @@ hypothesis_cycles.md as run-now / next-session / drop.]
 - Cluster: N H tested, {supported}/{rejected}/{parked}/{preliminary}
 - Binding axis (if Pattern A): {failure_mode value}
 - Derived Purposes:
-  - {one-sentence each, with run-now / next-session / drop}
+  - {one-sentence each, with target_sub_claim_id and run-now / next-session / drop}
 ```
+
+## Handoff to the next notebook (when a derived Purpose opens)
+
+When the synthesis produces a derived Purpose that will be opened as a
+new notebook (`exp_<NNN+1>_*.py`), the handoff between old and new
+notebook follows the four-layer model in
+`references/research_goal_layer.md`:
+
+1. **The new notebook's body does NOT carry the old Purpose's synthesis,
+   Pattern label, binding axis, or any derivation prose.** That information
+   lives in `decisions.md` (the old Purpose entry's Purpose-level synthesis
+   + Derived Purposes section). The new notebook reads as if its Purpose
+   were independent — because under the four-layer model it is anchored
+   to a research-goal sub-claim, not to the old Purpose's narrative.
+2. **The new notebook's `target_sub_claim_id`** (Cycle goal 5th item) is
+   chosen from the project README's sub-claim list — not "inherited"
+   from the old Purpose. The chosen sub-claim is whichever the synthesis
+   identified as the next sub-claim to attack (e.g., Pattern A's binding
+   axis often shifts the question to a different sub-claim).
+3. **The new notebook's `## Purpose` statement** is written as an
+   open-ended question about the world, in the form
+   `cycle_purpose_and_goal.md` requires. Phrases like "派生した", "handoff",
+   "Pattern A", "binding axis carried over from", "as decided in
+   cross_h_synthesis", or "from exp_<NNN>" do not appear in the Purpose
+   header, the docstring, or any markdown cell of the new notebook.
+4. **The new notebook's `decisions.md` Purpose entry** carries the link
+   in two places: the *Design hypothesis at open* line ("opening this
+   Purpose will close G1.X to confirmed or falsified") implicitly carries
+   the upstream provenance, and the project README's sub-claim status
+   (which the previous Purpose moved to `confirmed` or `falsified`)
+   provides the reading context. Together these are sufficient — no
+   prose handoff in the new notebook is needed.
+5. **Minimal cross-references** in the new notebook are allowed and
+   encouraged when they convey research content: e.g., a Figure plan
+   line like `Fig 4 — H_old / H_new comparison of cumulative PnL` names
+   the comparison series. This is research content, not handoff prose.
+   The line "as a follow-up to exp_<NNN>'s Pattern A finding" is
+   handoff prose and is not allowed.
+
+### Why this matters
+
+Without the handoff rules above, the derived Purpose's notebook drifts
+into being a continuation of the old notebook's narrative. The reader
+who opens only the new notebook then sees a research artifact whose
+Purpose is "exp_<NNN>'s Pattern A consequence" rather than an open-ended
+investigation of a research-goal sub-claim. That reframes the unit of
+research from sub-claim-anchored Purpose to handoff-chain Hypothesis,
+which is the failure mode the four-layer model exists to prevent.
+
+The information that *would* go into the handoff prose belongs in
+`decisions.md` (cross-Purpose audit trail), `hypotheses.md` (per-H
+provenance via `parent_id` in the Statement column), and the project
+README sub-claim status (project-level distance update). The new
+notebook stays as a research artifact about its own Purpose.
 
 ## Worked example (the funding-mean-reversion case from RED-4)
 

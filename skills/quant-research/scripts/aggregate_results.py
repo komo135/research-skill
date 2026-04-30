@@ -27,6 +27,12 @@ from typing import Any
 import polars as pl
 
 # Required keys per the common schema (keep aligned with results_db_schema.md).
+# target_sub_claim_id and pathway are required per research_goal_layer.md
+# (the four-layer model that anchors every H to a project research-goal
+# sub-claim) and hypothesis_generation.md (the H's generation provenance).
+# parent_hypothesis_id is conditionally required (only when pathway == "4-...")
+# and therefore is NOT in REQUIRED_FIELDS — append_result accepts it as an
+# optional column.
 REQUIRED_FIELDS = {
     "project",
     "experiment_id",
@@ -40,6 +46,8 @@ REQUIRED_FIELDS = {
     "n_trades",
     "sharpe",
     "notebook_path",
+    "pathway",
+    "target_sub_claim_id",
 }
 
 
