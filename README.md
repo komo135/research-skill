@@ -260,7 +260,7 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- Version 0.9.0
+- Version 0.10.0
 - Two skills, two review layers, both required as co-gate.
 - Notebook unit is one Purpose (open-ended investigation); per-Hypothesis
   verdict gates and result rows.
@@ -270,6 +270,88 @@ The skill leans on a small number of well-known references:
 - Adversarial-reviewer mechanism backed by Song (2026); see *References*.
 
 ### Changelog
+
+**0.10.0** — Adds the **carry-forward conjunct-contribution gate**
+(sub-step 1.5 of `hypothesis_cycles.md`'s routing rule), closing the
+F17 failure mode in which derived hypotheses were enumerated
+bookkeeping-style without being asked how they advance the cycle goal's
+decision rule. The previous routing rule decided where a derived H goes
+by (1) Purpose continuity and (2) run-now / next-session / drop only —
+nothing forced the question "which conjunct of the YES / NO / KICK-UP
+branches does this carry-forward H close, and is that conjunct already
+addressed by the parent H?" Result: a Pathway-4 sensitivity variant on
+the same instrument as the parent could route through cleanly while a
+multi-instrument YES-conjunct of the cycle goal remained untouched.
+Validated by TDD over scenario L (mid-range parent on EUR/USD only +
+RSI parameter-sweep H on the same EUR/USD + YES (b) ≥3-pair conjunct
+unaddressed): the RED subagent flagged the binding gap as a side-note
+but did not block the H ("not blocking H2: a tighter-threshold
+sensitivity probe ... is a legitimate Pathway-4 step"); the GREEN
+subagent rejects the candidate at the new gate and proposes a
+replacement targeting the binding gap.
+
+- **Sub-step 1.5 (conjunct contribution gate).** New section in
+  `references/hypothesis_cycles.md`'s routing rule, fired on the
+  same-notebook branch only (new-Purpose H's are gated against their
+  own new cycle goal at the new notebook's open). Classifies the new
+  H as **eligible** (unaddressed conjunct, or middle-range conjunct
+  via a structurally different test — different exit, different
+  feature, different fee model), **redundant** (parent already landed
+  the conjunct per `cycle_purpose_and_goal.md`'s "Stop the cycle as
+  soon as the rule fires" definition), or **freelance** (closes no
+  conjunct of the decision rule). The verdict is reported inline in
+  the assistant's reply; rejected-at-routing H's persist as a
+  `planned-drop` row with the reject reason in the Statement column.
+- **`closes_conjuncts` schema column.** New column in `hypotheses.md`
+  rows. Enumerates the YES / NO / KICK-UP conjuncts the H tests,
+  optionally annotated with structural progress (e.g. `YES_b (3/3
+  instruments)`). It is the **cycle-goal-layer** counterpart to the
+  **research-goal-layer** `target_sub_claim_id` column added in 0.9.0;
+  the two layers are orthogonal and both anchor a derived H — one to
+  the project's running research question, the other to the current
+  cycle's decision rule.
+- **Anti-rationalization table** of five excuses the gate is built to
+  interrupt: "Pathway 4 makes it legitimate" (gate is goal-contribution,
+  not generation provenance — Pathway is necessary but not sufficient),
+  "I'll flag the binding gap as a design-hypothesis-at-open concern in
+  `decisions.md` and proceed" (gate is a gate, not a flag — logging the
+  gap is parallel work, not a substitute), "sub-step 1.5 will rarely
+  fire" (true for the eligible majority; the gate exists to catch the
+  minority of natural-looking Pathway-4 derivations that actually
+  re-test landed conjuncts), "I'll write `closes_conjuncts = TBD`"
+  (legal only for new-Purpose H's; for same-Purpose derived H's the
+  cycle goal is already on the page), "if 1.5 keeps rejecting my H's,
+  the cycle is stuck — I'll skip 1.5 once" (a series of rejects is the
+  cross-H synthesis trigger, not an obstruction).
+- **`planned-drop` sub-categorization.** The status keyword now covers
+  three sub-categories (out-of-scope drop / rejected-at-routing /
+  superseded). The Statement column's leading clause identifies which
+  fired, so cross-H synthesis at Purpose closure can distinguish the
+  three at the row level instead of collapsing them into one bucket.
+- **Notebook-body H-id numbering rule.** H-ids are global and
+  sequential across `hypotheses.md`, permanent at moment of
+  consideration. H's that ran get one `## H<id>` block with the row id
+  verbatim; H's that did not run (rejected-at-routing, out-of-scope
+  drop, superseded) get no notebook block. Notebook H-id sequence may
+  have gaps — those gaps are the audit trail of considered-but-not-run
+  candidates and may not be renumbered away. Closes the previously
+  open question of whether a routing-rejected H consumes an id, gets
+  prime-suffixed, or is renumbered into the next available `## H<id>`
+  slot — different agents had been answering this differently.
+- **Back-references.** `cycle_purpose_and_goal.md`'s "How to plan the
+  H portfolio" (initial-portfolio decomposition) now points forward to
+  sub-step 1.5 as the carry-forward equivalent. `SKILL.md` step 2's
+  existing per-H "sub-claim mapping" line now points forward to
+  sub-step 1.5 as the carry-forward enforcement point — previously the
+  mapping was a recording requirement only and did not flow into a
+  routing decision.
+
+The change is orthogonal to the F12–F16 family of failure modes that
+0.9.0 closed: F12–F14 (派生 H table leakage into notebook body) is a
+record-location problem; F15–F16 (research-goal layer absence) is a
+project-level layer problem; F17 closed here is a cycle-internal
+conjunct-mapping problem on the routing path. Each layer needs its
+own counter; this release supplies the third.
 
 **0.9.0** — Introduces a **four-layer model** (Research goal / Design
 hypothesis / Purpose / Hypothesis) that anchors every derived hypothesis
