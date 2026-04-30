@@ -361,7 +361,12 @@ At the top of each notebook, write:
 When a derived H emerges serving the same Purpose, add a new `## H<id>`
 block inside the same notebook with its own falsifiable statement,
 acceptance / rejection thresholds, **sub-claim mapping** to the decision
-rule, **per-H headline figure plan**, and per-H result row.
+rule, **per-H headline figure plan**, and per-H result row. The
+sub-claim mapping is enforced at carry-forward time by
+`hypothesis_cycles.md` routing rule sub-step 1.5 (= conjunct
+contribution gate): a derived H that closes only conjuncts the parent H
+already landed is rejected at routing as redundant, even when Pathway
+provenance is otherwise legitimate.
 
 The cycle-goal items, the figure plan, and the reader takeaway are
 required pre-implementation items. The cycle-goal items in particular

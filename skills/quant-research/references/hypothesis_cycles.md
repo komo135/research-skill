@@ -151,11 +151,61 @@ When a derived H emerges, decide where it goes by the following test, in
 order:
 
 1. **Does the current notebook's Purpose statement still cover the new H?**
-   - Yes → the new H is the next `## H<id>` block in the same notebook.
-     Run-now / next-session / drop only determines *when* you do it.
+   - Yes → run sub-step 1.5 below before placing the H.
    - No → the new H reflects a new Purpose; it goes in the next notebook.
+     Conjunct contribution is checked at the new notebook's open against
+     its own (new) cycle goal — `cycle_purpose_and_goal.md` "How to plan
+     the H portfolio — sub-claim decomposition" — not here.
 
-2. (Subordinate to 1) Run-now / next-session / drop:
+   **Sub-step 1.5 (same-notebook branch only) — conjunct contribution
+   gate.** Read the YES / NO / KICK-UP branches of the cycle goal in the
+   notebook header. Name the conjunct(s) the new H tests. Compare
+   to what the parent H already addressed (parent's `results.parquet`
+   row read against the same cycle goal):
+   - **The new H closes an unaddressed conjunct** (e.g. parent tested
+     YES (a) on 1 instrument; the new H expands to a 2nd / 3rd
+     instrument toward YES (b)) → progresses the cycle goal → eligible
+     for step 2.
+   - **The new H closes a middle-range conjunct in a way that tightens
+     its CI or sharpens the threshold** — and is structurally different
+     from the parent (different exit, different feature, different
+     fee model) — → eligible (multi-testing inflation will be checked
+     at the completion gate by `experiment-review`'s
+     validation-sufficiency dimension).
+   - **The new H closes only conjunct(s) the parent has already
+     *landed*** (parent point estimate past threshold AND CI excluding
+     the opposite region — definition of "landed" is in
+     `cycle_purpose_and_goal.md` "Stop the cycle as soon as the rule
+     fires") → redundant. Do **not** run. The proposed H must be
+     redesigned (different cross-section, different feature, different
+     exit) so that its `closes_conjuncts` set covers at least one
+     unaddressed or middle-range conjunct, OR it must be dropped and a
+     replacement H' proposed targeting the binding gap.
+   - **The new H closes no conjunct of the decision rule** → freelance
+     work serving no consumer (per `cycle_purpose_and_goal.md` "Failure
+     patterns"). Do **not** run. Either expand the decision rule itself
+     (with the expansion's justification recorded in `decisions.md`) and
+     re-test 1.5, or drop the candidate.
+
+   The check fires per derived H, not per cycle. The conjunct(s) the H
+   targets are the durable record (= `closes_conjuncts` column in
+   `hypotheses.md`, schema below). The eligible / redundant / freelance
+   verdict at sub-step 1.5, when one fires, is reported inline in the
+   assistant's reply alongside the routing decision — the skill does
+   not write to `decisions.md` for routing rejects (rejected-at-routing
+   H's persist as a `planned-drop` row in `hypotheses.md` with the
+   reject reason in the Statement column; the chat transcript is the
+   audit surface).
+
+   Sub-step 1.5 is a **gate**, not a flag. Recognising the binding gap
+   and proceeding anyway is the failure pattern this gate exists to
+   interrupt. Sub-step 1.5 complements but does not replace the
+   cycle-end "Stop as soon as the rule fires" rule in
+   `cycle_purpose_and_goal.md`: rule-fires closes the whole cycle when
+   YES / NO / KICK-UP unambiguously land; sub-step 1.5 evaluates each
+   derived H mid-cycle and is the more granular gate.
+
+2. (Subordinate to 1, 1.5) Run-now / next-session / drop:
    - **Run-now**: testable in the current session with current data /
      features / compute
    - **Next-session**: requires data acquisition, new feature
@@ -174,25 +224,41 @@ Notebook body, `decisions.md`, and any other derived-H listing must not
 duplicate the classification (= avoid sync drift; the row is the
 authoritative state).
 
+### Common rationalizations at routing (especially around sub-step 1.5)
+
+| Excuse | Reality |
+|---|---|
+| "The derived H is Pathway 4 (failure-derived) — that makes it legitimate; the cost-of-running argument says we should run a sensitivity sweep before paying for a multi-pair / multi-feature expansion." | Pathway taxonomy is *generation provenance* — it certifies *how* the H was generated, not *whether* it progresses the cycle goal. Pathway 4 legitimacy is necessary but not sufficient; sub-step 1.5 is the goal-contribution gate. A Pathway-4 H whose `closes_conjuncts` set is redundant with the parent adds multiple-testing inflation (worse DSR trial counts) without progress, regardless of how cheap it is to run. The cost of running a redundant H *plus* the cost of the eventually-needed multi-pair H is strictly larger than the cost of the multi-pair H alone. |
+| "The unaddressed conjunct is flagged in `decisions.md` as a design-hypothesis-at-open concern; the derived H proceeds in parallel." | Sub-step 1.5 is a **gate**, not a flag. Logging the binding gap as a design-hypothesis-at-open note in `decisions.md` is parallel work, not a substitute for the gate. If the H does not progress an unaddressed or middle-range conjunct, redesign it (different cross-section, different feature, different exit) so its `closes_conjuncts` covers the binding gap, or drop it and propose H' that does. |
+| "Sub-step 1.5 will rarely fire — most derived H's emerge precisely *because* the parent didn't land a conjunct." | Mostly true, and that is the eligible case. The gate's purpose is to catch the *minority* of derived H's that look natural under Pathway 4 but actually re-test a landed conjunct. Scenarios where sub-step 1.5 reliably fires: (a) parent landed YES (a) on instrument 1, derived H proposes parameter sweep on instrument 1; (b) parent landed NO_2 (`fee_model` axis) at break-even fee 0.6 bp, derived H proposes another fee variant on the same feature; (c) parent's KICK-UP precondition fired, derived H ignores the structural finding and proposes a refinement inside the same broken frame. |
+| "I'll just write `closes_conjuncts = (TBD)` and figure it out when I run the H." | "TBD" is only legal for new-Purpose H's whose target notebook hasn't been opened yet (see H4 in the schema example). For same-Purpose derived H's, the cycle goal is already on the page in the notebook header — the conjuncts are nameable now. Postponing the naming postpones sub-step 1.5; postponing 1.5 is exactly the failure mode the gate exists to interrupt. |
+| "If sub-step 1.5 keeps rejecting my derived H's, the cycle is stuck — I'll skip 1.5 once to make progress." | Sub-step 1.5 rejecting a series of derived H's is a *signal*, not an obstruction: it says the cycle is locally exhausted under the current frame and the next move is *cross-H synthesis* (per `cross_h_synthesis.md`) — likely Pattern A (binding axis identified, close on Fallback NO) or Pattern B (Purpose too broad, split into derived Purposes). Skipping the gate to keep iterating is the sunk-cost path the gate exists to surface. |
+
 ## Updating hypotheses.md
 
 At the end of every H round (and whenever a derived H is generated),
 update `hypotheses.md`:
 
 ```markdown
-| ID | Statement | Status | experiment_id (= notebook = Purpose) | target_sub_claim_id | pathway | Acceptance condition | Last update |
-|---|---|---|---|---|---|---|---|
-| H1 | ... | supported           | exp_001 (mean-reversion EUR/USD intraday) | G1.1 | 2 | test PSR ≥ 0.95 | 2026-04-28 |
-| H2 | (Derived from H1, same Purpose) ... | supported | exp_001 | G1.1 | 4 | ... | 2026-04-28 |
-| H3 | (Derived from H2, same Purpose; targets G1.2: turnover-cap is in live-tradeability layer) ... | rejected | exp_001 | G1.2 | 4 | ... | 2026-04-28 |
-| H4 | (Derived from H1, NEW Purpose) ... | planned-runnow | exp_002 (momentum EUR/USD intraday) | G1.3 | 5 | ... | 2026-04-28 |
-| H5 | ... | planned-drop | n/a | n/a | n/a | n/a | 2026-04-28 |
+| ID | Statement | Status | experiment_id (= notebook = Purpose) | target_sub_claim_id | closes_conjuncts | pathway | Acceptance condition | Last update |
+|---|---|---|---|---|---|---|---|---|
+| H1 | ... | supported | exp_001 (mean-reversion EUR/USD intraday) | G1.1 | YES_a, YES_b (1/3 instruments) | 2 | test PSR ≥ 0.95 | 2026-04-28 |
+| H2 | (Derived from H1, same Purpose; expands cross-section toward YES (b)) ... | supported | exp_001 | G1.1 | YES_b (3/3 instruments) | 4 | walk-forward positive-rate ≥ 0.60 on 3 EUR pairs | 2026-04-28 |
+| H3 | (Derived from H2, same Purpose; targets G1.2: turnover-cap is in live-tradeability layer) ... | rejected | exp_001 | G1.2 | YES_c (Pattern A guard, fee axis) | 4 | break-even fee ≥ 1.5 bp/side | 2026-04-28 |
+| H4 | (Derived from H1, NEW Purpose) ... | planned-runnow | exp_002 (momentum EUR/USD intraday) | G1.3 | (per exp_002 cycle goal — TBD at notebook open) | 5 | ... | 2026-04-28 |
+| H5 | ... | planned-drop | n/a | n/a | n/a | n/a | n/a | 2026-04-28 |
+| H6 | (Derived from H1, same Purpose; **rejected at routing 1.5: closes_conjuncts = YES_a only on the same instrument H1 already landed YES_a on**. Superseded by H7 targeting unaddressed YES_b — see row H7 below.) | planned-drop | exp_001 | G1.1 | YES_a | 4 | n/a — rejected at routing | 2026-04-28 |
+| H7 | (Derived from H1, same Purpose; expands cross-section to land unaddressed YES_b — supersedes routing-rejected H6.) | planned-runnow | exp_001 | G1.1 | YES_b (3/3 instruments target) | 4 | walk-forward positive-rate ≥ 0.60 on 3 EUR pairs | 2026-04-28 |
 ```
 
 Each H row points to the `experiment_id` (= notebook = Purpose) it lives
-under. Multiple H's per Purpose share the same `experiment_id`.
+under. Multiple H's per Purpose share the same `experiment_id`. The H6
+row above shows a routing-stage rejection (sub-step 1.5 of the routing
+rule fired redundant): the row exists as the planning artifact's record
+of "this candidate was considered and rejected", not as a notebook entry
+— no `## H6` block is created in the notebook because H6 never ran.
 
-Three columns are load-bearing for the four-layer model
+Four columns are load-bearing for the cycle / research-goal layers
 (`references/research_goal_layer.md`):
 
 - **`Status`** carries the planning state (`planned-runnow` /
@@ -204,10 +270,30 @@ Three columns are load-bearing for the four-layer model
   sub-claim list (project README). A derived H inherits its parent's
   value by default; an override is recorded in the Statement column with
   a one-phrase reason (see H3 in the example above).
+- **`closes_conjuncts`** anchors the H in the **cycle goal layer** (=
+  the notebook's decision rule). It enumerates the YES / NO / KICK-UP
+  conjuncts the H tests, optionally annotated with structural progress
+  (e.g. `YES_b (3/3 instruments)`). The routing rule's sub-step 1.5
+  reads this against the parent H's `closes_conjuncts` and the parent's
+  `results.parquet` row to decide whether the new H progresses the
+  cycle goal or is redundant. Without this column, derived H's are
+  enumerated bookkeeping-style with no link to what the cycle is trying
+  to close. For new-Purpose H's (a different `experiment_id`), the
+  column references the new notebook's cycle goal and is finalized
+  when that notebook opens; mark "TBD at notebook open" in the
+  meantime (see H4 in the example).
 - **`pathway`** declares the H's generation provenance (1-6 from
   `hypothesis_generation.md`, or `ad-hoc`). Derived H's typically have
   `pathway = 4` (failure-derived) but may be 5 (cross-asset) or 6
   (mechanism-driven) depending on the mechanism that motivated them.
+
+`closes_conjuncts` and `pathway` are orthogonal: `pathway` certifies
+*how* the H was generated (Pathway 4 legitimacy = generation provenance
+is failure-derived), `closes_conjuncts` certifies *what cycle-goal
+work* the H does. A Pathway-4 H whose `closes_conjuncts` is redundant
+with the parent fails sub-step 1.5 even though Pathway 4 is otherwise
+valid — generation legitimacy is necessary but not sufficient for
+routing eligibility.
 
 ## Updating decisions.md
 
@@ -265,6 +351,47 @@ This classification is orthogonal to the same-notebook-vs-new-notebook
 decision. A run-now H whose Purpose is unchanged is the next round inside
 the current notebook *now*. A run-now H whose Purpose has changed opens
 the next notebook *now*.
+
+`planned-drop` covers three sub-categories that share the "this candidate
+H will not run" outcome: (a) **out-of-scope drop** (refuted in prior work,
+not worth the effort, judged outside the project scope); (b)
+**rejected-at-routing** (sub-step 1.5 of the routing rule fired
+redundant or freelance — the candidate cannot progress the cycle goal as
+designed); (c) **superseded** (replaced by a redesigned H' that targets
+the binding gap). For audit, the Statement column's leading clause
+identifies which sub-category fired (e.g., "rejected at routing 1.5: …",
+"superseded by H<id>′: …"). Cross-H synthesis at Purpose closure
+distinguishes the three when reading the dropped-H rows.
+
+## Notebook-body H-id numbering
+
+H-ids are **global and sequential across the project's `hypotheses.md`**:
+the H-id assigned to an H is its row position in `hypotheses.md`, in
+order of consideration. Rules:
+
+- Every H **considered** — whether it ran, was dropped out-of-scope,
+  was rejected at routing 1.5, or was superseded — gets the next
+  sequential H-id at the moment of consideration. The id is
+  permanent; subsequent renumbering is forbidden.
+- Every H that **actually runs** gets one `## H<id>` block in its
+  notebook, numbered with its `hypotheses.md` row id verbatim (so
+  `## H7` in the notebook ↔ row H7 in `hypotheses.md`).
+- H's that **did not run** (rejected-at-routing, out-of-scope drop,
+  superseded) get no `## H<id>` block in the notebook. Their
+  `hypotheses.md` row is the only artifact about them.
+
+Consequence: notebook H-ids may have gaps (e.g., `## H1`, `## H2`,
+`## H3`, `## H7` is legal — H4 went to a different notebook, H5 was
+dropped, H6 was rejected at routing). Gaps are not a defect; they are
+the audit trail of which candidates were considered but did not produce
+a notebook block. Renumbering the notebook to close gaps would erase
+the audit trail and is forbidden.
+
+This rule applies uniformly whether `hypotheses.md` is project-global
+or per-notebook in the project's convention; the load-bearing
+invariant is "every notebook `## H<id>` matches the row of the same id
+in `hypotheses.md`, and every row without a corresponding `## H<id>`
+in any notebook is a non-running candidate".
 
 ## Exhaustion criteria — the emergency-stop rule
 
@@ -401,6 +528,18 @@ If any is missing, the work is preliminary screening.
   contradictory variants in the same notebook
 - "Diminishing returns" claimed without verification → check the
   robustness-battery status (per H) before stopping
+- Derived H proposed without a `closes_conjuncts` value naming a
+  conjunct of the cycle goal's decision rule → freelance work serving
+  no consumer; sub-step 1.5 fires reject-at-routing. Either fill
+  `closes_conjuncts` from the cycle goal's YES / NO / KICK-UP branches,
+  or expand the decision rule (with justification recorded in
+  `decisions.md`) and re-test 1.5, or drop the candidate.
+- Derived H is a sensitivity / parameter-sweep variant of the parent H
+  on the **same instrument / same feature / same fee model** while a
+  multi-instrument / cross-section conjunct of the cycle goal's YES
+  branch remains unaddressed → conjunct-redundancy reject; sub-step
+  1.5 fires. Redesign the H so its `closes_conjuncts` covers the
+  binding gap, or drop and propose H' that does.
 
 ## Cycle-count guidance
 

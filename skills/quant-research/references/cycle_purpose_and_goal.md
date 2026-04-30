@@ -166,6 +166,17 @@ H on compute scaling that a decision rule on "regime stability vs Sharpe"
 does not. Freezing a taxonomy reintroduces the catalog problem the
 consumer-decision frame was introduced to fix.
 
+The decomposition above is run at notebook-open for the *initial* H
+portfolio. **Carry-forward derived H's** (H_{n+1} appended mid-cycle)
+must pass the same conjunct-contribution test before they are placed
+into the cycle — see `hypothesis_cycles.md` routing rule sub-step 1.5
+("conjunct contribution gate"). Without that gate, derived H's drift
+into Pathway-4 sensitivity sweeps that re-test conjuncts the parent
+already landed while leaving the binding gap untouched (the
+"freelance work serving no consumer" failure pattern at the bottom of
+this file). The conjunct(s) each carry-forward H targets are recorded
+in the `closes_conjuncts` column of `hypotheses.md`.
+
 ## The three closure forms are equivalent research outputs
 
 The cycle ends when the consumer can apply the decision rule and land
