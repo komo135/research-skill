@@ -11,6 +11,10 @@ finance research**:
   reviewer) that fires per Hypothesis on numeric red flags or before any
   `verdict = "supported"` decision. Headline-figure plan and reader takeaway
   are required pre-implementation items, not end-of-pipeline decoration.
+  Every per-H verdict — supported or rejected — must precede any derived
+  hypothesis with a **why-why chain** (5-whys, ≥ 3 levels, mechanism-level
+  termination); the bare verdict / `failure_mode` label is not a legitimate
+  root for derivation.
 - `experiment-review` — a separate, parallel-dispatched **claim-warrant review**
   (7 specialists + 1 adversarial cold-eye reviewer) that asks not "is the code
   correct?" but "is the conclusion warranted by what was actually tested?"
@@ -205,19 +209,26 @@ A typical research session, end-to-end:
    severity-tagged findings on hypothesis falsifiability, scope,
    methodology, validation sufficiency, claim calibration, literature
    coverage, notebook narrative, and an adversarial cold-eye pass.
-7. **Aggregate H1's result.** Append a row to `results/results.parquet`
+7. **Write H1's why-why chain.** ≥ 3 consecutive levels into the per-H
+   interpretation cell, terminating at a mechanism-level cause (what the
+   strategy was actually exposed to / harvested / selected — not at a
+   metric, threshold, parameter, or `failure_mode` label). Required at
+   *every* per-H verdict, supported and rejected alike, before any
+   derived H can be admitted.
+8. **Aggregate H1's result.** Append a row to `results/results.parquet`
    for H1 (one row per Hypothesis, not per notebook) under the shared
-   schema. The verdict is recorded in `decisions.md` for this Purpose's
-   cycle entry, with H1 as a sub-bullet.
-8. **Did a derived H emerge?** If yes and the Purpose is unchanged,
-   continue inside the same notebook with a new `## H2` block (and repeat
-   steps 3–7 for H2, then H3, …). If a new investigation reflects a new
-   Purpose, open the next notebook (`exp_<NNN+1>_*.py`).
-9. **Synthesise across H1…HN.** At the end of the notebook, write the
-   Purpose-level conclusion (which H worked, which didn't, what the
-   collective answer to the Purpose is) and the derived Purposes for
-   future notebooks — the skill rejects the habit of stopping after one
-   cycle.
+   schema. The verdict and the chain's terminal answer are recorded in
+   `decisions.md` for this Purpose's entry, with H1 as a sub-bullet.
+9. **Did a derived H emerge?** If yes and the Purpose is unchanged,
+   continue inside the same notebook with a new `## H2` block citing a
+   specific terminal answer from H1's why-why chain (and repeat steps
+   3–8 for H2, then H3, …). If a new investigation reflects a new
+   Purpose, open the next notebook (`pur_<NNN+1>_*.py`).
+10. **Synthesise across H1…HN.** At the end of the notebook, write the
+    Purpose-level conclusion (which H worked, which didn't, what the
+    collective answer to the Purpose is) and the derived Purposes for
+    future notebooks — the skill rejects the habit of stopping after
+    one Hypothesis.
 
 ## Bundled helper scripts
 
@@ -268,16 +279,94 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- Version 0.13.0
+- Version 0.14.0
 - Two skills, two review layers, both required as co-gate.
 - Notebook unit is one Purpose (open-ended investigation); per-Hypothesis
   verdict gates and result rows.
 - R-side R&D protocol: Stage 0 (pre-hypothesis exploration), Step 1.5
-  (hypothesis generation pathways), cross-H synthesis, exhaustion trigger,
-  novelty / knowledge-advance gate.
+  (hypothesis generation pathways), why-why depth gate at every per-H
+  verdict, cross-H synthesis, exhaustion trigger, novelty / knowledge-
+  advance gate.
 - Adversarial-reviewer mechanism backed by Song (2026); see *References*.
 
 ### Changelog
+
+**0.14.0** — Two structural changes that compose: (a) abolishes the
+**"cycle" concept layer** (F26) — a duplicate unit-of-investigation
+abstraction above the Hypothesis that empirically was always the
+Purpose / notebook lifetime; (b) adds the **why-why analysis depth
+gate** (F27) on derived hypothesis admissibility — the bare verdict /
+`failure_mode` label is no longer a legitimate root for derivation,
+and the rule fires identically on supported and rejected parents.
+Validated by RED-GREEN over a fixture that withholds the
+mechanism-level post-mortem the user would normally not have at the
+moment of derivation; the RED run produced derivations without an
+explicit chain (F-RED-1 fired), the GREEN run produced derivations
+each citing a distinct chain terminal in the parent's mechanism-level
+reading.
+
+- **F26 — Cycle vocabulary inversion.** The "cycle" framing implied a
+  separate unit of investigation above the Hypothesis but below the
+  Purpose. Empirically there is no such unit: "the cycle" was always
+  the lifetime of one notebook (= one Purpose), the "cycle goal" was
+  always the Purpose-header pre-implementation items, and "the cycle
+  ends" was always "the notebook closes". Counter renames
+  `references/cycle_purpose_and_goal.md` → `references/purpose_design.md`
+  and `references/hypothesis_cycles.md` →
+  `references/hypothesis_iteration.md`, restructures framing to attach
+  Decision-rule pre-commit, Primary YES / Fallback NO with binding
+  axis / KICK-UP, and N=5 / N=8 emergency stops directly to the
+  Purpose layer without an intermediate "cycle" abstraction. SKILL.md,
+  decisions.md.template, purpose.py.template, README.md.template,
+  hypotheses.md.template, and all in-protocol references
+  (research_design.md / research_goal_layer.md / experiment_protocol.md
+  / cross_h_synthesis.md / bug_review.md / notebook_narrative.md /
+  post_review_reconciliation.md / hypothesis_generation.md /
+  research_quality_checklist.md / robustness_battery.md) are swept of
+  cycle vocabulary. `decisions.md.template` Purpose entry header
+  changes from `## YYYY-MM-DD cycle <N> (exp_<NNN>...)` to
+  `## YYYY-MM-DD pur_<NNN>_...`. Existing `skill_tests/` RED/GREEN
+  findings retain the old vocabulary as historical audit trail and
+  are deliberately not edited.
+
+- **F27 — Derived hypothesis depth gate.** Before this change, derived
+  H's could be generated directly from the parent's verdict or
+  `failure_mode` label — the protocol mandated own falsifiable claim,
+  own purpose, and meaningful research unit at admissibility, but
+  these checks could be satisfied syntactically with no real
+  mechanism-level reading of the parent experiment. Result: derived
+  H's that "could not state their own purpose" beyond "the parent
+  failed, let's vary X" or "the parent worked, let's try sibling Y" —
+  the same shallowness pattern on rejected and supported parents.
+  Counter introduces a new reference
+  `references/why_why_analysis.md` defining the chain (≥ 3
+  consecutive levels, each "why?" taking the previous answer as
+  subject, terminating only at a mechanism-level cause — what the
+  strategy was actually exposed to / harvested / selected — not at a
+  metric / threshold / parameter / `failure_mode` label). The chain
+  is mandatory at every per-H verdict regardless of value (supported
+  / rejected / partial / parked), as a new Step 12.5 in `SKILL.md`
+  and as a 4th admissibility property in `hypothesis_iteration.md`
+  routing rule sub-step 0. Each derived H carries a
+  `chain_terminal_cited` field naming which terminal answer it is
+  grounded in; without the citation the H is rejected at routing as
+  "surface-derived". The `hypotheses.md.template` schema gains the
+  `chain_terminal_cited` column. SKILL.md anti-rationalization table
+  gains a "supported parent → sibling extension without chain" entry
+  symmetrical to the rejected-parent case. The completion gate
+  becomes 5 gates (bug_review / robustness battery / why-why chain /
+  experiment-review / research-quality checklist) where the chain is
+  a per-H prerequisite for any derivation rather than only a
+  precondition for `verdict='supported'`.
+
+The two changes compose: F26 makes the Purpose layer the only unit of
+investigation, and F27 makes the why-why chain the depth gate that
+prevents derived H's from being shallow within that layer. Each
+change is independent — F26 alone would leave the depth gap; F27
+alone would leave the duplicate-layer abstraction. Together they
+move the protocol from "structurally permits surface derivation"
+(RED) to "structurally enforces mechanism-level grounding" (GREEN)
+on the same fixture.
 
 **0.13.0** — Adds the **hypothesis ↔ experiment inversion counter**,
 closing three structural failure modes (F23 / F24 / F25) in which the
