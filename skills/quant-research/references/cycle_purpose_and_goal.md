@@ -67,7 +67,7 @@ question is implicit and the next Purpose's selection becomes invisible.
 ```markdown
 ### Consumer
 [Concretely named. Example: "the next derived Purpose
-(exp_004 — funding-rate signal at multi-day horizons)";
+(pur_004 — funding-rate signal at multi-day horizons)";
 "the production strategy build for Q3 2026";
 "my own next Purpose, scoped as 'lower-frequency variant
 of this signal'"; "the literature-review section of paper-3

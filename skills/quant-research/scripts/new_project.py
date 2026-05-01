@@ -11,7 +11,7 @@ Creates the standard project layout under notebooks/<project-name>/:
     literature/
         papers.md
         differentiation.md
-    experiments/
+    purposes/
         INDEX.md
     results/
         figures/
@@ -47,7 +47,7 @@ def init_project(
 
     for sub in [
         "literature",
-        "experiments",
+        "purposes",
         "results/figures",
         "results/intermediate",
         "reproducibility",
@@ -71,7 +71,7 @@ def init_project(
         ASSETS_DIR / "differentiation.md.template",
         project_dir / "literature" / "differentiation.md",
     )
-    shutil.copy(ASSETS_DIR / "INDEX.md.template", project_dir / "experiments" / "INDEX.md")
+    shutil.copy(ASSETS_DIR / "INDEX.md.template", project_dir / "purposes" / "INDEX.md")
 
     # Reproducibility files
     (project_dir / "reproducibility" / "env.lock").write_text(
@@ -113,7 +113,7 @@ def main() -> None:
     )
     print(f"  4. List H1, H2, ... in {project_dir}/hypotheses.md.")
     print(
-        f"  5. python new_experiment.py --project {args.name} --slug <purpose> --hyp H1"
+        f"  5. python new_purpose.py --project {args.name} --slug <purpose> --hyp H1"
     )
 
 

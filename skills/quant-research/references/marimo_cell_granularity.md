@@ -107,8 +107,8 @@ for that H:
 # Per-H closing cell: append to results.parquet (see results_db_schema.md)
 append_to_results_db(
     project="<name>",
-    experiment_id="exp_005",     # the notebook = the Purpose
-    hypothesis_id="H3",          # the individual H within the Purpose
+    purpose_id="pur_005",        # the notebook = the Purpose (= the parent thesis)
+    hypothesis_id="H3",          # the individual H within the Purpose; this H's `## H<id>` block IS one experiment
     metrics={"sharpe": ..., "win_rate": ..., ...},
 )
 ```

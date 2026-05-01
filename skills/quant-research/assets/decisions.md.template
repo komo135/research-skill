@@ -73,7 +73,7 @@ is for Purpose-level (= new-notebook) candidates only.
 ## Example
 
 ```markdown
-## YYYY-MM-DD cycle 5 (exp_005_mean_reversion_eurusd_intraday) — Purpose: does mean-reversion work on EUR/USD intraday?
+## YYYY-MM-DD cycle 5 (pur_005_mean_reversion_eurusd_intraday) — Purpose: Mean-reversion at H1 frequency on EUR/USD generates risk-adjusted edge net of cost
 
 - **Design hypothesis at open**: opening this Purpose will close G1.1 (mean-reversion
   exists on EUR/USD intraday at signal-strength sufficient to produce a verdict)

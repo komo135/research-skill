@@ -1,7 +1,9 @@
 """aggregate_results.py — Append result rows to results/results.parquet.
 
-Called from the final cell of an experiment notebook. The schema is documented in
-references/results_db_schema.md.
+Called from the final cell of a Purpose notebook (one row per H). The
+schema is documented in references/results_db_schema.md. Each `## H<id>`
+block in the Purpose notebook is one experiment that tests a sub-claim
+of the parent thesis; that experiment emits one row here.
 
 Usage in Python:
     from aggregate_results import append_result
@@ -9,7 +11,7 @@ Usage in Python:
         db_path="results/results.parquet",
         row={
             "project": "...",
-            "experiment_id": "exp_005_signal_flip",
+            "purpose_id": "pur_005_signal_flip",
             ...
         },
     )
@@ -35,7 +37,7 @@ import polars as pl
 # optional column.
 REQUIRED_FIELDS = {
     "project",
-    "experiment_id",
+    "purpose_id",
     "hypothesis_id",
     "run_timestamp",
     "instrument",

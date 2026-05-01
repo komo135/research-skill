@@ -46,7 +46,7 @@ entry).
 ## Status summary
 
 - Current cycle: [N of M planned]
-- Purposes opened: [exp_001, exp_002, ...]
+- Purposes opened: [pur_001, pur_002, ...]
 - Sub-claims confirmed: [G1.1, ...]
 - Sub-claims falsified: [G1.2, ...]
 - Sub-claims in progress: [G1.3]
@@ -55,7 +55,7 @@ entry).
 
 - [literature/](literature/papers.md) — prior papers and differentiation
 - [hypotheses.md](hypotheses.md) — hypothesis portfolio (with `target_sub_claim_id` per row)
-- [experiments/INDEX.md](experiments/INDEX.md) — list of experiment notebooks
+- [purposes/INDEX.md](purposes/INDEX.md) — list of Purpose notebooks (one parent thesis per file)
 - [decisions.md](decisions.md) — time-ordered decision log (with sub-claim progress updates per Purpose)
 - [results/](results/) — aggregated `results.parquet` and figures
 - [reproducibility/](reproducibility/) — env lock, data hashes, seed

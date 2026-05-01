@@ -40,7 +40,7 @@ The cycle plays out at two scales:
 | Scale | Where the next round happens |
 |---|---|
 | **Within a Purpose** (most cycles) | Next H block inside the same notebook |
-| **Across Purposes** | Next notebook (`exp_<NNN+1>_*.py`) |
+| **Across Purposes** | Next notebook (`pur_<NNN+1>_*.py`) |
 
 Default to the within-a-Purpose scale. Crossing into a new notebook is
 reserved for cases where the Purpose itself has shifted (see
@@ -133,8 +133,8 @@ Each derived hypothesis becomes a row in `hypotheses.md`:
 
 | Where the derived H goes (per the routing rule below) | What `hypotheses.md` carries |
 |---|---|
-| Same notebook (Purpose unchanged) | New row, same `experiment_id` as the parent; Status = `planned-runnow` / `planned-nextsession`; `target_sub_claim_id` inherited from parent unless overridden in Statement column with reason; `pathway` declared (typically 4 = failure-derived) |
-| New notebook (Purpose changed) | New row, new `experiment_id` (the next `exp_<NNN+1>_*.py`); Status = `planned`; `target_sub_claim_id` chosen from sub-claims still `not started` or `in progress`; `pathway` declared |
+| Same notebook (Purpose unchanged) | New row, same `purpose_id` as the parent; Status = `planned-runnow` / `planned-nextsession`; `target_sub_claim_id` inherited from parent unless overridden in Statement column with reason; `pathway` declared (typically 4 = failure-derived) |
+| New notebook (Purpose changed) | New row, new `purpose_id` (the next `pur_<NNN+1>_*.py`); Status = `planned`; `target_sub_claim_id` chosen from sub-claims still `not started` or `in progress`; `pathway` declared |
 | Dropped | New row, Status = `planned-drop`; reason in the Statement column ("dropped: refuted in `papers.md`") |
 
 Each Purpose closure also appends to `decisions.md` (see "Updating
@@ -148,7 +148,42 @@ single source of truth.
 ## Routing rule (the most important rule in this file)
 
 When a derived H emerges, decide where it goes by the following test, in
-order:
+order. Sub-step 0 (admissibility) runs **before** routing — a candidate
+that fails admissibility is not an H at all and does not enter routing;
+it is reclassified as robustness analysis or engineering work and
+recorded in the parent H's section, not in `hypotheses.md`.
+
+0. **Admissibility — is this a hypothesis at all, or is it robustness
+   on the parent?** A derived hypothesis is admissible only when it
+   simultaneously satisfies all three:
+   - **Own falsifiable claim** distinct from the parent H (different
+     decision axis, not just a tighter / looser threshold on the
+     parent's axis)
+   - **Own stated purpose** in one sentence, written in the per-H
+     design header *before* the H is run, answering "what new
+     question does this H answer that the parent did not?"
+   - **Meaningful research unit** — the H is at the granularity of
+     an independent finding, not a 1-axis sweep over sizing /
+     threshold / regime / lookback / cost / fee. Sweeps belong in the
+     Step 12 robustness battery, recorded inside the parent H's
+     section as 2D / 3D grids.
+
+   Inadmissible patterns (record as robustness inside parent H, not
+   as a new H):
+   - Sensitivity / parameter-sweep variant ("H1 + tighter threshold",
+     "H1 + sizing variant", "H1 with 30-day lookback instead of 20")
+   - Follow-on layer that does not change the underlying claim ("H1
+     × vol-targeted sizing", "H1 + portfolio overlay", "H1 with
+     trailing stop adjusted")
+   - Threshold-variation rerun aimed at recovering a rejected H1
+   - Diagnosis without an independent claim ("rerun H1 with a smaller
+     test set to see what happens")
+
+   When inadmissible, the work is real and may still be necessary, but
+   it is **not** an H<id> and does not get its own row in
+   `hypotheses.md` or `results.parquet`. It lives inside the parent H's
+   robustness section and contributes to the parent H's verdict, not
+   to a new verdict of its own.
 
 1. **Does the current notebook's Purpose statement still cover the new H?**
    - Yes → run sub-step 1.5 below before placing the H.
@@ -240,19 +275,19 @@ At the end of every H round (and whenever a derived H is generated),
 update `hypotheses.md`:
 
 ```markdown
-| ID | Statement | Status | experiment_id (= notebook = Purpose) | target_sub_claim_id | closes_conjuncts | pathway | Acceptance condition | Last update |
+| ID | Statement | Status | purpose_id (= notebook = Purpose) | target_sub_claim_id | closes_conjuncts | pathway | Acceptance condition | Last update |
 |---|---|---|---|---|---|---|---|---|
-| H1 | ... | supported | exp_001 (mean-reversion EUR/USD intraday) | G1.1 | YES_a, YES_b (1/3 instruments) | 2 | test PSR ≥ 0.95 | 2026-04-28 |
-| H2 | (Derived from H1, same Purpose; expands cross-section toward YES (b)) ... | supported | exp_001 | G1.1 | YES_b (3/3 instruments) | 4 | walk-forward positive-rate ≥ 0.60 on 3 EUR pairs | 2026-04-28 |
-| H3 | (Derived from H2, same Purpose; targets G1.2: turnover-cap is in live-tradeability layer) ... | rejected | exp_001 | G1.2 | YES_c (Pattern A guard, fee axis) | 4 | break-even fee ≥ 1.5 bp/side | 2026-04-28 |
-| H4 | (Derived from H1, NEW Purpose) ... | planned-runnow | exp_002 (momentum EUR/USD intraday) | G1.3 | (per exp_002 cycle goal — TBD at notebook open) | 5 | ... | 2026-04-28 |
+| H1 | ... | supported | pur_001 (mean-reversion EUR/USD intraday) | G1.1 | YES_a, YES_b (1/3 instruments) | 2 | test PSR ≥ 0.95 | 2026-04-28 |
+| H2 | (Derived from H1, same Purpose; expands cross-section toward YES (b)) ... | supported | pur_001 | G1.1 | YES_b (3/3 instruments) | 4 | walk-forward positive-rate ≥ 0.60 on 3 EUR pairs | 2026-04-28 |
+| H3 | (Derived from H2, same Purpose; targets G1.2: turnover-cap is in live-tradeability layer) ... | rejected | pur_001 | G1.2 | YES_c (Pattern A guard, fee axis) | 4 | break-even fee ≥ 1.5 bp/side | 2026-04-28 |
+| H4 | (Derived from H1, NEW Purpose) ... | planned-runnow | pur_002 (momentum EUR/USD intraday) | G1.3 | (per pur_002 cycle goal — TBD at notebook open) | 5 | ... | 2026-04-28 |
 | H5 | ... | planned-drop | n/a | n/a | n/a | n/a | n/a | 2026-04-28 |
-| H6 | (Derived from H1, same Purpose; **rejected at routing 1.5: closes_conjuncts = YES_a only on the same instrument H1 already landed YES_a on**. Superseded by H7 targeting unaddressed YES_b — see row H7 below.) | planned-drop | exp_001 | G1.1 | YES_a | 4 | n/a — rejected at routing | 2026-04-28 |
-| H7 | (Derived from H1, same Purpose; expands cross-section to land unaddressed YES_b — supersedes routing-rejected H6.) | planned-runnow | exp_001 | G1.1 | YES_b (3/3 instruments target) | 4 | walk-forward positive-rate ≥ 0.60 on 3 EUR pairs | 2026-04-28 |
+| H6 | (Derived from H1, same Purpose; **rejected at routing 1.5: closes_conjuncts = YES_a only on the same instrument H1 already landed YES_a on**. Superseded by H7 targeting unaddressed YES_b — see row H7 below.) | planned-drop | pur_001 | G1.1 | YES_a | 4 | n/a — rejected at routing | 2026-04-28 |
+| H7 | (Derived from H1, same Purpose; expands cross-section to land unaddressed YES_b — supersedes routing-rejected H6.) | planned-runnow | pur_001 | G1.1 | YES_b (3/3 instruments target) | 4 | walk-forward positive-rate ≥ 0.60 on 3 EUR pairs | 2026-04-28 |
 ```
 
-Each H row points to the `experiment_id` (= notebook = Purpose) it lives
-under. Multiple H's per Purpose share the same `experiment_id`. The H6
+Each H row points to the `purpose_id` (= notebook = Purpose) it lives
+under. Multiple H's per Purpose share the same `purpose_id`. The H6
 row above shows a routing-stage rejection (sub-step 1.5 of the routing
 rule fired redundant): the row exists as the planning artifact's record
 of "this candidate was considered and rejected", not as a notebook entry
@@ -278,7 +313,7 @@ Four columns are load-bearing for the cycle / research-goal layers
   `results.parquet` row to decide whether the new H progresses the
   cycle goal or is redundant. Without this column, derived H's are
   enumerated bookkeeping-style with no link to what the cycle is trying
-  to close. For new-Purpose H's (a different `experiment_id`), the
+  to close. For new-Purpose H's (a different `purpose_id`), the
   column references the new notebook's cycle goal and is finalized
   when that notebook opens; mark "TBD at notebook open" in the
   meantime (see H4 in the example).
@@ -304,7 +339,7 @@ progress update at close, design hypothesis at close — see
 `references/research_goal_layer.md`):
 
 ```markdown
-## YYYY-MM-DD cycle <N> (exp_<NNN>_<purpose-slug>) — Purpose: <one-line>
+## YYYY-MM-DD cycle <N> (pur_<NNN>_<purpose-slug>) — Purpose: <one-line>
 
 - Design hypothesis at open: [the prediction made BEFORE the cycle ran —
   which research-goal sub-claim(s) this Purpose is expected to advance,
@@ -464,7 +499,7 @@ Beyond **N=8 H tested under one Purpose** without
 `verdict='supported'`, no H_{N+1} is appendable to this Purpose. The
 Purpose closes mechanically. If the researcher believes more work is
 warranted, it is opened as a new Purpose (new notebook, new
-`experiment_id`) carrying the previous Purpose's synthesis as
+`purpose_id`) carrying the previous Purpose's synthesis as
 documented prior.
 
 The hard cap is statistical, not punitive: beyond 8 H, the

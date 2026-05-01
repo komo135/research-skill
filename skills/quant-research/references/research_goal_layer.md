@@ -25,9 +25,9 @@ an explicit anchor in the research goal.
       ↓
 [Design hypothesis]           decisions.md — the prediction "Purpose A solves goal sub-claim X"
       ↓
-[Purpose]                     notebook — one open-ended question, one cycle
+[Purpose]                     notebook — one parent research thesis, verdicted at notebook closure
       ↓
-[Hypothesis]                  ## H<id> block inside the notebook — falsifiable claim
+[Hypothesis]                  ## H<id> block inside the notebook — falsifiable child claim, tested by one experiment
 ```
 
 The hypothesis at the bottom layer is what `research_design.md` and
@@ -153,8 +153,10 @@ is invisible:
 
 ## Layer 3 — Purpose
 
-A Purpose is the open-ended question one notebook investigates. The
-Purpose's relationship to the research-goal layer is via **`target_sub_claim_id`**
+A Purpose is the parent research thesis one notebook tests, written
+as a declarative falsifiable statement and verdicted at notebook
+closure. The Purpose's relationship to the research-goal layer is
+via **`target_sub_claim_id`**
 — the cycle goal's 5th item (see `cycle_purpose_and_goal.md`).
 
 A Purpose normally targets **1 sub-claim** as primary and may touch 1-2

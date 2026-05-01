@@ -24,7 +24,7 @@ previous Purpose's H's.
 
 ## Inputs
 
-- `results.parquet` filtered to the current `experiment_id` (= the
+- `results.parquet` filtered to the current `purpose_id` (= the
   Purpose / notebook).
 - `decisions.md` entries for any rejected H's (for the prose context
   behind the `failure_mode` controlled-vocabulary value).
@@ -45,18 +45,32 @@ cluster *says* about the world, distinct from what any single H said.
 same value across them (e.g., `fee_model` on H1, H2, H3).
 
 **Meta-finding**: That axis is the **binding constraint** for this
-Purpose. The Purpose, as scoped, is not viable under that axis
-without a redesign that targets it specifically.
+Purpose. The parent thesis stated in the Purpose header is **refuted
+under the binding axis** — that is the cycle's durable finding.
 
 **Action**:
-- Either redesign as a derived Purpose that addresses the axis (e.g.,
-  `fee_model` binding → derived Purpose "lower-frequency variants of
-  the same signal"; `regime_mismatch` binding → derived Purpose
-  "regime-conditional version" with the regime as part of the
-  Purpose statement),
-- Or close the Purpose with the axis as the durable finding ("under
-  realistic fees the funding-rate signal does not survive on this
-  universe / horizon — `fee_model` is the binding constraint").
+- **First, verdict the parent thesis as `refuted` at Purpose-level
+  closure**, naming the binding axis explicitly (e.g. "Mean-reversion
+  at H1 frequency on EUR/USD does not generate risk-adjusted edge net
+  of cost — `fee_model` is the binding constraint"). Pattern A is
+  evidence *for the parent thesis being refuted*, not for the
+  Purpose continuing in another form. The Purpose-level closure gate
+  in `SKILL.md` enforces this.
+- Then, **independently**, decide whether a derived Purpose with a
+  *different parent thesis* should be opened. A derived Purpose tests
+  a thesis distinct from the closed one — typically scoped to a
+  region of the binding axis where the original thesis did not apply
+  (e.g. "Mean-reversion at *lower* frequencies generates risk-adjusted
+  edge net of cost"). The derived Purpose is its own falsifiable
+  claim, not a relabeling of the closed thesis.
+- The anti-pattern this guards against: closing one Purpose and
+  opening a new Purpose whose thesis is a near-paraphrase of the
+  closed one ("Does mean-reversion work on EUR/USD intraday?" →
+  "Does mean-reversion work on EUR/USD at lower frequencies?"
+  treating it as the same investigation). Without first verdicting
+  the parent thesis, the derived Purpose carries the original
+  thesis forward without ever falsifying it. The parent thesis
+  must die in writing before its scope can be re-cast.
 
 ### Pattern B — Different axes, no convergence
 
@@ -64,20 +78,26 @@ without a redesign that targets it specifically.
 *different* across them (H1: `wrong_horizon`, H2: `regime_mismatch`,
 H3: `wrong_baseline`, …).
 
-**Meta-finding**: The Purpose is **too broad**. The H's are testing
-different specific claims under one umbrella; their failures share no
-common cause; no single redesign helps. This is usually the symptom
-of a Purpose that conflates a general phenomenon with a specific
-predictive claim.
+**Meta-finding**: The parent thesis was **too broad to be falsifiable
+as a single claim**. The Purpose-level verdict is `refuted-as-stated`
+with the explanation that the parent thesis conflated multiple
+distinct claims about the world. This is itself a substantive
+research finding (the parent thesis is wrong in scope, not wrong in
+content).
 
 **Action**:
-- Split the Purpose into derived Purposes, each tightly scoped to one
-  axis the H's surfaced. For example, "Does funding signal carry
-  information?" → split into "Does it carry information about return
-  direction at the next funding interval?" + "Does it carry
-  information about realized volatility?" + "Does it carry capacity
-  for sized deployment?". Each derived Purpose is investigated in a
-  separate notebook.
+- **First, verdict the parent thesis as `refuted-as-stated`** at
+  Purpose-level closure, naming the conflation explicitly
+  ("'Funding signal carries information' is too broad — the
+  H's surfaced that 'information about return direction' and
+  'information about realized volatility' are independent claims
+  with different binding axes"). Pattern B is evidence *for the
+  parent thesis being too broad*, not for it being right under
+  some unidentified narrower form.
+- Then, **independently**, propose derived Purposes each scoped to
+  one of the surfaced sub-claims, each with its **own parent
+  thesis** as a declarative falsifiable statement. The original
+  parent thesis is closed; derived Purposes are not its rebranding.
 - Avoid the failure mode of "let me try H_{N+1} hoping it fits" —
   with no shared failure mode there is no axis for H_{N+1} to fix.
 
@@ -190,7 +210,7 @@ hypothesis_cycles.md as run-now / next-session / drop.]
 ### `decisions.md` entry
 
 ```markdown
-## {date} — exp_NNN Purpose-level synthesis
+## {date} — pur_NNN Purpose-level synthesis
 
 - Pattern: {A / B / C / D / E or combined}
 - Meta-finding: {one sentence}
@@ -203,10 +223,19 @@ hypothesis_cycles.md as run-now / next-session / drop.]
 ## Handoff to the next notebook (when a derived Purpose opens)
 
 When the synthesis produces a derived Purpose that will be opened as a
-new notebook (`exp_<NNN+1>_*.py`), the handoff between old and new
+new notebook (`pur_<NNN+1>_*.py`), the handoff between old and new
 notebook follows the four-layer model in
-`references/research_goal_layer.md`:
+`references/research_goal_layer.md`. **A precondition: the closing
+notebook must have recorded a Purpose-level verdict on its parent
+thesis** (per the Purpose-level closure gate in `SKILL.md`). Without
+that verdict, the new notebook's parent thesis is at risk of being a
+near-paraphrase of an unverdicted prior thesis — the F23 anti-pattern.
 
+0. **Parent thesis of the closing notebook is verdicted** (supported /
+   refuted / partial / refuted-as-stated). The verdict is recorded in
+   the closing notebook's Purpose-level conclusion cell **and** in
+   `decisions.md`'s Purpose entry as the *design-hypothesis at-close*.
+   No derived Purpose may open until this verdict is in writing.
 1. **The new notebook's body does NOT carry the old Purpose's synthesis,
    Pattern label, binding axis, or any derivation prose.** That information
    lives in `decisions.md` (the old Purpose entry's Purpose-level synthesis
@@ -218,12 +247,18 @@ notebook follows the four-layer model in
    from the old Purpose. The chosen sub-claim is whichever the synthesis
    identified as the next sub-claim to attack (e.g., Pattern A's binding
    axis often shifts the question to a different sub-claim).
-3. **The new notebook's `## Purpose` statement** is written as an
-   open-ended question about the world, in the form
-   `cycle_purpose_and_goal.md` requires. Phrases like "派生した", "handoff",
-   "Pattern A", "binding axis carried over from", "as decided in
-   cross_h_synthesis", or "from exp_<NNN>" do not appear in the Purpose
-   header, the docstring, or any markdown cell of the new notebook.
+3. **The new notebook's `## Purpose` statement** is written as a
+   declarative falsifiable parent thesis (= research thesis), in the
+   form `cycle_purpose_and_goal.md` requires. The new parent thesis is
+   distinct from the closed one — typically scoped to a region of the
+   binding axis where the closed thesis did not apply, or to one of
+   the sub-claims that Pattern B surfaced. A near-paraphrase of the
+   closed parent thesis (e.g. "intraday" → "lower frequency" with the
+   rest of the claim copied) is rejected. Phrases like "派生した",
+   "handoff", "Pattern A", "binding axis carried over from", "as
+   decided in cross_h_synthesis", or "from pur_<NNN>" do not appear in
+   the Purpose header, the docstring, or any markdown cell of the new
+   notebook.
 4. **The new notebook's `decisions.md` Purpose entry** carries the link
    in two places: the *Design hypothesis at open* line ("opening this
    Purpose will close G1.X to confirmed or falsified") implicitly carries
@@ -235,7 +270,7 @@ notebook follows the four-layer model in
    encouraged when they convey research content: e.g., a Figure plan
    line like `Fig 4 — H_old / H_new comparison of cumulative PnL` names
    the comparison series. This is research content, not handoff prose.
-   The line "as a follow-up to exp_<NNN>'s Pattern A finding" is
+   The line "as a follow-up to pur_<NNN>'s Pattern A finding" is
    handoff prose and is not allowed.
 
 ### Why this matters
@@ -243,7 +278,7 @@ notebook follows the four-layer model in
 Without the handoff rules above, the derived Purpose's notebook drifts
 into being a continuation of the old notebook's narrative. The reader
 who opens only the new notebook then sees a research artifact whose
-Purpose is "exp_<NNN>'s Pattern A consequence" rather than an open-ended
+Purpose is "pur_<NNN>'s Pattern A consequence" rather than an independent
 investigation of a research-goal sub-claim. That reframes the unit of
 research from sub-claim-anchored Purpose to handoff-chain Hypothesis,
 which is the failure mode the four-layer model exists to prevent.

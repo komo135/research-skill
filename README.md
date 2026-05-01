@@ -77,12 +77,20 @@ If you want Jupyter, you will be fighting the skill, not using it.
 ## What you get, in one paragraph
 
 Start a project → the skill scaffolds a folder with `hypotheses.md`,
-`literature/papers.md`, `literature/differentiation.md`, `experiments/`,
+`literature/papers.md`, `literature/differentiation.md`, `purposes/`,
 `results/`, `decisions.md`, and `reproducibility/`. **One notebook = one
-Purpose** (an open-ended investigation about the world); one or more
-falsifiable Hypotheses are tested as successive `## H<id>` rounds inside
-it. New H emerging during the run continues in the same notebook as long
-as the Purpose is unchanged; only a Purpose change opens a new notebook.
+Purpose** (= one parent research thesis, written as a declarative
+falsifiable claim about the world); one or more admissible falsifiable
+Hypotheses (each tested by one experiment = one `## H<id>` block)
+decompose the parent thesis as successive rounds inside it. New H
+emerging during the run continues in the same notebook as long as the
+Purpose is unchanged AND it satisfies admissibility (own falsifiable
+claim, own stated purpose distinct from parent, meaningful research unit
+— sensitivity sweeps and parameter-only follow-ons go in the robustness
+battery, not the hypothesis log); only a Purpose change opens a new
+notebook. The notebook closes with a Purpose-level verdict on the
+parent thesis (supported / refuted / partial / refuted-as-stated) in
+addition to per-H verdicts.
 The notebook template forces a *design cell* up front: Purpose, first
 hypothesis (H1), universe (≥ 3 instruments or a cross-section),
 acceptance / rejection thresholds, data range with embargo, **headline
@@ -176,8 +184,8 @@ A typical research session, end-to-end:
    skill auto-activates; it runs `scripts/new_project.py` to scaffold the
    folder, asks you to fill `hypotheses.md` and `literature/`.
 2. **Pick a Purpose and create the notebook for it.**
-   `scripts/new_experiment.py` generates
-   `experiments/exp_NNN_<purpose-slug>.py` from the template with the
+   `scripts/new_purpose.py` generates
+   `purposes/pur_NNN_<purpose-slug>.py` from the template with the
    Purpose header, the headline-figure plan, the reader takeaway, and the
    first H block (H1) skeleton already in place — to be filled in before
    any code runs.
@@ -216,7 +224,7 @@ A typical research session, end-to-end:
 | script | purpose |
 |---|---|
 | `new_project.py` | Initialize a research project folder with the standard layout |
-| `new_experiment.py` | Generate a numbered experiment notebook from the template |
+| `new_purpose.py` | Generate a numbered Purpose notebook (one parent thesis per file) from the template |
 | `aggregate_results.py` | Append rows to `results/results.parquet` and query them |
 | `walk_forward.py` | Compute Sharpe distribution over rolling windows |
 | `bootstrap_sharpe.py` | Block-bootstrap CI for per-trade Sharpe |

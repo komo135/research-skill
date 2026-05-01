@@ -5,7 +5,7 @@ Common schema for appending each Hypothesis result to
 
 ## When to read
 
-- Closing a Hypothesis round inside an experiment notebook
+- Closing a Hypothesis round inside a Purpose notebook (each `## H<id>` block is one experiment within the Purpose)
 - Aggregating or comparing results across Hypotheses or across notebooks
 
 ## Principle
@@ -15,12 +15,14 @@ conducts one Purpose containing one or more H's; each H produces its own row
 in `results/results.parquet`. The append happens at the end of each H's
 round inside the notebook, not once at the bottom of the file.
 
-The schema below already carries `experiment_id` (= the notebook = the
-Purpose) and `hypothesis_id` (= the individual H within the Purpose) as
-separate columns; a notebook with three H's emits three rows that share
-`experiment_id` and differ in `hypothesis_id`. Cross-H aggregation queries
-group by `hypothesis_id`; cross-Purpose aggregation queries group by
-`experiment_id`.
+The schema below carries `purpose_id` (= the notebook = the Purpose;
+the prior name `experiment_id` was a vocabulary inversion that conflated
+the notebook with an experiment, retired here) and `hypothesis_id`
+(= the individual H within the Purpose; each H block is one experiment
+that tests that hypothesis) as separate columns; a notebook with three
+H's emits three rows that share `purpose_id` and differ in
+`hypothesis_id`. Cross-H aggregation queries group by `hypothesis_id`;
+cross-Purpose aggregation queries group by `purpose_id`.
 
 Without per-H rows, no cross-H comparison or per-H verdict tracking is
 possible.
@@ -31,7 +33,7 @@ possible.
 {
     # Identification ----------
     "project":          str,    # project folder name
-    "experiment_id":    str,    # exp_001, exp_002, ...
+    "purpose_id":       str,    # pur_001, pur_002, ...
     "hypothesis_id":    str,    # H1, H2, ...
     "run_timestamp":    datetime,  # UTC
 
@@ -152,10 +154,10 @@ import polars as pl
 db_path = "results/results.parquet"
 db = pl.read_parquet(db_path)
 
-# After bug_review + experiment-review for H3 in exp_007 complete and
+# After bug_review + experiment-review for H3 in pur_007 complete and
 # the literature dimension reports achieved_tier=medium (forecast was
 # strong for a Pathway-6 H — tier downgrade)
-mask = (pl.col("experiment_id") == "exp_007") & (pl.col("hypothesis_id") == "H3")
+mask = (pl.col("purpose_id") == "pur_007") & (pl.col("hypothesis_id") == "H3")
 db = db.with_columns([
     pl.when(mask).then(pl.lit("rejected")).otherwise(pl.col("verdict")).alias("verdict"),
     pl.when(mask).then(pl.lit("medium")).otherwise(pl.col("achieved_tier")).alias("achieved_tier"),
@@ -179,7 +181,7 @@ from datetime import datetime, timezone
 
 result_row = {
     "project": "<project-name>",
-    "experiment_id": "exp_005_signal_flip",
+    "purpose_id": "pur_005_signal_flip",
     "hypothesis_id": "H3",
     "run_timestamp": datetime.now(timezone.utc),
     "instrument": "<instrument>",
@@ -212,7 +214,7 @@ result_row = {
     "psr": None,
     "dsr": None,
     "n_hyperparams_tried": 20,
-    "notebook_path": "experiments/exp_005_signal_flip.py",
+    "notebook_path": "purposes/pur_005_signal_flip.py",
     "notes": "...",
 }
 
@@ -240,7 +242,7 @@ db = pl.read_parquet("results/results.parquet")
 db.group_by("hypothesis_id").agg(
     pl.col("sharpe").mean().alias("avg_sharpe"),
     pl.col("split").n_unique().alias("n_splits"),
-    pl.col("experiment_id").unique().alias("experiments"),
+    pl.col("purpose_id").unique().alias("purposes"),
 )
 
 # Fee sensitivity for a specific hypothesis
@@ -261,7 +263,7 @@ These queries are the queryable surface that the cross-H synthesis
 # Distribution of failure modes within one Purpose
 (
     db
-    .filter(pl.col("experiment_id") == "exp_007")
+    .filter(pl.col("purpose_id") == "pur_007")
     .filter(pl.col("verdict") == "rejected")
     .group_by("failure_mode")
     .agg(pl.col("hypothesis_id").alias("rejected_H_ids"))
@@ -272,7 +274,7 @@ These queries are the queryable surface that the cross-H synthesis
 (
     db
     .filter(pl.col("failure_mode") == "fee_model")
-    .select(["experiment_id", "hypothesis_id", "fee_bp_per_side", "sharpe"])
+    .select(["purpose_id", "hypothesis_id", "fee_bp_per_side", "sharpe"])
 )
 
 # H's that achieved Weak tier despite forecasting Medium or Strong —
@@ -281,7 +283,7 @@ These queries are the queryable surface that the cross-H synthesis
     db
     .filter(pl.col("achieved_tier") == "weak")
     .filter(pl.col("forecasted_tier").is_in(["medium", "strong"]))
-    .select(["experiment_id", "hypothesis_id", "pathway",
+    .select(["purpose_id", "hypothesis_id", "pathway",
              "forecasted_tier", "achieved_tier"])
 )
 
@@ -299,7 +301,7 @@ These queries are the queryable surface that the cross-H synthesis
         on="parent_hypothesis_id",
         how="left",
     )
-    .select(["experiment_id", "hypothesis_id", "parent_hypothesis_id",
+    .select(["purpose_id", "hypothesis_id", "parent_hypothesis_id",
              "parent_failure_mode", "verdict", "failure_mode"])
 )
 ```
@@ -321,7 +323,7 @@ Topic-specific metrics may be added, with rules:
 
 - Forgot to append a row for some H → that H is invisible to aggregation; force
   the append at the end of every H round
-- Same `(experiment_id, hypothesis_id)` pair appended multiple times → decide
+- Same `(purpose_id, hypothesis_id)` pair appended multiple times → decide
   whether overwriting or duplicating is intended, and document
 - A notebook emits only one row when its hypothesis log clearly shows multiple
   H's tested → likely a stale "one row per notebook" mental model; emit one

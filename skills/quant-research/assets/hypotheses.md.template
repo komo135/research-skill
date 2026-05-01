@@ -3,9 +3,12 @@
 Single source of truth for all hypotheses in this research project. Updated at the
 end of every Hypothesis round.
 
-A hypothesis is one falsifiable answer to a Purpose. The Purpose lives at the
-notebook level (each `exp_NNN_*.py` is one Purpose); multiple hypotheses can
-share the same `experiment_id` because they investigate the same Purpose
+A hypothesis is one falsifiable child claim that decomposes a Purpose
+(= the parent research thesis the notebook tests). The Purpose lives at
+the notebook level (each `pur_NNN_*.py` is one Purpose); multiple
+admissible hypotheses (per `hypothesis_cycles.md` admissibility
+sub-step 0) can
+share the same `purpose_id` because they investigate the same Purpose
 inside one notebook.
 
 Each H is anchored in a research-goal sub-claim via `target_sub_claim_id`.
@@ -44,16 +47,16 @@ they live.
 
 ## Entries
 
-| ID | Statement | Status | experiment_id (= notebook = Purpose) | target_sub_claim_id | pathway | Acceptance condition | Last update |
+| ID | Statement | Status | purpose_id (= notebook = Purpose) | target_sub_claim_id | pathway | Acceptance condition | Last update |
 |---|---|---|---|---|---|---|---|
-| H1 | [Falsifiable comparison statement.] | planned | exp_001 (Purpose: …) | G1.1 | 2 | [numeric threshold] | YYYY-MM-DD |
-| H2 | [Derived from H1, same Purpose: …] | planned-runnow | exp_001 (same Purpose) | G1.1 | 4 | [numeric threshold] | YYYY-MM-DD |
-| H3 | [Derived from H2, same Purpose; targets G1.2 instead because turnover-cap is in the live-tradeability layer] | planned-nextsession | exp_001 (same Purpose) | G1.2 | 4 | [numeric threshold] | YYYY-MM-DD |
-| H4 | [Derived from H1, NEW Purpose: …] | planned | exp_002 (Purpose: …) | G1.3 | 4 | [numeric threshold] | YYYY-MM-DD |
+| H1 | [Falsifiable comparison statement.] | planned | pur_001 (Purpose: …) | G1.1 | 2 | [numeric threshold] | YYYY-MM-DD |
+| H2 | [Derived from H1, same Purpose: …] | planned-runnow | pur_001 (same Purpose) | G1.1 | 4 | [numeric threshold] | YYYY-MM-DD |
+| H3 | [Derived from H2, same Purpose; targets G1.2 instead because turnover-cap is in the live-tradeability layer] | planned-nextsession | pur_001 (same Purpose) | G1.2 | 4 | [numeric threshold] | YYYY-MM-DD |
+| H4 | [Derived from H1, NEW Purpose: …] | planned | pur_002 (Purpose: …) | G1.3 | 4 | [numeric threshold] | YYYY-MM-DD |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 
-Multiple H's that share an `experiment_id` live in the same notebook because
-they serve the same Purpose. An H whose `experiment_id` differs lives in a
+Multiple H's that share an `purpose_id` live in the same notebook because
+they serve the same Purpose. An H whose `purpose_id` differs lives in a
 different notebook because the Purpose differs.
 
 ### Column meanings
@@ -76,7 +79,7 @@ different notebook because the Purpose differs.
 - IDs are sequential across the whole project (H1, H2, ..., H10, H11, ...) — they do not reset per Purpose
 - Each statement is a falsifiable comparison statement (see `references/research_design.md`)
 - Acceptance condition is a numeric threshold
-- The `experiment_id` column ties the H to one Purpose / notebook
+- The `purpose_id` column ties the H to one Purpose / notebook
 - The `target_sub_claim_id` column ties the H to one research-goal sub-claim;
   inheritance from parent is the default for derived H's
 - The `pathway` column records the H's generation provenance (1-6 or ad-hoc)
@@ -87,8 +90,8 @@ different notebook because the Purpose differs.
 
 | If the new H's investigation is… | …it goes in |
 |---|---|
-| The same Purpose as an existing notebook | The same notebook (= same `experiment_id`); add a new `## H<id>` block inside it |
-| A new Purpose | A new notebook (`exp_<NNN+1>_*.py` = new `experiment_id`); add as the H1 of that notebook (or H<next-global-id>) |
+| The same Purpose as an existing notebook | The same notebook (= same `purpose_id`); add a new `## H<id>` block inside it |
+| A new Purpose | A new notebook (`pur_<NNN+1>_*.py` = new `purpose_id`); add as the H1 of that notebook (or H<next-global-id>) |
 
 The Purpose-continuity test is the routing decision (see SKILL.md
 "Purpose vs. Hypothesis" and `references/experiment_protocol.md`).
@@ -110,11 +113,11 @@ target sub-claim per node so the tree reads as a research-goal map, not
 just a derivation list.
 
 ```
-H1 (parent claim, exp_001, G1.1)              [supported]
-├── H2 (variant, exp_001 same Purpose, G1.1)  [rejected]
-├── H3 (refinement, exp_001 same Purpose, G1.1) [partial]
-│   ├── H10 (sub-refinement, exp_001 same Purpose, G1.1) [planned-runnow]
-│   └── H11 (extension, exp_001 same Purpose, G1.2 — turnover-cap shifts to live-tradeability layer) [planned-nextsession]
-└── H4 (NEW Purpose, exp_002, G1.3)           [planned]
-    └── H12 (variant, exp_002 same Purpose, G1.3) [planned]
+H1 (parent claim, pur_001, G1.1)              [supported]
+├── H2 (variant, pur_001 same Purpose, G1.1)  [rejected]
+├── H3 (refinement, pur_001 same Purpose, G1.1) [partial]
+│   ├── H10 (sub-refinement, pur_001 same Purpose, G1.1) [planned-runnow]
+│   └── H11 (extension, pur_001 same Purpose, G1.2 — turnover-cap shifts to live-tradeability layer) [planned-nextsession]
+└── H4 (NEW Purpose, pur_002, G1.3)           [planned]
+    └── H12 (variant, pur_002 same Purpose, G1.3) [planned]
 ```

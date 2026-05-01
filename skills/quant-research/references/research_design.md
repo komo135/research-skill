@@ -11,13 +11,16 @@ and rules for writing falsifiable comparison statements.
 
 ## What to write at the top of each notebook (Purpose header — once)
 
-Each notebook (`experiments/exp_NNN_<purpose-slug>.py`) starts with a Markdown
-cell containing the **Purpose** of the investigation plus the four
-cycle-goal items defined in `cycle_purpose_and_goal.md`. The Purpose is
-open-ended (it admits multiple H's); the cycle-goal items make explicit
-*who consumes the cycle's knowledge output and what decision rule they will
-apply to it*. Individual H's get their own per-H block lower in the
-notebook.
+Each notebook (`purposes/pur_NNN_<purpose-slug>.py`) starts with a Markdown
+cell containing the **Purpose** (= the parent claim about the world,
+written as a declarative falsifiable statement) plus the four cycle-goal
+items defined in `cycle_purpose_and_goal.md`. The Purpose is itself
+falsifiable at the notebook level (verdicted at notebook closure) and
+admits one or more child H's that decompose it; the cycle-goal items
+make explicit *who consumes the cycle's knowledge output and what
+decision rule they will apply to it*. Individual H's get their own
+per-H block lower in the notebook; each H block is one experiment that
+tests a sub-claim of the parent thesis.
 
 The cycle-goal items (Consumer / Decision / Decision rule / Knowledge
 output / target_sub_claim_id) are pre-implementation required. They are
@@ -29,17 +32,26 @@ four-layer model that the 5th item (`target_sub_claim_id`) ties this
 notebook into.
 
 ```markdown
-## exp_NNN: <one-line purpose-slug>
+## pur_NNN: <one-line purpose-slug>
 
 ### Parent project
 notebooks/<project-name>/
 
-### Purpose (the open-ended investigation this notebook conducts)
-[An open-ended question about the world. Examples:
-"Does mean-reversion work on EUR/USD intraday?"
-"Can PCA factors predict next-day stock returns?"
-"Does Chronos add value over a frozen-embedding baseline?"
-Multiple Hypotheses serving this Purpose live as `## H<id>` blocks below.]
+### Purpose (the parent thesis this notebook tests — verdicted at closure)
+[A declarative falsifiable parent claim about the world. The notebook
+will receive a Purpose-level verdict (supported / refuted / partial /
+refuted-as-stated) at closure on this exact statement. Examples:
+"Mean-reversion at H1 frequency on EUR/USD generates risk-adjusted
+edge net of cost (≥ 0.5 test Sharpe with 1 bp/side fees)."
+"PCA factors carry next-day return information beyond a market-cap
+baseline (≥ +0.10 IC vs. baseline on test period)."
+"Chronos embeddings add information beyond a frozen-embedding
+baseline (≥ +0.05 hit rate on direction, test period)."
+Avoid the question form "Does X work on Y?" — it hides the parent
+claim inside an interrogative; the form makes the Purpose-level
+verdict ambiguous. Multiple admissible Hypotheses (per
+`hypothesis_cycles.md` admissibility sub-step 0) decompose this
+Purpose and live as `## H<id>` blocks below.]
 
 ### Cycle goal (five items — see cycle_purpose_and_goal.md)
 
@@ -123,7 +135,7 @@ Each Hypothesis block inside the notebook contains:
 ## H<id> — <one-line statement>
 
 ### Linked hypothesis-portfolio entry
-H<id>: [quote the entry from hypotheses.md; under the same `experiment_id`
+H<id>: [quote the entry from hypotheses.md; under the same `purpose_id`
 as the notebook's Purpose]
 
 ### Sub-claim of the decision rule that this H tests
@@ -215,8 +227,8 @@ baselines. Beating only the lower bound is consistent with noise.
 
 ## Upstream dependencies must be made explicit
 
-Some experiments depend on upstream experiments (e.g. exp_002 produces PCA factors that
-exp_005 consumes). State the dependency and note "if the upstream conclusion changes, this
-experiment is invalidated".
+Some Purpose notebooks depend on upstream Purpose notebooks (e.g. pur_002 produces PCA factors that
+pur_005 consumes). State the dependency and note "if the upstream conclusion changes, this
+Purpose notebook is invalidated".
 
-Without this, downstream experiments are silently invalidated when upstream changes.
+Without this, downstream Purpose notebooks are silently invalidated when upstream changes.

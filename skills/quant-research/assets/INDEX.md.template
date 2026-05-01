@@ -1,27 +1,28 @@
-# Experiment INDEX
+# Purpose INDEX
 
-List of notebooks, one per **Purpose**, with their hypothesis verdicts and
-the Purpose-level conclusion. `scripts/new_experiment.py` adds new entries
-automatically.
+List of Purpose notebooks (one parent research thesis per file), with their
+per-H verdicts and the Purpose-level verdict. `scripts/new_purpose.py` adds
+new entries automatically.
 
 ## Entries
 
-| exp_id | target_sub_claim_id | Purpose (one line) | Hypotheses (H<id>: verdict) | Status | Purpose-level conclusion (one line) |
+| purpose_id | target_sub_claim_id | Purpose (parent thesis, one line) | Hypotheses (H<id>: verdict) | Notebook status | Purpose-level verdict (one line) |
 |---|---|---|---|---|---|
-| exp_001 | G1.0 (foundation) | (example) Define data universe | H1: foundation | done | universe of N instruments × T period defined; data hashes recorded |
-| exp_002 | G1.1 | (example) Does PCA factor IC screening yield robust factors? | H2: supported · H3: rejected · H4: parked | done | top-3 PCA factors hold val IC ≥ 0.03 but not on test |
-| exp_003 | G1.2 | ... | ... | in-progress | ... |
+| pur_001 | G1.0 (foundation) | (example) Data universe is defined | H1: foundation | done | supported — universe of N instruments × T period defined; data hashes recorded |
+| pur_002 | G1.1 | (example) Top-3 PCA factors carry IC ≥ 0.03 on test | H2: supported · H3: rejected · H4: parked | done | partial — IC ≥ 0.03 holds on val, fails on test (binding axis: regime composition change) |
+| pur_003 | G1.2 | ... | ... | in-progress | (pending) |
 
-## Status legend (per notebook)
+## Notebook-status legend (per notebook)
 
 - `planned`: Purpose stated, notebook not created
-- `in-progress`: notebook created, at least one H not yet at a final verdict
-- `done`: every H inside the notebook is at a final verdict (supported / rejected / partial / parked) and a Purpose-level conclusion exists
+- `in-progress`: notebook created, at least one H not yet at a final per-H verdict
+- `done`: every H inside the notebook is at a final per-H verdict (supported / rejected / partial / parked) AND the Purpose-level verdict on the parent thesis is recorded (supported / refuted / partial / refuted-as-stated)
 - `parked`: blocked on upstream dependency
 - `dropped`: judged not worth pursuing; reason recorded in decisions.md
 
-A notebook is `done` when its Purpose has been answered (per the Purpose-level
-synthesis) — not when one specific H is final.
+A notebook is `done` only when the parent thesis itself has received a
+Purpose-level verdict — not when one specific H is final, and not when
+the per-H verdicts are all in but the Purpose-level verdict is missing.
 
 ## Order
 

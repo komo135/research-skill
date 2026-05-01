@@ -100,7 +100,7 @@ change the model. Record the decision in `decisions.md`.
 Example:
 
 ```
-exp_004 OU parameter estimation: 30% of instruments have κ < 1/0.5 (mean-reversion time
+pur_004 OU parameter estimation: 30% of instruments have κ < 1/0.5 (mean-reversion time
 > 6 months). Decision: classify those instruments as OU-not-applicable and proceed with
 the remaining 70%. Logged in decisions.md.
 ```
@@ -109,5 +109,5 @@ Without this, noise from mis-fit instruments contaminates the result.
 
 ## Where to place the checks
 
-Run them at the end of feature-construction notebooks (`exp_NNN_features_*.py`) and at
+Run them at the end of feature-construction notebooks (`pur_NNN_features_*.py`) and at
 the end of prediction-model notebooks.

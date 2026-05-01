@@ -31,7 +31,7 @@ universe / regime (that is `scope`) or method choice (that is `method`).
 - The notebook's *Research design* cell
 - `hypotheses.md` and its git history (was the hypothesis edited after results came in?)
 - `decisions.md` (does the time-ordering of decisions corroborate pre-registration?)
-- `experiments/INDEX.md` (the cycle history)
+- `purposes/INDEX.md` (the cycle history)
 
 ### Checks
 
@@ -43,7 +43,7 @@ universe / regime (that is `scope`) or method choice (that is `method`).
 | `hypotheses.md` and `decisions.md` are git-tracked and committed | Untracked files cannot corroborate pre-registration; a self-asserted date with no commit hash is not an audit trail | high |
 | Hypothesis was not silently rewritten to match the result | The hypothesis in the abstract differs in direction or strength from the original `hypotheses.md` entry | high |
 | Cycle count is ≥ 3 (minimum) or ≥ 5 (standard) | Single-shot experiment carrying the weight of the claim | medium |
-| Across cycles, the *best* result is not being cherry-picked into the abstract | exp_002 → exp_003 → exp_004 with monotonically improving Sharpe and only the best one declared `supported` is selection bias | medium |
+| Across cycles, the *best* result is not being cherry-picked into the abstract | pur_002 → pur_003 → pur_004 with monotonically improving Sharpe and only the best one declared `supported` is selection bias | medium |
 | Derived hypotheses from prior cycles were classified run-now / next-session / drop, not silently dropped | Untriaged candidate hypotheses sitting in `hypotheses.md` | low |
 | The "we did N hyperparameter trials and 1 of them passed" pattern is acknowledged in DSR trial counting | DSR computed with trial count = 1 | high (but `validation` reviewer owns the DSR computation itself; `question` only flags the trial-count *honesty*) |
 
@@ -319,7 +319,7 @@ file does not duplicate them.
 - The full notebook `.py` file under review
 - The `quant-research` skill's `references/notebook_narrative.md`
 - The `quant-research` skill's `references/marimo_cell_granularity.md`
-- The notebook's parent project's `experiments/INDEX.md` entry (if any) — the one-line
+- The notebook's parent project's `purposes/INDEX.md` entry (if any) — the one-line
   conclusion there should match the notebook's headline
 
 ### Checks
@@ -334,7 +334,7 @@ file does not duplicate them.
 | Headline figures use plotly / altair (or the project's specified equivalent), full width, height ≥ 450 px | Static matplotlib at default size hides detail and removes interactivity | medium |
 | At least one `mo.ui` widget exists for evidence drill-down (and the widget does NOT select numbers that flow into `results.parquet`) | No drill-down; OR worse, an interactive widget feeds into the persisted result, breaking reproducibility | medium (no widget) / high (widget feeds results) |
 | A "Cannot conclude" section exists and enumerates untested dimensions | Generality is asserted by silence | high |
-| Update-reminders cell at the bottom is present and corresponding artifacts (`hypotheses.md` H{n} status, `decisions.md` entry, `experiments/INDEX.md` one-liner) are actually updated | The notebook says "remember to update X" but X is not updated — the audit trail is broken at the boundary | medium |
+| Update-reminders cell at the bottom is present and corresponding artifacts (`hypotheses.md` H{n} status, `decisions.md` entry, `purposes/INDEX.md` one-liner) are actually updated | The notebook says "remember to update X" but X is not updated — the audit trail is broken at the boundary | medium |
 | Standalone-readability test: a reader who opens *only* the `.py` file (no marimo runtime, no chat context, no slides) can answer: what was investigated, why, how, and what was concluded | The `.py` file alone is insufficient — the notebook depends on out-of-file context to be understood | high |
 | Cell granularity per `marimo_cell_granularity.md`: one fit / one evaluation per cell | A single cell loops over models × features × targets, hiding which configuration produced which number | medium |
 | No unfilled `{{PLACEHOLDER}}` markers, no untouched copy-paste residue from the experiment template | Visible template artifacts indicate the notebook was generated but not curated | medium |
@@ -406,7 +406,7 @@ the `quant-research` skill's `notebook_narrative.md`. The adversarial reviewer c
 
 - The seven specialist reviewers' findings
 - `literature/papers.md`, `literature/differentiation.md`
-- `hypotheses.md`, `decisions.md`, `experiments/INDEX.md`
+- `hypotheses.md`, `decisions.md`, `purposes/INDEX.md`
 - Upstream feature notebook `.py` files (even if the design cell names them — the
   reviewer is meant to feel the pain that an external reader feels when handed a
   single-file artifact)
@@ -419,7 +419,7 @@ the `quant-research` skill's `notebook_narrative.md`. The adversarial reviewer c
 Does the abstract / verdict / headline numbers (Sharpe, universe, period) hold up on
 the evidence visible in this `.py` file alone?
 
-- A claim that requires "see also exp_001 / see slides / see the project README" to be
+- A claim that requires "see also pur_001 / see slides / see the project README" to be
   supported is overstatement when the headline is read standalone — `high` finding.
 - A number in the abstract that disagrees with the same number in a results cell —
   internal inconsistency, `high`.

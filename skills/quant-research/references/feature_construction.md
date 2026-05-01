@@ -94,7 +94,7 @@ that breaks reproducibility.
 ## Typical feature-notebook structure
 
 ```
-exp_001_features_pca.py
+pur_001_features_pca.py
 ├── Data fetch
 ├── Rolling correlation matrix
 ├── Eigendecomposition + top-m eigenvectors

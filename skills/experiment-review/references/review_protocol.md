@@ -12,11 +12,11 @@ bundle — see the dedicated section below.
 | Item | Purpose |
 |---|---|
 | Notebook path under review | The primary artifact |
-| Project root path | To find `hypotheses.md`, `decisions.md`, `literature/`, `experiments/INDEX.md` |
+| Project root path | To find `hypotheses.md`, `decisions.md`, `literature/`, `purposes/INDEX.md` |
 | Design-cell content (extracted) | The pre-registered question, hypothesis, thresholds |
 | Abstract-cell content (extracted) | The claim being evaluated |
 | Conclusion / "Cannot conclude" section content (extracted) | Generality claims to triangulate |
-| Cycle history (`experiments/INDEX.md` summary) | For `question` reviewer's cycle-honesty checks |
+| Cycle history (`purposes/INDEX.md` summary) | For `question` reviewer's cycle-honesty checks |
 | Upstream feature-experiment paths, if any | For `method` reviewer's feature-hygiene checks |
 | Bug-review entry from `decisions.md`, if present | So `validation` reviewer knows whether the prerequisite has been satisfied |
 
@@ -38,14 +38,14 @@ per the graceful-degradation pattern; do not abort dispatch.
 
 | # | Dimension | Required scope (extract) | Required shared | NOT-receive |
 |---|---|---|---|---|
-| 1 | question | `review_dimensions.md` §1 (anchor `## 1. question`, ~39 lines) | `severity_rubric.md`, notebook .py, design-cell extract, `hypotheses.md`, `decisions.md`, `experiments/INDEX.md` | `review_dimensions.md` outside §1, `literature/`, `notebook_narrative.md`, `marimo_cell_granularity.md`, `bug_review.md` |
+| 1 | question | `review_dimensions.md` §1 (anchor `## 1. question`, ~39 lines) | `severity_rubric.md`, notebook .py, design-cell extract, `hypotheses.md`, `decisions.md`, `purposes/INDEX.md` | `review_dimensions.md` outside §1, `literature/`, `notebook_narrative.md`, `marimo_cell_granularity.md`, `bug_review.md` |
 | 2 | scope | `review_dimensions.md` §2 (anchor `## 2. scope`, ~63 lines) | `severity_rubric.md`, notebook .py, `hypotheses.md`, `decisions.md` | `review_dimensions.md` outside §2, `literature/`, narrative refs, `bug_review.md` |
 | 3 | method | `review_dimensions.md` §3 (anchor `## 3. method`, ~40 lines) | `severity_rubric.md`, notebook .py, design-cell extract, upstream feature notebook .py if named in design cell | `review_dimensions.md` outside §3, `literature/`, narrative refs, `hypotheses.md` / `decisions.md`, `bug_review.md` |
 | 4 | validation (sufficiency) | `review_dimensions.md` §4 (anchor `## 4. validation`, ~37 lines) | `severity_rubric.md`, notebook .py, design-cell extract, bug-review entry from `decisions.md` if present | `review_dimensions.md` outside §4, `literature/`, narrative refs, `hypotheses.md`, `bug_review.md` whole |
 | 5 | claim | `review_dimensions.md` §5 (anchor `## 5. claim`, ~38 lines) | `severity_rubric.md`, notebook .py, abstract-cell extract, conclusion / "Cannot conclude" extract | `review_dimensions.md` outside §5, `literature/`, narrative refs, `hypotheses.md` / `decisions.md`, `bug_review.md` |
 | 6 | literature | `review_dimensions.md` §6 (anchor `## 6. literature`, ~66 lines) | `severity_rubric.md`, notebook .py, `literature/papers.md`, `literature/differentiation.md` | `review_dimensions.md` outside §6, narrative refs, `hypotheses.md` / `decisions.md`, `bug_review.md` |
 | 7 | narrative | `review_dimensions.md` §7 (anchor `## 7. narrative`, ~75 lines), `quant-research/references/notebook_narrative.md` whole, `quant-research/references/marimo_cell_granularity.md` whole | `severity_rubric.md`, notebook .py | `review_dimensions.md` outside §7, `hypotheses.md` / `decisions.md`, `literature/`, `bug_review.md` |
-| 8 | adversarial (cold-eye) | `review_dimensions.md` §8 (anchor `## 8. adversarial`, ~112 lines) — verbatim instruction only | notebook .py, `severity_rubric.md` (for output schema; not bias-inducing) | `review_dimensions.md` outside §8, `hypotheses.md` / `decisions.md` / `experiments/INDEX.md`, `literature/papers.md` / `literature/differentiation.md`, `notebook_narrative.md` / `marimo_cell_granularity.md`, the seven specialists' findings, upstream feature notebook .py (even if named in design cell), chat context — full minimum-bundle NOT-input list per §8 in `review_dimensions.md` |
+| 8 | adversarial (cold-eye) | `review_dimensions.md` §8 (anchor `## 8. adversarial`, ~112 lines) — verbatim instruction only | notebook .py, `severity_rubric.md` (for output schema; not bias-inducing) | `review_dimensions.md` outside §8, `hypotheses.md` / `decisions.md` / `purposes/INDEX.md`, `literature/papers.md` / `literature/differentiation.md`, `notebook_narrative.md` / `marimo_cell_granularity.md`, the seven specialists' findings, upstream feature notebook .py (even if named in design cell), chat context — full minimum-bundle NOT-input list per §8 in `review_dimensions.md` |
 
 **Section anchor as source of truth** — extraction reads the section by
 its `## N. <dimension>` heading anchor, not by line range. The
@@ -237,7 +237,7 @@ wins; update both):
 NOT in the bundle: see contract row 8 above for the full list. The most
 load-bearing exclusions are the seven specialist reviewers' findings,
 all `literature/` artifacts, all `hypotheses.md` / `decisions.md` /
-`experiments/INDEX.md` / upstream feature notebooks (even if named in
+`purposes/INDEX.md` / upstream feature notebooks (even if named in
 the design cell), and any chat / prior-cycle context.
 
 **Prompt skeleton**:
@@ -262,7 +262,7 @@ inline — the rest of review_dimensions.md is NOT delivered):
 NOT delivered to you (deliberately withheld — see the NOT-input list in §8 above):
 - The seven specialist reviewers' findings
 - literature/papers.md, literature/differentiation.md
-- hypotheses.md, decisions.md, experiments/INDEX.md
+- hypotheses.md, decisions.md, purposes/INDEX.md
 - Upstream feature notebook .py files (even if the design cell names them)
 - Chat context, prior-cycle discussion, the parent assistant's scratchpad
 

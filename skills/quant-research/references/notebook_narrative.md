@@ -27,12 +27,16 @@ These markdown cells are mandatory in *every* experiment notebook.
 Filled in **after** all the H rounds are done, but placed immediately after
 the title. Must contain:
 
-- **Purpose** — the open-ended investigation in one sentence
-- **Hypotheses tested** — H1, H2, …, each with its falsifiable statement
-  in one short line
-- **Conclusion** — Purpose-level synthesis: which H's were supported, which
-  rejected, what the collective answer to the Purpose is, with the
-  headline numbers per H (test Sharpe, drawdown, PSR)
+- **Purpose** — the parent research thesis in one sentence (declarative
+  falsifiable statement)
+- **Purpose-level verdict** — supported / refuted / partial /
+  refuted-as-stated, with the binding axis or partition named
+  explicitly
+- **Hypotheses tested** — H1, H2, …, each with its falsifiable
+  statement in one short line, plus its per-H verdict
+- **Conclusion** — Purpose-level synthesis: which H's were supported,
+  which rejected, how the cluster supports or refutes the parent
+  thesis, with the headline numbers per H (test Sharpe, drawdown, PSR)
 - **Why this matters or doesn't** — one sentence at the Purpose level
 - **Pointer to the headline figure** — cell number or fig name (usually a
   multi-method comparison spanning the H's)

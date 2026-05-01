@@ -103,18 +103,18 @@ fees. **Always report per-trade PnL with fees included.**
 ## Example notebook structure
 
 ```
-exp_005_predict_returns.py    (Layer 1)
+pur_005_predict_returns.py    (Layer 1)
   Input:  features
   Output: predicted values saved to parquet
   Eval:   AUC / IC / ECE
 
-exp_006_decision_rules.py     (Layer 2)
-  Input:  exp_005 predictions
+pur_006_decision_rules.py     (Layer 2)
+  Input:  pur_005 predictions
   Output: actions (+1/-1/0) saved to parquet
   Eval:   hit rate, turnover, threshold sensitivity
 
-exp_007_sizing.py             (Layer 3)
-  Input:  exp_006 actions + exp_005 confidence
+pur_007_sizing.py             (Layer 3)
+  Input:  pur_006 actions + pur_005 confidence
   Output: position sizes
   Eval:   vectorbt Sharpe / drawdown / fee sensitivity
 ```

@@ -1,6 +1,8 @@
 # experiment_protocol.md
 
-Structure and rules for "one Purpose = one notebook".
+Structure and rules for "one Purpose = one notebook" (= one parent
+research thesis per file; each `## H<id>` block inside is **one
+experiment** that tests a sub-claim of the thesis).
 
 ## When to read
 
@@ -11,42 +13,71 @@ Structure and rules for "one Purpose = one notebook".
 
 ## What "one notebook" means
 
-The unit of one notebook is one **Purpose** — an open-ended investigation
-about the world. A Purpose admits multiple falsifiable hypotheses; each
-hypothesis is one specific testable answer that serves the Purpose. The
-notebook contains:
+The unit of one notebook is one **Purpose** — a parent research thesis
+about the world, written as a declarative falsifiable statement. A
+Purpose admits multiple admissible child hypotheses (per
+`hypothesis_cycles.md` admissibility sub-step 0); each hypothesis is
+one specific testable sub-claim that decomposes the parent thesis.
+The notebook contains:
 
-- The Purpose statement (notebook header)
+- The Purpose statement (notebook header) — verdicted at notebook
+  closure (supported / refuted / partial / refuted-as-stated)
 - A hypothesis log: H1, H2, H3, … each tested with its own design,
   acceptance / rejection, evaluation, robustness battery, review gates,
-  and result row
-- A Purpose-level conclusion synthesizing across the H's
+  and result row. **Each `## H<id>` block is one experiment** — the
+  apparatus that tests that hypothesis. The notebook is therefore the
+  cluster of experiments that test the parent thesis.
+- A Purpose-level conclusion synthesizing across the H's, ending in the
+  Purpose-level verdict
 
-> One notebook = one Purpose. Multiple hypotheses serving the same Purpose
-> are successive rounds inside the notebook, not separate notebooks.
+> One notebook = one Purpose = one parent thesis. Multiple admissible
+> hypotheses (= experiments) decomposing the same parent thesis are
+> successive rounds inside the notebook, not separate notebooks.
 
-This replaces the prior rule "one experiment = one hypothesis tested". That
-rule conflated the unit of investigation (the Purpose) with the unit of
-testing (the Hypothesis), which made every derived H look like a new
-experiment and quietly turned the hypothesis itself into the goal.
+The "one notebook = one Purpose" rule reverses the prior conflation in
+which the *experiment* (= a single hypothesis test) was treated as the
+unit of investigation. Under the corrected vocabulary: the *experiment*
+is the apparatus that tests one hypothesis (= one `## H<id>` block);
+the *Purpose notebook* is the file containing the parent thesis and
+the cluster of experiments that test it.
 
 ## When a derived hypothesis stays in the same notebook
 
-Default: **same notebook**. A derived H stays in the current notebook
-whenever the Purpose is unchanged. The most common cases:
+Default: **same notebook** when the Purpose is unchanged AND the
+candidate is admissible as a hypothesis (per `hypothesis_cycles.md`
+sub-step 0). The admissible types:
 
-- **Sensitivity** — same H tested under different parameter values
-- **Failure diagnosis** — H1 was rejected, the next H tries to isolate
-  why (data? threshold? metric?)
-- **Refinement / specialization** — H1 worked overall, H2 narrows the
-  conditions ("only in trending regime")
+- **Failure diagnosis** — H1 was rejected; H2 tests whether the
+  rejection is driven by a *named, falsifiable* axis distinct from
+  H1's headline metric (e.g. regime composition vs. cost monotonicity)
+- **Refinement / specialization** — H1 supported overall; H2 tests
+  whether the edge is conditional on a *named, pre-committed* regime
+  signal external to the strategy (the regime conditioning is
+  itself a research question, not a fitting attempt)
 - **Alternative formulation** — H1 used RSI, H2 uses Bollinger as a
-  different lens on the same mean-reversion question
-- **Follow-on layer** — H1's signal × vol-targeted sizing as H2
+  different operationalization of the same mechanism, with H2's
+  purpose being to test whether the *conclusion* is robust to
+  operationalization
 
-In all these cases the open-ended investigation is the same. The derived H
-is the next `## H<id>` block in the notebook's hypothesis log, not a new
-file.
+Inadmissible (= these belong in the parent H's robustness section,
+NOT in the hypothesis log):
+
+- **Sensitivity / parameter-sweep** — same H under different sizing /
+  threshold / lookback / regime parameter values. This is Step 12
+  robustness, reported as a 2D / 3D grid inside the parent H, not as
+  a new H<id>.
+- **Follow-on layer** — H1's signal × vol-targeted sizing where the
+  layer does not change the underlying claim about the world. Belongs
+  in Step 10 portfolio construction or Step 12 robustness, not in
+  the hypothesis log.
+- **Threshold-variation rerun** — H1 with acceptance threshold lowered
+  to recover marginal cases. Inadmissible.
+
+In all admissible cases the parent thesis (= Purpose) is unchanged.
+The admissible derived H is the next `## H<id>` block (= a new
+experiment) in the notebook's hypothesis log, not a new file. In
+inadmissible cases, the work may still be necessary but is recorded
+inside the parent H's section, not as a new H.
 
 ## When to open a new notebook
 
@@ -174,7 +205,7 @@ The following are **no longer valid reasons to start a new notebook**:
 | Rationalization | Why it is wrong now |
 |---|---|
 | "H2 is a different central hypothesis." | The notebook is per-Purpose, not per-Hypothesis. A different H is the default case for the next round inside the same notebook. |
-| "exp_001 is already verdict='supported' for H1, so the notebook is finalized." | The notebook does not have a single verdict. H1's verdict is final; the notebook stays open for H2, H3, … under the same Purpose. |
+| "pur_001 is already verdict='supported' for H1, so the notebook is finalized." | A finalized H1 inside a notebook does not seal the notebook. The notebook stays open for further admissible H's serving the same parent thesis, and is sealed only at Purpose-level closure (when the parent thesis itself receives a Purpose-level verdict). |
 | "Each H must be independently re-runnable, so each H needs its own file." | Independent re-runnability is a marimo cell-graph property, not a file property. Use H-suffixed variable names (`signal_h1`, `signal_h2`) and per-H sub-sections inside one notebook. |
 | "H2 builds on H1's signal — that's a dependency, so H2 is a separate experiment." | If H2 builds on H1's signal, the natural place for H2 is the same notebook where H1's signal already lives. Cross-notebook intermediate-file passing is the right pattern only when the Purpose differs. |
 | "Run-now derived hypothesis means the next notebook (the old protocol said so)." | The old `hypothesis_cycles.md` rule has been replaced. Run-now status determines *when* (this session vs. next), not *where* (same notebook vs. new file). The "where" question is decided by Purpose continuity. |
@@ -183,23 +214,23 @@ The following are **no longer valid reasons to start a new notebook**:
 ## Notebook naming
 
 ```
-notebooks/<project-name>/experiments/exp_<NNN>_<purpose-slug>.py
+notebooks/<project-name>/purposes/pur_<NNN>_<purpose-slug>.py
 ```
 
 - `<NNN>`: zero-padded three-digit sequence number
 - `<purpose-slug>`: alphanumeric and underscore, ~20 characters, describes
   the **Purpose** (not the first H). Examples:
-  `exp_001_data_universe.py`, `exp_002_pca_factor_screening.py`,
-  `exp_003_mean_reversion_eurusd_intraday.py`
+  `pur_001_data_universe.py`, `pur_002_pca_factor_screening.py`,
+  `pur_003_mean_reversion_eurusd_intraday.py`
 
-The helper `scripts/new_experiment.py` generates the file with the next
+The helper `scripts/new_purpose.py` generates the file with the next
 sequence number.
 
 ## Notebook structure
 
 ```
 [Cell 1]   Imports
-[Cell 2]   Markdown: Purpose (the open-ended investigation)
+[Cell 2]   Markdown: Purpose (the parent research thesis — declarative falsifiable)
 [Cell 3]   Markdown: Universe + period + frequency (shared across H's)
 [Cell 4]   Markdown: upstream dependencies and input data
 [Cell 5+]  Data fetch and split (shared)
@@ -277,8 +308,8 @@ See `references/marimo_cell_granularity.md` for the cell-graph mechanics.
 
 When a notebook consumes an earlier notebook's output, pass it as a **file**:
 
-- `exp_002` saves `results/intermediate/pca_factors.parquet`
-- `exp_005` reads that parquet
+- `pur_002` saves `results/intermediate/pca_factors.parquet`
+- `pur_005` reads that parquet
 
 Do not pass Python objects directly between notebooks. That breaks
 reproducibility.
@@ -304,11 +335,11 @@ file-handoff between phases.
 
 Before starting a notebook:
 
-- [ ] Used `scripts/new_experiment.py` to generate it
-- [ ] The new sequence number was appended to `experiments/INDEX.md`
-- [ ] The Purpose is stated in the header cell as an open-ended investigation
+- [ ] Used `scripts/new_purpose.py` to generate it
+- [ ] The new sequence number was appended to `purposes/INDEX.md`
+- [ ] The Purpose is stated in the header cell as a declarative falsifiable parent thesis (not "Does X work on Y?" question form)
 - [ ] H1 exists in `hypotheses.md` (add it if not), tagged with this Purpose
-      / `experiment_id`
+      / `purpose_id`
 - [ ] Upstream dependencies are complete or running in parallel
 - [ ] H1's acceptance / rejection conditions are written with numeric thresholds
 - [ ] **Data availability gate cleared** — the real data required to apply
@@ -322,7 +353,7 @@ new notebook):
 
 - [ ] Confirmed the Purpose statement still describes the new H — if not,
       open a new notebook
-- [ ] Added the new H to `hypotheses.md` under the same `experiment_id`
+- [ ] Added the new H to `hypotheses.md` under the same `purpose_id`
 - [ ] Wrote the new H's acceptance / rejection numerically before
       implementing
 
@@ -348,4 +379,4 @@ Purpose):
 - [ ] Purpose-level conclusion cell exists and synthesizes across the H's
 - [ ] "Derived Purposes" cell exists with classification (run-now /
       next-session / drop) — note these are *Purposes*, not Hypotheses
-- [ ] One-line Purpose-level conclusion filled in `experiments/INDEX.md`
+- [ ] One-line Purpose-level conclusion (with Purpose-level verdict: supported / refuted / partial / refuted-as-stated) filled in `purposes/INDEX.md`
