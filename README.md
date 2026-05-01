@@ -279,17 +279,86 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- Version 0.14.0
+- Version 0.15.0
 - Two skills, two review layers, both required as co-gate.
 - Notebook unit is one Purpose (open-ended investigation); per-Hypothesis
   verdict gates and result rows.
 - R-side R&D protocol: Stage 0 (pre-hypothesis exploration), Step 1.5
   (hypothesis generation pathways), why-why depth gate at every per-H
-  verdict, cross-H synthesis, exhaustion trigger, novelty / knowledge-
-  advance gate.
+  verdict (every level observation-pinned to a cited table / value;
+  prose plausibility ladders are rejected and the chain stops at the
+  first uncomputable level), cross-H synthesis, exhaustion trigger,
+  novelty / knowledge-advance gate.
 - Adversarial-reviewer mechanism backed by Song (2026); see *References*.
 
 ### Changelog
+
+**0.15.0** — Adds the **why-why observation-grounding rule** (F28),
+patching a gap left by 0.14.0's F27. F27 added the chain requirement
+(≥ 3 levels, mechanism-level terminal) but accepted prose mechanism
+statements as terminals and intermediate levels — which an LLM agent
+can satisfy by stacking plausible "why?"s in coherent prose without
+actually computing the post-mortem the chain summarizes. F28 closes
+that gap by requiring **observation grounding at every chain level**:
+each "why?" answer cites a specific computed cell / value (table
+T<n> / distribution / correlation / regression coefficient), not a
+prose mechanism statement unbacked by data. When an analysis a level
+depends on cannot be performed, the protocol-correct response is to
+stop the chain at that level and surface the gap explicitly — write
+the levels that *are* observation-backed, then "level N: cannot be
+answered without analysis A on artifact X. Chain incomplete; no
+derived H may be admitted." Validated by re-running 0.14.0's GREEN
+fixture against the F28-revised skill: the agent now writes only
+level 1 (pinned to the headline result), stops at level 2 with a
+five-analysis gap statement naming the missing computation + the
+artifact each would consume, refuses to admit any derived H, and
+records the natural inadmissible derivations as `planned-drop`
+rejected at admissibility 0. F28 owns a gap left by F27, not a
+failure mode the user invented.
+
+- **Observation grounding rule.** New "Observation grounding" section
+  in `references/why_why_analysis.md` formalizing the two-layer
+  requirement: (a) named analyses performed and output visible as
+  notebook cells with referenceable labels; (b) each chain level's
+  prose pins to a specific cell / value of that output. Plausibility
+  tells ("expected to" / "consistent with" / "likely" / "presumably"
+  / "should" / "based on typical patterns") indicate an unpinned
+  level — keep computing or stop. Worked examples rewritten to show
+  table-citation-per-level (T2/T3/T4/T5 for the rejected case;
+  U1-U5 for the supported case) instead of prose-mechanism-per-level.
+
+- **Stop-and-surface-gap rule.** When the analysis a level depends
+  on cannot be performed (data unavailable, sandboxed dispatch,
+  computation out of scope), the chain explicitly stops at that
+  level: "level N: cannot be answered without analysis A on artifact
+  X. Chain incomplete." A chain whose levels are not all
+  observation-pinned is **not eligible** to ground a derived H; the
+  agent stops and surfaces the gap rather than admitting a derived H
+  from a partial chain.
+
+- **Routing admissibility extension.** `references/hypothesis_iteration.md`
+  routing sub-step 0 now rejects derived H's whose
+  `chain_terminal_cited` points at an unpinned (prose-only) chain
+  level — the citation must point at observation, not plausibility.
+  The two failure modes (no citation / citation-to-unpinned-level)
+  are treated identically and fire on supported and rejected
+  parents alike.
+
+- **Anti-rationalizations.** Five new entries in
+  `why_why_analysis.md` ("I named the mechanism — that's the
+  terminal" / "the analysis is expensive — write from what it would
+  probably show" / "each level reads coherently — chain is fine
+  without numbers" / "the chain reads plausibly — that's enough" /
+  "computation unavailable in this context — chain is the best I
+  can do"). SKILL.md Step 12.5 rationalization table extended with
+  the corresponding entries.
+
+The change is a refinement of F27, not an independent failure mode:
+F27 alone is sufficient for "the chain must exist"; F28 is what
+makes the chain stand on data rather than on prose. The two
+compose — F27 is the chain-must-exist gate, F28 is the chain-must-
+be-observation-pinned gate. Each is necessary; neither alone is
+sufficient.
 
 **0.14.0** — Two structural changes that compose: (a) abolishes the
 **"cycle" concept layer** (F26) — a duplicate unit-of-investigation
