@@ -268,7 +268,7 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- Version 0.12.0
+- Version 0.13.0
 - Two skills, two review layers, both required as co-gate.
 - Notebook unit is one Purpose (open-ended investigation); per-Hypothesis
   verdict gates and result rows.
@@ -278,6 +278,116 @@ The skill leans on a small number of well-known references:
 - Adversarial-reviewer mechanism backed by Song (2026); see *References*.
 
 ### Changelog
+
+**0.13.0** — Adds the **hypothesis ↔ experiment inversion counter**,
+closing three structural failure modes (F23 / F24 / F25) in which the
+skill's vocabulary and structure made the standard "the experiment
+exists to test the hypothesis" direction look reversed: the Purpose
+acted as an implicit parent hypothesis with no verdict gate, the
+schema's `experiment_id` reassigned `experiment` to the Purpose
+container (breaking the 1 hypothesis ↔ 1 experiment correspondence),
+and the derived-hypothesis examples licensed 1-axis parameter sweeps
+to occupy the hypothesis log. Validated by TDD over two RED fixtures
+(notebook_N for the F23 + F25 chain pathology on EUR/USD H1
+mean-reversion; notebook_O for the F24 vocabulary inversion on SP500
+exit-rule design) and two GREEN counterparts.
+
+- **F23 — Purpose-as-meta-hypothesis pretense.** SKILL.md L48 defined
+  Purpose as "an open-ended question about the world" while L49 / L52
+  gave Form / Examples that were Y/N propositions ("Does mean-reversion
+  work on EUR/USD intraday?"); L96 explicitly excluded a Purpose-level
+  verdict ("the notebook itself does not have a single verdict");
+  cross_h_synthesis.md Pattern A / B's Action menu licensed
+  carry-forward of the parent claim into a derived Purpose
+  ("lower-frequency variants of the same signal") without first
+  verdicting it. Counter rewrites the Purpose vs. Hypothesis table to
+  declarative falsifiable form ("Mean-reversion at H1 frequency on
+  EUR/USD generates risk-adjusted edge net of cost (≥ 0.5 test Sharpe
+  with 1 bp/side fees)" instead of the question form), removes the
+  L96 / L783-786 verdict-gate denial, adds a "Purpose-level closure
+  gate (per Notebook)" section requiring supported / refuted / partial
+  / refuted-as-stated at notebook close, and rewrites Pattern A / B
+  Action menus + Handoff section to require parent-thesis verdict as
+  precondition 0 before any derived Purpose may open. Anti-rationalization
+  table gains entries on Purpose-verdict denial and threshold-variation
+  rerun. The parent claim now has a place to die in writing; F23 was
+  the load-bearing reason a 4 / 5-level hypothesis chain
+  (Purpose-as-parent → H1 → derived H2 → derived H3 → derived Purpose
+  with the same parent claim) could persist with no claim ever being
+  rejected.
+
+- **F24 — Experiment vocabulary inversion.** SKILL.md L653-655 defined
+  `experiment_id (= the notebook = the Purpose)` with `hypothesis_id`
+  as the H within it; folder `experiments/` and file
+  `exp_NNN_<purpose-slug>.py` reinforced "experiment = container".
+  Asked "what is H2's experiment?", the protocol-correct answer was
+  "the apparatus shared with H1/H3 with exit_rule replaced", i.e.
+  H2 had no experiment of its own. Counter renames the schema field to
+  `purpose_id` (with prose explaining the prior name was a vocabulary
+  inversion that conflated the notebook with an experiment, retired
+  here), reattributes "experiment" to "the apparatus that tests one
+  hypothesis" — each `## H<id>` block IS one experiment — and renames
+  folder `experiments/` → `purposes/`, file prefix `exp_NNN_*.py` →
+  `pur_NNN_*.py`, helper script `scripts/new_experiment.py` →
+  `scripts/new_purpose.py`, asset
+  `assets/experiment.py.template` → `assets/purpose.py.template`. The
+  rename propagates through results_db_schema.md, hypothesis_cycles.md,
+  cross_h_synthesis.md, experiment_protocol.md, research_design.md,
+  marimo_cell_granularity.md, model_diagnostics.md,
+  feature_construction.md, prediction_to_decision.md,
+  cycle_purpose_and_goal.md, project layout templates
+  (hypotheses.md.template, INDEX.md.template, decisions.md.template,
+  README.md.template), and the experiment-review skill's
+  references/review_protocol.md / review_dimensions.md. The
+  1 hypothesis ↔ 1 experiment correspondence is restored; in a Purpose
+  with N admissible H's, the notebook is a cluster of N experiments
+  sharing an apparatus (apparatus = universe + split + baseline + fee
+  model + entry rule), each H block replacing the apparatus slot the H
+  is testing.
+
+- **F25 — Derived hypothesis granularity licensing.** SKILL.md L63-71
+  gave 5 derived-H types (sensitivity / parameter-sweep / failure-diagnosis
+  / specialization / alternative formulation / follow-on layer) with no
+  requirement that each derived H declare an own falsifiable claim
+  distinct from the parent or an own stated purpose. The result: a
+  rejected H1 spawned an H2 sensitivity variant whose claim was
+  identical in shape and threshold to H1, then an H3 regime-conditioning
+  variant on top of H2 — three rows in results.parquet for one research
+  finding. Counter introduces a "Derived hypothesis admissibility"
+  section in SKILL.md and an admissibility sub-step 0 in
+  hypothesis_cycles.md routing rule, requiring all three of: (a) own
+  falsifiable claim distinct from parent (different decision axis, not
+  just tighter / looser threshold on the parent's axis), (b) own
+  stated purpose written before the H runs (one sentence answering
+  "what new question does this H answer that the parent did not?"),
+  (c) meaningful research unit (not a 1-axis sweep over sizing /
+  threshold / regime / lookback / cost / fee). Inadmissible patterns —
+  sensitivity / parameter-sweep variant, follow-on layer that doesn't
+  change the underlying claim, threshold-variation rerun, and
+  diagnosis without an independent claim — are reclassified as Step 12
+  robustness battery / Step 10 portfolio construction inside the
+  parent H's section, not as new H<id>s in the hypothesis log. The
+  hypothesis log now carries one row per meaningful research unit;
+  parameter sweeps live in robustness as 2D / 3D grids inside the
+  parent H, where they belong.
+
+The change is independent of F1-F22. F23 cannot be reduced to F24
+(renaming the schema field does not introduce a Purpose-level verdict
+gate) and F25 cannot be reduced to F23 (adding Purpose-level verdict
+does not require derived H to declare own claim / purpose / unit).
+F24 remains independent of F23 / F25 — even with a Purpose-level
+verdict and admissibility constraints in place, a schema field named
+`experiment_id` would continue to signal "experiment = container" to
+both agents and human readers.
+
+Out of scope (recorded as future RED breadcrumbs in the GREEN
+results): the design-hypothesis layer (decisions.md at-open prediction)
+that may also act as an unverdicted parent claim is not addressed here
+— it is structurally similar to F23 but lives at a different layer
+and requires independent treatment. The research-goal sub-claim's
+explicit `refuted` transition condition (when a Purpose-level
+`refuted` verdict mechanically transitions a sub-claim to `falsified`)
+is also not added here.
 
 **0.12.0** — Adds **review dispatch efficiency** to the bug-review and
 experiment-review layers, closing two efficiency-class failure modes
