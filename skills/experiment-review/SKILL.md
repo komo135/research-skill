@@ -5,154 +5,117 @@ description: Use when about to declare verdict='supported' on any experiment in 
 
 # Experiment Review
 
-A review skill for quantitative-research experiment notebooks. Asks the question
-**"is the conclusion warranted by what was actually tested?"** — orthogonal to
-the question "is the implementation correct?" (`bug_review` answers that one).
+A review skill for quantitative-research experiment notebooks. It asks:
+**is the conclusion warranted by what was actually tested?** This is
+orthogonal to implementation correctness; `bug_review` answers whether
+the code and numbers are contaminated.
 
 ## When to use
 
 - A user asks for a review of a notebook, experiment, or project
-- About to declare `verdict = "supported"` on any experiment in a quant-research
-  project — this skill complements `bug_review`; both must pass before that
-  verdict
-- End of a research cycle, before deciding what the next cycle is
-- Before sharing the work externally, before publication, or before any
-  deployment recommendation
-- Inheriting a notebook from another researcher and needing a fresh-eyes
-  assessment
+- Before declaring `verdict = "supported"` on any experiment in a
+  quant-research project
+- End of a research cycle, before deciding the next cycle
+- Before external sharing, publication, or deployment recommendation
+- When inheriting a notebook and needing a fresh-eyes assessment
 
 ## When NOT to use
 
-- The user wants implementation correctness checked — use `bug_review` inside
-  `quant-research` instead. Bug review is a *precondition* for this review,
-  not a substitute. A clean experiment-review on top of a buggy implementation
-  produces confidence in a claim about a contaminated PnL.
-- The notebook is at orientation / brainstorm stage and no claim exists yet.
+- The user wants implementation correctness checked. Use `bug_review`
+  inside `quant-research` first. A clean experiment-review on top of a
+  buggy implementation only creates confidence in contaminated evidence.
+- The notebook is at orientation / brainstorm stage and no claim exists.
   Wait until there is a conclusion to review.
 
 ## Boundary against `bug_review`
 
-Both layers are required for `verdict = "supported"`. They are distinct, complementary,
-and intentionally not merged. The most common confusion is between the two `validation`
-scopes — one in each layer.
+Both layers are required for `verdict = "supported"`.
 
-| | `bug_review` (in `quant-research`) | `experiment-review` (this skill) |
+| | `bug_review` (in `quant-research`) | `experiment-review` |
 |---|---|---|
 | One-line | Are the code and numbers correct? | Is the claim warranted by the design? |
 | Question answered | "Is the implementation contaminated?" | "Is the claim oversold relative to evidence?" |
 | Looks at | Code, data, PnL series | Hypothesis, universe, baselines, claim, notebook artifact |
-| Specialists | leakage / pnl-accounting / **validation (correctness: split, embargo, purging)** / statistics (metric arithmetic) / code-correctness | question / scope / method / **validation (sufficiency: walk-forward N, statistical power)** / claim / literature / narrative |
-| Adversarial reviewer (minimum bundle) | code + reported numbers | `.py` file alone |
-| Order | Precondition (run first) | Postcondition (run after robustness battery) |
+| Specialist coverage | leakage / pnl-accounting / validation correctness / statistics / code-correctness | question / scope / method / validation sufficiency / claim / literature / narrative |
+| Adversarial bundle | code + reported numbers | `.py` file alone |
+| Order | Precondition | Postcondition |
 | Verdict gate | **Both must pass.** | **Both must pass.** |
 
-The `validation` overlap is the most subtle boundary. Rule of thumb:
+The `validation` overlap is subtle:
 
-- `bug_review`'s `validation` checks "is the embargo wired in correctly so no future
-  information leaks across the split?" (correctness)
-- `experiment-review`'s `validation` checks "given that the embargo is wired in
-  correctly, does walk-forward over N=8 windows give a mean Sharpe whose standard
-  error is small enough to distinguish 0.4 from 1.1?" (sufficiency / statistical
-  power)
-- A finding that is genuinely both — e.g. "embargo is too short AND walk-forward
-  has too few windows" — should be flagged independently by both reviewers. Redundancy
-  is harmless; a missed finding is not.
+- `bug_review` validation checks whether embargo / purging / splits are wired
+  correctly.
+- `experiment-review` validation checks whether the corrected validation design
+  has enough power to support the claim.
 
 ## Core principle
 
-**Seven narrow specialist reviewers in parallel + one adversarial cold-eye reviewer
-with a deliberately different (minimum) context bundle, in parallel.** Narrowness is
-the mechanism that makes the seven specialists work. Bundle asymmetry is the mechanism
-that makes the eighth (adversarial) reviewer work. Same model in all eight, but
-specialists share the full bundle while the adversary sees only the `.py` file.
+**Four reviewer agents: three grouped specialists plus one adversarial
+cold-eye reviewer.**
 
-Six specialist dimensions cover **research quality** ("is the claim warranted by the
-experimental design?"); the seventh covers **notebook quality** ("is the notebook
-self-contained as a communication artifact?"). The two are orthogonal — a notebook can
-describe excellent research badly, or describe weak research beautifully — so they
-need separate specialist passes.
+The specialist groups preserve the old coverage while reducing dispatch cost:
 
-The eighth (adversarial) reviewer sits orthogonal to all seven specialists. Its job is
-not "be the eighth specialist on a different topic" but "be the same model with
-*different priors* — priors that come from having less context, not more topic
-coverage". Empirically (Cross-Context Review, arxiv 2603.12123), minimum-context
-review on code yields findings that full-context review of the same model
-systematically misses. The mechanism is anchoring removal: the seven specialists all
-read the same notebook, the same design cell, the same prior cycles, the same
-literature folder; they share priors. The adversary, given only the `.py`, has to
-reason from the artifact alone.
+1. **research-design**: question, scope, and method
+2. **evidence-sufficiency**: validation sufficiency and claim discipline
+3. **context-communication**: literature coverage and notebook narrative
+4. **adversarial**: `.py` file alone, with project context withheld
 
-The eight dimensions:
+The first three reviewers share the relevant project bundle and read only their
+own grouped section from `references/review_dimensions.md`. The adversarial
+reviewer reads the notebook alone plus its own instruction section. Bundle
+asymmetry is required because it removes the anchoring shared by the author and
+the specialist reviewers.
 
-1. **question** — falsifiability, pre-registered numeric thresholds, cycle
-   hygiene, hypothesis-portfolio honesty, selection bias across cycles
-2. **scope** — universe size and diversity, period coverage, regime coverage,
-   generalization range, single-instrument leaps to "the asset class"
-3. **method** — model choice justification, baseline strength (especially the
-   *hand-crafted upper-bound* baseline — usually missing), feature-experiment
-   hygiene, hyperparameter trial accounting, retraining cadence in
-   walk-forward
-4. **validation** — split correctness *in spirit* (sufficiency-of-power, not
-   letter-of-correctness — letter-of-correctness lives in `bug_review`), embargo
-   adequacy for the claim, walk-forward sample size and the implied statistical
-   power of its mean metric, purged k-fold / CPCV adequacy, test-set discipline
-5. **claim** — conclusion vs. evidence calibration, overstatement detection,
-   "cannot conclude" honesty, deployment-readiness gap, the implied portfolio
-   math behind any "deploy as overlay" claim
-6. **literature** — paper-count floor, weak / medium / strong differentiation
-   tier, *missed* prior work in the most relevant adjacent literature
-   (variance-risk-premium, factor zoo, etc.), differentiation matrix
-   completeness
-7. **narrative** — notebook as a self-contained communication artifact (spec
-   compliance): abstract cell filled in, per-section *what & why* cells,
-   per-figure *observation* cells, prose interpretation before the programmatic
-   verdict, "Cannot conclude" section present, headline figures plotly / altair
-   full-width ≥ 450 px, at least one `mo.ui` drill-down widget that does NOT
-   feed `results.parquet`, no template-placeholder residue. Canonical spec is
-   the `quant-research` skill's `notebook_narrative.md` and
-   `marimo_cell_granularity.md`. This dimension checks *spec compliance*.
-8. **adversarial** (cold-eye) — `.py` file alone, no other inputs. Two axes:
-   (a) does the abstract / verdict / headline number hold up on the evidence
-   visible in this file alone (claim-warrant under standalone reading);
-   (b) can a third-party reading this file alone explain what was investigated,
-   why, how, and what was concluded (standalone-readability — *whether* spec
-   compliance actually communicates, orthogonal to dimension 7's *whether*
-   spec is met).
+## Coverage
+
+The four reviewer agents cover these checks:
+
+1. **research-design**
+   - question: falsifiability, pre-registered thresholds, cycle hygiene,
+     hypothesis-portfolio honesty
+   - scope: universe, period, regime, generalization range
+   - method: model choice, baselines, feature hygiene, hyperparameter trial
+     accounting, retraining cadence
+2. **evidence-sufficiency**
+   - validation: walk-forward sample size, power, embargo adequacy, CPCV,
+     test-set discipline
+   - claim: conclusion calibration, overstatement, "cannot conclude" honesty,
+     deployment-readiness gaps
+3. **context-communication**
+   - literature: coverage, novelty, differentiation depth, missed adjacent work
+   - narrative: self-contained notebook quality, abstract, observations,
+     interpretation, template residue
+4. **adversarial**
+   - claim-warrant under standalone reading
+   - standalone readability for a third-party reader
 
 Each reviewer returns severity-tagged findings. The assistant aggregates them
-into a single structured review **delivered inline as part of the assistant's
-reply**. The skill does not write a review report file to disk. If the user
-later wants a durable record they can copy the relevant lines into
-`decisions.md` themselves; the skill itself does not modify any project file.
+into one structured review delivered inline. The skill does not write a review
+report file or modify `decisions.md`.
 
 ## Process
 
 | Step | Action |
 |---|---|
 | 1 | Read the notebook(s) under review and the project's `hypotheses.md` / `decisions.md` / `literature/papers.md` / `literature/differentiation.md` |
-| 2 | Verify a trigger fires; a direct user request is itself a trigger; an upcoming `verdict = "supported"` decision in a quant-research session is itself a trigger |
-| 3 | Determine **Initial pass vs Re-verify pass** (per `references/review_protocol.md` "Trigger-conditional dispatch on re-verify"). On Initial, all 8 reviewers fire. On Re-verify, fire only the dimensions whose surface map intersects the fixes' locations + adversary (auto on any specialist re-fire). Cross-session defaults to Initial |
-| 4 | **Pre-extract each reviewer's dimension scope** by section anchor from `references/review_dimensions.md` (specialists: §1-§7 inline; adversary: §8 inline). Whole-file `review_dimensions.md` is NOT delivered to any reviewer. Assemble bundles per the "Per-dimension input contract" (required scope / required shared / NOT-receive). Dispatch all selected reviewers *in parallel* via the assistant's sub-agent tool. The specialists each get their §i dimension scope plus the required-shared artifacts named in their input-contract row. The adversarial reviewer gets §8 only (no specialist scope, no project artifacts, no other reviewers' findings) |
-| 5 | Each reviewer returns findings in the schema below |
-| 6 | Aggregate the eight reviewers' findings into a single structured review and return it inline in the assistant's reply (no file is written) |
-| 7 | Compute the overall verdict per `references/severity_rubric.md`: ready / partial / preliminary / not-yet-research |
-| 8 | The skill does not append to `decisions.md` or write a review report file. If the user wants a durable record they can copy the inline review themselves |
+| 2 | Verify a trigger fires; a direct review request or an upcoming `verdict = "supported"` decision is enough |
+| 3 | Determine Initial vs Re-verify per `references/review_protocol.md`. Initial fires all 4 reviewers. Re-verify fires only touched specialist groups plus adversarial whenever any specialist re-fires |
+| 4 | Pre-extract each reviewer's section from `references/review_dimensions.md` (specialists: §1-§3; adversary: §4). Whole-file `review_dimensions.md` is not delivered |
+| 5 | Dispatch all selected reviewers in parallel via the assistant's sub-agent tool |
+| 6 | Each reviewer returns findings in the schema below |
+| 7 | Aggregate findings into a single inline review and compute the verdict per `references/severity_rubric.md` |
 
-See `references/review_dimensions.md` for what each reviewer specifically
-checks (dimensions 1–7 are specialists; dimension 8 is the adversarial cold-eye
-reviewer with its own minimum bundle). See `references/review_protocol.md` for the
-dispatch and aggregation mechanics, including the single-agent fallback. See
-`references/severity_rubric.md` for severity tags and the verdict calculation.
-
-**Bundle asymmetry is required, not optional.** Giving the adversarial reviewer the
-full bundle "for fairness" collapses the mechanism that makes the layer work; the
-adversary must remain context-starved.
+See `references/review_protocol.md` for dispatch, re-verify behavior, and the
+single-agent fallback. See `references/review_dimensions.md` for the reviewer
+checklists. See `references/severity_rubric.md` for severity and verdict
+calculation.
 
 ## Finding schema
 
 ```
 - severity: high | medium | low
-  dimension: question | scope | method | validation | claim | literature | narrative | adversarial
+  dimension: research-design | evidence-sufficiency | context-communication | adversarial
+  subdimension: question | scope | method | validation | claim | literature | narrative | standalone
   where:    <notebook>:<cell-or-section>  (or "project-level")
   what:     <one-sentence statement of the issue>
   why:      <which rule / reference / convention is violated, or which evidence is missing>
@@ -161,48 +124,38 @@ adversary must remain context-starved.
 ```
 
 `blocks_supported = yes` on any finding makes a `verdict = "supported"`
-decision a protocol violation until that finding is resolved or explicitly
+decision a protocol violation until the finding is resolved or explicitly
 parked with a recorded reason.
 
 ## Single-agent fallback
 
-If parallel sub-agent dispatch is unavailable (single-process platform,
-sub-agent quota exhausted, etc.), run the eight dimensions sequentially in
-eight distinct passes, clearing context (or at least re-reading the notebook
-from scratch) between passes. Do not collapse dimensions — the failure mode
-this skill is designed to prevent is exactly the single-pass review that
-"covers everything" and ends up shallow on each axis. The adversarial pass
-is run *with the minimum bundle only* even in the fallback — bundle asymmetry
-is preserved sequentially as well as in parallel.
+If parallel sub-agent dispatch is unavailable, run the four reviewer groups
+sequentially in four distinct passes, clearing context or re-reading the
+notebook from scratch between passes. Do not collapse the groups into one mixed
+review. Run the adversarial pass with the minimum bundle only.
 
 ## Common rationalizations to resist
 
 | Excuse | Reality |
 |---|---|
-| "The robustness battery passes, so the research is sound" | Robustness measures stability of an implemented PnL. It cannot tell you whether the *design* is sufficient to support the claim. A clean SPY-only walk-forward says nothing about generalization to QQQ. |
-| "The user just wants quick feedback, not a full review" | If they wanted quick feedback they would not have asked for a review. Run the protocol. Quick feedback comes from a different prompt. |
-| "I read the notebook end-to-end — that's a review" | Single-pass reading consistently misses dimensions. Seven narrow passes plus one cold-eye pass catches more even from one reader. |
-| "The adversarial reviewer should also see the literature folder, that's only fair" | No. The asymmetry IS the mechanism. A fully-briefed adversary is just an eighth specialist; CCR (arxiv 2603.12123) showed minimum-context review on code yielded findings full-context review systematically missed. Restoring its context restores the same anchoring the seven specialists already share. |
-| "There's no decisions.md / hypotheses.md, so I can't follow the protocol" | The protocol downgrades gracefully — log "missing artifact" as a `high`-severity finding under `question` and continue with the other dimensions. |
-| "The bug-review already ran" | Different question. `bug_review` = is this *correct*; experiment-review = is the *claim warranted*. Both must pass for `verdict = "supported"`. |
-| "The `quant-research` SKILL.md doesn't reference this skill, so it must be optional" | This skill IS the protocol gate at `verdict = "supported"`. If a `quant-research` SKILL.md you are reading does not invoke this skill before verdict, that SKILL.md is out of date relative to this gate — fall back to invoking this skill anyway, then flag the SKILL.md gap. (Captured RED-phase rationalization; do not let "SKILL.md = sole protocol" reasoning skip this layer.) |
-| "It's only a single experiment, full review is overkill" | If you're declaring a verdict on a single experiment, the single experiment is being asked to bear the weight of the claim. That's exactly when this layer matters most. |
-| "The user is the author and will know the misses" | Authors are systematically blind to their own missing baselines and over-extrapolated conclusions. That is the exact reason a fresh review pass exists. |
+| "The robustness battery passes, so the research is sound" | Robustness measures stability of an implemented PnL. It cannot tell you whether the design supports the claim. |
+| "The user just wants quick feedback, not a full review" | If they asked for a review, run the protocol. Quick feedback is a different prompt. |
+| "I read the notebook end-to-end; that's a review" | Single-pass reading consistently misses dimensions. Four focused passes keep attention narrow. |
+| "The adversarial reviewer should also see the literature folder" | No. The asymmetry is the mechanism. A fully briefed adversary is no longer cold-eye. |
+| "There's no decisions.md / hypotheses.md, so I can't follow the protocol" | Degrade gracefully: log the missing artifact as a finding and continue. |
+| "The bug-review already ran" | Different question. `bug_review` checks correctness; experiment-review checks claim warrant. |
+| "It's only a single experiment, full review is overkill" | A single experiment carrying a supported claim needs the gate most. |
 
 ## Red flags — the review is not actually being run
 
 - A delivered review with no severity tags
-- A delivered review covering fewer than eight dimensions explicitly
-- A delivered review that concludes "looks fine" without naming what was
-  checked under each dimension and what evidence supported that judgment
-- The adversarial reviewer was given the full bundle (literature, decisions,
-  hypotheses, prior cycles, or other reviewers' findings) — that collapses the
-  bundle asymmetry that makes the layer add value
+- A delivered review covering fewer than four reviewer groups explicitly
+- A delivered review that says "looks fine" without naming checked evidence
+- The adversarial reviewer received project context, prior cycles, literature,
+  decisions, hypotheses, or other reviewers' findings
 
 ## Failure mode this skill prevents
 
 A clean implementation that produces a real number on a too-narrow universe,
-with the wrong baseline, against weak prior-work differentiation, and that
-gets written up as a deployable result. The numbers are real but the
-**claim** is unsupported. This is the modal way quant research gets shipped
-before it is ready.
+with the wrong baseline, weak prior-work differentiation, and an overstated
+deployment claim. The numbers can be real while the claim is unsupported.

@@ -1,6 +1,6 @@
 {
   "name": "quant-research",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Research-state protocols for algorithmic trading and quantitative finance research. v1.0 BREAKING CHANGE: experiment-review skill removed (folded into quant-research's review/ subfolder); R&D and Pure Research are now strictly separate disciplines with mode-specific entry documents (Heilmeier charter / PR/FAQ + pre-registration); analysis depth (A0-A5) is the primary deliverable axis; integration pattern (Pattern 1/2/3) must be declared in charter.",
   "author": {
     "name": "komoootv",

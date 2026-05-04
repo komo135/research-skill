@@ -41,9 +41,12 @@ clean before any `matured` / `supported` claim.
 ## Why removed
 
 The old design had:
-- 6-reviewer parallel dispatch protocol (F21/F22 contracts) in bug_review
-- 7-reviewer parallel dispatch protocol in experiment-review
+- high-overhead parallel dispatch protocols in bug_review and experiment-review
 - F21 input-contract management, F22 trigger-conditional re-verify
+
+The active standalone `skills/experiment-review` compatibility source has since
+been consolidated to 4 reviewer agents. This v1.0 package shim still points
+users to the unified `quant-research` review checklists.
 
 Total: 423 lines of bug_review + ~300 lines of experiment-review = ~720
 lines of review protocol overhead, requiring agent-coordinated multi-agent

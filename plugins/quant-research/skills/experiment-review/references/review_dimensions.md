@@ -1,7 +1,8 @@
 # review_dimensions.md
 
-Per-dimension specifications for the seven specialist reviewers. Each reviewer reads its
-own section here and applies the checks listed; nothing else.
+Per-dimension specifications for the three specialist reviewer groups plus the
+adversarial cold-eye reviewer. Each reviewer reads its own section here and
+applies the checks listed; nothing else.
 
 ## How to read this file
 
@@ -17,7 +18,9 @@ Each dimension lists:
 
 ---
 
-## 1. question — falsifiability, pre-registration, cycle hygiene
+## 1. research-design — question, scope, method
+
+### 1A. question — falsifiability, pre-registration, cycle hygiene
 
 ### Scope
 
@@ -45,7 +48,7 @@ universe / regime (that is `scope`) or method choice (that is `method`).
 | Cycle count is ≥ 3 (minimum) or ≥ 5 (standard) | Single-shot experiment carrying the weight of the claim | medium |
 | Across cycles, the *best* result is not being cherry-picked into the abstract | pur_002 → pur_003 → pur_004 with monotonically improving Sharpe and only the best one declared `supported` is selection bias | medium |
 | Derived hypotheses from prior cycles were classified run-now / next-session / drop, not silently dropped | Untriaged candidate hypotheses sitting in `hypotheses.md` | low |
-| The "we did N hyperparameter trials and 1 of them passed" pattern is acknowledged in DSR trial counting | DSR computed with trial count = 1 | high (but `validation` reviewer owns the DSR computation itself; `question` only flags the trial-count *honesty*) |
+| The "we did N hyperparameter trials and 1 of them passed" pattern is acknowledged in DSR trial counting | DSR computed with trial count = 1 | high (but `evidence-sufficiency` owns the DSR computation itself; `research-design` flags the trial-count *honesty*) |
 
 ### Notes
 
@@ -56,7 +59,7 @@ flag if it does not.
 
 ---
 
-## 2. scope — universe, period, regime, generalization range
+### 1B. scope — universe, period, regime, generalization range
 
 ### Scope
 
@@ -119,7 +122,7 @@ the bar for internal robustness rises.
 
 ---
 
-## 3. method — model, baselines, features, hyperparameters
+### 1C. method — model, baselines, features, hyperparameters
 
 ### Scope
 
@@ -159,7 +162,9 @@ same feature set as the proposed method.
 
 ---
 
-## 4. validation — split, embargo, power, discipline
+## 2. evidence-sufficiency — validation and claim
+
+### 2A. validation — split, embargo, power, discipline
 
 ### Scope
 
@@ -196,7 +201,7 @@ window — a soft test-set leak. Ask explicitly.
 
 ---
 
-## 5. claim — conclusion vs. evidence calibration
+### 2B. claim — conclusion vs. evidence calibration
 
 ### Scope
 
@@ -234,7 +239,9 @@ co-occurs with at least one other gap.
 
 ---
 
-## 6. literature — coverage, novelty, differentiation depth
+## 3. context-communication — literature and narrative
+
+### 3A. literature — coverage, novelty, differentiation depth
 
 ### Scope
 
@@ -300,25 +307,23 @@ the pathway choice.
 
 ---
 
-## 7. narrative — notebook as a self-contained communication artifact
+### 3B. narrative — notebook as a self-contained communication artifact
 
 ### Scope
 
 Whether the notebook works as a communication artifact independent of its research
-content. Orthogonal to the other six dimensions: a notebook can describe excellent
-research badly, or describe weak research beautifully. This dimension judges only the
-artifact, not the research it documents.
+content. Orthogonal to the research-design and evidence-sufficiency checks: a
+notebook can describe excellent research badly, or describe weak research
+beautifully. This subdimension judges only the artifact, not the research it
+documents.
 
-The canonical spec is the `quant-research` skill's `references/notebook_narrative.md`
-(structural / narrative requirements) and `references/marimo_cell_granularity.md` (one
-fit / one evaluation per cell). This reviewer applies those specs as a checklist; this
-file does not duplicate them.
+The checklist below is the canonical narrative spec for this review. If the
+project has an additional local notebook style guide, include it as optional
+context, but do not require files that are absent from the project tree.
 
 ### Inputs
 
 - The full notebook `.py` file under review
-- The `quant-research` skill's `references/notebook_narrative.md`
-- The `quant-research` skill's `references/marimo_cell_granularity.md`
 - The notebook's parent project's `purposes/INDEX.md` entry (if any) — the one-line
   conclusion there should match the notebook's headline
 
@@ -375,24 +380,24 @@ content*".
 
 ---
 
-## 8. adversarial — cold-eye standalone reading
+## 4. adversarial — cold-eye standalone reading
 
 ### Scope
 
 An independent reviewer that reads the `.py` file alone, on first sight, and attacks
-along two axes. This reviewer differs from the seven specialists *not in topic but in
-context bundle*: literature, decisions, hypotheses, the seven specialists' findings,
+along two axes. This reviewer differs from the three specialist groups *not in topic but in
+context bundle*: literature, decisions, hypotheses, the three specialists' findings,
 and even upstream feature notebooks are all withheld. The setup mimics the situation
 "someone hands you this `.py` file and says: evaluate the experiment from this alone".
 
 The asymmetry is the mechanism. Same model, same prompt rigor, *different bundle*.
-Specialists supply the inside view (full context, narrow scope per dimension). The
+Specialists supply the inside view (full context, narrow scope per grouped dimension). The
 adversarial reviewer supplies the outside view (no anchor on the author's narrative,
 no anchor on the other reviewers' framings). Empirically, minimum-context review on
 code yields qualitatively different findings than full-context review (Cross-Context
 Review, arxiv 2603.12123, +4.7 F1 on code review).
 
-This reviewer does NOT replace `narrative` (dimension 7). `narrative` checks
+This reviewer does NOT replace `context-communication`'s narrative checks. `narrative` checks
 *spec compliance* (abstract cell filled in, observation cells present, etc.) against
 the `quant-research` skill's `notebook_narrative.md`. The adversarial reviewer checks
 *whether spec compliance actually communicates*. A notebook can satisfy every
@@ -404,7 +409,7 @@ the `quant-research` skill's `notebook_narrative.md`. The adversarial reviewer c
 
 ### NOT inputs (deliberately withheld)
 
-- The seven specialist reviewers' findings
+- The three specialist reviewers' findings
 - `literature/papers.md`, `literature/differentiation.md`
 - `hypotheses.md`, `decisions.md`, `purposes/INDEX.md`
 - Upstream feature notebook `.py` files (even if the design cell names them — the
@@ -445,7 +450,7 @@ how, and what was concluded?
 
 > "You are an external cold reader. The `.py` file you are about to read is the only
 > material you are given. Other materials (literature, hypotheses, decisions, prior
-> cycles, the seven specialist reviewers' findings) are intentionally withheld — the
+> cycles, the three specialist reviewers' findings) are intentionally withheld — the
 > goal is to keep you from anchoring on priors that the same model shares with the
 > author or with other reviewers.
 >
@@ -473,11 +478,11 @@ how, and what was concluded?
 
 ### Notes
 
-The most common failure this reviewer catches that the seven specialists miss: a
+The most common failure this reviewer catches that the specialist groups miss: a
 result that *makes sense in context* (because the agent has been working on this
 project for a while and shares the author's context) but that fails when handed to
-a fresh reader. The seven specialists are not adversarial cold-readers; they are
-domain specialists with full bundle. This reviewer fills that gap.
+a fresh reader. The specialist groups are not adversarial cold-readers; they are
+domain reviewers with full bundle. This reviewer fills that gap.
 
 The most common false alarm this reviewer produces: flagging a notebook for *not
 including* literature context that lives in the project's `literature/` folder.
