@@ -2,8 +2,8 @@
 
 The Pure Research promotion checklist. Run this before declaring an
 explanation `supported` (i.e., the project's claim has passed). Like
-the R&D promotion gate, this is the highest bar: every item must pass
-with concrete evidence cited, no exceptions.
+the R&D promotion gate, this is the highest bar: every load-bearing item must
+pass with concrete evidence cited.
 
 ## When to read
 
@@ -42,11 +42,12 @@ Format: `[ ] item — required evidence — citation`
 - [ ] Pre-registration timestamp predates trial execution timestamp
   - Evidence: `prereg/PR_<id>.lock` UTC timestamp vs trial result
     timestamp in `results.parquet`
-- [ ] No undocumented PR/FAQ amendments (every change recorded as
-  deviation entry in `decisions.md`)
-  - Evidence: `git log prfaq.md` count == count of deviation entries
+- [ ] No undocumented load-bearing PR/FAQ amendments (claim, mechanism,
+  scope, alternatives, evidence type, or promotion language)
+  - Evidence: lock / git history reviewed against deviation entries
 - [ ] No undocumented pre-registration amendments
-  - Evidence: same check on `prereg/PR_<id>.md`
+  - Evidence: same check on `prereg/PR_<id>.md`; formatting-only changes do
+    not count as amendments
 
 ### B. Deviation severity
 
@@ -218,7 +219,7 @@ Future work: <derived sub-questions or sibling project candidates>
 
 | Failure | Symptom | Fix |
 |---|---|---|
-| Skipping items | "Mostly satisfies" or "obvious from context" | Each item requires explicit citation |
+| Skipping load-bearing items | "Mostly satisfies" or "obvious from context" | Each promotion-supporting item requires explicit citation |
 | Citing other projects' work as evidence | "We found similar in another project" | Citation must be from this project's pre-reg + trials |
 | Claiming supported on weakened E | E never reached `rejected`, just `weakened` | Run further discriminating test or accept that the alternative remains live |
 | Skipping cold-eye check | "Looks good" | Cold-eye is structurally different; do the read |

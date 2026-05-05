@@ -25,7 +25,7 @@ support what you're claiming". Both are common; both are necessary.
 
 ## How to run
 
-Same checklist discipline as `process_review.md`. Each check requires
+Same checklist discipline as `process_review.md`. Load-bearing checks require
 concrete evidence cited. "Looks good" is forbidden.
 
 ```
@@ -207,7 +207,7 @@ The analysis reaches A4 minimum (`references/shared/analysis_depth.md`).
 
 The trial can be re-run.
 
-- [ ] **3-tuple recorded** for the cited trial(s) per
+- [ ] **3-tuple recorded** for promotion-eligible or claim-cited trial(s) per
   `references/shared/reproducibility.md`:
   - Data hash in `reproducibility/data_hashes.txt`
   - Git commit in `results.parquet`
@@ -299,7 +299,7 @@ Cold-eye check items:
 
 ## Outcome of conclusion review
 
-- **All 6 axes pass with citations** → conclusion review CLEAN;
+- **All 6 axes pass with citations for load-bearing items** → conclusion review CLEAN;
   proceed to the promotion gate
   (`rd_promotion_gate.md` / `pr_promotion_gate.md`)
 - **Any axis fails** → conclusion review FAILED; cannot proceed to

@@ -190,9 +190,10 @@ Q3: Look at charter H7. Is the recurring cost > 0 and does it involve
        of continuous improvement)
     → NO: 永続型
 
-Q4 (sanity check): If you assigned 永続型, would you be willing to
-    sign that no maintenance plan is needed for this tech for 5 years
-    after promotion? If you hesitate, it is 継続改善型.
+Q4 (sanity check): If you assigned 永続型, can you name the external
+    conditions under which the technology remains valid without scheduled
+    re-investment? If yes, record those assumptions and keep 永続型. If no,
+    use 継続改善型.
 ```
 
 The parameter-vs-methodology distinction matters: an HMM regime
@@ -211,10 +212,11 @@ termination semantics:
 - **All K's are 永続型** and all `established` → project is **fully
   completed**. Final entry in `decisions.md` notes the freeze. No
   ongoing obligation.
-- **Any K is 継続改善型** → project completion = **"v1 established + maintenance plan scheduled"**. The closing entry in `decisions.md` MUST
-  include the maintenance plan (cadence + trigger condition + owner +
-  baseline metric snapshot, see `references/rd/rd_promotion_gate.md` for
-  the template). Without the maintenance plan, promotion is blocked.
+- **Any K is 継続改善型** → project completion = **"v1 established + maintenance plan scheduled"**. The closing entry in `decisions.md` must
+  include a right-sized maintenance plan. For production or external claims,
+  include cadence + trigger condition + owner + baseline metric snapshot (see
+  `references/rd/rd_promotion_gate.md`). For internal prototypes, a trigger
+  condition and next review point are sufficient.
 
 ## Status transitions
 

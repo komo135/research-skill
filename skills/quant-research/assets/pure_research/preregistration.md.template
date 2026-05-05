@@ -33,7 +33,8 @@ null-result) and (if correlative) the gap to causation. See
 - **Period**: <REPLACE: start to end>
 - **Frequency**: <REPLACE: e.g., daily, 5-min>
 - **Universe**: <REPLACE: instruments included>
-- **Hash**: <REPLACE: from `scripts/reproducibility_stamp.py`>
+- **Planned data identity**: <REPLACE: path / vendor version / expected
+  snapshot date. Final content hash is stamped at trial time.>
 
 ### 3.2 Sample / split
 
@@ -82,6 +83,8 @@ this, trials drift.>
 - Random seed(s): <REPLACE>
 - Code commit (planned at trial run): <fill at trial time>
 - Env lock hash (planned at trial run): <fill at trial time>
+- Data hash (final, trial-time): <fill from `scripts/reproducibility_stamp.py`
+  output>
 
 ---
 

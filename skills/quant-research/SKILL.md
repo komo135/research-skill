@@ -132,16 +132,17 @@ reference before executing the step:
    below for the operational filter.
 3. **Capability map** (`references/rd/capability_map_schema.md`) —
    operational decomposition. For each core technology, list capabilities
-   sized so one test changes one capability's TRL. Each capability row
+   sized so one evidence package changes one capability's TRL claim. Each capability row
    references its parent `core_tech_id` (or `integration` for cross-cutting),
    and carries a kill criterion alongside its exit criterion.
 4. **Maturity** (`references/rd/trl_scale.md`) — assign TRL-0 to TRL-6. TRL-6
-   (operational prototype) is the promotion line. TRL skipping is forbidden;
-   a strong test result moves one capability one level, not the whole stack.
+   (operational prototype) is the promotion line. TRL advancement is evidence-based;
+   do not claim a level unless the evidence meets that level's definition.
 5. **Stages** (`references/rd/rd_stages.md`) — for each capability run
-   Scoping → De-risk → Build → Validate → Integrate, with a Go/Kill gate
-   between each. Tackle the hardest sub-question first; de-risk to kill, not
-   to confirm.
+   Scoping → De-risk → Build → Validate → Integrate, with Go / Kill /
+   Hold / Recycle decision points between each. Tackle the hardest
+   sub-question first; de-risk to learn whether to continue, hold, recycle,
+   or terminate, not to confirm.
 6. **Workflow** (`references/rd/rd_workflow.md`) — initial-day prohibitions,
    session-end ritual, stop conditions.
 7. **Promotion** (`references/rd/rd_promotion_gate.md`) — promote a target
@@ -250,8 +251,8 @@ should be Pure Research instead.
 
 ### Layer 2: Capabilities (operational)
 
-For each core technology, list capabilities sized so one test changes one
-capability's TRL by exactly one level. Each capability row references its
+For each core technology, list capabilities sized so one evidence package can
+change one capability's TRL claim without moving the whole stack. Each capability row references its
 parent `core_tech_id` (or `integration` for cross-cutting work). See
 `references/rd/capability_map_schema.md` for the full schema.
 
@@ -284,19 +285,25 @@ Two-axis review, run both before any promotion to `supported`:
   / claim discipline / **analysis depth (A4+)** / reproducibility / cold-eye
   check from the artifact alone.
 
-Both axes are agent-self-executable checklists. Each item requires concrete
-evidence citation (file:line, hash, numeric value, or tool output). "Overall
-OK" / "looks good" / "appears correct" verdicts are forbidden.
+Both axes are agent-self-executable checklists. Promotion-blocking items and
+state transitions require concrete evidence citation (file:line, hash, numeric
+value, or tool output). Lightweight process observations may be summarized when
+they are not load-bearing. "Overall OK" / "looks good" / "appears correct"
+verdicts are forbidden.
 
 ## Guardrails
 
-- **Kill > Promote**. A kill criterion firing once is sufficient to kill;
-  promotion requires every checklist item to pass with concrete evidence
-  cited. The asymmetry exists to counterweight the agent's structural bias
-  toward `supported`.
-- **Evidence citation is mandatory**. Any claim of "passed" / "verified" /
-  "confirmed" must reference a specific file:line, hash, numeric value, or
-  tool output. Summary verdicts without citation are forbidden.
+- **Kill requires A4+ evidence**. A kill criterion firing is a trigger for
+  terminal review, not an automatic terminal state. Mark `killed` only after
+  mechanism-level analysis rules out repairable causes such as config error,
+  data defect, scope error, or dependency immaturity. Promotion still requires
+  every promotion-blocking checklist item to pass.
+- **Evidence citation is mandatory for load-bearing claims**. Any claim of
+  "passed" / "verified" / "confirmed" that supports `supported`, `matured`,
+  `promoted`, `killed`, external sharing, deployment recommendation, major
+  deviation, or claim-scope change must reference a specific file:line, hash,
+  numeric value, or tool output. Summary verdicts without citation are
+  forbidden at those decision points.
 - **Initial-day prohibitions**.
   - R&D first day: no implementation, charter and capability map (with
     core technologies) only. *Why*: kill criteria (Heilmeier H6) must be
@@ -317,31 +324,34 @@ OK" / "looks good" / "appears correct" verdicts are forbidden.
     (implementation that runs / trial that produces metrics), not
     enabling work.
 - **Session-level R&D sequencing**. Once the charter is complete, the seven
-  R&D steps must be completed in order across sessions, not in parallel:
-  - No capability row may be written until Layer 1 (Core Technologies) is
-    100% filled and passes the operational filter (§ Decomposition
+  R&D steps must preserve dependency order:
+  - No capability row may be written until its parent Layer 1 core technology
+    has complete fields and passes the operational filter (§ Decomposition
     Discipline).
-  - **No Stage gate (Scoping–De-risk–Build–Validate–Integrate) may be run
-    on any capability while ANY core technology in Layer 1 is still in
-    `active` status without complete fields.** The check is global to
-    Layer 1, not just the immediate parent of the capability under work.
-    A sibling core tech with a missing research question or undefined
-    lifecycle type blocks every Stage gate, including in unrelated
-    branches. Rationale: capability-level evidence often forces upstream
-    re-scoping; running gates with partial Layer 1 produces results that
-    have to be re-evaluated when missing core techs are formalized.
+  - **No Stage gate (Scoping–De-risk–Build–Validate–Integrate) may be run on
+    a capability while its parent K, declared dependencies, or integration
+    path have incomplete Layer 1 fields.** Unrelated sibling K rows do not
+    globally block the branch. If a Stage gate surfaces a new upstream K,
+    suspend the affected branch, file the deviation, re-scope the dependency
+    path, then resume.
   - Any rollback to an earlier step requires a dated deviation entry in
     `decisions.md` citing the blocker. The session-end ritual alone does
     not satisfy this — moving any ledger row is necessary but not
     sufficient.
-- **Session-end ritual**. Every session must move at least one ledger row,
-  or explicitly record `no progress: <reason>` in `decisions.md`.
-- **Reproducibility 3-tuple**. Every trial that produces a metric stamps
-  data hash + git commit + env lock via `scripts/reproducibility_stamp.py`.
-- **Frozen artifacts**. Charter, pre-registration, and kill-criteria fire
-  log are SHA-256 hash-locked and append-only. After-the-fact editing is
-  structurally impossible; any deviation requires an explicit deviation
-  entry in `decisions.md`.
+- **Session-end ritual**. Sessions that change durable research state must
+  move at least one ledger row or record `no progress: <reason>` in
+  `decisions.md`. Short orientation, environment setup, and interrupted
+  sessions may remain outside the durable log unless they change a claim,
+  state transition, or gate decision.
+- **Reproducibility 3-tuple**. Every promotion-eligible or claim-cited trial
+  stamps data hash + git commit + env lock via
+  `scripts/reproducibility_stamp.py`. Exploratory, smoke-test, and debugging
+  runs may use lightweight run notes. If later needed for promotion, rerun under the promotion-eligible protocol; do not retroactively stamp exploratory output
+  as if it had been captured at trial time.
+- **Frozen artifacts**. Charter, pre-registration, and kill-criteria fire log
+  are SHA-256 hash-locked as review anchors. Editing is detectable, not
+  physically impossible; any load-bearing amendment requires an explicit
+  deviation entry in `decisions.md` or a new frozen artifact.
 - **No placeholders in deliverables**. Templates produce real content; any
   remaining `TBD`, `TODO`, `XXX`, `???`, or `{{...}}` blocks the deliverable.
 
@@ -359,7 +369,7 @@ results/results.parquet          # mode-aware aggregated trial results
 configs/                         # project-instance experiment configs
 src/                             # project-instance implementation, if any
 tests/                           # project-instance verification, if any
-reproducibility/{env.lock,data_hashes.txt,seed.txt}
+reproducibility/{uv.lock,data_hashes.txt,seed.txt}
 ```
 
 R&D adds:
@@ -396,7 +406,7 @@ audience.
 | `shared/sanity_checks.md` | Programmatic correctness checks before any promotion review. |
 | `shared/psr_dsr_formulas.md` | Computing PSR / DSR. |
 | `shared/multiple_testing.md` | When ≥2 hypotheses, parameter sweeps, or multiple strategies are compared. |
-| `shared/reproducibility.md` | Setting up data hash + git commit + env lock for a trial. |
+| `shared/reproducibility.md` | Setting up data hash + git commit + env lock for promotion-eligible or claim-cited trials. |
 | `shared/modeling_approach.md` | Choosing a model class. |
 | `shared/feature_construction.md` | Designing features. |
 | `shared/model_diagnostics.md` | Validating math-model assumptions or ML overfit. |

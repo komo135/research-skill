@@ -1,9 +1,10 @@
 # rd_stages.md
 
-Cooper-style 5-stage progression for each capability, with Go/Kill gates
-between stages. Each gate is an evidence-based investment decision: pass
-to the next stage with concrete evidence, or kill (the asymmetric default
-under uncertainty per § Guardrails in `SKILL.md`).
+Cooper-style 5-stage progression for each capability, with Go / Kill /
+Hold / Recycle decisions between stages. Each gate is an evidence-based
+investment decision: pass to the next stage, terminate with A4+ evidence,
+hold for missing evidence, or recycle / re-scope the work when the design
+is wrong.
 
 ## When to read
 
@@ -37,9 +38,9 @@ themselves (below) are pattern-agnostic; only the integration step
 
 ## The 5 stages
 
-For each capability, work flows through five stages. Each stage advances
-the capability by 1-2 TRL levels (see `references/rd/trl_scale.md`) AND
-requires a minimum analysis depth (see `references/shared/analysis_depth.md`):
+For each capability, work flows through five stages. Each stage gathers
+evidence for a TRL claim (see `references/rd/trl_scale.md`) AND requires a
+minimum analysis depth (see `references/shared/analysis_depth.md`):
 
 | Stage | TRL transition | Analysis depth required |
 |---|---|---|
@@ -49,9 +50,9 @@ requires a minimum analysis depth (see `references/shared/analysis_depth.md`):
 | 4. Validate | 4 → 5 | **A4 minimum** (mechanism named, alternatives excluded, scope precise) |
 | 5. Integrate | 5 → 6 | **A4 minimum** (A5 strongly preferred for `matured`) |
 
-Both axes (TRL + analysis tier) advance per stage. Promotion to `matured`
-requires TRL-6 AND A4+. A capability at TRL-5 with A2 analysis is not
-ready for the next gate, even if the operational test technically
+Both axes (TRL + analysis tier) must be justified by evidence. Promotion to
+`matured` requires TRL-6 AND A4+. A capability at TRL-5 with A2 analysis is
+not ready for the next gate, even if the operational test technically
 succeeded.
 
 ```
@@ -83,10 +84,14 @@ capability's `core_tech_id` exists in Section 1.
 - Exit and kill criteria both pass the "concrete observable" test
 - TRL advances 0 → 1
 
-**Kill at Gate 1 if**:
+**Recycle or re-scope at Gate 1 if**:
 - The capability has no concrete exit criterion
 - The hardest sub-question is "everything"
 - The capability is actually a task (not a research-worthy unit)
+
+These are scoping failures, not evidence that the underlying research target
+is false. Move the row to a task, split it, or rewrite it before running
+evidence-producing work.
 
 ### Stage 2 — De-risk (hardest part first)
 
@@ -149,12 +154,17 @@ known failure modes.
 - Kill criterion not fired
 - TRL advances 3 → 4
 
-**Kill at Gate 3 if**:
+**Hold, re-scope, or kill at Gate 3 if**:
 - Real-data edge cases reveal that the technology has a fundamental
   limitation that wasn't visible in the de-risk test
 - Required robustness check (e.g., regime-conditional Sharpe) shows the
   capability works only in a degenerate regime
 - Cost (compute / data / wall-clock) exceeds charter H7 budget by > 2x
+
+Cost or robustness problems are terminal only when A4 analysis shows the
+failure is intrinsic to the capability under the chartered scope. Otherwise
+file `Hold` for missing evidence or `Recycle` for a narrower scope /
+alternate implementation.
 
 ### Stage 4 — Validate
 
@@ -221,10 +231,13 @@ In all patterns: demonstrate the K under representative workload.
 - Analysis at A4 minimum (A5 strongly preferred for `matured`)
 - TRL advances 5 → 6 → status `matured`
 
-**Kill at Gate 5 if**:
+**Hold, re-scope, or kill at Gate 5 if**:
 - Operational performance fails to meet charter H8 final exam criteria
 - Cost exceeds charter H7 budget at scale
 - A previously un-fired kill criterion now fires under realistic load
+
+Kill requires A4+ evidence that the miss is not a repairable implementation,
+configuration, data, or scope problem.
 
 ## Gate decision protocol
 
@@ -232,17 +245,20 @@ At each gate, the decision is one of three:
 
 - **Go**: All exit conditions met; advance to next stage.
 - **Kill**: Kill criterion fired (with A4 evidence) or this stage's exit
-  conditions cannot be met. Mark capability `killed` in
-  `capability_map.md`. Append A4 analysis to the kill log in
-  `decisions.md`.
+  conditions cannot be met for intrinsic, non-repairable reasons. Mark
+  capability `killed` in `capability_map.md`. Append A4 analysis to the
+  kill log in `decisions.md`.
 - **Hold**: Need more information; do not advance, do not kill. Specify
   what new evidence is needed and why current evidence is insufficient.
   Logged in `decisions.md`.
+- **Recycle / Re-scope**: The capability, test design, threshold, dependency
+  path, or implementation frame is wrong. Rewrite the relevant row, split the
+  capability, move it to a task, or narrow the scope before retrying.
 
-The asymmetry: **default to Kill under uncertainty**. The skill's
-guardrails embed Kill > Promote (see `SKILL.md` § Guardrails). Holding is
-acceptable but must name the specific blocker, not be a soft "let's wait
-and see".
+The asymmetry: **Default to Hold or Recycle under uncertainty**. Kill is a
+terminal decision, not a synonym for doubt. Holding is acceptable but must
+name the specific blocker, not be a soft "let's wait and see"; recycling is
+acceptable when the work should continue under a corrected design.
 
 ## Hardest-part-first principle
 

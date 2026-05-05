@@ -1,5 +1,5 @@
 """reproducibility_stamp.py — Capture the 3-tuple (data hash + git commit + env lock)
-for a promotion-eligible trial.
+for a promotion-eligible or claim-cited trial.
 
 Per `references/shared/reproducibility.md` and CHARTER C12 / D-16 (uv).
 
@@ -12,8 +12,8 @@ Writes/updates files in <project_dir>/reproducibility/:
 Also returns / prints a JSON-formatted stamp record with:
     trial_id, stamped_at (UTC ISO), git_commit, env_lock_hash, data_hashes, seed
 
-The trial notebook should capture this output and persist it to results/results.parquet
-or to its own analysis section.
+The trial notebook or caller should capture this output and persist it to
+results/results.parquet, its own analysis section, or another durable run log.
 
 Usage:
     python scripts/reproducibility_stamp.py \\
@@ -126,6 +126,18 @@ def stamp(
     if not project_dir.exists():
         raise FileNotFoundError(f"project directory not found: {project_dir}")
 
+    # Validate non-mutating preconditions before writing stamp artifacts.
+    commit, is_dirty = get_git_state(project_dir)
+    if is_dirty:
+        raise RuntimeError(
+            "Working tree is dirty (uncommitted changes). "
+            "Commit changes first, then re-run reproducibility_stamp.py. "
+            "Reproducibility requires that the analysis code at trial time "
+            "is uniquely identified by a commit hash."
+        )
+    uv_lock = find_uv_lock(project_dir)
+    env_hash = compute_sha256(uv_lock)
+
     # 1. Data hashes
     repro_dir = project_dir / "reproducibility"
     repro_dir.mkdir(parents=True, exist_ok=True)
@@ -147,22 +159,10 @@ def stamp(
     merged = {**existing, **new_hashes}
     write_data_hashes(data_hashes_file, merged)
 
-    # 2. Git state
-    commit, is_dirty = get_git_state(project_dir)
-    if is_dirty:
-        raise RuntimeError(
-            "Working tree is dirty (uncommitted changes). "
-            "Commit changes first, then re-run reproducibility_stamp.py. "
-            "Reproducibility requires that the analysis code at trial time "
-            "is uniquely identified by a commit hash."
-        )
-
-    # 3. Env lock
-    uv_lock = find_uv_lock(project_dir)
-    env_hash = compute_sha256(uv_lock)
+    # 2. Env lock
     (repro_dir / "env_lock_hash.txt").write_text(env_hash + "\n", encoding="utf-8")
 
-    # 4. Seed (append if provided)
+    # 3. Seed (append if provided)
     if seed is not None:
         seed_file = repro_dir / "seed.txt"
         existing_seeds = ""

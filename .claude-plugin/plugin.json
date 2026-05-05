@@ -1,7 +1,7 @@
 {
   "name": "quant-research",
   "description": "v1.0 — Protocol skill for agent-driven quantitative finance research. Two strict disciplines (R&D / Pure Research) with mode-specific entry documents (Heilmeier charter / PR/FAQ + AEA-style pre-registration), two-layer decomposition (Core Technologies + Capabilities) with TRL maturity and lifecycle, Cooper-style stage-gates, A0-A5 analysis-depth tier as primary deliverable, integration pattern (Pattern 1/2/3) declared in charter, and unified two-axis review (process + conclusion) replacing the separate experiment-review skill.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"

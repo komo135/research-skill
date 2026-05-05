@@ -1,31 +1,45 @@
 # reproducibility.md
 
-The reproducibility 3-tuple — data hash + git commit + env lock — is
-the minimum machine-verifiable proof that a trial can be re-run and
-produce the same result. Required for every promotion-eligible trial
-in both R&D and Pure Research.
+The reproducibility 3-tuple — data hash + git commit + env lock — is the
+minimum rerun anchor for a trial. It identifies the inputs, analysis code,
+and dependency lock used for a result. Required for every promotion-eligible
+or claim-cited trial in both R&D and Pure Research.
 
 ## When to read
 
 - Setting up a new project's `reproducibility/` folder
-- About to run a promotion-eligible trial (must stamp the 3-tuple)
+- About to run a promotion-eligible or claim-cited trial (must stamp the 3-tuple)
 - Reviewing a promotion claim (verify 3-tuple recorded)
 - Operating `scripts/reproducibility_stamp.py`
 
 ## The principle
 
-A claim that cannot be re-run by a different person on different
-hardware is not a defensible claim. The 3-tuple is the cheapest way
-to make re-runs possible:
+A claim that cannot be traced to its inputs, code, and dependency lock is not
+defensible. The 3-tuple is the cheapest way to make reruns possible:
 
 - **Data hash**: anchors the input data
 - **Git commit**: anchors the analysis code
 - **Env lock**: anchors the dependency versions
 
-Together, these three identifiers uniquely specify the computational
-environment of the trial. Re-running with all three matched should
-produce the same result (modulo random seeds, which are also captured
-separately).
+Together, these three identifiers anchor the computational environment of the
+trial. They do not prove cross-hardware identity: OS, system libraries, CPU /
+GPU differences, external services, and nondeterministic training can still
+matter. For stochastic algorithms, seeds and repeated runs remain necessary.
+
+## Reproducibility levels
+
+Use the lightest level that matches the claim:
+
+| Level | Meaning | Typical evidence |
+|---|---|---|
+| Traceable | A run can be understood later | run note, parameters, metric, artifact link |
+| Rerunnable | A run has stable rerun anchors | data hash, git commit, env lock, seed |
+| Reproduced | The result was rerun and matched within tolerance | verification output, tolerance, rerun timestamp |
+| Validated | An independent reviewer or environment confirmed the result | review note or external validation artifact |
+
+Exploratory, smoke-test, and debugging runs may stop at Traceable. Promotion
+and external claims require Rerunnable at minimum; Reproduced or Validated is
+preferred when the claim is high-impact.
 
 ## The 3-tuple components
 
@@ -142,7 +156,7 @@ The helper script captures the 3-tuple at trial time:
 
 ```bash
 python scripts/reproducibility_stamp.py \
-  --project <project_name> \
+  --project-dir <project_dir> \
   --trial-id <trial_id> \
   --data-paths data/raw/spx_5min_2010_2024.parquet data/raw/vix_daily_1990_2024.parquet \
   [--seed 42]
@@ -151,13 +165,17 @@ python scripts/reproducibility_stamp.py \
 **Outputs**:
 1. Updates `<project>/reproducibility/data_hashes.txt` with hashes of
    the named data files
-2. Captures `git rev-parse HEAD` and writes to a per-trial line in
-   `<project>/results/results.parquet`
+2. Captures `git rev-parse HEAD` in the emitted JSON stamp record
 3. Captures hash of `<project>/reproducibility/uv.lock` and writes to
    `env_lock_hash.txt`
 4. If `--seed` is provided, appends to `seed.txt`
-5. Updates `shared_pins.txt` with commit hashes of any shared modules
-   imported by the trial code (auto-detected via Python import scan)
+5. prints a JSON stamp record containing trial ID, timestamp, git commit,
+   env lock hash, data hashes, seed, and project directory
+
+The trial notebook or caller persists this record to `results.parquet`, the
+trial analysis section, or another durable run log. `shared_pins.txt` is
+manually maintained when shared infrastructure is used; the helper does not
+auto-detect imports.
 
 **Exit codes**:
 - 0: 3-tuple captured, working tree clean, all data files exist
@@ -168,7 +186,7 @@ python scripts/reproducibility_stamp.py \
 
 The promotion gate (`rd_promotion_gate.md` § H,
 `pr_promotion_gate.md` § G) requires this script to have been run
-with exit 0 for every promotion-cited trial.
+with exit 0 for every promotion-eligible or claim-cited trial.
 
 ## Verification (re-running a stamped trial)
 
@@ -179,7 +197,8 @@ python scripts/reproducibility_verify.py --trial-id <trial_id>
 ```
 
 This script:
-1. Reads the trial's recorded 3-tuple from `results.parquet`
+1. Reads the trial's recorded 3-tuple from the durable run log
+   (`results.parquet`, trial analysis section, or equivalent)
 2. Verifies the current Git commit matches (or warns if checked out
    to a different commit)
 3. Hashes the current `data/raw/` files and compares to recorded
@@ -220,7 +239,7 @@ Cited claim: E<id> at status `supported`
 Source trial: trial_<NNN>
 Source 3-tuple:
   - Data hash: <hash from source project's data_hashes.txt>
-  - Git commit: <hash from source project's results.parquet>
+  - Git commit: <hash from source project's persisted stamp record>
   - Env lock hash: <hash from source project's env_lock_hash.txt>
 ```
 

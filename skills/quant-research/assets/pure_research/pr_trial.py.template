@@ -51,7 +51,9 @@ def _(mo):
 
     ## Reproducibility
 
-    - Data hash: <REPLACE: from `scripts/reproducibility_stamp.py`>
+    - Data hash: <REPLACE: from `scripts/reproducibility_stamp.py` if this
+      trial is promotion-eligible or claim-cited; otherwise link lightweight
+      run note>
     - Git commit: <REPLACE: from `scripts/reproducibility_stamp.py`>
     - uv.lock hash: <REPLACE: from `scripts/reproducibility_stamp.py`>
     - Random seed: <REPLACE>
@@ -66,8 +68,9 @@ def _(mo):
         r"""
     ## 1. Setup and data load
 
-    Load data per the frozen pre-reg (§ 3.1). Verify data hash matches
-    pre-reg-stated hash; any mismatch is a major deviation.
+    Load data per the frozen pre-reg (§ 3.1). For promotion-eligible or
+    claim-cited trials, stamp the final data hash at trial time and compare it
+    to the planned data identity. Any material mismatch is a deviation.
     """
     )
     return
@@ -76,8 +79,8 @@ def _(mo):
 @app.cell
 def _(pd):
     # data = pd.read_parquet("<REPLACE: data path>")
-    # Optionally call scripts/reproducibility_stamp.py to record the
-    # data hash and assert it matches the pre-reg.
+    # For promotion-eligible or claim-cited trials, call
+    # scripts/reproducibility_stamp.py to record the final data hash.
     pass
     return
 

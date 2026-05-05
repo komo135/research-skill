@@ -2,8 +2,9 @@
 
 The R&D promotion checklist. Run this before declaring an R&D target
 **promoted** (i.e., the project as a whole is complete or completed-v1).
-Promotion is the highest bar in the skill: every item below must pass
-with concrete evidence cited, no exceptions.
+Promotion is the highest bar in the skill: every load-bearing item below must
+pass with concrete evidence cited. Non-load-bearing process notes may be
+summarized, but not used to support the promotion claim.
 
 ## When to read
 
@@ -32,10 +33,10 @@ Format: `[ ] item — required evidence — citation`
 
 - [ ] Charter exists, frozen, hash matches `prereg/charter.lock`
   - Evidence: `prereg/charter.lock` SHA-256 == sha256sum of `charter.md`
-- [ ] No undocumented charter amendments (every change recorded in
-  `decisions.md` as a deviation entry)
-  - Evidence: `git log charter.md` count == count of deviation entries
-    in `decisions.md`
+- [ ] No undocumented load-bearing charter amendments (scope, kill criteria,
+  H7, H8, consumer, or promotion language)
+  - Evidence: charter lock / git history reviewed against deviation entries;
+    formatting-only changes do not count as amendments
 - [ ] Charter H8 final exam criteria are met (cite the actual
   observation against the H8 criteria)
   - Evidence: per-criterion observation in this gate's review notes
@@ -102,9 +103,11 @@ stale), all of the following:
 
 ### G. Maintenance plan (conditional)
 
-If any K is `継続改善型`, the closing `decisions.md` entry must include
-a maintenance plan with **all** of the following fields. If all K's are
-`永続型`, this section is N/A.
+If any K is `継続改善型`, the closing `decisions.md` entry must include a
+right-sized maintenance plan. If all K's are `永続型`, this section is N/A.
+Production, external, or deployment-adjacent claims require all fields below.
+Internal prototypes may record cadence or trigger, owner role, baseline
+snapshot, and next review point.
 
 - [ ] **Per-K plan**: For each `継続改善型` K, a separate maintenance
   plan block
@@ -224,7 +227,7 @@ Maintenance plan: <inline or link>
 
 | Failure | Symptom | Fix |
 |---|---|---|
-| Skipping items | "Mostly satisfies" or "obvious from context" | Each item requires explicit citation; no aggregations |
+| Skipping load-bearing items | "Mostly satisfies" or "obvious from context" | Each promotion-supporting item requires explicit citation; no aggregations |
 | Citing other people's work as evidence | "We ran a similar test before" | Citation must be from this project's trials |
 | Vague "Sharpe is good" without target H8 comparison | Lazy success claim | Compare against H8 final exam criteria explicitly |
 | Skipping maintenance plan because "we'll get to it" | Promotion premature | Block; require plan first |

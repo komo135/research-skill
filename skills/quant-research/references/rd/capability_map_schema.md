@@ -1,7 +1,7 @@
 # capability_map_schema.md
 
 R&D Layer 2 — operational decomposition. Capabilities are the
-testable units that mature one TRL level per test. Each capability is
+testable units that mature through evidence packages. Each capability is
 tied to a parent core technology (Layer 1).
 
 ## When to read
@@ -51,7 +51,7 @@ core_technologies.md § Layer 1 closure).
 | `merged` | Absorbed into another capability (record absorbing ID) |
 | `stale` | No longer relevant after scope change |
 | `parked` | Deferred with a named unblock condition |
-| `killed` | Kill criterion fired with A4+ evidence; this capability is permanently rejected |
+| `killed` | Kill criterion fired with A4+ evidence; this capability is terminal under the current scope |
 
 Allowed transitions:
 
@@ -68,17 +68,19 @@ parked → active (when unblock fires)
 parked → stale (when no longer relevant)
 ```
 
-Disallowed: `matured → active` (re-opening matured capability requires
-deviation entry + new C-row); `killed → active` (killed is permanent;
-revive only via a new C-row with deviation entry explaining why).
+Disallowed without a deviation: `matured → active`; `killed → active`.
+Re-opening either state requires a deviation entry. If the prior terminal
+state was invalidated by data defect, implementation bug, or wrong threshold,
+create a corrected C-row or explicitly re-open the row with the reason and
+new evidence boundary.
 
 ## Granularity rule
 
-A capability is sized so that **one test** moves it by exactly one TRL
-level. Concretely:
+A capability is sized so that one evidence package can justify one coherent
+TRL claim. Concretely:
 
-- If a single test would move the capability TRL-2 → TRL-4, the
-  capability is too coarse — split it.
+- If one evidence package tries to justify unrelated jumps, the capability
+  is too coarse — split it.
 - If two unrelated tests are needed to move it TRL-2 → TRL-3, the
   capability is two capabilities — split it.
 - If the capability cannot be tested at all (no observable advance
@@ -101,7 +103,7 @@ Bad: "If management says so."
 ### 2. A kill firing requires A4+ evidence to validate
 
 When a kill criterion fires, the agent does **not** mark the capability
-`killed` immediately. Instead:
+`killed` immediately. The firing opens terminal review. Instead:
 
 1. Record the A0 observation (what the metric actually was)
 2. Decompose: name the primary failure hypothesis (A1) and at least one
@@ -111,7 +113,8 @@ When a kill criterion fires, the agent does **not** mark the capability
    mechanism M; alternatives X, Y were tested and ruled out by
    observations Z, W"
 5. Only then mark the capability `killed` and append the A4 analysis to
-   the kill-fire log
+   the kill-fire log. If the failure is repairable, record `Hold`,
+   `Recycle`, or `Re-scope` instead.
 
 This prevents a shallow kill — e.g., "loss didn't drop, kill" — when the
 real cause was a learning-rate misconfiguration. See

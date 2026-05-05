@@ -11,11 +11,12 @@ DARPA Heilmeier Catechism — the 8-question entry document for any R&D project.
 ## Purpose
 
 The charter answers 8 questions in **one page**. Without a complete charter on
-file, the rest of the R&D protocol is forbidden: no core technology
-decomposition, no capability map, no implementation, no Stage gate.
+file, evidence-producing R&D work is forbidden: no Stage gate and no
+promotion-cited trial. Setup, scaffolding, and exploratory design notes may
+continue when clearly labeled as non-evidence-producing.
 
-The charter is a **frozen artifact** — once committed, it can only be amended
-with a dated deviation entry in `decisions.md`. Hash-lock via
+The charter is a **review anchor** — once committed, load-bearing amendments
+require a dated deviation entry in `decisions.md`. Hash-lock via
 `scripts/prereg_freeze.py` (the same mechanism used for Pure Research
 pre-registration).
 
@@ -97,9 +98,11 @@ List the top 3-5 risks. For each, name **specific observable evidence**
 that would cause the project to be killed. These evidence statements become
 the project's binding kill criteria.
 
-The kill criteria written here are **frozen at charter close**. Discovering
-mid-project that "the test was wrong" is not a reason to relax them — it is
-a reason to file a deviation entry and (typically) start a new charter.
+The kill criteria written here are **frozen as decision anchors** at charter
+close. They are not a prison: discovering mid-project that a test, threshold,
+or data source was wrong is a reason to file a deviation entry and either
+re-scope the criterion for future evidence or start a new charter. It is not a
+reason to silently reinterpret the original criterion after seeing results.
 
 - **Bad**: "It might not work."
 - **Good**:
@@ -256,10 +259,12 @@ This:
 2. Writes `prereg/charter.lock` with hash + UTC timestamp + path
 3. Records the freeze in `decisions.md` as a state transition
 
-After freezing, **`charter.md` cannot be edited in place**. Any change
+After freezing, **do not edit `charter.md` in place for load-bearing changes**.
+Minor typo or formatting fixes may be noted normally. Any change that affects
+scope, kill criteria, cost, final exam, consumer, or promotion language
 requires a dated deviation entry in `decisions.md` naming the H-number that
-changed and the trigger evidence. Frequent deviations = the charter was
-under-specified = next time, spend more time on this step.
+changed and the trigger evidence. Frequent load-bearing deviations mean the
+charter was under-specified; next time, spend more time on this step.
 
 ## Why the charter blocks downstream work
 
@@ -289,7 +294,7 @@ writing pays for itself within the first week of decomposition.
 | Missing H6 kill criteria | "Risks: technical risk, schedule risk" without observable evidence | Each risk must name a numeric or behavioral threshold |
 | H7 collapses one-time and recurring | Single number for total cost | Force the split; recurring cost determines lifecycle of core techs |
 | H8 too vague | "Finish the project" | Both midterm and final must be demonstrable, not aspirational |
-| Charter rewritten mid-project | Goalpost shifting | Refuse the rewrite; require deviation entry per amendment, file new charter if substantial |
+| Charter rewritten mid-project | Goalpost shifting | Refuse silent rewrite; require deviation entry per load-bearing amendment, file new charter if substantial |
 
 ## Relationship to other references
 
