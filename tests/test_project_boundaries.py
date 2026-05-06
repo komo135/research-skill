@@ -378,6 +378,83 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("run inventory", conclusion_review)
         self.assertNotIn("project trial count from\n    `results.parquet`", process_review)
 
+    def test_program_layer_is_coordination_not_third_discipline(self) -> None:
+        skill = read_text("skills/quant-research/SKILL.md")
+        program = read_text("skills/quant-research/references/program/program_map.md")
+        normalized_program = " ".join(program.split())
+
+        self.assertIn("R&D Program", skill)
+        self.assertIn("coordination layer, not a third discipline", skill)
+        self.assertIn("does not own TRL, analysis tier, promotion, or claim truth", program)
+        for phrase in [
+            "active symbols",
+            "tuned parameters",
+            "current PnL",
+            "research_to_rd",
+            "rd_to_rd",
+            "rd_observation_to_research",
+            "shared_infra",
+            "integration",
+            "Relationship / routing labels",
+        ]:
+            self.assertIn(phrase, normalized_program)
+        for forbidden in [
+            "Program discipline",
+            "third discipline",
+            "program-supported",
+            "program-promoted",
+            "Dependency types",
+            "Current child state",
+            "rd_to_research",
+        ]:
+            self.assertNotIn(forbidden, program)
+
+    def test_right_sized_rigor_preserves_promotion_requirements(self) -> None:
+        skill = read_text("skills/quant-research/SKILL.md")
+
+        self.assertIn("## Right-Sized Rigor", skill)
+        self.assertIn("Rigor is sized to the research state being changed", skill)
+        for phrase in [
+            "A4+ for `supported`, `matured`, `established`, or `promoted`",
+            "Frozen pre-registration",
+            "Frozen charter and kill criteria",
+            "Reproducibility records",
+            "Maintenance plan requirements",
+        ]:
+            self.assertIn(phrase, skill)
+
+    def test_result_loops_route_to_mode_specific_state_objects(self) -> None:
+        pr_workflow = read_text("skills/quant-research/references/pure_research/pr_workflow.md")
+        rd_stages = read_text("skills/quant-research/references/rd/rd_stages.md")
+        result_analysis = read_text("skills/quant-research/references/shared/result_analysis.md")
+
+        self.assertIn("Result-to-Question Loop", pr_workflow)
+        self.assertIn("explanation_ledger.md", pr_workflow)
+        self.assertIn("Result-to-Capability Loop", rd_stages)
+        self.assertIn("capability_map.md", rd_stages)
+        self.assertIn("Pure Research returns to Q/E state", result_analysis)
+        self.assertIn("R&D returns to capability state", result_analysis)
+        self.assertIn("goalpost shifting", rd_stages)
+        self.assertIn("prospective re-scope", rd_stages)
+
+    def test_program_metadata_stays_out_of_evidence_artifacts_and_framework_apis(self) -> None:
+        combined_templates = "\n".join(
+            [
+                read_text("skills/quant-research/assets/rd/rd_trial.py.template"),
+                read_text("skills/quant-research/assets/pure_research/pr_trial.py.template"),
+                read_text("skills/quant-research/scripts/new_trial.py"),
+                read_text("skills/quant-research/scripts/new_project.py"),
+            ]
+        )
+
+        for phrase in [
+            "program_id",
+            "program_map",
+            "Program status",
+            "handoff_contract",
+        ]:
+            self.assertNotIn(phrase, combined_templates)
+
     def test_reproducibility_stamp_scope_mentions_claim_cited_trials(self) -> None:
         stamp_script = read_text("skills/quant-research/scripts/reproducibility_stamp.py")
 

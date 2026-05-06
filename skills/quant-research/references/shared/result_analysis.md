@@ -26,6 +26,10 @@ The same decomposition discipline applies to both. The skill enforces
 this symmetry because agents (and humans) systematically apply rigor
 to failure but skim past success.
 
+After decomposition, route the result back to the mode-specific state object:
+Pure Research returns to Q/E state in `explanation_ledger.md`; R&D returns to capability state in `capability_map.md`. Result writeups are evidence
+artifacts, not state owners.
+
 ## Generic terminal labels — forbidden as final explanations
 
 These labels are **starting points for decomposition, not endpoints**.

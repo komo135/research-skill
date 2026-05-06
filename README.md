@@ -86,6 +86,10 @@ evidence artifacts; R&D capability assessment and Pure Research explanation
 assessment cite those artifacts from ledgers. Generated reports are snapshots;
 durable state transitions live in the ledger and decision log.
 
+For larger efforts, an optional R&D Program coordination layer can summarize
+dependencies across child projects. It reads child gates and ledgers; it does
+not own TRL, analysis tier, promotion, or claim truth.
+
 ## Quality management
 
 Routine quality management is handled by four lightweight gates:
@@ -100,6 +104,11 @@ Routine quality management is handled by four lightweight gates:
 Heavy review still exists, but only for promotion moments: supported-claim
 promotion, external sharing, deployment recommendation, research-line closure,
 or major direction decisions.
+
+Right-Sized Rigor sizes process weight to the research state being changed:
+orientation and scaffolding can stay light, while `supported`, `matured`,
+`established`, `promoted`, frozen artifacts, reproducibility, review, and
+maintenance-plan requirements remain non-relaxed.
 
 ## Repository layout
 
