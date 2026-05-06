@@ -133,7 +133,7 @@ consumption (or, at the project level, ready for promotion review).
 - Kill criteria explicitly checked and un-fired (cite the kill criterion
   ID and the evidence)
 - Reproducibility 3-tuple (data hash + git commit + env lock) recorded
-  via `scripts/reproducibility_stamp.py`
+  via the selected tracking backend or `scripts/reproducibility_stamp.py`
 
 **Typical agent action**: Final validation under realistic load. Trigger
 the capability's row to transition `active → matured` in

@@ -230,6 +230,39 @@ Before designing a new trial, push the analysis on the current trial as far
 as it can go. Increasing analysis depth on existing data is research;
 collecting more data without analyzing existing observations is not.
 
+## Tracking & Audit Backend
+
+Before the first promotion-eligible or claim-cited trial, choose the run
+tracking backend with the user. This skill defines audit requirements, not a
+single mandatory tool. Prefer an established tracker when it fits the project
+better than local helper scripts.
+
+Acceptable choices include MLflow, Weights & Biases, Neptune, Trackio,
+TensorBoard, Sacred, DVC, local parquet / SQLite / flat-file ledgers, or an
+existing organizational tracker. The selected backend must expose durable run
+IDs, artifact locations, params, metrics, data hashes, code version, env lock,
+and seed records for review.
+
+Record the backend decision in `decisions.md` before the first load-bearing
+trial. Name the selected tool, why it fits this research, where runs are
+stored, and how reviewers resolve `trial_id` to a run record.
+
+`results/results.parquet` is the portable default evidence index, not the only
+valid source of run metadata. If an external tracker is selected, `results`
+may store a compact index row with `tracker`, `tracking_uri`, `run_id`, and
+`artifact_uri`, while the tracker owns detailed metrics and artifacts. Ledgers
+still own state transitions; trackers and result tables only provide evidence.
+
+External trackers must also provide a **complete run inventory/export** for
+review. The inventory covers every load-bearing, promotion-eligible, or
+claim-cited run; every failed run that informed the decision; and every
+parameter-sweep or model-selection attempt that counts for multiple-testing
+correction. It is not enough to resolve only the cited winning runs. If the
+tracker cannot export that inventory with stable run IDs, artifact URIs,
+params, metrics, data hashes, git commit, env lock, seeds, and timestamps, use
+the local stamp/parquet default or add a separate durable inventory before
+promotion review.
+
 ## Decomposition Discipline (R&D)
 
 R&D decomposition is a **two-layer** structure. Mixing the layers, or skipping
@@ -295,7 +328,9 @@ duplicate rows; stale rows are kept (not deleted) for historical traceability.
 
 ## Review (run before promotion)
 
-Two-axis review, run both before any promotion to `supported`:
+Two-axis review, run both before any R&D transition to `matured`,
+`established`, or `promoted`, and before any Pure Research promotion to
+`supported`:
 
 - **Process review** (`references/review/process_review.md`) — was the
   discipline followed? Charter / pre-registration / kill criteria / TRL
@@ -364,10 +399,11 @@ verdicts are forbidden.
   sessions may remain outside the durable log unless they change a claim,
   state transition, or gate decision.
 - **Reproducibility 3-tuple**. Every promotion-eligible or claim-cited trial
-  stamps data hash + git commit + env lock via
-  `scripts/reproducibility_stamp.py`. Exploratory, smoke-test, and debugging
-  runs may use lightweight run notes. If later needed for promotion, rerun under the promotion-eligible protocol; do not retroactively stamp exploratory output
-  as if it had been captured at trial time.
+  stamps data hash + git commit + env lock via the selected tracking backend
+  or `scripts/reproducibility_stamp.py`. Exploratory, smoke-test, and
+  debugging runs may use lightweight run notes. If later needed for promotion,
+  rerun under the promotion-eligible protocol; do not retroactively stamp
+  exploratory output as if it had been captured at trial time.
 - **Frozen artifacts**. Charter, pre-registration, and kill-criteria fire log
   are SHA-256 hash-locked as review anchors. Editing is detectable, not
   physically impossible; any load-bearing amendment requires an explicit
@@ -385,11 +421,12 @@ decisions.md                     # durable state transitions only
 literature/papers.md             # prior work
 literature/differentiation.md    # how this differs from prior work
 purposes/INDEX.md                # evidence artifact index
-results/results.parquet          # queryable evidence records
+results/results.parquet          # portable default evidence index
 configs/                         # project-instance experiment configs
 src/                             # project-instance implementation, if any
 tests/                           # project-instance verification, if any
 reproducibility/{uv.lock,data_hashes.txt,seed.txt}
+tracking/                        # optional local tracker config / exported run refs
 ```
 
 R&D adds:

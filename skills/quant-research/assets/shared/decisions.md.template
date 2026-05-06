@@ -17,11 +17,32 @@ Do not use this file to narrate every experiment.
 - **Next discriminating step**: [smallest next step, or "none; line closed"]
 ```
 
+## Tracking backend entry
+
+Record this before the first load-bearing trial. Existing projects that
+already used the local stamp/parquet default can add this at the next new
+load-bearing run and note the earlier implicit default.
+
+```markdown
+## YYYY-MM-DD — tracking backend selected
+
+- **Mode**: [R&D / Pure Research]
+- **Backend**: [local stamp/parquet / MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred / DVC / organizational tracker]
+- **Storage**: [local path, tracking URI, remote project, registry, or export path]
+- **Run inventory/export**: [path or tracker query covering all load-bearing, promotion-eligible, failed, parameter-sweep, and model-selection attempts]
+- **Review retrieval**: [how a reviewer resolves trial_id -> run record]
+- **Minimum persisted fields**: trial_id, run_id, artifact_uri, data hash, git commit, env lock hash, seed, params, headline metrics
+- **Reason**: [why this backend fits the research and collaboration model]
+```
+
 ## Rules
 
 - Record decisions that change what the project will or will not do.
+- Record the tracking backend selection because it changes the audit path for
+  every load-bearing run.
 - Record hypothesis deletion, merging, stale marking, and parking.
-- Record promotion to `supported` only after the relevant promotion gate.
+- Record R&D promotion to `promoted` and Pure Research promotion to
+  `supported` only after the relevant promotion gate.
 - Avoid vague decisions such as "try more models" or "need more data" unless
   they name the exact unblock condition.
 - A decision entry is invalid if its only transition is `planned -> planned`,

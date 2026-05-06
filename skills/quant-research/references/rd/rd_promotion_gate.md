@@ -77,7 +77,8 @@ stale), all of the following:
   - Evidence: explicit decomposition of any explanatory phrase
 - [ ] Reproducibility 3-tuple recorded: data hash, git commit hash,
   uv.lock hash
-  - Evidence: `scripts/reproducibility_stamp.py` output for the trial
+  - Evidence: `scripts/reproducibility_stamp.py` output or equivalent
+    external tracker record for the trial
 
 ### D. Integration test ordering
 
@@ -146,13 +147,18 @@ For each `継続改善型` core technology:
 
 ### H. Reproducibility (project-wide)
 
-- [ ] `reproducibility/data_hashes.txt` lists every data source used in
-  trials, with hash
-- [ ] `reproducibility/uv.lock` exists and is the env used at promotion
-- [ ] `reproducibility/seed.txt` lists random seeds; if multiple seeds
-  used, all are recorded
+- [ ] Data hash, git commit, env lock hash, and seed recorded for every
+  promotion-cited trial in local stamp files or in the selected tracker record
+  / exported run inventory
 - [ ] All shared infrastructure pins are recorded in
-  `reproducibility/shared_pins.txt` per `references/rd/rd_workflow.md`
+  `reproducibility/shared_pins.txt` or the selected tracker/export record per
+  `references/rd/rd_workflow.md`
+- [ ] Complete run inventory/export covers all load-bearing trials, failed
+  attempts, and parameter-sweep/model-selection runs used for trial-count and
+  multiple-testing correction
+- [ ] If an external tracker is used, every promotion-cited `trial_id`
+  resolves to a stable run ID and artifact URI containing cited metrics,
+  params, data hash, git commit, env lock hash, and seed
 
 ### I. Documentation
 

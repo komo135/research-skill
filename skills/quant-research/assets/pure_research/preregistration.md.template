@@ -83,8 +83,9 @@ this, trials drift.>
 - Random seed(s): <REPLACE>
 - Code commit (planned at trial run): <fill at trial time>
 - Env lock hash (planned at trial run): <fill at trial time>
-- Data hash (final, trial-time): <fill from `scripts/reproducibility_stamp.py`
-  output>
+- Tracking backend (planned): <selected backend per references/shared/results_db_schema.md>
+- Run inventory/export (planned): <path or tracker query covering all load-bearing, failed, sweep, model-selection, and promotion-eligible attempts>
+- Data hash (final, trial-time): <fill from stamp script or selected tracker>
 
 ---
 

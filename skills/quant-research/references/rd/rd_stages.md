@@ -219,7 +219,8 @@ In all patterns: demonstrate the K under representative workload.
   data flow; measure under realistic conditions
 - Measure cost (compute, latency, memory) against charter H7 budget
 - Confirm kill criteria un-fired
-- Record reproducibility 3-tuple via `scripts/reproducibility_stamp.py`
+- Record reproducibility 3-tuple via the selected tracking backend or
+  `scripts/reproducibility_stamp.py`
 - Final A4+ analysis
 
 **Exit (Gate 5)**:

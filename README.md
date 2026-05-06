@@ -238,7 +238,7 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- **Version 1.0.0** — single skill, two review axes (process + conclusion).
+- **Version 1.0.6** — single skill, two review axes (process + conclusion).
 - Two strict disciplines: R&D mode (Heilmeier charter → two-layer
   decomposition → Cooper Stage-Gate per capability) and Pure Research mode
   (PR/FAQ → AEA-style hash-locked pre-registration → explanation-pruning
@@ -251,7 +251,19 @@ The skill leans on a small number of well-known references:
 <details>
 <summary>Changelog (click to expand)</summary>
 
-### v1.0.5 (current)
+### v1.0.6 (current)
+
+- Added selectable tracking/audit backends so agents can propose MLflow, W&B,
+  Neptune, Trackio, TensorBoard, Sacred, DVC, local parquet/SQLite, or an
+  organizational tracker instead of assuming custom helper scripts.
+- External trackers now require a complete run inventory/export covering
+  load-bearing, failed, sweep, model-selection, and promotion-eligible attempts,
+  so multiple-testing and trial-count audits cannot ignore uncited runs.
+- Review gates and scaffolds now accept local stamp/parquet or equivalent
+  tracker records while preserving backwards compatibility for existing local
+  stamp projects.
+
+### v1.0.5
 
 - Decoupled evidence artifacts from research contracts. R&D and Pure Research
   trial notebooks now produce neutral artifacts, while ledgers cite those

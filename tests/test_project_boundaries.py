@@ -28,7 +28,7 @@ def load_module(path: str):
 
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.0.5"
+        expected = "1.0.6"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -63,7 +63,7 @@ class ProjectBoundaryTests(unittest.TestCase):
 
     def test_new_project_scaffold_separates_protocol_from_instance_work(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            subprocess.run(
+            result = subprocess.run(
                 [
                     sys.executable,
                     str(ROOT / "skills/quant-research/scripts/new_project.py"),
@@ -79,6 +79,8 @@ class ProjectBoundaryTests(unittest.TestCase):
                 stderr=subprocess.PIPE,
                 text=True,
             )
+            self.assertIn("Choose tracking backend", result.stdout)
+            self.assertIn("Run inventory/export", result.stdout)
 
             project = Path(tmp) / "alpha"
             for path in [
@@ -90,8 +92,13 @@ class ProjectBoundaryTests(unittest.TestCase):
                 "tests/.gitkeep",
                 "results/figures/.gitkeep",
                 "results/intermediate/.gitkeep",
+                "tracking/.gitkeep",
             ]:
                 self.assertTrue((project / path).exists(), path)
+
+            decisions = (project / "decisions.md").read_text(encoding="utf-8")
+            self.assertIn("tracking backend selected", decisions)
+            self.assertIn("Run inventory/export", decisions)
 
             readme = (project / "README.md").read_text(encoding="utf-8")
             for phrase in [
@@ -350,6 +357,26 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("promotion-eligible or claim-cited", process_review)
         self.assertNotIn("per-trial entry in `results.parquet`", process_review)
         self.assertIn("durable run log", process_review)
+
+    def test_tracking_backend_contract_requires_auditable_inventory(self) -> None:
+        skill = read_text("skills/quant-research/SKILL.md")
+        schema = read_text("skills/quant-research/references/shared/results_db_schema.md")
+        process_review = read_text("skills/quant-research/references/review/process_review.md")
+        conclusion_review = read_text("skills/quant-research/references/review/conclusion_review.md")
+
+        self.assertIn("complete run inventory/export", skill.lower())
+        self.assertIn("not enough to resolve only the cited winning runs", skill)
+        self.assertIn("R&D transition to `matured`", skill)
+        self.assertIn("## Conditional required fields", schema)
+        self.assertIn("When an external tracker is the canonical run store", schema)
+        self.assertIn("failed runs, abandoned parameter combinations", schema)
+        self.assertIn("model-selection attempts", schema)
+        self.assertIn("Complete run inventory exists", process_review)
+        self.assertIn("missing pre-trial backend selection is a logged gap", process_review)
+        self.assertIn("complete run inventory/export", process_review.lower())
+        self.assertIn("selected tracker record / exported", conclusion_review)
+        self.assertIn("run inventory", conclusion_review)
+        self.assertNotIn("project trial count from\n    `results.parquet`", process_review)
 
     def test_reproducibility_stamp_scope_mentions_claim_cited_trials(self) -> None:
         stamp_script = read_text("skills/quant-research/scripts/reproducibility_stamp.py")

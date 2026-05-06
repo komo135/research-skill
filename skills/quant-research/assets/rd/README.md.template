@@ -69,9 +69,10 @@ assessment.
 │   ├── INDEX.md            # numbered evidence artifact index
 │   └── trial_NNN_*.py      # marimo evidence artifacts
 ├── results/
-│   ├── results.parquet     # queryable evidence records
+│   ├── results.parquet     # portable default evidence index
 │   ├── figures/
 │   └── intermediate/       # parquet outputs of feature notebooks etc.
+├── tracking/               # optional tracker exports / complete run inventory
 └── reproducibility/
     ├── data_hashes.txt     # sha256 of each data source
     ├── shared_pins.txt     # commit hashes of shared/ infrastructure used
@@ -93,8 +94,12 @@ point:
   Analysis section (5 sub-fields, A0-A5 tier explicit)
 - [ ] `decisions.md` has chronological coverage (no gap > 4 weeks
   without explicit "no progress: <reason>" entry)
-- [ ] Reproducibility 3-tuple is recorded for every promoted-eligible
-  trial via `scripts/reproducibility_stamp.py`
+- [ ] Tracking backend selection is recorded in `decisions.md`
+- [ ] Complete run inventory/export exists for all load-bearing, failed,
+  sweep, model-selection, and promotion-eligible attempts
+- [ ] Reproducibility 3-tuple is recorded for every promotion-eligible
+  trial via `scripts/reproducibility_stamp.py` or an equivalent selected
+  tracking backend
 
 ## Promotion intent
 

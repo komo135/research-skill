@@ -76,9 +76,10 @@ or decision entries.
 │   ├── INDEX.md                # numbered trial index
 │   └── trial_NNN_*.py          # marimo notebooks, one per trial
 ├── results/
-│   ├── results.parquet         # mode-aware schema, includes analysis_tier and prereg_id
+│   ├── results.parquet         # portable default evidence index
 │   ├── figures/
 │   └── intermediate/
+├── tracking/                   # optional tracker exports / complete run inventory
 └── reproducibility/
     ├── data_hashes.txt
     ├── shared_pins.txt
@@ -101,8 +102,12 @@ point:
   recorded
 - [ ] `decisions.md` has chronological coverage (no gap > 4 weeks
   without explicit "no progress: <reason>" entry)
+- [ ] Tracking backend selection is recorded in `decisions.md`
+- [ ] Complete run inventory/export exists for all load-bearing, failed,
+  sweep, model-selection, and promotion-eligible attempts
 - [ ] Reproducibility 3-tuple recorded for every promotion-eligible
-  trial via `scripts/reproducibility_stamp.py`
+  trial via `scripts/reproducibility_stamp.py` or an equivalent selected
+  tracking backend
 - [ ] No major deviations from any pre-registration unaddressed (any
   major deviation should have triggered a fresh pre-registration)
 - [ ] IMRAD draft started after PR/FAQ freeze (not deferred to the end)

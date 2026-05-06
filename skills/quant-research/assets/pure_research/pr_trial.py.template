@@ -50,11 +50,14 @@ def _(mo):
 
     ## Reproducibility
 
-    - Data hash: <REPLACE: from `scripts/reproducibility_stamp.py` if this
+    - Tracking backend: <REPLACE: selected backend per references/shared/results_db_schema.md>
+    - Run inventory/export: <REPLACE: path or tracker query covering all load-bearing, failed, sweep, model-selection, and promotion-eligible attempts>
+    - Run ID / artifact URI: <REPLACE: if external tracker is used>
+    - Data hash: <REPLACE: from stamp script or selected tracker if this
       artifact is promotion-eligible or claim-cited; otherwise link
       lightweight run note>
-    - Git commit: <REPLACE: from `scripts/reproducibility_stamp.py`>
-    - uv.lock hash: <REPLACE: from `scripts/reproducibility_stamp.py`>
+    - Git commit: <REPLACE: from stamp script or selected tracker>
+    - uv.lock hash: <REPLACE: from stamp script or selected tracker>
     - Random seed: <REPLACE>
     """
     )
@@ -78,8 +81,9 @@ def _(mo):
 @app.cell
 def _(pd):
     # data = pd.read_parquet("<REPLACE: data path>")
-    # For promotion-eligible or claim-cited artifacts, call
-    # scripts/reproducibility_stamp.py to record the final data hash.
+    # For promotion-eligible or claim-cited artifacts, use the selected
+    # tracking backend or scripts/reproducibility_stamp.py to record the
+    # final data hash.
     pass
     return
 

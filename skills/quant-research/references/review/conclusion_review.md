@@ -2,8 +2,8 @@
 
 Conclusion review — are the conclusions warranted? This is the second
 of two review axes (the first is `process_review.md` for discipline
-audit). Both must pass before any `matured` (R&D) or `supported` (Pure
-Research) promotion.
+audit). Both must pass before any R&D transition to `matured`, `established`,
+or `promoted`, and before any Pure Research promotion to `supported`.
 
 ## When to read
 
@@ -209,20 +209,23 @@ The trial can be re-run.
 
 - [ ] **3-tuple recorded** for promotion-eligible or claim-cited trial(s) per
   `references/shared/reproducibility.md`:
-  - Data hash in `reproducibility/data_hashes.txt`
-  - Git commit in `results.parquet`
-  - Env lock hash in `reproducibility/env_lock_hash.txt`
-  - Evidence: file existence + content
+  - Data hash, git commit, and env lock hash in local stamp files
+    (`reproducibility/data_hashes.txt`, `results.parquet`,
+    `reproducibility/env_lock_hash.txt`) OR selected tracker record / exported
+    run inventory
+  - Evidence: file existence + content, or stable tracker run ID + artifact URI
+    resolving to those anchors
 - [ ] **Random seed recorded** and (for stochastic algorithms)
   multiple seeds reported
-  - Evidence: `reproducibility/seed.txt` + per-seed result mean ±
-    std (for DL / RL)
+  - Evidence: `reproducibility/seed.txt` or selected tracker record + per-seed
+    result mean ± std (for DL / RL)
 - [ ] **Shared infrastructure pins** recorded if `shared/` is used
-  - Evidence: `reproducibility/shared_pins.txt`
+  - Evidence: `reproducibility/shared_pins.txt` or selected tracker/export
+    record
 - [ ] **Working tree was clean** at trial time (no uncommitted
   changes)
-  - Evidence: `reproducibility_stamp.py` exit 0 logged in
-    `decisions.md`
+  - Evidence: `reproducibility_stamp.py` exit 0 logged in `decisions.md`,
+    or selected tracker run record shows clean git state / no dirty-tree flag
 - [ ] **No hardcoded paths** that would break on a different machine
   - Evidence: code review note
 
