@@ -28,7 +28,7 @@ def load_module(path: str):
 
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.0.5"
+        expected = "1.0.6"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
