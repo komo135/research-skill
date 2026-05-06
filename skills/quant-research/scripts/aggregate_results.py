@@ -1,19 +1,10 @@
-"""aggregate_results.py — Append result rows to results/results.parquet (mode-aware).
+"""aggregate_results.py — Append evidence rows to results/results.parquet.
 
-Per D-11 (analysis_tier required) and D-18 (R&D core_tech_id + lifecycle).
 Schema documented in `references/shared/results_db_schema.md`.
 
 Common required fields (both modes):
     project, trial_id, mode, run_timestamp, sharpe (or primary_metric),
     verdict, notebook_path, analysis_tier (A0-A5)
-
-R&D-specific required fields (when mode == "rd"):
-    capability_id (C-id), core_tech_id (K-id or 'integration'), lifecycle
-    (永続型 | 継続改善型), trl_before, trl_after
-
-Pure Research-specific required fields (when mode == "pure-research"):
-    question_id (Q-id), prereg_id (PR_NNN), explanation_status_change
-    (e.g., "E2: active -> supported"), prereg_diff_exit (0/1/2)
 
 Reproducibility 3-tuple (both modes, recommended for promotion-eligible):
     data_hash_sha256, git_commit, env_lock_hash
@@ -25,11 +16,6 @@ Usage in Python:
         "trial_id": "trial_007",
         "mode": "rd",
         "run_timestamp": "2026-05-03T11:00:00Z",
-        "capability_id": "C3",
-        "core_tech_id": "K2",
-        "lifecycle": "継続改善型",
-        "trl_before": 3,
-        "trl_after": 4,
         "sharpe": 1.2,
         "analysis_tier": "A4",
         "verdict": "supported_candidate",
@@ -73,24 +59,8 @@ COMMON_REQUIRED = {
     "analysis_tier",
 }
 
-RD_REQUIRED = {
-    "capability_id",
-    "core_tech_id",
-    "lifecycle",
-    "trl_before",
-    "trl_after",
-}
-
-PR_REQUIRED = {
-    "question_id",
-    "prereg_id",
-    "explanation_status_change",
-    "prereg_diff_exit",
-}
-
 VALID_MODES = {"rd", "pure-research"}
 VALID_TIERS = {"A0", "A1", "A2", "A3", "A4", "A5"}
-VALID_LIFECYCLES = {"永続型", "継続改善型", "permanent", "continuous"}
 
 
 def validate_row(row: dict[str, Any]) -> list[str]:
@@ -104,25 +74,10 @@ def validate_row(row: dict[str, Any]) -> list[str]:
     mode = row.get("mode")
     if mode not in VALID_MODES:
         errors.append(f"mode must be one of {VALID_MODES}, got {mode!r}")
-    else:
-        if mode == "rd":
-            missing_rd = RD_REQUIRED - row.keys()
-            if missing_rd:
-                errors.append(f"R&D mode missing required fields: {sorted(missing_rd)}")
-            lifecycle = row.get("lifecycle")
-            if lifecycle and lifecycle not in VALID_LIFECYCLES:
-                errors.append(
-                    f"lifecycle must be one of {VALID_LIFECYCLES}, got {lifecycle!r}"
-                )
-        elif mode == "pure-research":
-            missing_pr = PR_REQUIRED - row.keys()
-            if missing_pr:
-                errors.append(f"Pure Research mode missing required fields: {sorted(missing_pr)}")
-            prereg_diff = row.get("prereg_diff_exit")
-            if prereg_diff not in (0, 1, 2):
-                errors.append(
-                    f"prereg_diff_exit must be 0/1/2, got {prereg_diff!r}"
-                )
+    elif row.get("prereg_diff_exit") is not None:
+        prereg_diff = row.get("prereg_diff_exit")
+        if prereg_diff not in (0, 1, 2):
+            errors.append(f"prereg_diff_exit must be 0/1/2, got {prereg_diff!r}")
 
     tier = row.get("analysis_tier")
     if tier and tier not in VALID_TIERS:

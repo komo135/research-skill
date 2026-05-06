@@ -1,101 +1,72 @@
 # results_db_schema.md
 
-Common schema for appending interpreted trial results to
+Common schema for appending queryable evidence records to
 `results/results.parquet`.
 
 ## When to read
 
-- A trial result should be queryable across notebooks.
+- A trial artifact should be queryable across notebooks.
 - A claim is being considered for promotion and needs an audit trail.
-- Prior results are being compared by state row, mode, method, market, or
+- Prior evidence is being compared by mode, method, market, metric, or
   failure mode.
 
-Do not append rows just because a notebook ran. Append when the result has an
-interpretation and updates a named research-state row.
+Do not append rows just because a notebook ran. Append when an artifact has an
+observation and enough interpretation to be useful later. The row does not
+move research state by itself; a ledger assessment in `capability_map.md`,
+`explanation_ledger.md`, or `decisions.md` decides whether the evidence
+supports a transition.
 
 ## Principle
 
-One row is one interpreted trial outcome. The row does not replace
-`research_state.md`; it is a queryable index of evidence that points back to
-the notebook and the state row it changed.
+One row is one interpreted evidence artifact. It points back to the notebook,
+run output, and optional metrics. It does not replace the project ledger and
+does not encode capability maturity, explanation status, promotion, kill, park,
+or pivot decisions.
 
-The `purpose_id` field is kept for compatibility with the existing generated
-notebook names (`pur_001_*`). Treat it as the trial / notebook identifier, not
-as a large parent-thesis verdict.
-
-## Required Fields
+## Required fields
 
 ```python
 {
-    # Identification
     "project": str,
-    "purpose_id": str,      # trial / notebook id, e.g. pur_005_signal_flip
-    "hypothesis_id": str,   # H1, H2, ...
-    "run_timestamp": datetime,  # UTC
-
-    # Research state
-    "mode": str,            # r_and_d | pure_research
-    "state_row_id": str,    # Q1 / E2 / C3 / CL4 from research_state.md
-    "state_transition": str | None,  # e.g. active->resolved, active->split
-
-    # Universe / data
-    "instrument": str,
-    "timeframe": str,
-    "data_start": date | None,
-    "data_end": date | None,
-    "split": str | None,    # train / val / test / full / walk_forward
-
-    # Method
-    "method": str,
-    "model_type": str,      # math / classical_ml / dl / rl / foundation / hybrid
-    "entry_rule": str | None,
-    "exit_rule": str | None,
-    "sizing": str | None,
-
-    # Cost
-    "fee_bp_per_side": float,
-    "slippage_model": str | None,
-
-    # Primary metrics
-    "n_trades": int,
-    "win_rate": float | None,
-    "total_return": float | None,
-    "sharpe": float,
-    "max_drawdown": float | None,
-    "ret_per_trade_bp": float | None,
-
-    # Optional prediction-model metrics
-    "auc": float | None,
-    "ic_spearman": float | None,
-    "ir": float | None,
-    "calibration_ece": float | None,
-
-    # Optional robustness metrics
-    "wf_mean_sharpe": float | None,
-    "wf_pct_positive": float | None,
-    "bootstrap_ci_low": float | None,
-    "bootstrap_ci_high": float | None,
-    "bootstrap_p": float | None,
-    "psr": float | None,
-    "dsr": float | None,
-
-    # Interpretation
-    "verdict": str,         # supported_candidate / supported / rejected / partial / parked
-    "failure_mode": str | None,
-    "competing_explanations_changed": str | None,
-    "scope_condition": str | None,
-
-    # Meta
-    "n_hyperparams_tried": int | None,
+    "trial_id": str,          # e.g. trial_005_signal_flip
+    "mode": str,              # rd | pure-research
+    "run_timestamp": datetime,
+    "verdict": str,           # observed / ambiguous / supported_candidate / rejected / partial / parked
     "notebook_path": str,
-    "notes": str,
+    "analysis_tier": str,     # A0-A5
 }
 ```
 
-`scripts/aggregate_results.py` validates only the minimal required subset so
-projects can add optional metrics without editing the helper.
+Projects may add optional evidence fields such as:
 
-## Failure Mode Vocabulary
+```python
+{
+    "instrument": str,
+    "timeframe": str,
+    "data_start": date,
+    "data_end": date,
+    "split": str,
+    "method": str,
+    "model_type": str,
+    "n_trades": int,
+    "sharpe": float,
+    "max_drawdown": float,
+    "auc": float,
+    "ic_spearman": float,
+    "failure_mode": str,
+    "scope_condition": str,
+    "notes": str,
+    "data_hash_sha256": str,
+    "git_commit": str,
+    "env_lock_hash": str,
+}
+```
+
+Mode-specific protocol identifiers, if needed, belong in the ledger
+assessment that cites the row. They are not required columns in the evidence
+record.
+
+## Failure mode vocabulary
 
 Use one primary value when `verdict` is `rejected`, `partial`, or `parked`:
 
@@ -118,7 +89,7 @@ Use one primary value when `verdict` is `rejected`, `partial`, or `parked`:
 Generic labels such as `noise`, `bad data`, or `market regime` are not valid
 terminal explanations unless decomposed in `notes`.
 
-## Append Example
+## Append example
 
 ```python
 from datetime import datetime, timezone
@@ -128,66 +99,48 @@ append_result(
     "results/results.parquet",
     {
         "project": "pca_factor_screening",
-        "purpose_id": "pur_005_signal_flip",
-        "hypothesis_id": "H3",
+        "trial_id": "trial_005_signal_flip",
         "run_timestamp": datetime.now(timezone.utc),
-        "mode": "pure_research",
-        "state_row_id": "Q1",
-        "state_transition": "active->split",
+        "mode": "pure-research",
         "instrument": "SPY",
         "timeframe": "D1",
-        "data_start": None,
-        "data_end": None,
         "split": "test",
         "method": "pca_factor_screening",
         "model_type": "math",
-        "entry_rule": None,
-        "exit_rule": None,
-        "sizing": None,
-        "fee_bp_per_side": 1.0,
-        "slippage_model": "scalar",
         "n_trades": 223,
-        "win_rate": None,
-        "total_return": None,
         "sharpe": -1.74,
-        "max_drawdown": None,
-        "ret_per_trade_bp": None,
         "verdict": "rejected",
+        "analysis_tier": "A3",
         "failure_mode": "regime_mismatch",
-        "competing_explanations_changed": "E1 weakened; E2 still active",
         "scope_condition": "fails outside low-volatility regime",
-        "n_hyperparams_tried": 20,
-        "notebook_path": "purposes/pur_005_signal_flip.py",
-        "notes": "Failure split Q1 into regime-conditioned subquestions.",
+        "notebook_path": "purposes/trial_005_signal_flip.py",
+        "notes": "Ledger assessment decides whether this weakens an explanation.",
     },
 )
 ```
 
-## Query Examples
+## Query examples
 
 ```python
 import polars as pl
 
 db = pl.read_parquet("results/results.parquet")
 
-# What evidence changed Q1?
-db.filter(pl.col("state_row_id") == "Q1").select(
-    ["purpose_id", "hypothesis_id", "verdict", "failure_mode", "notes"]
+db.filter(pl.col("mode") == "rd").select(
+    ["trial_id", "verdict", "analysis_tier", "notebook_path"]
 )
 
-# Failure modes by research mode
 db.group_by(["mode", "failure_mode"]).len().sort(["mode", "len"])
 
-# Supported candidates that still need promotion review
 db.filter(pl.col("verdict") == "supported_candidate").select(
-    ["purpose_id", "hypothesis_id", "state_row_id", "sharpe", "notebook_path"]
+    ["trial_id", "sharpe", "analysis_tier", "notebook_path"]
 )
 ```
 
-## Extension Rules
+## Extension rules
 
 - Add project-specific metrics with the prefix `extra_<name>`.
 - Do not change the type or meaning of common-schema columns.
 - Older rows may leave new optional columns null.
-- Keep the state transition in `research_state.md`; this table only indexes
-  the evidence.
+- Keep state transitions in the relevant ledger; this table only indexes
+  evidence.

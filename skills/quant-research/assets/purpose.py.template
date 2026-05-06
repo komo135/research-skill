@@ -2,9 +2,9 @@
 
 Replaced by mode-specific trial notebook templates per CHARTER C1:
 
-- R&D: `assets/rd/rd_trial.py.template` (capability + Stage-Gate anchored)
+- R&D: `assets/rd/rd_trial.py.template` (evidence artifact)
 - Pure Research: `assets/pure_research/pr_trial.py.template`
-  (pre-registration + explanation-discrimination anchored)
+  (evidence artifact)
 
 Use `scripts/new_trial.py --project-dir <path> --slug <name>` — the script
 auto-detects the project's mode and uses the correct template.
