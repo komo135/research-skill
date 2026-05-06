@@ -141,6 +141,12 @@ circularity; if the user needs feedback from R&D into Pure Research,
 that requires a new Pure Research project (with its own pre-registration)
 that consumes R&D outputs as data.
 
+For a Research-to-Technology Handoff, use `dependent_on_research` or charter
+language to consume the Pure Research output as an assumption, requirement,
+dependency, scope condition, benchmark, or maintenance trigger. Do not copy the
+Pure Research claim itself into a capability row as an R&D-owned claim; cite
+the source project, `explanation_ledger.md` row, and promotion decision.
+
 ## Capability → core tech graduation
 
 If during a Stage gate (especially Scoping or De-risk) a capability is

@@ -70,6 +70,44 @@ protocol**:
 Sneaking the pivot in by relabeling rows or quietly broadening scope is the
 failure mode this protocol prevents.
 
+## R&D Program
+
+An R&D Program is an optional coordination layer, not a third discipline. Use
+it only when several R&D and/or Pure Research projects need a shared roadmap,
+dependency view, or sequencing discussion across separate ledgers.
+
+The program layer reads child project gate results and dependency declarations.
+It does not re-score TRL, analysis tier, promotion, claim truth, kill state, or
+support status. Those decisions remain inside each child project's
+`capability_map.md`, `explanation_ledger.md`, promotion gate, and
+`decisions.md`.
+
+Read `references/program/program_map.md` when coordinating multiple projects.
+Program notes may summarize why one child blocks another, which handoff is
+pending, and which next project decision is needed, but they must cite the
+child ledger instead of creating a second state system.
+
+## Right-Sized Rigor
+
+Rigor is sized to the research state being changed. Orientation, literature
+triage, scaffold setup, smoke tests, and non-load-bearing exploration may use
+lighter notes because they do not move durable research state. Any update that
+changes a claim, TRL, support status, scope, kill decision, promotion, or
+cross-project dependency uses the full protocol required by that state
+transition.
+
+Right-sized rigor is not a relaxation path. These requirements are
+non-relaxed:
+
+- A4+ for `supported`, `matured`, `established`, or `promoted`.
+- Frozen pre-registration for Pure Research trials that can support a claim.
+- Frozen charter and kill criteria before R&D evidence-producing work can fire
+  a kill or promotion-relevant decision.
+- Reproducibility records for every promotion-eligible or claim-cited trial.
+- Process review and conclusion review before promotion or externally
+  load-bearing claims.
+- Maintenance plan requirements for any `継続改善型` core technology.
+
 ## Framework Boundary
 
 This skill defines the **protocol layer**. It must stay separate from the
@@ -483,6 +521,9 @@ audience.
 
 **Pure Research** — see § Pure Research Discipline above for the entry
 sequence.
+
+**Program coordination** — optional multi-project roadmap:
+`program/program_map.md`.
 
 **Review** — see § Review above.
 

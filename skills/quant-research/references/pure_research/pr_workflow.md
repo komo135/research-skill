@@ -63,6 +63,30 @@ unit of evidence and follows this loop:
 The loop runs until a stop condition (below) or a question is
 `answered`.
 
+## Result-to-Question Loop
+
+After every interpreted result, Pure Research returns to Q/E state in
+`explanation_ledger.md`. The result may strengthen, weaken, reject, split,
+merge, park, or leave unchanged one or more explanation rows, but the state
+transition belongs in the ledger and `decisions.md`, not in the trial notebook
+alone.
+
+Use the existing discriminating trial loop; this section names the return path
+so results do not become orphan observations:
+
+1. State the observed pattern and analysis tier.
+2. Compare the result to the frozen pre-registration and record deviation
+   severity.
+3. Identify which Q row and E rows the result touches.
+4. Update `explanation_ledger.md` only as far as the evidence warrants.
+5. Record the durable transition, blocker, or no-progress reason in
+   `decisions.md`.
+6. Decide whether the next move is deeper analysis on the current result,
+   another discriminating trial, promotion review, park, or pivot.
+
+This loop does not create a second research-state object. The ledger remains
+the source of truth for questions and explanations.
+
 ## Push analysis depth before designing a new trial
 
 Before designing a new discriminating trial, the agent must push the
@@ -216,6 +240,12 @@ When the pivot direction is Pure Research → R&D: an `explanation_ledger`
 finding may be cited as a literature reference in the new R&D charter
 (H3 novelty justification). The Pure Research project's
 `decisions.md` link is preserved as `parent_project_id`.
+
+For a Research-to-Technology Handoff, the R&D project may consume the Pure
+Research finding as an assumption, requirement, dependency, scope condition,
+benchmark, or maintenance trigger. It must not copy the supported claim into
+the R&D ledger as though R&D re-proved it; cite the Pure Research
+`explanation_ledger.md` row and promotion decision instead.
 
 ## Communication conventions during a session
 

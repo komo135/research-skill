@@ -86,6 +86,10 @@ evidence artifacts; R&D capability assessment and Pure Research explanation
 assessment cite those artifacts from ledgers. Generated reports are snapshots;
 durable state transitions live in the ledger and decision log.
 
+For larger efforts, an optional R&D Program coordination layer can summarize
+dependencies across child projects. It reads child gates and ledgers; it does
+not own TRL, analysis tier, promotion, or claim truth.
+
 ## Quality management
 
 Routine quality management is handled by four lightweight gates:
@@ -100,6 +104,11 @@ Routine quality management is handled by four lightweight gates:
 Heavy review still exists, but only for promotion moments: supported-claim
 promotion, external sharing, deployment recommendation, research-line closure,
 or major direction decisions.
+
+Right-Sized Rigor sizes process weight to the research state being changed:
+orientation and scaffolding can stay light, while `supported`, `matured`,
+`established`, `promoted`, frozen artifacts, reproducibility, review, and
+maintenance-plan requirements remain non-relaxed.
 
 ## Repository layout
 
@@ -238,7 +247,9 @@ The skill leans on a small number of well-known references:
 
 ## Status
 
-- **Version 1.0.6** — single skill, two review axes (process + conclusion).
+- **Version 1.0.7** — optional R&D Program coordination plus explicit
+  Result-to-Question / Result-to-Capability loops, still as a single skill with
+  two review axes (process + conclusion).
 - Two strict disciplines: R&D mode (Heilmeier charter → two-layer
   decomposition → Cooper Stage-Gate per capability) and Pure Research mode
   (PR/FAQ → AEA-style hash-locked pre-registration → explanation-pruning
@@ -251,7 +262,18 @@ The skill leans on a small number of well-known references:
 <details>
 <summary>Changelog (click to expand)</summary>
 
-### v1.0.6 (current)
+### v1.0.7 (current)
+
+- Added an optional R&D Program coordination layer for portfolios that combine
+  R&D capability establishment with Pure Research child projects.
+- Added shared Result-to-Question and Result-to-Capability loops so experiment
+  outcomes promote follow-up questions, capability updates, and stop/continue
+  decisions explicitly.
+- Added right-sized rigor guidance and Program Map boundaries to prevent
+  protocol files from absorbing project-instance facts such as active symbols,
+  tuned parameters, or current PnL.
+
+### v1.0.6
 
 - Added selectable tracking/audit backends so agents can propose MLflow, W&B,
   Neptune, Trackio, TensorBoard, Sacred, DVC, local parquet/SQLite, or an
