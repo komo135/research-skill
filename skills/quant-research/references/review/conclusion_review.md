@@ -221,8 +221,8 @@ The trial can be re-run.
   - Evidence: `reproducibility/shared_pins.txt`
 - [ ] **Working tree was clean** at trial time (no uncommitted
   changes)
-  - Evidence: `reproducibility_stamp.py` exit 0 logged in
-    `decisions.md`
+  - Evidence: `reproducibility_stamp.py` exit 0 logged in `decisions.md`,
+    or selected tracker run record shows clean git state / no dirty-tree flag
 - [ ] **No hardcoded paths** that would break on a different machine
   - Evidence: code review note
 

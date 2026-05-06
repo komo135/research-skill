@@ -77,7 +77,8 @@ stale), all of the following:
   - Evidence: explicit decomposition of any explanatory phrase
 - [ ] Reproducibility 3-tuple recorded: data hash, git commit hash,
   uv.lock hash
-  - Evidence: `scripts/reproducibility_stamp.py` output for the trial
+  - Evidence: `scripts/reproducibility_stamp.py` output or equivalent
+    external tracker record for the trial
 
 ### D. Integration test ordering
 
@@ -153,6 +154,9 @@ For each `継続改善型` core technology:
   used, all are recorded
 - [ ] All shared infrastructure pins are recorded in
   `reproducibility/shared_pins.txt` per `references/rd/rd_workflow.md`
+- [ ] If an external tracker is used, every promotion-cited `trial_id`
+  resolves to a stable run ID and artifact URI containing cited metrics,
+  params, data hash, git commit, env lock hash, and seed
 
 ### I. Documentation
 

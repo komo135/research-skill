@@ -101,8 +101,10 @@ point:
   recorded
 - [ ] `decisions.md` has chronological coverage (no gap > 4 weeks
   without explicit "no progress: <reason>" entry)
+- [ ] Tracking backend selection is recorded in `decisions.md`
 - [ ] Reproducibility 3-tuple recorded for every promotion-eligible
-  trial via `scripts/reproducibility_stamp.py`
+  trial via `scripts/reproducibility_stamp.py` or an equivalent selected
+  tracking backend
 - [ ] No major deviations from any pre-registration unaddressed (any
   major deviation should have triggered a fresh pre-registration)
 - [ ] IMRAD draft started after PR/FAQ freeze (not deferred to the end)

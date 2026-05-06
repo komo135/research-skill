@@ -80,10 +80,23 @@ These checks apply regardless of discipline:
   - Evidence: review first 1-2 days' commits and decisions; flag any
     code execution that produced metrics before charter / pre-reg
     was frozen
-- [ ] **Reproducibility 3-tuple stamped** on every promotion-eligible or claim-cited trial via `scripts/reproducibility_stamp.py`
+- [ ] **Reproducibility 3-tuple stamped** on every promotion-eligible or claim-cited
+  trial via `scripts/reproducibility_stamp.py` or an equivalent external
+  tracker record
   - Evidence: persisted JSON stamp record in `results.parquet`, the trial
     analysis section, or another durable run log showing data hash + git
     commit + env lock hash
+- [ ] **Tracking backend was selected with the user before load-bearing
+  trials** and recorded in `decisions.md`
+  - Evidence: backend decision names tool, storage location, review retrieval
+    path, and minimum persisted fields. Acceptable backends include the local
+    stamp/parquet default, MLflow, W&B, Neptune, Trackio, TensorBoard, Sacred,
+    DVC, or an organizational tracker.
+- [ ] **External tracker records, if used, satisfy the same audit anchors**
+  as the local stamp protocol
+  - Evidence: for each cited trial, reviewer can resolve `trial_id` to
+    tracker run ID, artifact URI, data hash, git commit, env lock hash, seed,
+    params, and headline metrics
 - [ ] **Frozen artifacts not edited in place**: charter, PR/FAQ,
   pre-registration files have hash matching their `.lock` files
   - Evidence: `git log` + hash comparison

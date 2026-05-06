@@ -125,7 +125,12 @@ Format: `[ ] item — required evidence — citation`
 - [ ] All shared infrastructure pins recorded in
   `reproducibility/shared_pins.txt`
 - [ ] Reproducibility 3-tuple recorded for each cited trial via
-  `scripts/reproducibility_stamp.py`
+  `scripts/reproducibility_stamp.py` or an equivalent external tracker record
+  (for example MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred /
+  DVC / organizational tracker)
+- [ ] If an external tracker is used, `trial_id` resolves to a stable run ID
+  and artifact URI containing the cited metrics, params, data hash, git
+  commit, env lock hash, and seed
 
 ### H. Cold-eye check
 

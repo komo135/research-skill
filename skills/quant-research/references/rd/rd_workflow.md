@@ -190,8 +190,9 @@ Each project that consumes shared infrastructure pins to a **specific
 git commit hash** of `shared/`, recorded in the project's
 `reproducibility/data_hashes.txt` (or a similar file `shared_pins.txt`).
 
-When a project starts a new trial, the pin is part of the
-reproducibility 3-tuple stamped via `scripts/reproducibility_stamp.py`.
+When a project starts a new trial, the pin is part of the reproducibility
+3-tuple stamped via the selected tracking backend or
+`scripts/reproducibility_stamp.py`.
 
 ### Updating shared infrastructure
 
@@ -288,7 +289,7 @@ by another agent.
 - Stop conditions integrate with `references/rd/rd_promotion_gate.md`
   (Promotion path) and the kill / park / pivot patterns embedded in
   `SKILL.md` and `decisions.md` template.
-- Shared infrastructure governance is parallel to the version pinning
-  done by `scripts/reproducibility_stamp.py`.
+- Shared infrastructure governance is parallel to the version pinning done by
+  the selected tracking backend or `scripts/reproducibility_stamp.py`.
 - Pivot protocol is defined in `SKILL.md` § First Decision; this file
   covers the code-reuse follow-up.
