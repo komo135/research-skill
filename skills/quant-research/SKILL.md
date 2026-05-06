@@ -80,15 +80,35 @@ This skill defines the **protocol layer**. It must stay separate from the
 | Protocol layer | Schemas, gates, status vocabulary, required evidence, promotion rules | Active candidates, selected symbols, tuned parameters, current PnL, experiment-specific conclusions |
 | Project instance layer | Concrete research target, candidate definitions, data paths, configs, implementation, generated reports | New protocol rules, reusable workflow changes, hidden state transitions |
 
+**Evidence artifacts do not own research contracts.** Notebooks under
+`purposes/`, rows in `results/results.parquet`, files under `configs/`,
+and framework code under `src/` produce observations, metrics, logs, and
+run metadata. They do not decide capability maturity, support status,
+promotion, kill, park, or pivot.
+
+**Framework code must not require capability IDs.** Implementation APIs,
+configs, and reusable framework modules must not require `capability_id`,
+`core_tech_id`, TRL, stage, exit criteria, kill criteria, or explanation
+IDs as part of their normal operation. Those identifiers may appear in
+ledger assessment entries that cite evidence artifacts, not as required
+inputs to the implementation itself.
+
+**capability_map.md is not an implementation API.** It is a research
+state ledger. The correct flow is: project-instance code produces a
+neutral artifact; the protocol layer later cites that artifact as
+evidence; the review layer checks whether the cited evidence warrants the
+claimed state transition.
+
 Do not embed active candidates in reusable workflow docs, skill templates, or
 protocol references. A phrase like "the current EURUSD h16 candidate" belongs
 in a project trial report, a config, a decision entry, or a project state
 index, not in this skill or its reusable templates.
 
-Generated reports are snapshots. They may summarize observations, but they are
-not the source of truth for state transitions. The authoritative state lives in
-`capability_map.md` or `explanation_ledger.md`, with durable transitions in
-`decisions.md` and evidence links to trial artifacts.
+Generated reports are snapshots. Evidence artifacts are snapshots too. They
+may summarize observations, but they are not the source of truth for state
+transitions. The authoritative state lives in `capability_map.md` or
+`explanation_ledger.md`, with durable transitions in `decisions.md` and
+evidence links to trial artifacts.
 
 When inheriting an existing project, diagnose boundary violations before doing
 new research:
@@ -364,8 +384,8 @@ README.md                        # mode declaration, goal, current state
 decisions.md                     # durable state transitions only
 literature/papers.md             # prior work
 literature/differentiation.md    # how this differs from prior work
-purposes/INDEX.md                # trial index
-results/results.parquet          # mode-aware aggregated trial results
+purposes/INDEX.md                # evidence artifact index
+results/results.parquet          # queryable evidence records
 configs/                         # project-instance experiment configs
 src/                             # project-instance implementation, if any
 tests/                           # project-instance verification, if any

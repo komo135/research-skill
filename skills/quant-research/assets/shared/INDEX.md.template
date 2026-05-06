@@ -1,26 +1,27 @@
 # Trial INDEX
 
-List of numbered research notebooks / trials. `scripts/new_trial.py` adds
-new entries automatically.
+List of numbered evidence artifacts. `scripts/new_trial.py` adds new
+entries automatically. Ledger files may later cite these artifacts during
+claim, capability, or explanation assessment.
 
 ## Entries
 
-| trial_id | mode | linked capability/explanation | state row updated | notebook status | state update / result summary |
+| trial_id | mode | evidence artifact | optional protocol link | artifact status | ledger assessment |
 |---|---|---|---|---|---|
 
-## Notebook-status legend (per notebook)
+## Artifact-status legend
 
-- `planned`: accepted through the entry gate, notebook not created
-- `in-progress`: notebook created, trial not yet interpreted
-- `done`: observation, interpretation, and research-state update are recorded
+- `planned`: artifact is planned, notebook not created
+- `in-progress`: artifact created, measurement not yet interpreted
+- `complete`: observation and interpretation are recorded
 - `parked`: blocked on upstream dependency
 - `dropped`: judged not worth pursuing; reason recorded in decisions.md
 
-A notebook is `done` only when it changes the project state. A metric without
-an update to `capability_map.md`, `explanation_ledger.md`, or `decisions.md`
-is still unfinished.
+An artifact can be complete without moving research state. The ledger
+assessment column records whether `capability_map.md`,
+`explanation_ledger.md`, or `decisions.md` later cites it.
 
 ## Order
 
-Sequential numbering is for auditability. Dependencies and blocking state rows
-take precedence over chronology when deciding what to run next.
+Sequential numbering is for auditability. Research state determines what
+evidence is needed next; evidence artifacts do not own that state.

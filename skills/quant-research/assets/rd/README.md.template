@@ -5,7 +5,7 @@ TRL-tracked capability map, and Cooper Stage-Gate per capability.
 
 ## Status
 
-- **Current state**: <REPLACE: charter-drafting | charter-frozen | layer-1-active | layer-2-active | stage-N-on-Cn | promotion-review | promoted | killed | parked | pivoted>
+- **Current state**: <REPLACE: drafting | active | assessment | promoted | killed | parked | pivoted>
 - **Charter**: [`charter.md`](charter.md) (frozen at <REPLACE: timestamp>, hash <REPLACE: short hash>)
 - **Capability map**: [`capability_map.md`](capability_map.md)
 - **Decisions log**: [`decisions.md`](decisions.md)
@@ -18,12 +18,12 @@ TRL-tracked capability map, and Cooper Stage-Gate per capability.
 ## Boundary contract
 
 **Protocol/state source of truth**: `charter.md`, `capability_map.md`, and
-`decisions.md` define the reusable gates, current TRL/status, exit criteria,
-kill criteria, and durable state transitions.
+`decisions.md` define research questions, capability assessment criteria,
+current status, and durable state transitions.
 
 **Project-instance artifacts**: `configs/`, `src/`, `tests/`, `purposes/`,
 and `results/` contain concrete symbols, universes, data paths, parameters,
-implementation, generated notebooks, and run outputs.
+implementation, evidence artifacts, generated notebooks, and run outputs.
 
 **Generated report snapshots**: reports under `results/` may summarize a run,
 but they do not update project state by themselves. Promote, kill, park, or
@@ -42,13 +42,12 @@ or decision entries.
 
 <REPLACE: count of 永続型 K's vs 継続改善型 K's; e.g., "3 永続型, 1 継続改善型 → maintenance plan required at promotion">
 
-## Critical path summary
+## Capability assessment
 
-<REPLACE: short bullet list of capabilities on the critical path, with their parent K and current status. See `capability_map.md` for full detail.>
-
-- C1 (K1): <status>, TRL <current>/<target>
-- C2 (K2): <status>, TRL <current>/<target>
-- ...
+Capability state, maturity, criteria, and critical-path dependencies live in
+[`capability_map.md`](capability_map.md). Evidence artifacts under
+`purposes/` and `results/` may be cited there, but they do not own the
+assessment.
 
 ## Folder layout
 
@@ -67,10 +66,10 @@ or decision entries.
 │   ├── papers.md           # prior work, indexed by K
 │   └── differentiation.md  # how this project differs from prior work
 ├── purposes/
-│   ├── INDEX.md            # numbered trial index
-│   └── trial_NNN_*.py      # marimo notebooks, one per trial
+│   ├── INDEX.md            # numbered evidence artifact index
+│   └── trial_NNN_*.py      # marimo evidence artifacts
 ├── results/
-│   ├── results.parquet     # mode-aware schema, includes analysis_tier and core_tech_id
+│   ├── results.parquet     # queryable evidence records
 │   ├── figures/
 │   └── intermediate/       # parquet outputs of feature notebooks etc.
 └── reproducibility/
@@ -88,11 +87,10 @@ point:
 - [ ] `charter.md` is frozen (`prereg/charter.lock` exists, hash matches)
 - [ ] `capability_map.md` Section 1 is closed-for-work (per
   `references/rd/core_technologies.md` § Layer 1 closure)
-- [ ] No Stage gate has been run on a capability while any sibling K is
-  in `active` status with incomplete fields (per `SKILL.md` §
-  Session-level R&D sequencing)
-- [ ] Every trial in `purposes/` has a complete Analysis section (5
-  sub-fields, A0-A5 tier explicit)
+- [ ] Evidence artifacts used for capability assessment are linked from
+  `capability_map.md` or `decisions.md`
+- [ ] Every completed evidence artifact in `purposes/` has a complete
+  Analysis section (5 sub-fields, A0-A5 tier explicit)
 - [ ] `decisions.md` has chronological coverage (no gap > 4 weeks
   without explicit "no progress: <reason>" entry)
 - [ ] Reproducibility 3-tuple is recorded for every promoted-eligible
