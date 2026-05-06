@@ -60,6 +60,34 @@ Scoping  ──Gate 1──  De-risk  ──Gate 2──  Build  ──Gate 3─
 TRL 0→1, A0           TRL 1→3, A2          TRL 3→4, A3        TRL 4→5, A4              TRL 5→6, A4+
 ```
 
+## Result-to-Capability Loop
+
+After every interpreted R&D result, return to capability state in
+`capability_map.md`. A trial can justify Go, Kill, Hold, Recycle, re-scope,
+dependency updates, or no state movement, but the decision belongs in the
+capability row and `decisions.md`, not in the evidence artifact alone.
+
+Use the existing Stage-Gate protocol; this section names the return path so
+results update the right state object:
+
+1. State the observed pattern, TRL evidence, and analysis tier.
+2. Identify the capability row, parent core technology, and current stage.
+3. Compare the evidence to the row's exit criteria, kill criteria,
+   dependencies, and scope.
+4. Update `capability_map.md` only as far as the evidence warrants.
+5. Record the gate decision, blocker, recycle reason, or no-progress reason in
+   `decisions.md`.
+6. Decide whether the next move is deeper analysis on the current result,
+   another stage action, promotion review, hold, recycle, or pivot.
+
+This loop does not create a second TRL or gate system. The capability map
+remains the source of truth for R&D state.
+
+The loop also does not permit goalpost shifting. If a result shows that an
+exit criterion, kill criterion, threshold, data source, or test design was
+wrong, record a dated deviation and use a prospective re-scope. Do not
+reinterpret the old result under the new criterion.
+
 ### Stage 1 — Scoping
 
 **Purpose**: Define the capability precisely and surface the hardest
