@@ -154,12 +154,12 @@ Use one primary value when `verdict` is `rejected`, `partial`, or `parked`:
 |---|---|
 | `leakage` | Look-ahead, target leak, scaling leak, or timestamp error |
 | `regime_mismatch` | Works only in a regime narrower than the claim |
-| `fee_model` | Gross edge exists but realistic costs consume it |
+| `cost_constraint` | Apparent effect exists before realistic cost, capacity, or resource constraints |
 | `wrong_horizon` | Holding period does not match the signal information horizon |
 | `wrong_universe` | Result is specific to a narrower universe than claimed |
 | `wrong_baseline` | Beats a weak baseline but not the relevant baseline |
 | `threshold_brittleness` | Result depends on a narrow parameter optimum |
-| `capacity_constraint` | Degrades materially with plausible notional / turnover |
+| `capacity_constraint` | Degrades materially with plausible capacity or resource-use assumptions |
 | `signal_weakness` | No interpretable edge after checks |
 | `mechanism_misspecification` | Proposed mechanism does not explain the observation |
 | `power_insufficient` | Test cannot distinguish the explanations yet |

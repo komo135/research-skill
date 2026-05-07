@@ -44,9 +44,9 @@ Using them as the final explanation is a protocol violation.
 | "sample size" | Power analysis at observed effect size? What N would be sufficient? Why is N insufficient *for this specific test*? |
 | "regime" | Which regime characteristics (vol, correlation, momentum)? Threshold values that distinguish? When did the regime begin/end? |
 | "overfitting" | Which parameters were over-tuned? In-sample vs out-of-sample diff magnitude? Number of degrees of freedom vs sample size? |
-| "cost" | Gross edge before cost? Turnover? Holding period? Break-even cost? Whether cost impact is uniform or regime-dependent? |
+| "cost" | Effect before cost or constraint? Resource usage? Exposure duration? Break-even threshold? Whether impact is uniform or context-dependent? |
 | "model weakness" | Which specific assumption is violated? Which alternative model class would address this? Why this model was selected initially? |
-| "market changed" | What specifically changed? When? Measurable on which axis? |
+| "operating context changed" | What specifically changed? When? Measurable on which axis? |
 
 ### Success-side generic labels (commonly skipped)
 
@@ -54,12 +54,12 @@ Using them as the final explanation is a protocol violation.
 |---|---|
 | "model was good" | Which model components drove the result? Feature importance distribution? Comparative test against simpler model? |
 | "model captured variance" | Which dimensions of variance specifically? Which decomposition (PCA, sector, factor)? Where does it fail? |
-| "regime was favorable" | Which regime characteristics? Threshold values? Why did the strategy align with those characteristics specifically? |
+| "context was favorable" | Which context characteristics? Threshold values? Why did the method align with those characteristics specifically? |
 | "feature was strong" | Which feature? Standalone IC? Marginal contribution above baseline? Stability across sub-periods? |
 | "data was clean" | Which preprocessing fixed which issue? Magnitude of cleaning effect? What if cleaning was undone? |
-| "strategy is sound" | Which causal mechanism produces the edge? What would falsify it? |
+| "method is sound" | Which causal mechanism produces the effect? What would falsify it? |
 | "training worked" | Which training-loop properties (loss curve shape, gradient norms, generalization gap)? |
-| "signal was strong" | Effect magnitude in absolute terms (not "strong"). Comparison to known benchmarks. Decay rate. |
+| "effect was strong" | Effect magnitude in absolute terms (not "strong"). Comparison to known benchmarks. Decay rate. |
 
 ## Symmetric decomposition pattern
 
@@ -117,23 +117,22 @@ After elimination, which candidate(s) survive? If multiple survive,
 the analysis is at A3 (preliminary) at best. If one candidate survives
 with mechanism + scope + multiple evidence sources, it reaches A4.
 
-## Cost / fee decomposition (failure-side specific)
+## Cost / resource decomposition (failure-side specific)
 
-A common failure-side anti-pattern: "cost killed the signal." This is
-a generic label. Decomposition required:
+A common failure-side anti-pattern: "cost or constraints killed the result."
+This is a generic label. Decomposition required:
 
-- Gross edge magnitude before cost (specific number, not "small")
-- Turnover and holding-period distribution
-- Break-even fee / slippage (specific bp/side number)
-- Whether cost impact is uniform across the period or regime-dependent
-- Whether the favorable regime can be identified ex ante (i.e., is
-  the strategy viable when conditioned on the favorable regime?)
+- Effect magnitude before cost or constraint (specific number, not "small")
+- Resource-use and exposure-duration distribution
+- Break-even cost, latency, capacity, availability, or constraint threshold
+- Whether the impact is uniform across the period or context-dependent
+- Whether the favorable context can be identified ex ante
 - Whether the result changes because the **implementation assumption**
-  changed or because the **market effect is conditional**
+  changed or because the **phenomenon is conditional**
 
-A lower-fee re-run is a sensitivity check on an existing explanation,
-not a new hypothesis, unless it corresponds to a real implementation context
-(retail / ECN / futures with documented cost structure).
+A lower-cost or lower-constraint re-run is a sensitivity check on an existing
+explanation, not a new hypothesis, unless it corresponds to a real documented
+implementation context.
 
 ## Mechanism-level success decomposition (success-side specific)
 
@@ -141,14 +140,14 @@ A common success-side anti-pattern: "the model captured the variance
 structure." This is a generic label. Decomposition required:
 
 - **Which specific variance components** does the model capture
-  (e.g., sector / size / momentum / liquidity)?
+  (e.g., group, scale, context, or usage-intensity components)?
 - **Marginal contribution** of each: ablate one feature at a time and
-  measure IC change
+  measure the primary-metric change
 - **Mechanism**: why is this specific component captured by this
   specific model architecture but not by a simpler baseline?
-- **Scope**: in which universes / periods / regimes does the capture
+- **Scope**: in which populations / periods / contexts does the capture
   hold? Where does it break?
-- **Comparative test**: does a simple baseline (linear factor model,
+- **Comparative test**: does a simple baseline (linear model,
   rolling moving average, hand-crafted feature) achieve the same?
   If yes, the model's contribution is overstated.
 
@@ -198,9 +197,9 @@ defense against agent / human bias.
 [Numbers and plots, with uncertainty bands. No "good" qualifiers.]
 
 ### Immediate non-conclusions
-[Things the result does NOT prove. Example: "primary metric 1.5 OOS does NOT
-prove the strategy will hold in production — it could be regime-
-specific, sample-period favorable, or fragile to slippage."]
+[Things the result does NOT prove. Example: "primary metric improved out of
+sample does NOT prove the method will hold in production; it could be context-
+specific, sample-period favorable, or fragile to operational constraints."]
 
 ### Candidate mechanisms (≥3)
 [Why did this work? List multiple candidate causal mechanisms.]
@@ -217,7 +216,7 @@ into observable sub-claims per the table above.]
 discriminating evidence.]
 
 ### Scope precision
-[Where this mechanism holds: universe, period, regime, market
+[Where this mechanism holds: population, period, context, operating
 structure preconditions. Where it does NOT hold or is untested.]
 
 ### Next test that would falsify the mechanism

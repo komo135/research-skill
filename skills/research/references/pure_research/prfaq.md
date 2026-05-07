@@ -81,8 +81,8 @@ question categories:
 
 ### Bad PR
 
-> "We trained a transformer model on intraday futures data and found it
-> predicts returns with high accuracy. The methodology is novel and
+> "We trained a transformer model on event-sequence data and found it
+> predicts the target with high accuracy. The methodology is novel and
 > applicable broadly."
 
 Problems: no concrete finding, no scope, no mechanism, no alternatives

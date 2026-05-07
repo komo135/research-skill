@@ -26,6 +26,16 @@ def load_module(path: str):
     return module
 
 
+def read_tree_text(path: str) -> str:
+    root = ROOT / path
+    parts = []
+    for file in sorted(root.rglob("*")):
+        if file.is_file() and file.suffix in {".md", ".py", ".template"}:
+            parts.append(f"\n--- {file.relative_to(ROOT)} ---\n")
+            parts.append(file.read_text(encoding="utf-8"))
+    return "\n".join(parts)
+
+
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
         expected = "1.1.0"
@@ -440,6 +450,7 @@ class ProjectBoundaryTests(unittest.TestCase):
 
     def test_research_skill_owns_generic_research_protocol(self) -> None:
         research = read_text("skills/research/SKILL.md")
+        research_tree = read_tree_text("skills/research")
 
         for phrase in [
             "Use for serious research or R&D projects",
@@ -459,8 +470,15 @@ class ProjectBoundaryTests(unittest.TestCase):
             "portfolio capacity",
             "transaction cost",
             "walk-forward validation",
+            "backtest",
+            "bp/side",
+            "slippage",
+            "intraday futures",
+            "gross edge",
+            "fee_model",
+            "static fee model",
         ]:
-            self.assertNotIn(forbidden, research)
+            self.assertNotIn(forbidden, research_tree)
 
     def test_quant_research_is_finance_adapter_not_protocol_owner(self) -> None:
         quant = read_text("skills/quant-research/SKILL.md")

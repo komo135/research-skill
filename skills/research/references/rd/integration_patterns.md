@@ -69,8 +69,8 @@ Final:   all K's at TRL-6, framework remains as the integration
 - Architecture is well-understood (e.g., "decision system = signal +
   sizing + operation + risk", and the slot definitions are stable)
 - K's are well-defined "slots" in a known architecture
-- Baseline implementations exist (e.g., constant signal, equal weight,
-  static fee model — these are real implementations, not stubs)
+- Baseline implementations exist (e.g., constant input, equal allocation,
+  static cost model — these are real implementations, not stubs)
 
 **Bad fit when**:
 - The K's output shape is itself the research question (e.g., K =
