@@ -1,15 +1,15 @@
 {
-  "name": "quant-research-skill",
+  "name": "research-skill",
   "owner": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"
   },
   "plugins": [
     {
-      "name": "quant-research",
+      "name": "research",
       "source": "./",
-      "description": "v1.0 — Quant finance research protocol skill: R&D / Pure Research disciplines, Heilmeier / PR-FAQ entry, two-layer decomposition with TRL + lifecycle, Cooper Stage-Gates, A0-A5 analysis depth as primary deliverable, AEA-style pre-registration with hash-lock + diff, two-axis review (process + conclusion). v1.0 removes standalone experiment-review (folded in).",
-      "version": "1.0.7"
+      "description": "v1.1 - Agent-driven serious research and R&D workflows with a generic research skill plus a quantitative-finance specialization.",
+      "version": "1.1.0"
     }
   ]
 }

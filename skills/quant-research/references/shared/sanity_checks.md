@@ -1,13 +1,11 @@
 # sanity_checks.md
 
-Programmatic bug-detection checks. Each reviewer in `bug_review.md` references this
-catalog and runs the checks relevant to its scope. Notebooks should also call the
-relevant subset directly in a "Sanity checks" cell that runs *before* the robustness
-battery.
+Programmatic finance implementation checks. Notebooks should call the relevant subset
+directly in a "Sanity checks" cell that runs *before* the robustness battery and before
+the generic `research` conclusion review.
 
 ## When to read
 
-- The multi-agent bug-review layer (`bug_review.md`) has fired
 - Adding a "Sanity checks" section to an experiment notebook
 - An evaluation result looks too good or internally inconsistent
 
@@ -184,6 +182,7 @@ random-signal benchmark; for ML: shuffled-target test; for multi-instrument:
 aggregation scan). The output of each helper is rendered in its own cell with an
 *observation* markdown cell underneath. A failing helper blocks the rest of the notebook.
 
-The multi-agent review (per `bug_review.md`) is *additional* to these programmatic checks
-and reads code that the helpers cannot reach (sign conventions buried in custom
-functions, interactions between feature notebook and model notebook, etc.).
+The generic `research` process and conclusion reviews are *additional* to these
+programmatic checks. They read code and evidence that helpers cannot reach, including
+sign conventions buried in custom functions and interactions between feature notebooks,
+model notebooks, execution code, and reported claims.

@@ -1,0 +1,56 @@
+# Differentiation against prior work
+
+Side-by-side comparison of this research against prior work, broken down by aspect, to
+make novelty visible.
+
+## Differentiation matrix
+
+| Aspect | [Prior A] | [Prior B] | [Prior C] | **This research** |
+|---|---|---|---|---|
+| Period | ... | ... | ... | ... |
+| Universe | ... | ... | ... | ... |
+| Frequency (timeframe) | ... | ... | ... | ... |
+| Method (model type) | ... | ... | ... | ... |
+| Features / factors | ... | ... | ... | ... |
+| Intervention / decision rule | ... | ... | ... | ... |
+| Evaluation metric | ... | ... | ... | ... |
+| Robustness checks | ... | ... | ... | ... |
+| Claim / conclusion | ... | ... | ... | ... |
+| Resource / deployment assumptions | ... | ... | ... | ... |
+
+## Novelty check
+
+The "this research" column must contain **at least one cell that is clearly distinct** from
+the prior columns.
+
+Levels:
+
+| Level | Examples |
+|---|---|
+| Strong | New mathematical model / new ML architecture / new evaluation metric |
+| Medium | Existing method on new data or universe / a novel combination of known methods |
+| Weak | Different parameters / different period / reimplementation of the same method |
+
+A research project that only achieves "weak" tends to become a degraded reimplementation.
+Aim for "medium" or higher.
+
+## Example
+
+| Aspect | Smith et al. (2021) | Lee & Patel (2023) | **This research** |
+|---|---|---|---|
+| Period | 2016-2020 | 2018-2022 | (your period) |
+| Universe | Public benchmark datasets | Field deployment logs | (your universe) |
+| Frequency | Monthly batches | Event-level records | (your timeframe) |
+| Method | Hierarchical model + ablation | Matched comparison design | (your method) |
+| Features | Measurement covariates | Context labels | (your features) |
+| Intervention / decision rule | Fixed threshold | Human-reviewed threshold | (your rule) |
+| Metrics | Accuracy, calibration error | Reliability score | (your metrics) |
+| Robustness | Per-cohort, ablation | Per-site replication | (your robustness) |
+| Claim | Method improves calibration | Effect replicates in field logs | (your claim) |
+| Resource / deployment assumptions | batch review | not specified | (your assumptions) |
+
+## Notes
+
+- Do not list only the aspects that favor this research; include unfavorable ones too
+- Cite prior work concretely (author / year / venue)
+- If the only differences are "weak", redesign the research

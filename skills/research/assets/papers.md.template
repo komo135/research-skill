@@ -1,0 +1,62 @@
+# Prior work
+
+List of related papers with one-paragraph summaries. Collected at the start of a new
+project (5-10 papers) and extended whenever a new hypothesis is added.
+
+## Format
+
+```markdown
+## [Author (Year)] Title
+
+- **venue**: [journal / conference / arxiv id]
+- **citations**: [Google Scholar / Semantic Scholar count]
+- **URL / DOI**: [link]
+- **main claim**: [one or two sentences]
+- **method**:
+  - model type: [math / classical ML / deep learning / RL / foundation model]
+  - data: [universe, period, frequency]
+  - validation: [split, k-fold, holdout, replication design, ...]
+- **results**:
+  - main metric: [primary metric value, confidence interval, effect size, etc.]
+- **limitations** (stated by the authors, or evident weaknesses):
+  - ...
+- **relation to this research**: [use / compare / differentiate from / refute]
+```
+
+## Example
+
+```markdown
+## Smith et al. (2021) Benchmarking measurement reliability across sites
+
+- **venue**: Journal of Applied Measurement 12(3): 101-120
+- **citations**: 250+
+- **URL**: https://example.org/example-paper
+- **main claim**:
+  A hierarchical measurement model improves calibration across heterogeneous
+  sites compared with a pooled baseline.
+- **method**:
+  - model type: statistical model with ablation
+  - data: public benchmark datasets, 2016-2020, monthly batches
+  - validation: train/validation/test split plus held-out-site replication
+- **results**:
+  - Calibration error improved from 0.18 to 0.09 on held-out sites
+  - Primary replication metric was stable across four cohorts
+- **limitations**:
+  - limited coverage of low-resource sites
+  - missing long-horizon drift analysis
+  - manual labeling protocol may not transfer to every domain
+- **relation to this research**:
+  Comparison reference. The differentiation is in the target population and
+  replication design.
+```
+
+## Search strategy
+
+- arxiv.org (topic-specific categories)
+- SSRN (working papers and recent activity)
+- Google Scholar — sort by citation count on the topic's base terms
+- Snowball back from recent papers' references to canonical works
+
+## When to update
+
+Whenever a new hypothesis is added, revisit this file and add new papers if needed.

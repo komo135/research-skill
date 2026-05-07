@@ -4,17 +4,18 @@ Robustness checks to run before declaring a research project complete.
 
 ## Pre-condition
 
-**Run the multi-agent bug review (`references/bug_review.md`) first.** Robustness checks
-operate on the PnL series; if the PnL is contaminated by a leak, an alignment bug, or a
-fee-accounting error, every robustness gate inherits the same contamination uniformly
-and produces credible-looking false confidence. The bug-review layer is a gate on this
-file, not a follow-up to it.
+**Run the finance implementation checks first.** At minimum, complete
+`references/shared/sanity_checks.md`, `references/shared/time_series_validation.md`, and
+the relevant helpers in `scripts/leakage_check.py` / `scripts/sanity_checks.py`.
+Robustness checks operate on the PnL series; if the PnL is contaminated by a leak,
+an alignment bug, or a fee-accounting error, every robustness gate inherits the same
+contamination uniformly and produces credible-looking false confidence.
 
 ## When to read
 
-- Main experiment finished, sanity checks (`references/sanity_checks.md`) all green, and
-  the multi-agent bug review (`references/bug_review.md`) has produced a clean
-  `decisions.md` entry
+- Main experiment finished, finance sanity checks
+  (`references/shared/sanity_checks.md`) all green, time-series validation has been
+  reviewed, and the generic `research` process review has no blocking gaps
 - Just before declaring completion
 
 ## Required checks

@@ -1,13 +1,13 @@
 {
-  "name": "quant-research",
-  "version": "1.0.7",
-  "description": "v1.0 — Protocol skill for agent-driven quantitative finance research. Two strict disciplines (R&D / Pure Research) with mode-specific entry documents (Heilmeier charter / PR/FAQ + AEA-style pre-registration), two-layer decomposition (Core Technologies + Capabilities) with TRL maturity and lifecycle, Cooper-style stage-gates, A0-A5 analysis-depth tier as primary deliverable, integration pattern (Pattern 1/2/3) declared in charter, and unified two-axis review (process + conclusion) replacing the separate experiment-review skill.",
+  "name": "research",
+  "version": "1.1.0",
+  "description": "v1.1 - Agent-driven serious research and R&D workflows with a generic research skill plus a quantitative-finance specialization.",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"
   },
-  "homepage": "https://github.com/komo135/quant-research-skill",
-  "repository": "https://github.com/komo135/quant-research-skill",
+  "homepage": "https://github.com/komo135/research-skill",
+  "repository": "https://github.com/komo135/research-skill",
   "license": "MIT",
   "keywords": [
     "quant",
@@ -20,22 +20,22 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Quant Research",
-    "shortDescription": "Quant finance research protocols for Codex",
-    "longDescription": "v1.0 — Protocol skill for agent-driven quantitative finance research. Two strict disciplines: R&D mode (Heilmeier charter, two-layer decomposition with TRL maturity + lifecycle, Cooper-style stage-gates per capability, integration pattern declared upfront) and Pure Research mode (Working Backwards PR/FAQ, AEA-style hash-locked pre-registration, explanation-pruning ledger, IMRAD-shaped manuscript draft). Analysis depth (A0-A5 tier system) is the primary deliverable. Promotion gates require both process review and conclusion review pass with concrete evidence cited. v1.0 removes the standalone experiment-review skill (folded into the unified review structure).",
+    "displayName": "Research",
+    "shortDescription": "Research and R&D protocols with quant finance specialization",
+    "longDescription": "v1.1 - Agent-driven serious research and R&D workflows. The plugin exposes a generic research skill for disciplined R&D / Pure Research work, plus a quant-research adapter for financial machine learning, backtests, time-series validation, leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented evidence.",
     "developerName": "komoootv",
     "category": "Research",
     "capabilities": [
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/komo135/quant-research-skill",
-    "privacyPolicyURL": "https://github.com/komo135/quant-research-skill",
-    "termsOfServiceURL": "https://github.com/komo135/quant-research-skill/blob/main/LICENSE",
+    "websiteURL": "https://github.com/komo135/research-skill",
+    "privacyPolicyURL": "https://github.com/komo135/research-skill",
+    "termsOfServiceURL": "https://github.com/komo135/research-skill/blob/main/LICENSE",
     "defaultPrompt": [
-      "Design a quant research notebook",
-      "Review this experiment verdict",
-      "Check my backtest protocol"
+      "Design a research project",
+      "Review this R&D result",
+      "Check my quant backtest protocol"
     ],
     "brandColor": "#2563EB",
     "screenshots": []

@@ -1,0 +1,103 @@
+# Pre-Registration — PR_<REPLACE: id, e.g., 001>
+
+Status: DRAFT (replace with `FROZEN at <YYYY-MM-DD HH:MM:SS UTC>` after
+running `python scripts/prereg_freeze.py --type prereg --id PR_<id> --path prereg/PR_<id>.md`)
+Hash: <REPLACE: SHA-256 from prereg_freeze.py output>
+
+PR/FAQ reference: <REPLACE: path to frozen prfaq.md + hash>
+
+---
+
+## 1. Question
+
+<REPLACE: one sentence. Identical to or a sub-question of the PR/FAQ
+question. Frame as an unknown to reduce.>
+
+## 2. Competing explanations (≥2 required, including null/artifact)
+
+For each E, also declare evidence type (causal / correlative /
+null-result) and (if correlative) the gap to causation. See
+`references/pure_research/preregistration.md` § 2.
+
+| ID | Statement | Mechanism | Ex ante predicted observation | Evidence type | Causation gap (if correlative) |
+|---|---|---|---|---|---|
+| E1 | <REPLACE: explanation statement> | <REPLACE: causal mechanism> | <REPLACE: what observation would best support this E> | causal \| correlative \| null-result | <REPLACE or N/A> |
+| E2 | <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE or N/A> |
+| E_null | <REPLACE: null / artifact / measurement-error / sample-variance explanation> | <REPLACE> | <REPLACE: e.g., bootstrap CI includes 0> | null-result | N/A |
+
+## 3. Test design
+
+### 3.1 Data
+
+- **Source**: <REPLACE>
+- **Period**: <REPLACE: start to end>
+- **Frequency**: <REPLACE: e.g., daily, 5-min>
+- **Universe**: <REPLACE: instruments included>
+- **Planned data identity**: <REPLACE: path / vendor version / expected
+  snapshot date. Final content hash is stamped at trial time.>
+
+### 3.2 Sample / split
+
+<REPLACE: how data is split for the test. Holdout windows? repeated validation?
+Train / val / test? Sample size per split?>
+
+### 3.3 Metric
+
+- **Primary**: <REPLACE: single number, e.g., difference in rolling
+  3-year primary metric across two periods>
+- **Secondary**: <REPLACE: list any secondary metrics that will be
+  reported>
+
+### 3.4 Threshold
+
+- **Support E1 if**: <REPLACE: observable threshold>
+- **Support E2 if**: <REPLACE: observable threshold>
+- **Support E_null if**: <REPLACE: observable threshold>
+- **Ambiguous if**: <REPLACE: condition where no E clearly wins>
+
+### 3.5 Multiple testing correction
+
+- **Number of distinct hypotheses tested across this trial**: <REPLACE>
+- **Number of distinct hypotheses tested across the whole project so
+  far**: <REPLACE: be honest>
+- **Correction method**: <REPLACE: Bonferroni / Romano-Wolf step-down
+  / domain-appropriate selection correction or significance hurdle>
+- **Corrected significance threshold**: <REPLACE>
+
+## 4. Expected diff under each explanation
+
+(Forces ex ante prediction. After the trial, prereg_diff.py compares
+actual results against these predictions.)
+
+- **If E1 true → expected pattern**: <REPLACE: precise, observable>
+- **If E2 true → expected pattern**: <REPLACE>
+- **If E_null true → expected pattern**: <REPLACE>
+
+## 5. Stop condition
+
+<REPLACE: the observable condition that ends this trial. Without
+this, trials drift.>
+
+## 6. Reproducibility
+
+- Random seed(s): <REPLACE>
+- Code commit (planned at trial run): <fill at trial time>
+- Env lock hash (planned at trial run): <fill at trial time>
+- Tracking backend (planned): <selected backend per references/shared/results_db_schema.md>
+- Run inventory/export (planned): <path or tracker query covering all load-bearing, failed, sweep, model-selection, and promotion-eligible attempts>
+- Data hash (final, trial-time): <fill from stamp script or selected tracker>
+
+---
+
+## Approval
+
+- Drafted by: <REPLACE: agent and/or user>
+- Reviewed by: <REPLACE: user>
+- Frozen at: <fill after `prereg_freeze.py` runs>
+- Frozen hash: <fill after `prereg_freeze.py` runs>
+
+---
+
+After freezing this pre-registration, the trial may run. Post-trial,
+run `scripts/prereg_diff.py --id PR_<id>` and apply the deviation
+severity matrix in `references/pure_research/pr_workflow.md`.

@@ -26,9 +26,19 @@ def load_module(path: str):
     return module
 
 
+def read_tree_text(path: str) -> str:
+    root = ROOT / path
+    parts = []
+    for file in sorted(root.rglob("*")):
+        if file.is_file() and file.suffix in {".md", ".py", ".template"}:
+            parts.append(f"\n--- {file.relative_to(ROOT)} ---\n")
+            parts.append(file.read_text(encoding="utf-8"))
+    return "\n".join(parts)
+
+
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.0.7"
+        expected = "1.1.0"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -39,8 +49,37 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertEqual(expected, claude_marketplace["plugins"][0]["version"])
         self.assertIn(f"### v{expected} (current)", readme)
 
+    def test_plugin_identity_is_research_skill(self) -> None:
+        codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
+        agents_marketplace = json.loads(read_text(".agents/plugins/marketplace.json"))
+        claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
+        claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
+        readme = read_text("README.md")
+        old_plugin = "quant-research" + "@" + "quant-research" + "-skill"
+
+        self.assertEqual("research", codex_plugin["name"])
+        self.assertEqual("Research", codex_plugin["interface"]["displayName"])
+        self.assertEqual("research-skill", agents_marketplace["name"])
+        self.assertEqual("research", agents_marketplace["plugins"][0]["name"])
+        self.assertEqual("research", claude_plugin["name"])
+        self.assertEqual("research-skill", claude_marketplace["name"])
+        self.assertEqual("research", claude_marketplace["plugins"][0]["name"])
+        self.assertIn("# research-skill", readme)
+        self.assertIn("research@research-skill", readme)
+        self.assertNotIn("/plugin install " + old_plugin, readme)
+        self.assertIn(f"old plugin identity was `{old_plugin}`", readme.lower())
+
+    def test_public_skills_are_research_and_quant_research_only(self) -> None:
+        skill_dirs = sorted(path.name for path in (ROOT / "skills").iterdir() if path.is_dir())
+
+        self.assertEqual(["quant-research", "research"], skill_dirs)
+        self.assertIn("name: research", read_text("skills/research/SKILL.md"))
+        self.assertIn("name: quant-research", read_text("skills/quant-research/SKILL.md"))
+        retired_skill = ROOT / "skills" / ("experiment" + "-review") / "SKILL.md"
+        self.assertFalse(retired_skill.exists())
+
     def test_skill_defines_framework_boundary_contract(self) -> None:
-        skill = read_text("skills/quant-research/SKILL.md")
+        skill = read_text("skills/research/SKILL.md")
 
         for phrase in [
             "## Framework Boundary",
@@ -52,7 +91,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertIn(phrase, skill)
 
     def test_skill_keeps_research_contracts_out_of_evidence_artifacts(self) -> None:
-        skill = read_text("skills/quant-research/SKILL.md")
+        skill = read_text("skills/research/SKILL.md")
 
         for phrase in [
             "Evidence artifacts do not own research contracts",
@@ -66,7 +105,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             result = subprocess.run(
                 [
                     sys.executable,
-                    str(ROOT / "skills/quant-research/scripts/new_project.py"),
+                    str(ROOT / "skills/research/scripts/new_project.py"),
                     "alpha",
                     "--mode",
                     "rd",
@@ -114,7 +153,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             subprocess.run(
                 [
                     sys.executable,
-                    str(ROOT / "skills/quant-research/scripts/new_project.py"),
+                    str(ROOT / "skills/research/scripts/new_project.py"),
                     "alpha",
                     "--mode",
                     "pure-research",
@@ -161,7 +200,7 @@ class ProjectBoundaryTests(unittest.TestCase):
                 subprocess.run(
                     [
                         sys.executable,
-                        str(ROOT / "skills/quant-research/scripts/new_project.py"),
+                        str(ROOT / "skills/research/scripts/new_project.py"),
                         project_name,
                         "--mode",
                         mode,
@@ -179,7 +218,7 @@ class ProjectBoundaryTests(unittest.TestCase):
                 result = subprocess.run(
                     [
                         sys.executable,
-                        str(ROOT / "skills/quant-research/scripts/new_trial.py"),
+                        str(ROOT / "skills/research/scripts/new_trial.py"),
                         "--project-dir",
                         str(project),
                         "--slug",
@@ -202,7 +241,7 @@ class ProjectBoundaryTests(unittest.TestCase):
                     self.assertNotIn(phrase, content)
 
     def test_trial_index_tracks_evidence_artifacts_not_ledger_state_updates(self) -> None:
-        index_template = read_text("skills/quant-research/assets/shared/INDEX.md.template")
+        index_template = read_text("skills/research/assets/shared/INDEX.md.template")
 
         self.assertIn("evidence artifact", index_template.lower())
         self.assertIn("ledger assessment", index_template.lower())
@@ -214,7 +253,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertNotIn(phrase, index_template)
 
     def test_results_rows_are_evidence_records_not_protocol_state_records(self) -> None:
-        aggregate_results = load_module("skills/quant-research/scripts/aggregate_results.py")
+        aggregate_results = load_module("skills/research/scripts/aggregate_results.py")
         for mode in ["rd", "pure-research"]:
             row = {
                 "project": "alpha",
@@ -233,7 +272,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             subprocess.run(
                 [
                     sys.executable,
-                    str(ROOT / "skills/quant-research/scripts/new_project.py"),
+                    str(ROOT / "skills/research/scripts/new_project.py"),
                     "alpha",
                     "--mode",
                     "rd",
@@ -250,7 +289,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             subprocess.run(
                 [
                     sys.executable,
-                    str(ROOT / "skills/quant-research/scripts/new_trial.py"),
+                    str(ROOT / "skills/research/scripts/new_trial.py"),
                     "--project-dir",
                     str(project),
                     "--slug",
@@ -269,7 +308,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertLess(index.index(row), index.index("## Artifact-status legend"))
 
     def test_results_schema_doc_describes_queryable_evidence_not_state_transitions(self) -> None:
-        schema = read_text("skills/quant-research/references/shared/results_db_schema.md")
+        schema = read_text("skills/research/references/shared/results_db_schema.md")
 
         self.assertIn("queryable evidence records", schema.lower())
         self.assertIn("ledger assessment", schema.lower())
@@ -281,7 +320,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertNotIn(phrase, schema)
 
     def test_rd_readme_template_keeps_state_details_in_ledgers(self) -> None:
-        readme_template = read_text("skills/quant-research/assets/rd/README.md.template")
+        readme_template = read_text("skills/research/assets/rd/README.md.template")
 
         self.assertIn("evidence artifacts", readme_template.lower())
         self.assertIn("capability assessment", readme_template.lower())
@@ -297,7 +336,7 @@ class ProjectBoundaryTests(unittest.TestCase):
         combined_docs = "\n".join(
             [
                 read_text("README.md"),
-                read_text("skills/quant-research/assets/purpose.py.template"),
+                read_text("skills/research/assets/purpose.py.template"),
             ]
         )
 
@@ -311,16 +350,16 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertNotIn(phrase, combined_docs)
 
     def test_project_helpers_do_not_fall_back_to_retired_templates(self) -> None:
-        new_project = read_text("skills/quant-research/scripts/new_project.py")
-        new_trial = read_text("skills/quant-research/scripts/new_trial.py")
+        new_project = read_text("skills/research/scripts/new_project.py")
+        new_trial = read_text("skills/research/scripts/new_trial.py")
 
         self.assertNotIn("legacy", new_project.lower())
         self.assertNotIn("legacy", new_trial.lower())
         self.assertNotIn("purpose.py.template", new_trial)
 
     def test_kill_policy_reserves_kill_for_terminal_evidence(self) -> None:
-        skill = read_text("skills/quant-research/SKILL.md")
-        stages = read_text("skills/quant-research/references/rd/rd_stages.md")
+        skill = read_text("skills/research/SKILL.md")
+        stages = read_text("skills/research/references/rd/rd_stages.md")
 
         self.assertNotIn("A kill criterion firing once is sufficient to kill", skill)
         self.assertNotIn("Go/Kill gate", skill)
@@ -331,8 +370,8 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("Re-scope", stages)
 
     def test_reproducibility_contract_is_scoped_and_not_overclaimed(self) -> None:
-        skill = read_text("skills/quant-research/SKILL.md")
-        reproducibility = read_text("skills/quant-research/references/shared/reproducibility.md")
+        skill = read_text("skills/research/SKILL.md")
+        reproducibility = read_text("skills/research/references/shared/reproducibility.md")
 
         self.assertNotIn("Every trial that produces a metric", skill)
         self.assertIn("promotion-eligible or claim-cited trial", skill)
@@ -345,8 +384,8 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("validated", reproducibility.lower())
 
     def test_reproducibility_docs_match_stamp_script_outputs(self) -> None:
-        reproducibility = read_text("skills/quant-research/references/shared/reproducibility.md")
-        process_review = read_text("skills/quant-research/references/review/process_review.md")
+        reproducibility = read_text("skills/research/references/shared/reproducibility.md")
+        process_review = read_text("skills/research/references/review/process_review.md")
 
         self.assertNotIn("Captures `git rev-parse HEAD` and writes to a per-trial line", reproducibility)
         self.assertNotIn("auto-detected via Python import scan", reproducibility)
@@ -359,10 +398,10 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("durable run log", process_review)
 
     def test_tracking_backend_contract_requires_auditable_inventory(self) -> None:
-        skill = read_text("skills/quant-research/SKILL.md")
-        schema = read_text("skills/quant-research/references/shared/results_db_schema.md")
-        process_review = read_text("skills/quant-research/references/review/process_review.md")
-        conclusion_review = read_text("skills/quant-research/references/review/conclusion_review.md")
+        skill = read_text("skills/research/SKILL.md")
+        schema = read_text("skills/research/references/shared/results_db_schema.md")
+        process_review = read_text("skills/research/references/review/process_review.md")
+        conclusion_review = read_text("skills/research/references/review/conclusion_review.md")
 
         self.assertIn("complete run inventory/export", skill.lower())
         self.assertIn("not enough to resolve only the cited winning runs", skill)
@@ -379,8 +418,8 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertNotIn("project trial count from\n    `results.parquet`", process_review)
 
     def test_program_layer_is_coordination_not_third_discipline(self) -> None:
-        skill = read_text("skills/quant-research/SKILL.md")
-        program = read_text("skills/quant-research/references/program/program_map.md")
+        skill = read_text("skills/research/SKILL.md")
+        program = read_text("skills/research/references/program/program_map.md")
         normalized_program = " ".join(program.split())
 
         self.assertIn("R&D Program", skill)
@@ -389,7 +428,7 @@ class ProjectBoundaryTests(unittest.TestCase):
         for phrase in [
             "active symbols",
             "tuned parameters",
-            "current PnL",
+            "current performance metrics",
             "research_to_rd",
             "rd_to_rd",
             "rd_observation_to_research",
@@ -409,8 +448,69 @@ class ProjectBoundaryTests(unittest.TestCase):
         ]:
             self.assertNotIn(forbidden, program)
 
+    def test_research_skill_owns_generic_research_protocol(self) -> None:
+        research = read_text("skills/research/SKILL.md")
+        research_tree = read_tree_text("skills/research")
+
+        for phrase in [
+            "Use for serious research or R&D projects",
+            "Do not use for ordinary fact lookup",
+            "First Decision: Choose the Discipline",
+            "R&D Program",
+            "Right-Sized Rigor",
+            "Result-to-Question",
+            "Result-to-Capability",
+            "A4 minimum",
+        ]:
+            self.assertIn(phrase, research)
+
+        for forbidden in [
+            "Sharpe",
+            "PnL",
+            "portfolio capacity",
+            "transaction cost",
+            "walk-forward validation",
+            "backtest",
+            "bp/side",
+            "slippage",
+            "intraday futures",
+            "gross edge",
+            "fee_model",
+            "static fee model",
+            "EURUSD",
+            "USDJPY",
+            "GBPUSD",
+            "forex",
+            "FX",
+        ]:
+            self.assertNotIn(forbidden, research_tree)
+
+    def test_quant_research_is_finance_adapter_not_protocol_owner(self) -> None:
+        quant = read_text("skills/quant-research/SKILL.md")
+
+        for phrase in [
+            "finance adapter",
+            "Use research first",
+            "financial machine learning",
+            "backtest",
+            "walk-forward",
+            "leakage",
+            "Sharpe",
+            "PnL",
+            "transaction cost",
+            "portfolio",
+        ]:
+            self.assertIn(phrase, quant)
+
+        for forbidden in [
+            "any empirical research where conclusions must survive replication",
+            "First Decision: Choose the Discipline",
+            "coordination layer, not a third discipline",
+        ]:
+            self.assertNotIn(forbidden, quant)
+
     def test_right_sized_rigor_preserves_promotion_requirements(self) -> None:
-        skill = read_text("skills/quant-research/SKILL.md")
+        skill = read_text("skills/research/SKILL.md")
 
         self.assertIn("## Right-Sized Rigor", skill)
         self.assertIn("Rigor is sized to the research state being changed", skill)
@@ -424,9 +524,9 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertIn(phrase, skill)
 
     def test_result_loops_route_to_mode_specific_state_objects(self) -> None:
-        pr_workflow = read_text("skills/quant-research/references/pure_research/pr_workflow.md")
-        rd_stages = read_text("skills/quant-research/references/rd/rd_stages.md")
-        result_analysis = read_text("skills/quant-research/references/shared/result_analysis.md")
+        pr_workflow = read_text("skills/research/references/pure_research/pr_workflow.md")
+        rd_stages = read_text("skills/research/references/rd/rd_stages.md")
+        result_analysis = read_text("skills/research/references/shared/result_analysis.md")
 
         self.assertIn("Result-to-Question Loop", pr_workflow)
         self.assertIn("explanation_ledger.md", pr_workflow)
@@ -440,10 +540,10 @@ class ProjectBoundaryTests(unittest.TestCase):
     def test_program_metadata_stays_out_of_evidence_artifacts_and_framework_apis(self) -> None:
         combined_templates = "\n".join(
             [
-                read_text("skills/quant-research/assets/rd/rd_trial.py.template"),
-                read_text("skills/quant-research/assets/pure_research/pr_trial.py.template"),
-                read_text("skills/quant-research/scripts/new_trial.py"),
-                read_text("skills/quant-research/scripts/new_project.py"),
+                read_text("skills/research/assets/rd/rd_trial.py.template"),
+                read_text("skills/research/assets/pure_research/pr_trial.py.template"),
+                read_text("skills/research/scripts/new_trial.py"),
+                read_text("skills/research/scripts/new_project.py"),
             ]
         )
 
@@ -456,12 +556,12 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertNotIn(phrase, combined_templates)
 
     def test_reproducibility_stamp_scope_mentions_claim_cited_trials(self) -> None:
-        stamp_script = read_text("skills/quant-research/scripts/reproducibility_stamp.py")
+        stamp_script = read_text("skills/research/scripts/reproducibility_stamp.py")
 
         self.assertIn("promotion-eligible or claim-cited trial", stamp_script)
 
     def test_exploratory_runs_must_rerun_before_promotion_citation(self) -> None:
-        skill = read_text("skills/quant-research/SKILL.md")
+        skill = read_text("skills/research/SKILL.md")
 
         self.assertNotIn("stamp or", skill)
         self.assertIn("rerun under the promotion-eligible protocol", skill)
@@ -498,7 +598,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             result = subprocess.run(
                 [
                     sys.executable,
-                    str(ROOT / "skills/quant-research/scripts/reproducibility_stamp.py"),
+                    str(ROOT / "skills/research/scripts/reproducibility_stamp.py"),
                     "--project-dir",
                     str(project),
                     "--trial-id",
