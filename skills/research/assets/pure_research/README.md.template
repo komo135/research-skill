@@ -1,0 +1,124 @@
+# <REPLACE: project name>
+
+Pure Research project — reduces ignorance about a phenomenon via
+PR/FAQ + hash-locked pre-registration + competing-explanation
+pruning + IMRAD-shaped manuscript draft.
+
+## Status
+
+- **Current state**: <REPLACE: prfaq-drafting | prfaq-frozen | literature-active | prereg-frozen | trial-N-running | analysis-pushing | promotion-review | promoted | killed | parked | pivoted>
+- **PR/FAQ**: [`prfaq.md`](prfaq.md) (frozen at <REPLACE: timestamp>, hash <REPLACE: short hash>)
+- **Active pre-registrations**: <REPLACE: list `prereg/PR_<id>.md` files with status>
+- **Explanation ledger**: [`explanation_ledger.md`](explanation_ledger.md)
+- **Decisions log**: [`decisions.md`](decisions.md)
+- **IMRAD draft**: [`imrad_draft.md`](imrad_draft.md) (started <REPLACE: when>; status: <REPLACE>)
+- **Pending stop-condition decision**: <REPLACE: none | promote | park | pivot>
+
+## Question
+
+<REPLACE: copy Q1 from explanation_ledger.md or PR/FAQ Part 1 question — the central research question this project addresses>
+
+## Boundary contract
+
+**Protocol/state source of truth**: `prfaq.md`, frozen pre-registrations,
+`explanation_ledger.md`, and `decisions.md` define the scoped question,
+competing explanations, trial commitments, evidence status, and durable state
+transitions.
+
+**Project-instance artifacts**: `configs/`, `src/`, `tests/`, `purposes/`,
+and `results/` contain concrete universes, data paths, model definitions,
+parameters, implementation, generated notebooks, and run outputs.
+
+**Generated report snapshots**: reports under `results/` may summarize a run,
+but they do not update project state by themselves. Support, reject, merge,
+park, or pivot only by updating `explanation_ledger.md` and recording the
+transition in `decisions.md` with evidence links.
+
+Do not put active candidates, tuned parameters, current performance metrics, or trial-specific
+conclusions in reusable workflow docs. Those belong in configs, trial reports,
+or decision entries.
+
+## Why it matters
+
+<REPLACE: 1-2 sentences on why answering this question changes downstream understanding or practice>
+
+## Active explanations
+
+<REPLACE: short summary of E1, E2, ... E_null and their current status. See `explanation_ledger.md` for the full table.>
+
+- **E1** (<REPLACE: status>): <REPLACE: 1-line explanation statement>
+- **E2** (<REPLACE: status>): <REPLACE: 1-line>
+- **E_null** (<REPLACE: status>): <REPLACE: 1-line>
+
+## Folder layout
+
+```
+<project_name>/
+├── README.md                   # this file
+├── prfaq.md                    # frozen Working Backwards entry doc
+├── explanation_ledger.md       # primary state object
+├── decisions.md                # state transitions, deviation entries, session summaries
+├── imrad_draft.md              # paper-shaped deliverable, started early
+├── configs/                    # concrete experiment configs and parameter grids
+├── src/                        # project-specific implementation, if needed
+├── tests/                      # verification for project-specific implementation
+├── prereg/
+│   ├── prfaq.lock              # SHA-256 + UTC timestamp from prereg_freeze.py
+│   ├── PR_001.md               # pre-registration of trial 1
+│   ├── PR_001.lock             # hash + timestamp
+│   ├── PR_002.md
+│   ├── PR_002.lock
+│   └── ...
+├── literature/
+│   ├── papers.md               # prior work, indexed by topic
+│   └── differentiation.md      # how this project differs from prior work
+├── purposes/
+│   ├── INDEX.md                # numbered trial index
+│   └── trial_NNN_*.py          # marimo notebooks, one per trial
+├── results/
+│   ├── results.parquet         # portable default evidence index
+│   ├── figures/
+│   └── intermediate/
+├── tracking/                   # optional tracker exports / complete run inventory
+└── reproducibility/
+    ├── data_hashes.txt
+    ├── shared_pins.txt
+    ├── uv.lock
+    └── seed.txt
+```
+
+## Workflow checklist
+
+For an agent or user to verify the project is in good shape at any
+point:
+
+- [ ] `prfaq.md` is frozen (`prereg/prfaq.lock` exists, hash matches)
+- [ ] Every active or completed trial has a frozen pre-registration
+  (`prereg/PR_<id>.lock` exists, frozen before trial timestamp)
+- [ ] `explanation_ledger.md` has at least 2 competing explanations
+  per active question (≥1 should be a null / artifact explanation)
+- [ ] Every trial in `purposes/` has a complete Analysis section (5
+  sub-fields, A0-A5 tier explicit) and a `prereg_diff.py` output
+  recorded
+- [ ] `decisions.md` has chronological coverage (no gap > 4 weeks
+  without explicit "no progress: <reason>" entry)
+- [ ] Tracking backend selection is recorded in `decisions.md`
+- [ ] Complete run inventory/export exists for all load-bearing, failed,
+  sweep, model-selection, and promotion-eligible attempts
+- [ ] Reproducibility 3-tuple recorded for every promotion-eligible
+  trial via `scripts/reproducibility_stamp.py` or an equivalent selected
+  tracking backend
+- [ ] No major deviations from any pre-registration unaddressed (any
+  major deviation should have triggered a fresh pre-registration)
+- [ ] IMRAD draft started after PR/FAQ freeze (not deferred to the end)
+
+## Promotion intent
+
+<REPLACE: "Promotion expected at <date>" | "Promotion blocked on <blocker>" | "Promoted at <date> as supported claim on E<id>" | "Negative findings promoted at <date> as rejected E<id> + Q<id> answered 'none of above'" | "Parked since <date>, unblock condition: <...>">
+
+## Pivot history
+
+<REPLACE: "none" or "pivoted from project <name> at <date>; see decisions.md">
+
+If this project was pivoted from another, the source project's
+`README.md` should reference this one as `pivoted_to`.

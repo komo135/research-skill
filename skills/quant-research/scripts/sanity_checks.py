@@ -1,7 +1,7 @@
 """sanity_checks.py — Bug-detection helpers for quant-research notebooks.
 
-Programmatic side of the multi-agent bug-review layer. See
-`references/bug_review.md` and `references/sanity_checks.md`.
+Programmatic side of the finance implementation checks. See
+`references/shared/sanity_checks.md`.
 
 Helpers are deliberately small and pure so a reviewer can verify the helper itself
 before trusting its output. Each helper takes a callable representing the user's

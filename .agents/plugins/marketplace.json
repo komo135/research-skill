@@ -1,11 +1,11 @@
 {
-  "name": "quant-research-skill",
+  "name": "research-skill",
   "interface": {
-    "displayName": "Quant Research"
+    "displayName": "Research"
   },
   "plugins": [
     {
-      "name": "quant-research",
+      "name": "research",
       "source": {
         "source": "local",
         "path": "."

@@ -1,0 +1,113 @@
+# <REPLACE: project name>
+
+R&D project — establishes a technical capability via Heilmeier charter,
+TRL-tracked capability map, and Cooper Stage-Gate per capability.
+
+## Status
+
+- **Current state**: <REPLACE: drafting | active | assessment | promoted | killed | parked | pivoted>
+- **Charter**: [`charter.md`](charter.md) (frozen at <REPLACE: timestamp>, hash <REPLACE: short hash>)
+- **Capability map**: [`capability_map.md`](capability_map.md)
+- **Decisions log**: [`decisions.md`](decisions.md)
+- **Pending stop-condition decision**: <REPLACE: none | promote | kill | park | pivot>
+
+## Target
+
+<REPLACE: copy charter H1 verbatim>
+
+## Boundary contract
+
+**Protocol/state source of truth**: `charter.md`, `capability_map.md`, and
+`decisions.md` define research questions, capability assessment criteria,
+current status, and durable state transitions.
+
+**Project-instance artifacts**: `configs/`, `src/`, `tests/`, `purposes/`,
+and `results/` contain concrete symbols, universes, data paths, parameters,
+implementation, evidence artifacts, generated notebooks, and run outputs.
+
+**Generated report snapshots**: reports under `results/` may summarize a run,
+but they do not update project state by themselves. Promote, kill, park, or
+pivot only by updating `capability_map.md` and recording the transition in
+`decisions.md` with evidence links.
+
+Do not put active candidates, tuned parameters, current performance metrics, or trial-specific
+conclusions in reusable workflow docs. Those belong in configs, trial reports,
+or decision entries.
+
+## Consumer
+
+<REPLACE: copy charter H4 verbatim — who is this for, what decision does it serve>
+
+## Lifecycle composition
+
+<REPLACE: count of 永続型 K's vs 継続改善型 K's; e.g., "3 永続型, 1 継続改善型 → maintenance plan required at promotion">
+
+## Capability assessment
+
+Capability state, maturity, criteria, and critical-path dependencies live in
+[`capability_map.md`](capability_map.md). Evidence artifacts under
+`purposes/` and `results/` may be cited there, but they do not own the
+assessment.
+
+## Folder layout
+
+```
+<project_name>/
+├── README.md               # this file
+├── charter.md              # frozen Heilmeier 8 Q
+├── capability_map.md       # Section 1 (Layer 1) + Section 2 (Layer 2)
+├── decisions.md            # state transitions, deviation entries, session summaries
+├── configs/                # concrete experiment configs and parameter grids
+├── src/                    # project-specific implementation, if needed
+├── tests/                  # verification for project-specific implementation
+├── prereg/
+│   └── charter.lock        # SHA-256 hash + UTC timestamp from prereg_freeze.py
+├── literature/
+│   ├── papers.md           # prior work, indexed by K
+│   └── differentiation.md  # how this project differs from prior work
+├── purposes/
+│   ├── INDEX.md            # numbered evidence artifact index
+│   └── trial_NNN_*.py      # marimo evidence artifacts
+├── results/
+│   ├── results.parquet     # portable default evidence index
+│   ├── figures/
+│   └── intermediate/       # parquet outputs of feature notebooks etc.
+├── tracking/               # optional tracker exports / complete run inventory
+└── reproducibility/
+    ├── data_hashes.txt     # sha256 of each data source
+    ├── shared_pins.txt     # commit hashes of shared/ infrastructure used
+    ├── uv.lock             # python env lock
+    └── seed.txt            # random seed(s)
+```
+
+## Workflow checklist
+
+For an agent or user to verify the project is in good shape at any
+point:
+
+- [ ] `charter.md` is frozen (`prereg/charter.lock` exists, hash matches)
+- [ ] `capability_map.md` Section 1 is closed-for-work (per
+  `references/rd/core_technologies.md` § Layer 1 closure)
+- [ ] Evidence artifacts used for capability assessment are linked from
+  `capability_map.md` or `decisions.md`
+- [ ] Every completed evidence artifact in `purposes/` has a complete
+  Analysis section (5 sub-fields, A0-A5 tier explicit)
+- [ ] `decisions.md` has chronological coverage (no gap > 4 weeks
+  without explicit "no progress: <reason>" entry)
+- [ ] Tracking backend selection is recorded in `decisions.md`
+- [ ] Complete run inventory/export exists for all load-bearing, failed,
+  sweep, model-selection, and promotion-eligible attempts
+- [ ] Reproducibility 3-tuple is recorded for every promotion-eligible
+  trial via `scripts/reproducibility_stamp.py` or an equivalent selected
+  tracking backend
+
+## Promotion intent
+
+<REPLACE: "Promotion expected at <date>" | "Promotion blocked on <blocker>" | "Promoted at <date> as <fully completed | v1 + maintenance>" | "Killed at <date> per H6 criterion <id>" | "Parked since <date>, unblock condition: <...>">
+
+## Pivot history
+
+<REPLACE: "none" or "pivoted from project <name> at <date>; see decisions.md">
+
+If this project was pivoted from another, the source project's
+`README.md` should reference this one as `pivoted_to`.
