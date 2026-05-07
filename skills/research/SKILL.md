@@ -130,7 +130,7 @@ evidence; the review layer checks whether the cited evidence warrants the
 claimed state transition.
 
 Do not embed active candidates in reusable workflow docs, skill templates, or
-protocol references. A phrase like "the current EURUSD h16 candidate" belongs
+protocol references. A phrase like "the current candidate in cohort B" belongs
 in a project trial report, a config, a decision entry, or a project state
 index, not in this skill or its reusable templates.
 

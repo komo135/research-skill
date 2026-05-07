@@ -477,6 +477,11 @@ class ProjectBoundaryTests(unittest.TestCase):
             "gross edge",
             "fee_model",
             "static fee model",
+            "EURUSD",
+            "USDJPY",
+            "GBPUSD",
+            "forex",
+            "FX",
         ]:
             self.assertNotIn(forbidden, research_tree)
 
