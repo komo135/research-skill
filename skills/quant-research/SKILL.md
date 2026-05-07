@@ -60,6 +60,26 @@ drawdown, turnover, hit rate, portfolio capacity, feature importance, or
 backtest plots are evidence artifacts. The state transition still belongs to
 `research` ledgers and review gates.
 
+## Finance Reporting Addendum
+
+Apply `research` User-Facing Outcome Reports to finance work with
+domain-specific visuals or tables. It must include the applicable
+finance-specific visuals or tables from the smallest useful set when the user
+is asked to trust a model, signal, portfolio process, or execution method:
+
+- equity curve and drawdown curve, with benchmark or baseline when available.
+- fee-sensitivity table or heatmap showing where the result stops working.
+- regime-segmented performance, rolling Sharpe / PnL stability, or
+  train/test/walk-forward comparison.
+- Turnover, capacity, exposure, hit-rate, and tail-loss tables when they affect
+  deployability.
+- Leakage, multiple-testing, PSR/DSR, or PBO diagnostics when the headline
+  result depends on them.
+
+The visual evidence must make the failure modes visible, not just the headline
+return. Cite the artifact path, run ID, data period, and cost assumptions behind
+each displayed figure or table.
+
 ## Promotion Precondition
 
 Before any finance claim is treated as supported, run the finance

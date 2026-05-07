@@ -6,8 +6,9 @@ description: >-
   use. Supports Pure Research, R&D, R&D Program coordination,
   Result-to-Question loops, Result-to-Capability loops, A0-A5 analysis depth,
   right-sized rigor, promotion gates, kill criteria, pre-registration,
-  reproducibility, and two-axis review. Do not use for ordinary fact lookup,
-  quick background research, or simple summaries.
+  reproducibility, two-axis review, and user-facing outcome reports.
+  Do not use for ordinary fact lookup, quick background research, or simple
+  summaries.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
@@ -378,6 +379,35 @@ state transitions require concrete evidence citation (file:line, hash, numeric
 value, or tool output). Lightweight process observations may be summarized when
 they are not load-bearing. "Overall OK" / "looks good" / "appears correct"
 verdicts are forbidden.
+
+## User-Facing Outcome Reports
+
+When reporting a research outcome, promotion, kill, park, pivot, or deployment
+recommendation to the user, produce a **human-judgment artifact** in the final
+answer or as a linked report artifact. The user should not have to inspect raw
+notebooks, ledgers, or tracker exports to understand what happened and what
+decision remains.
+
+The report must include:
+
+- The plain-language decision: what changed, what did not change, and whether
+  the result is `supported`, `preliminary`, blocked, killed, parked, or still
+  observation-only.
+- At least one piece of visual or tabular evidence that makes the result
+  intuitive: a figure, chart, DAG, timeline, comparison table, confusion/error
+  table, before/after table, or compact metric table. Choose the form that
+  best exposes the key uncertainty, not the form that flatters the result.
+- Evidence citations for every load-bearing claim, linking each visual or table
+  back to file:line, artifact URI, run ID, hash, numeric output, or ledger row.
+- A scope and caveat note: what conditions the result covers, what alternatives
+  remain plausible, and what evidence would change the decision.
+- The next decision or action requested from the user, if any.
+
+Visuals and tables are explanatory snapshots, not state owners. The ledger and
+review gates still decide support, maturity, promotion, kill, and pivot. If no
+visual is possible, state why and provide the smallest table that lets the user
+compare the evidence directly. Do not hide the outcome behind "see notebook";
+the final report must carry enough intuitive evidence for human judgment.
 
 ## Guardrails
 

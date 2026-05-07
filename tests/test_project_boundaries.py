@@ -523,6 +523,46 @@ class ProjectBoundaryTests(unittest.TestCase):
         ]:
             self.assertIn(phrase, skill)
 
+    def test_research_skill_requires_user_facing_outcome_reports(self) -> None:
+        skill = read_text("skills/research/SKILL.md")
+        description = "\n".join(skill.splitlines()[:12])
+
+        for phrase in [
+            "## User-Facing Outcome Reports",
+            "human-judgment artifact",
+            "visual or tabular evidence",
+            "intuitive evidence",
+            "plain-language decision",
+            "Evidence citations for every load-bearing claim",
+            "file:line",
+            "artifact URI",
+            "run ID",
+            "ledger row",
+        ]:
+            self.assertIn(phrase, skill)
+        self.assertIn("user-facing outcome reports", description)
+
+    def test_quant_research_names_finance_visual_evidence_examples(self) -> None:
+        quant = read_text("skills/quant-research/SKILL.md")
+        normalized_quant = " ".join(quant.split())
+
+        for phrase in [
+            "## Finance Reporting Addendum",
+            "equity curve",
+            "drawdown curve",
+            "fee-sensitivity table or heatmap",
+            "regime-segmented performance",
+            "artifact path",
+            "run ID",
+            "data period",
+            "cost assumptions",
+        ]:
+            self.assertIn(phrase, quant)
+        self.assertIn(
+            "must include the applicable finance-specific visuals or tables",
+            normalized_quant,
+        )
+
     def test_result_loops_route_to_mode_specific_state_objects(self) -> None:
         pr_workflow = read_text("skills/research/references/pure_research/pr_workflow.md")
         rd_stages = read_text("skills/research/references/rd/rd_stages.md")
