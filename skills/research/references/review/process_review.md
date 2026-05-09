@@ -2,8 +2,9 @@
 
 Process review — was the discipline followed? This is the first of two
 review axes (the other is `conclusion_review.md` for claim warrant).
-Both must pass before any R&D transition to `matured`, `established`, or
-`promoted`, and before any Pure Research promotion to `supported`.
+Both are lightweight, targeted reviews before any R&D transition to `matured`,
+`established`, or `promoted`, before any Pure Research promotion to
+`supported`, or before an externally shared load-bearing claim.
 
 ## When to read
 
@@ -15,12 +16,12 @@ Both must pass before any R&D transition to `matured`, `established`, or
 
 ## Purpose
 
-Process review checks that the protocol was followed. It does not
-check the conclusion — that's `conclusion_review.md`. The split is
-deliberate: a buggy implementation can produce numbers that look
-correct (caught by conclusion review), but a process violation
-(skipped pre-registration, mid-trial goalpost shift) corrupts every
-downstream check (caught here).
+Process review checks only the parts of the protocol that could invalidate the
+claim or state transition under review. It does not check the conclusion —
+that's `conclusion_review.md`. The split is deliberate: a buggy implementation
+can produce numbers that look correct (caught by conclusion review), but a
+load-bearing process violation (skipped pre-registration for a claim-cited
+trial, mid-trial goalpost shift) can corrupt downstream checks (caught here).
 
 **Process review separates blocking violations from logged gaps**. A
 load-bearing process violation blocks promotion; a non-load-bearing record gap
@@ -29,8 +30,13 @@ kill promotion eligibility.
 
 ## How to run
 
-This is an agent-self-executable checklist. The agent (or reviewer)
-walks each item below and writes:
+This is a targeted checklist menu. The agent (or reviewer) first names the
+promotion, external claim, or claim-cited trial under review, then reads only
+the sections that could affect it. Do not perform a complete project inventory
+unless selection correction, multiple testing, or promotion judgment depends on
+that inventory.
+
+For in-scope items, write:
 
 ```
 - [x] item — evidence: <file:line, hash, or specific observation>
@@ -38,9 +44,11 @@ walks each item below and writes:
 - [ ] item — N/A (justify why)
 ```
 
-"Looks good" / "obvious from context" / "I think this is OK" are forbidden.
-Load-bearing passes require a specific citation. Lightweight process checks may
-use a concise summary when they are not used to support promotion.
+"Looks good" / "obvious from context" / "I think this is OK" are forbidden at
+promotion and external-claim decision points. Load-bearing passes require a
+specific citation. Lightweight process checks may use a concise summary when
+they are not used to support promotion. Out-of-scope items should be marked
+`N/A — not load-bearing for this review`.
 
 ## Common pre-conditions (both modes)
 
@@ -55,26 +63,23 @@ These checks apply regardless of discipline:
     pivot protocol per `SKILL.md` § First Decision was followed
     (suspend+restart or add secondary project, both with explicit
     `decisions.md` entry)
-- [ ] **Session-end ritual followed for durable state changes**: sessions
-  that changed ledgers, claims, gates, or promotion evidence have either a
-  ledger row update or `no progress: <reason>` entry in `decisions.md`
-  - Evidence: scan `decisions.md` for chronological coverage of state
-    transitions; gaps are findings only when durable work occurred without a
-    corresponding entry
-- [ ] **Decision-log covers major project events**: `decisions.md`
-  has entries for ALL major decision categories that should exist
-  for this project's stage:
-  - For R&D: Layer 1 closure entry, each Stage gate entry (per
-    capability), any fired kill criterion (with A4 decomposition),
-    every charter deviation, integration-test clearance
-  - For Pure Research: PR/FAQ freeze entry, each pre-registration
-    freeze, each `prereg_diff.py` exit code logged per trial, each
-    explanation status transition, every PR/FAQ deviation
-  - Evidence: per-category presence check; absence of expected
-    entries is a process gap (not a violation, but flag)
-  - Failure mode: `decisions.md` has 1 entry for kill relaxation but
-    0 entries for Layer 1 closure / Stage gates / integration
-    clearance — incomplete audit trail
+- [ ] **Durable state changes are logged where they matter**: claims, gates,
+  promotion evidence, kill decisions, pivots, and scope changes have ledger or
+  decision-log entries. Ordinary exploratory runs may be represented only by a
+  run note, tracker run, notebook note, or results row.
+  - Evidence: inspect the decisions and ledgers touched by this review; do not
+    require chronological coverage for sessions that did not change durable
+    state
+- [ ] **Decision-log covers the state transition under review**:
+  `decisions.md` has the entries needed to explain this promotion, kill, pivot,
+  or external claim. It does not need to narrate every experiment.
+  - For R&D: check only the relevant Layer 1 closure, Stage gate, fired kill
+    criterion, charter deviation, or integration-test clearance that supports
+    the transition under review
+  - For Pure Research: check only the relevant PR/FAQ freeze,
+    pre-registration freeze, `prereg_diff.py` status, explanation transition,
+    or PR/FAQ deviation that supports the claim under review
+  - Evidence: targeted per-category presence check
 - [ ] **Initial-day prohibitions respected**: no implementation /
   trial execution on day 1; only setup, scaffolding, charter / PR/FAQ
   - Evidence: review first 1-2 days' commits and decisions; flag any
@@ -86,28 +91,29 @@ These checks apply regardless of discipline:
   - Evidence: persisted JSON stamp record in `results.parquet`, the trial
     analysis section, or another durable run log showing data hash + git
     commit + env lock hash
-- [ ] **Tracking backend was selected with the user before load-bearing
-  trials** and recorded in `decisions.md`
+- [ ] **Tracking backend was selected by project initialization or before the
+  first load-bearing claim** and recorded in `decisions.md`
   - Evidence: backend decision names tool, storage location, review retrieval
     path, and minimum persisted fields. Acceptable backends include the local
     stamp/parquet default, MLflow, W&B, Neptune, Trackio, TensorBoard, Sacred,
     DVC, or an organizational tracker.
   - Compatibility: for projects that already had valid local
     `scripts/reproducibility_stamp.py` records before this requirement,
-    missing pre-trial backend selection is a logged gap, not a promotion
-    blocker. Treat local stamp/parquet as the implicit backend and require an
-    explicit backend decision before the next new load-bearing run.
+    missing early backend selection is a logged gap, not a promotion blocker.
+    Treat local stamp/parquet as the implicit backend and require an explicit
+    backend decision before the next load-bearing claim.
 - [ ] **External tracker records, if used, satisfy the same audit anchors**
   as the local stamp protocol
   - Evidence: for each load-bearing or promotion-eligible `trial_id`, reviewer
     can resolve tracker run ID, artifact URI, data hash, git commit, env lock
     hash, seed, params, and headline metrics
-- [ ] **Complete run inventory exists** for multiple-testing and selection
-  audit
-  - Evidence: `results/results.parquet` if it is the canonical complete record,
-    or an exported tracker inventory / durable `tracking/` file covering every
-    load-bearing run, failed attempt, parameter-sweep combination,
-    model-selection attempt, and robustness variant that informed the decision
+- [ ] **Decision-relevant run set exists** for multiple-testing, selection
+  correction, and promotion judgment when those issues apply
+  - Evidence: `results/results.parquet`, tracker query/export, or durable
+    `tracking/` file covering the runs that informed the selection or claim:
+    cited winners, relevant failed attempts, parameter-sweep combinations,
+    model-selection attempts, and robustness variants. A complete export of
+    every exploratory run is not required unless the correction depends on it.
 - [ ] **Frozen artifacts not edited in place**: charter, PR/FAQ,
   pre-registration files have hash matching their `.lock` files
   - Evidence: `git log` + hash comparison
@@ -241,7 +247,7 @@ For Pure Research projects only. Check in this order:
   (`prereg/PR_<id>.md` + `.lock`)
 - [ ] **Pre-registration timestamp predates trial execution timestamp**
   - Evidence: `prereg/PR_<id>.lock` UTC vs trial result timestamp in
-    `results.parquet`, selected tracker record, or exported run inventory
+    `results.parquet`, selected tracker record, or decision-relevant run record
 - [ ] **≥2 competing explanations + null enumerated** per pre-reg
 - [ ] **Each E has evidence type declared** (causal / correlative /
   null-result) per `references/pure_research/preregistration.md` § 2
@@ -290,10 +296,11 @@ specifically targeting Hypothesizing After Results are Known)
   favorable ones
   - Evidence: trial notebook § 4 Observation lists every secondary
     test in pre-reg, with status (pass / fail / N/A with reason)
-- [ ] **Multiple-testing trial count is honest** — includes prior
-  trials in this project, not just the current one
-  - Evidence: pre-reg § 3.5 trial count vs the complete run inventory/export
-    (`results.parquet` only if it is the canonical complete record)
+- [ ] **Multiple-testing trial count is honest** — includes the prior trials,
+  sweeps, or variants that affect the family under review, not just the current
+  favorable result
+  - Evidence: pre-reg § 3.5 trial count vs the decision-relevant run set
+    (`results.parquet`, tracker query/export, or another durable record)
 - [ ] **No mid-trial competing E addition**: any new candidate E
   identified during analysis is parked for a future pre-registered
   trial, not added to the current trial's discrimination
@@ -301,9 +308,12 @@ specifically targeting Hypothesizing After Results are Known)
 
 ### Explanation ledger update
 
-- [ ] **Every cited trial moved at least one ledger row**
-  - Evidence: per-trial entry in `decisions.md` names the row that
-    moved
+- [ ] **Claim-cited evidence updates the explanation ledger where it changes
+  support status, scope, or competing explanations**
+  - Evidence: the relevant `explanation_ledger.md` row cites the trial,
+    results row, tracker run, or notebook note. A separate `decisions.md`
+    entry is needed only when the change is a durable promotion, rejection,
+    merge, park, pivot, scope change, or other state commitment.
 - [ ] **No `weakened`/`rejected` E was re-opened to `active` without
   a new pre-registration** (per
   `references/pure_research/explanation_ledger_schema.md` allowed
@@ -344,17 +354,18 @@ specifically targeting Hypothesizing After Results are Known)
 
 ## Outcome of process review
 
-- **All load-bearing checks pass with citations** → process review CLEAN; proceed
-  to `conclusion_review.md`
-- **Any load-bearing check fails or N/A without justification** → process
-  review FAILED; cannot proceed to promotion until fixed or the claim is
-  narrowed so it no longer depends on the failure
+- **All in-scope load-bearing checks pass with citations** → process review
+  CLEAN for the named transition; proceed to `conclusion_review.md`
+- **Any in-scope load-bearing check fails or N/A without justification** →
+  process review FAILED; cannot proceed to promotion until fixed or the claim
+  is narrowed so it no longer depends on the failure
 - **Process review report** written into `decisions.md` under section
   `## YYYY-MM-DD Process review for promotion of <X>`
 
 The report includes:
 - Date and reviewer (agent / user)
-- Each check + status (pass / fail / N/A) + evidence citation
+- Scope of review and each in-scope check + status (pass / fail / N/A) +
+  evidence citation
 - Failed items + remediation plan or rejection of promotion
 - Sign-off: process review clean / fail
 

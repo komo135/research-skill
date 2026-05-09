@@ -1,11 +1,11 @@
 """standup.py — Summarize recent decisions.md transitions for session continuity.
 
-Reads `<project>/decisions.md` and produces a chronological summary of the
-last N hours of state transitions, deviations, and "no progress" entries.
+Reads `<project>/decisions.md` and produces a chronological summary of recent
+durable state transitions, deviations, and blocker entries.
 
-Per `references/rd/rd_workflow.md` § Session-end ritual: every session
-either moves a ledger row or records "no progress: <reason>". This script
-surfaces what happened recently to help an agent re-orient at session start.
+Per `references/rd/rd_workflow.md` § State-change logging, only sessions that
+change durable research state need `decisions.md` entries. This script surfaces
+what happened recently to help an agent re-orient at session start.
 
 Usage:
     python scripts/standup.py --project-dir <path>

@@ -2,7 +2,9 @@
 
 `explanation_ledger.md` — the single state object for a Pure Research
 project. Tracks research questions and the explanations that compete to
-answer them. Every trial must move at least one explanation row.
+answer them. Claim-cited or promotion-relevant results update explanation rows;
+ordinary exploratory runs may remain as lightweight run notes until they become
+load-bearing.
 
 ## When to read
 
@@ -34,8 +36,10 @@ Q2 (sub-question, derived from Q1)
 └── E4
 ```
 
-Trials operate at the explanation level: a trial's discriminating test
-weakens, strengthens, or rejects specific E-rows.
+Claim-cited trials operate at the explanation level: a discriminating test
+weakens, strengthens, or rejects specific E-rows. Exploratory probes may remain
+outside the ledger until they are rerun, cited, or used for a durable state
+change.
 
 ## Schema for Q-rows (questions)
 
@@ -140,8 +144,9 @@ Pure Research. <One-sentence reason this is Pure Research not R&D.>
 
 ## State update discipline
 
-Every trial **must** update at least one row in the ledger. The update
-is one of:
+Every claim-cited or promotion-relevant interpreted result should update at
+least one row in the ledger when it changes support, scope, status, or the next
+discriminating step. The update is one of:
 
 1. An explanation's `current_evidence_summary` updates (new evidence
    accumulates without changing status)
@@ -152,10 +157,10 @@ is one of:
 5. The `next_discriminating_step` of an active row is refined (more
    precise test design after the most recent trial)
 
-If a session produces no row update, follow `rd_workflow.md` §
-Session-end ritual: explicitly record `no progress: <reason>` in
-`decisions.md`. (`rd_workflow.md`'s session-end discipline applies to
-both modes.)
+If exploratory work produces no state update, keep it in the trial artifact,
+tracker, run note, or results row. Record `no progress: <reason>` in
+`decisions.md` only when a named blocker prevents an intended durable state
+transition.
 
 ## Promotion to `supported`
 

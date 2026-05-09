@@ -1,13 +1,13 @@
 # rd_workflow.md
 
 Operating rules for an R&D project across sessions: initial-day
-prohibitions, session-end ritual, stop conditions, shared infrastructure
+prohibitions, state-change logging, stop conditions, shared infrastructure
 governance, and the rules for code reuse on a discipline pivot.
 
 ## When to read
 
 - First session of a new R&D project (initial-day prohibitions)
-- End of any session (session-end ritual)
+- End of a session that changed durable research state
 - When deciding whether the project should close (stop conditions)
 - Setting up shared code / data pipelines that may serve both R&D and
   Pure Research projects
@@ -43,9 +43,13 @@ the kill criteria to fit the code (goalpost shifting).
 The 1-2 hours of charter writing prevent weeks of effort on a misframed
 target.
 
-## Session-end ritual
+## State-change logging
 
-Every session must end with one of two outcomes:
+Only sessions that change durable research state need a `decisions.md` entry.
+Orientation, environment setup, interrupted work, smoke tests, debugging, and
+ordinary exploration may stay in run notes, tracker runs, notebook notes, or
+result rows unless they change a claim, state transition, gate decision,
+promotion evidence, kill decision, pivot, or scope.
 
 ### Outcome A — At least one ledger row moved
 
@@ -54,7 +58,7 @@ A row in `capability_map.md` (Section 1 K-row OR Section 2 C-row) or
 or transitioned (active → matured / blocked / split / merged / killed /
 parked / stale).
 
-Append a 1-line summary to `decisions.md`:
+Append a short summary to `decisions.md` when the move is durable:
 
 ```markdown
 ## YYYY-MM-DD HH:MM session summary
@@ -64,8 +68,8 @@ Append a 1-line summary to `decisions.md`:
 
 ### Outcome B — No row moved
 
-If the session produced no state change, **explicitly record this** in
-`decisions.md`:
+Record `no progress` only when the session was explicitly attempting a durable
+state transition and the blocker itself matters for future project state:
 
 ```markdown
 ## YYYY-MM-DD HH:MM no progress: <reason>
@@ -73,17 +77,13 @@ If the session produced no state change, **explicitly record this** in
 - (next session) <what would unblock>
 ```
 
-Acceptable reasons: blocked by external dependency, exploration without
-result, sanity check uncovered upstream issue requiring re-scope.
+Acceptable reasons: blocked by external dependency, sanity check uncovered
+upstream issue requiring re-scope, or a promotion/kill/pivot decision could not
+be made because a named piece of evidence was missing.
 
-Unacceptable: "spent the session reviewing", "thinking about the
-problem". Reviewing or thinking that produces no state change is a sign
-the work was not focused on a specific blocker.
-
-The session-end ritual is **necessary but not sufficient** for the
-session-level R&D sequencing guardrail (per `SKILL.md` § Guardrails);
-moving any row satisfies the ritual but the sequencing rule still
-applies.
+State-change logging is **necessary but not sufficient** for the session-level
+R&D sequencing guardrail (per `SKILL.md` § Guardrails); moving any row records
+the transition, but the sequencing rule still applies.
 
 ## Stop conditions — when does an R&D project end?
 
@@ -141,12 +141,10 @@ See § Code reuse on pivot below.
 
 ### Drift (anti-pattern, not an acceptable termination)
 
-The project simply stops being worked on without an explicit Promotion /
-Kill / Park / Pivot decision. If a project goes 4+ weeks without a
-session, the agent (in the next session) should force a stop-condition
-decision: the user must declare one of the four above. Drifting is
-worse than killing because it leaves the artifact in an ambiguous
-state.
+The project stops being worked on without an explicit Promotion / Kill / Park /
+Pivot decision. When returning to a stale project, first ask whether it should
+promote, kill, park, pivot, or resume; do not manufacture audit entries for the
+inactive period.
 
 ## Shared infrastructure governance
 
@@ -269,16 +267,17 @@ Within a working session, the agent should:
 - After any test, state **TRL transition (or none)** and **analysis tier
   reached** as the first line of the trial summary.
 
-These conventions make the session log auditable when reviewed later or
-by another agent.
+These conventions make claim-bearing session notes easier to review later or by
+another agent without requiring every exploratory session to enter
+`decisions.md`.
 
 ## Common failure modes
 
 | Failure | Symptom | Fix |
 |---|---|---|
 | Day 1 implementation | Code committed before charter frozen | Block; require charter freeze first |
-| Session ends with no state change recorded | "Worked on this for 2 hours" with no ledger update | Force a `no progress: <reason>` entry |
-| Project drifts (4+ weeks no session) | Stale `capability_map.md` | Force Promotion / Kill / Park / Pivot decision |
+| Durable state change not recorded | Capability promoted or killed with no ledger / decision entry | File the missing transition with evidence |
+| Project drifts | Stale `capability_map.md` | Decide Promotion / Kill / Park / Pivot / Resume before new claim-bearing work |
 | Shared infra forked into project | Duplicate copies of data pipeline | Move back to `shared/`, pin from project |
 | Reuse without role declaration | Old code shows up in new project with no decisions.md entry | File the entry; state the role |
 

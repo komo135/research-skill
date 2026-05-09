@@ -1,8 +1,9 @@
 # Explanation Ledger — <REPLACE: project name>
 
 The single state object for this Pure Research project. Schema:
-`references/pure_research/explanation_ledger_schema.md`. Every trial
-must move at least one row.
+`references/pure_research/explanation_ledger_schema.md`. Claim-cited or
+promotion-relevant results update rows; exploratory runs may stay in run notes,
+tracker runs, notebook notes, or results rows until they become load-bearing.
 
 ## Mode
 
@@ -61,5 +62,6 @@ for traceability.)
 - Negative claims (rejected E's) are first-class research findings
   and belong in the Claims section with the same A4+ rigor as
   positive claims.
-- Every trial must move at least one row, or `decisions.md` records
-  `no progress: <reason>` per session-end ritual.
+- Claim-cited or promotion-relevant results update at least one row when they
+  change support, scope, status, or the next discriminating step. Ordinary
+  exploratory runs do not need ledger movement.

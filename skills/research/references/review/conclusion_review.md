@@ -2,12 +2,13 @@
 
 Conclusion review — are the conclusions warranted? This is the second
 of two review axes (the first is `process_review.md` for discipline
-audit). Both must pass before any R&D transition to `matured`, `established`,
-or `promoted`, and before any Pure Research promotion to `supported`.
+review). Both are targeted promotion reviews before any R&D transition to
+`matured`, `established`, or `promoted`, before any Pure Research promotion to
+`supported`, or before an externally shared load-bearing claim.
 
 ## When to read
 
-- After `process_review.md` is clean
+- After the relevant process-review scope is clean
 - Before running the promotion gate
   (`rd_promotion_gate.md` / `pr_promotion_gate.md`)
 - Reviewing another agent's promotion claim
@@ -25,8 +26,10 @@ support what you're claiming". Both are common; both are necessary.
 
 ## How to run
 
-Same checklist discipline as `process_review.md`. Load-bearing checks require
-concrete evidence cited. "Looks good" is forbidden.
+Use the same targeted discipline as `process_review.md`. Name the claim,
+promotion, or claim-cited trial under review, then inspect only the axes that
+could bear on it. Load-bearing checks require concrete evidence cited. "Looks
+good" is forbidden at promotion and external-claim decision points.
 
 ```
 - [x] item — evidence: <file:line, hash, numeric value, or specific tool output>
@@ -60,7 +63,10 @@ artifact than a real edge.
 
 ## The 6 axes
 
-Each axis is a separate review pass. All 6 must clear for promotion.
+Each axis is a separate possible review pass. Only the load-bearing axes for
+the named claim must clear. Mark unrelated axes `N/A — not load-bearing for
+this review`; do not require all six axes when the claim does not depend on
+them. For promotion-level claims, expect most axes to be in scope.
 
 ### Axis 1: Implementation correctness
 
@@ -201,7 +207,7 @@ The trial can be re-run.
   - Data hash, git commit, and env lock hash in local stamp files
     (`reproducibility/data_hashes.txt`, `results.parquet`,
     `reproducibility/env_lock_hash.txt`) OR selected tracker record / exported
-    run inventory
+    run record
   - Evidence: file existence + content, or stable tracker run ID + artifact URI
     resolving to those anchors
 - [ ] **Random seed recorded** and (for stochastic algorithms)
@@ -291,11 +297,12 @@ Cold-eye check items:
 
 ## Outcome of conclusion review
 
-- **All 6 axes pass with citations for load-bearing items** → conclusion review CLEAN;
-  proceed to the promotion gate
+- **All in-scope load-bearing axes pass with citations** → conclusion review
+  CLEAN for the named claim; proceed to the promotion gate
   (`rd_promotion_gate.md` / `pr_promotion_gate.md`)
-- **Any axis fails** → conclusion review FAILED; cannot proceed to
-  promotion
+- **Any in-scope axis fails** → conclusion review FAILED; cannot proceed to
+  promotion unless the claim is fixed or narrowed so that axis no longer bears
+  on it
 - **Conclusion review report** written into `decisions.md`:
 
 ```markdown
@@ -304,6 +311,7 @@ Cold-eye check items:
 Date: <YYYY-MM-DD HH:MM>
 Reviewer: <agent / user>
 Process review status: clean (per `decisions.md` entry on <date>)
+Scope: <claim / transition / trial IDs reviewed; axes included and excluded>
 
 ### Axis 1: Implementation correctness
 - [x] verification checks pass — evidence: ...
@@ -345,7 +353,7 @@ Sign-off: conclusion review clean / fail
 | No falsifying interpretation attempted | Cold-eye check skipped or "looks good" | Axis 6 |
 | Falsifying interpretation cannot be rebutted | Cold-eye check identifies an alternative; artifact has no internal rebuttal | Axis 6 — promotion blocked |
 
-## Why both reviews are mandatory
+## Why both reviews are used
 
 Process review (`process_review.md`) catches **process violations**:
 the agent skipped pre-registration, the charter was rewritten
@@ -361,7 +369,9 @@ surfaces an unresolved alternative. These violations mean the result
 doesn't support what's being claimed even when the process was
 followed.
 
-Both must pass; either alone is insufficient.
+For promotion and external load-bearing claims, both relevant reviews must be
+clean for the axes that carry the claim. This is not a requirement to complete
+every checklist item in both files for every ordinary experiment.
 
 ## Relationship to other references
 

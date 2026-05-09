@@ -13,7 +13,7 @@ Checks consistency across the project's state files:
   - dependent_on_research syntax
   - Layer 1 closure check (per references/rd/core_technologies.md)
   - Integration pattern declared in charter (per CHARTER C15 / Amendment-3)
-  - decisions.md chronological coverage (no gap > 4 weeks without entry)
+  - decisions.md has dated entries when durable state transitions are recorded
 
 Usage:
     python scripts/validate_ledger.py --project-dir <path>
@@ -32,7 +32,7 @@ import hashlib
 import re
 import sys
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -355,7 +355,7 @@ def check_trials_analysis_section(project_dir: Path, report: Report) -> None:
 def check_decisions_md_coverage(project_dir: Path, report: Report) -> None:
     dec = project_dir / "decisions.md"
     if not dec.exists():
-        report.warn("decisions.md", "file missing")
+        report.info("decisions.md", "file missing; required only after durable state transitions")
         return
     text = dec.read_text(encoding="utf-8")
     # Find date headers like "## YYYY-MM-DD"
@@ -367,17 +367,9 @@ def check_decisions_md_coverage(project_dir: Path, report: Report) -> None:
         except ValueError:
             continue
     if not dates:
-        report.warn("decisions.md", "no dated entries (## YYYY-MM-DD format) detected")
+        report.info("decisions.md", "no dated entries detected; OK for projects without durable state transitions")
         return
     dates.sort()
-    # Check gaps > 4 weeks
-    for prev, nxt in zip(dates, dates[1:]):
-        if (nxt - prev) > timedelta(weeks=4):
-            report.warn(
-                "decisions.md",
-                f"gap > 4 weeks between {prev.date()} and {nxt.date()} "
-                f"({(nxt - prev).days} days) — session-end ritual may have lapsed"
-            )
     report.info("decisions.md", f"{len(dates)} dated entries, range {dates[0].date()} → {dates[-1].date()}")
 
 

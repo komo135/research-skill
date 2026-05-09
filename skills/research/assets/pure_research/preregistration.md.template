@@ -83,8 +83,8 @@ this, trials drift.>
 - Random seed(s): <REPLACE>
 - Code commit (planned at trial run): <fill at trial time>
 - Env lock hash (planned at trial run): <fill at trial time>
-- Tracking backend (planned): <selected backend per references/shared/results_db_schema.md>
-- Run inventory/export (planned): <path or tracker query covering all load-bearing, failed, sweep, model-selection, and promotion-eligible attempts>
+- Tracking note/backend (planned): <run note, results row, or selected tracker>
+- Decision-relevant run set (planned): <only if selection, multiple-testing correction, or promotion will depend on multiple attempts>
 - Data hash (final, trial-time): <fill from stamp script or selected tracker>
 
 ---

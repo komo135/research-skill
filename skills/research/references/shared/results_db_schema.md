@@ -21,8 +21,8 @@ supports a transition.
 If the project uses an external tracker, read this file as the minimum
 interchange schema reviewers need. The tracker may store richer params,
 metrics, artifacts, and lineage; the project still needs a durable way to map
-`trial_id` to the tracker run record and to enumerate every load-bearing run
-that counts for multiple-testing review.
+claim-cited `trial_id` values to tracker records and to enumerate the
+decision-relevant run set for multiple-testing review.
 
 ## Principle
 
@@ -101,23 +101,24 @@ in `reproducibility/data_hashes.txt`, `results/results.parquet`,
 `reproducibility/env_lock_hash.txt`, and `reproducibility/seed.txt`, but the
 row or ledger citation must tell reviewers where to find them.
 
-## Complete run inventory / export
+## Decision-relevant run set / export
 
-For promotion review and multiple-testing correction, the project needs a
-complete inventory of all load-bearing and promotion-eligible attempts, not
-only the cited successful runs. The inventory may be:
+For promotion review and multiple-testing correction, the project needs the
+run set that informed the claim, not a complete archive of every exploratory
+run. The record may be:
 
-- `results/results.parquet` when it is the canonical complete record.
+- `results/results.parquet` when it is the canonical decision record.
 - An exported tracker table from MLflow, W&B, Neptune, Trackio, TensorBoard,
   Sacred, DVC, or an organizational tracker.
 - A durable file under `tracking/` that maps local run notes to the fields
   above.
 
-The inventory must include failed runs, abandoned parameter combinations,
+The run set must include failed runs, abandoned parameter combinations,
 model-selection attempts, and robustness variants whenever they informed the
-research decision or count toward trial-count / selection-adjusted statistic / Bonferroni / Romano-Wolf
-correction. A compact local index may point to external artifacts, but it must
-not hide uncited or failed attempts.
+research decision or count toward trial-count / selection-adjusted statistic /
+Bonferroni / Romano-Wolf correction. A compact local index may point to
+external artifacts, but it must not hide uncited or failed attempts that bear
+on the promoted claim.
 
 Mode-specific protocol identifiers, if needed, belong in the ledger
 assessment that cites the row. They are not required columns in the evidence
@@ -125,8 +126,9 @@ record.
 
 ## Tracking backend selection
 
-Choose the backend with the user before the first load-bearing trial. Record
-the choice in `decisions.md`:
+Choose the backend with the user during project initialization or before the
+first load-bearing claim, whichever comes first. Record the choice in
+`decisions.md` when it affects review or collaboration:
 
 ```markdown
 ## YYYY-MM-DD tracking backend selected
@@ -137,8 +139,8 @@ Reason: <why this fits this research and collaboration model>
 Review retrieval: <how a reviewer resolves trial_id -> run record>
 Minimum persisted fields: trial_id, run_id, artifact_uri, data hash,
 git commit, env lock hash, seed, params, headline metrics
-Run inventory/export: <path or tracker query covering all load-bearing,
-promotion-eligible, failed, parameter-sweep, and model-selection attempts>
+Decision-relevant run set/export: <path or tracker query covering cited runs
+and failed/sweep/model-selection attempts that affect this claim>
 ```
 
 Do not write a custom tracker just because this skill includes helper scripts.

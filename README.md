@@ -4,7 +4,8 @@ A Claude Code and Codex plugin for agent-driven serious research and R&D.
 It ships two public skills in one plugin:
 
 - `research` - the generic base skill for disciplined R&D, Pure Research,
-  stage gates, result analysis, reproducibility, process review, and conclusion
+  stage gates, result analysis, lightweight experiment tracking,
+  reproducibility for claim-cited results, process review, and conclusion
   review.
 - `quant-research` - a quantitative-finance adapter layered on top of
   `research` for financial machine learning, backtests, time-series validation,
@@ -27,7 +28,10 @@ implementation:
 
 It is not a backtest engine, experiment tracker, or notebook framework. It is a
 protocol layer that helps an agent decide what evidence is needed, what state
-can change, and when a result is still only exploratory.
+can change, and when a result is still only exploratory. Ordinary exploration
+can be tracked with a short run note, tracker run, notebook note, or results
+row; promotion-eligible, externally shared, or claim-cited results need
+evidence citations and rerun anchors.
 
 ## Research Structure
 
@@ -37,7 +41,8 @@ The generic `research` skill separates the work into durable layers:
   promotion criteria.
 - Project instance layer: concrete data, candidates, parameters, code, trial
   notebooks, generated reports, and local decisions.
-- Evidence artifacts: notebooks, result rows, run exports, figures, and stamps.
+- Evidence artifacts: notebooks, result rows, tracker runs, lightweight run
+  notes, figures, and stamps for claim-cited results.
 - State ledgers: capability maps, explanation ledgers, decision logs, and
   promotion records that cite evidence artifacts.
 
@@ -117,9 +122,9 @@ The installed Codex skills are exposed as `research` and `quant-research`.
    question.
 4. Analyze the result before adding variants. A result should update a question,
    split an explanation, recycle a capability, or justify a gate decision.
-5. Promote only when process review and conclusion review both pass. Claim-
-   bearing notebooks use the folded experiment review references inside
-   `research/references/review/`.
+5. Promote only when the relevant process review and conclusion review axes
+   pass for the load-bearing claim. Claim-bearing notebooks use the folded
+   experiment review references inside `research/references/review/`.
 
 ## Bundled Helpers
 
@@ -157,13 +162,23 @@ v1.1.0, install `research@research-skill`. The old standalone
 
 ## Status
 
-Version 1.1.1 - adds user-facing outcome report requirements with visual or
-tabular evidence for research and quant-research results.
+Version 1.1.2 - relaxes tracking and audit requirements while keeping
+stronger anchors for promotion-eligible, externally shared, or claim-cited
+results.
 
 <details>
 <summary>Changelog</summary>
 
-### v1.1.1 (current)
+### v1.1.2 (current)
+
+- Relaxed tracking and audit requirements: ordinary exploration may use
+  lightweight run notes, tracker runs, notebook notes, or results rows.
+- Limited strong evidence citations, rerun anchors, and decision-relevant run
+  sets to promotion-eligible, externally shared, or claim-cited results.
+- Changed process and conclusion review from full mandatory inventories to
+  targeted lightweight review of load-bearing axes.
+
+### v1.1.1
 
 - Required user-facing outcome reports to include a plain-language decision,
   intuitive visual or tabular evidence, citations, scope/caveats, and next
@@ -192,6 +207,8 @@ tabular evidence for research and quant-research results.
 
 - Added selectable tracking and audit backends.
 - Required complete run inventory/export for external trackers.
+  Superseded in v1.1.2 by decision-relevant run sets instead of complete
+  inventory for every project.
 - Kept local stamp/parquet compatibility for existing projects.
 
 ### v1.0.5

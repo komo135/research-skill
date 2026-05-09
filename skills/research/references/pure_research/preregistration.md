@@ -2,9 +2,11 @@
 
 AEA-style Pre-Analysis Plan (PAP) — the hash-locked design freeze that
 the trial must follow. Pre-registration is the single most effective
-intervention against p-hacking and post-hoc rationalization, and it is
-mandatory in this skill for every Pure Research trial that produces a
-metric.
+intervention against p-hacking and post-hoc rationalization. In this skill it
+is mandatory for Pure Research trials that may support a claim, promote an
+explanation to `supported`, or be shared externally as load-bearing evidence.
+Exploratory probes may remain lightweight, but must be rerun under a frozen
+pre-registration before they become claim-cited.
 
 ## When to read
 

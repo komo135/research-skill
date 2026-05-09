@@ -72,7 +72,7 @@ assessment.
 │   ├── results.parquet     # portable default evidence index
 │   ├── figures/
 │   └── intermediate/       # parquet outputs of feature notebooks etc.
-├── tracking/               # optional tracker exports / complete run inventory
+├── tracking/               # optional tracker exports / lightweight run notes
 └── reproducibility/
     ├── data_hashes.txt     # sha256 of each data source
     ├── shared_pins.txt     # commit hashes of shared/ infrastructure used
@@ -92,11 +92,12 @@ point:
   `capability_map.md` or `decisions.md`
 - [ ] Every completed evidence artifact in `purposes/` has a complete
   Analysis section (5 sub-fields, A0-A5 tier explicit)
-- [ ] `decisions.md` has chronological coverage (no gap > 4 weeks
-  without explicit "no progress: <reason>" entry)
-- [ ] Tracking backend selection is recorded in `decisions.md`
-- [ ] Complete run inventory/export exists for all load-bearing, failed,
-  sweep, model-selection, and promotion-eligible attempts
+- [ ] `decisions.md` records durable state transitions and promotion-relevant
+  deviations; ordinary run notes may stay with the tracker or trial artifact
+- [ ] Tracking backend or run-note convention is clear before the first
+  load-bearing claim
+- [ ] Selection, sweep, and failed-run records exist when they affect a
+  multiple-testing or promotion judgment
 - [ ] Reproducibility 3-tuple is recorded for every promotion-eligible
   trial via `scripts/reproducibility_stamp.py` or an equivalent selected
   tracking backend

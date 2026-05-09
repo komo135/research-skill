@@ -2,7 +2,7 @@
 
 Operating rules for a Pure Research project across sessions: initial-day
 prohibitions, discriminating trial loop, deviation severity matrix,
-session-end ritual, stop conditions, shared infrastructure governance,
+state-change logging, stop conditions, shared infrastructure governance,
 code reuse on pivot.
 
 ## When to read
@@ -53,9 +53,11 @@ unit of evidence and follows this loop:
 5. prereg_diff against frozen pre-reg
 6. Analysis section: observation, decomposition, evidence weighing,
    tier rating, gap to next tier (per rd_trial.py.template § 5)
-7. Update explanation_ledger row(s): which E weakened / strengthened /
-   rejected / unchanged
-8. Record state transition in decisions.md
+7. If the result is claim-cited or changes support, scope, or status, update
+   explanation_ledger row(s): which E weakened / strengthened / rejected /
+   unchanged
+8. Record durable state transitions in decisions.md when the result changes a
+   claim, promotion path, scope, park/pivot decision, or other commitment
 9. Decide next: push analysis depth on this trial, design next
    discriminating trial, or escalate to promotion gate
 ```
@@ -65,11 +67,11 @@ The loop runs until a stop condition (below) or a question is
 
 ## Result-to-Question Loop
 
-After every interpreted result, Pure Research returns to Q/E state in
-`explanation_ledger.md`. The result may strengthen, weaken, reject, split,
-merge, park, or leave unchanged one or more explanation rows, but the state
-transition belongs in the ledger and `decisions.md`, not in the trial notebook
-alone.
+After every claim-cited or promotion-relevant interpreted result, Pure Research
+returns to Q/E state in `explanation_ledger.md`. The result may strengthen,
+weaken, reject, split, merge, park, or leave unchanged one or more explanation
+rows. Ordinary exploratory observations may stay in run notes, tracker runs,
+notebook notes, or result rows until they become load-bearing.
 
 Use the existing discriminating trial loop; this section names the return path
 so results do not become orphan observations:
@@ -78,9 +80,10 @@ so results do not become orphan observations:
 2. Compare the result to the frozen pre-registration and record deviation
    severity.
 3. Identify which Q row and E rows the result touches.
-4. Update `explanation_ledger.md` only as far as the evidence warrants.
-5. Record the durable transition, blocker, or no-progress reason in
-   `decisions.md`.
+4. Update `explanation_ledger.md` only as far as the evidence warrants when
+   the result changes support, scope, status, or next discriminating step.
+5. Record durable transitions in `decisions.md`; do not record ordinary
+   exploratory runs there.
 6. Decide whether the next move is deeper analysis on the current result,
    another discriminating trial, promotion review, park, or pivot.
 
@@ -143,18 +146,19 @@ This is non-negotiable. The matrix exists because "minor" vs "major" is
 ambiguous in practice; without an explicit rubric, agents and humans
 both default to "this is minor" and the discipline collapses.
 
-## Session-end ritual
+## State-change logging
 
-Same as R&D's session-end ritual (see `references/rd/rd_workflow.md` §
-Session-end ritual). One of:
+Same as R&D's state-change logging rule (see `references/rd/rd_workflow.md` §
+State-change logging). Use `decisions.md` only for:
 
-- **Outcome A**: at least one row in `explanation_ledger.md` or
-  `decisions.md` moved
-- **Outcome B**: `decisions.md` records `no progress: <reason>`
+- durable support/status/scope transitions in `explanation_ledger.md`
+- promotion, rejection, park, pivot, or major-deviation decisions
+- blockers that prevent an intended durable state transition
 
-The session-end ritual is necessary but not sufficient — the loop
-discipline above (push analysis before new trial, deviation matrix
-applied) still applies.
+Ordinary exploration, smoke tests, debugging, interrupted work, and lightweight
+run notes do not need `decisions.md` entries. The loop discipline above (push
+analysis before new trial, deviation matrix applied) still applies when the
+result is claim-cited.
 
 ## Stop conditions — when does a Pure Research project end?
 
@@ -201,9 +205,9 @@ the Pivot protocol per `SKILL.md` § First Decision. Same options
 
 ### Drift (anti-pattern)
 
-Project simply stops being worked on without an explicit decision. If
-a project goes 4+ weeks without a session, force a stop-condition
-decision in the next session.
+Project simply stops being worked on without an explicit decision. When
+returning to a stale project, first decide whether to promote, park, pivot, or
+resume; do not create audit entries for the inactive period.
 
 ## Shared infrastructure governance
 
@@ -266,7 +270,7 @@ Agent should:
 | Treating major deviation as minor | "Period shift, but the methodology is the same" | Apply the matrix strictly; period shift > 1y is major |
 | New trial before pushing depth | Run a 2nd trial when 1st is at A2 | Force depth push first |
 | Adding E mid-trial | Discovered alternative not in pre-reg | Counts as major deviation; new pre-reg required |
-| Drift (4+ weeks no session) | Stale ledger | Force Promotion / Park / Pivot decision |
+| Drift | Stale ledger | Decide Promotion / Park / Pivot / Resume before new claim-bearing work |
 | `supported` with sibling E still active | Promotion premature | All siblings must be at terminal status first |
 
 ## Relationship to other references

@@ -1,7 +1,9 @@
 # Decision log
 
 Time-ordered record of durable research-state transitions and commitments.
-Do not use this file to narrate every experiment.
+Do not use this file to narrate every experiment. Ordinary exploratory,
+smoke-test, debugging, and non-load-bearing runs can live in a lightweight run
+note, tracker run, notebook note, or results row.
 
 ## Format
 
@@ -19,9 +21,10 @@ Do not use this file to narrate every experiment.
 
 ## Tracking backend entry
 
-Record this before the first load-bearing trial. Existing projects that
-already used the local stamp/parquet default can add this at the next new
-load-bearing run and note the earlier implicit default.
+Record this during project initialization or before the first load-bearing
+claim, whichever comes first. Existing projects that already used the local
+stamp/parquet default can add this before the next load-bearing claim and note
+the earlier implicit default.
 
 ```markdown
 ## YYYY-MM-DD — tracking backend selected
@@ -29,25 +32,27 @@ load-bearing run and note the earlier implicit default.
 - **Mode**: [R&D / Pure Research]
 - **Backend**: [local stamp/parquet / MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred / DVC / organizational tracker]
 - **Storage**: [local path, tracking URI, remote project, registry, or export path]
-- **Run inventory/export**: [path or tracker query covering all load-bearing, promotion-eligible, failed, parameter-sweep, and model-selection attempts]
+- **Lightweight run record**: [run note / tracker run / notebook note / results row pattern for ordinary exploration]
+- **Decision-relevant run set**: [path or tracker query for runs needed for selection correction, multiple-testing, promotion, or external claims]
 - **Review retrieval**: [how a reviewer resolves trial_id -> run record]
-- **Minimum persisted fields**: trial_id, run_id, artifact_uri, data hash, git commit, env lock hash, seed, params, headline metrics
+- **Minimum persisted fields for promotion-eligible or claim-cited results**: trial_id, run_id or artifact_uri, data hash, git commit, env lock hash, seed if relevant, params, headline metrics, rerun anchor
 - **Reason**: [why this backend fits the research and collaboration model]
 ```
 
 ## Rules
 
 - Record decisions that change what the project will or will not do.
-- Record the tracking backend selection because it changes the audit path for
-  every load-bearing run.
+- Record the tracking backend selection because it changes the review path for
+  load-bearing claims.
 - Record hypothesis deletion, merging, stale marking, and parking.
 - Record R&D promotion to `promoted` and Pure Research promotion to
   `supported` only after the relevant promotion gate.
 - Avoid vague decisions such as "try more models" or "need more data" unless
   they name the exact unblock condition.
 - A decision entry is invalid if its only transition is `planned -> planned`,
-  `none -> planned`, or "try / test / run X". Planning an experiment belongs in
-  the trial notebook and the relevant state object (`capability_map.md` or
+  `none -> planned`, or "try / test / run X". Planning or narrating an ordinary
+  experiment belongs in the run note, tracker run, trial notebook, results row,
+  and the relevant state object (`capability_map.md` or
   `explanation_ledger.md`); `decisions.md` records pruning, merging, rejection,
   parking, promotion, scope change, or durable commitment.
 - User requests are not durable triggers by themselves. The trigger must name

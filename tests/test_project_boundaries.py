@@ -38,7 +38,7 @@ def read_tree_text(path: str) -> str:
 
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.1.1"
+        expected = "1.1.2"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -118,8 +118,8 @@ class ProjectBoundaryTests(unittest.TestCase):
                 stderr=subprocess.PIPE,
                 text=True,
             )
-            self.assertIn("Choose tracking backend", result.stdout)
-            self.assertIn("Run inventory/export", result.stdout)
+            self.assertIn("Choose a lightweight tracking path", result.stdout)
+            self.assertIn("before the first load-bearing claim", result.stdout)
 
             project = Path(tmp) / "alpha"
             for path in [
@@ -137,7 +137,7 @@ class ProjectBoundaryTests(unittest.TestCase):
 
             decisions = (project / "decisions.md").read_text(encoding="utf-8")
             self.assertIn("tracking backend selected", decisions)
-            self.assertIn("Run inventory/export", decisions)
+            self.assertIn("Decision-relevant run set", decisions)
 
             readme = (project / "README.md").read_text(encoding="utf-8")
             for phrase in [
@@ -397,25 +397,56 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertNotIn("per-trial entry in `results.parquet`", process_review)
         self.assertIn("durable run log", process_review)
 
-    def test_tracking_backend_contract_requires_auditable_inventory(self) -> None:
+    def test_tracking_backend_contract_is_decision_relevant_not_full_inventory(self) -> None:
         skill = read_text("skills/research/SKILL.md")
         schema = read_text("skills/research/references/shared/results_db_schema.md")
         process_review = read_text("skills/research/references/review/process_review.md")
         conclusion_review = read_text("skills/research/references/review/conclusion_review.md")
 
-        self.assertIn("complete run inventory/export", skill.lower())
-        self.assertIn("not enough to resolve only the cited winning runs", skill)
+        self.assertIn("complete inventory/export is not mandatory", skill.lower())
+        self.assertIn("decision-relevant evidence", skill)
         self.assertIn("R&D transition to `matured`", skill)
         self.assertIn("## Conditional required fields", schema)
         self.assertIn("When an external tracker is the canonical run store", schema)
+        self.assertIn("decision-relevant run set", schema)
         self.assertIn("failed runs, abandoned parameter combinations", schema)
         self.assertIn("model-selection attempts", schema)
-        self.assertIn("Complete run inventory exists", process_review)
-        self.assertIn("missing pre-trial backend selection is a logged gap", process_review)
-        self.assertIn("complete run inventory/export", process_review.lower())
+        self.assertIn("Decision-relevant run set exists", process_review)
+        self.assertIn("missing early backend selection is a logged gap", process_review)
+        self.assertIn("complete export of", process_review.lower())
         self.assertIn("selected tracker record / exported", conclusion_review)
-        self.assertIn("run inventory", conclusion_review)
+        self.assertIn("run record", conclusion_review)
         self.assertNotIn("project trial count from\n    `results.parquet`", process_review)
+
+    def test_lightweight_audit_contract_removes_session_and_trial_forcing(self) -> None:
+        combined = "\n".join(
+            [
+                read_text("skills/research/SKILL.md"),
+                read_text("skills/research/references/rd/rd_workflow.md"),
+                read_text("skills/research/references/pure_research/pr_workflow.md"),
+                read_text("skills/research/references/pure_research/explanation_ledger_schema.md"),
+                read_text("skills/research/assets/pure_research/explanation_ledger.md.template"),
+                read_text("skills/research/scripts/standup.py"),
+            ]
+        )
+
+        for forbidden in [
+            "Every session must end",
+            "every session\neither moves a ledger row",
+            "Every trial\nmust move at least one row",
+            "Every trial **must** update",
+            "Every trial must move at least one explanation row",
+            "4+ weeks without a session",
+        ]:
+            self.assertNotIn(forbidden, combined)
+
+        for phrase in [
+            "Only sessions that change durable research state",
+            "Ordinary exploration",
+            "Claim-cited or promotion-relevant results update",
+            "lightweight run notes",
+        ]:
+            self.assertIn(phrase, combined)
 
     def test_program_layer_is_coordination_not_third_discipline(self) -> None:
         skill = read_text("skills/research/SKILL.md")

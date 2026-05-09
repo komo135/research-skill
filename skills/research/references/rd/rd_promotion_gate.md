@@ -149,13 +149,14 @@ For each `継続改善型` core technology:
 
 - [ ] Data hash, git commit, env lock hash, and seed recorded for every
   promotion-cited trial in local stamp files or in the selected tracker record
-  / exported run inventory
+  / exported run record
 - [ ] All shared infrastructure pins are recorded in
   `reproducibility/shared_pins.txt` or the selected tracker/export record per
   `references/rd/rd_workflow.md`
-- [ ] Complete run inventory/export covers all load-bearing trials, failed
+- [ ] Decision-relevant run set covers the promotion-cited trials, failed
   attempts, and parameter-sweep/model-selection runs used for trial-count and
-  multiple-testing correction
+  multiple-testing correction. Exploratory runs outside the claim family are
+  not required.
 - [ ] If an external tracker is used, every promotion-cited `trial_id`
   resolves to a stable run ID and artifact URI containing cited metrics,
   params, data hash, git commit, env lock hash, and seed
@@ -167,9 +168,8 @@ For each `継続改善型` core technology:
   link
 - [ ] All trial notebooks have completed Analysis sections (5 sub-fields
   each)
-- [ ] `decisions.md` has chronological coverage from project start
-  through promotion (no gaps > 4 weeks without an explicit "no
-  progress" entry)
+- [ ] `decisions.md` records the durable state transitions and
+  promotion-relevant deviations needed to explain this promotion
 
 ## Promotion language
 

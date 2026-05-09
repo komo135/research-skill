@@ -1,17 +1,19 @@
 # experiment_review_protocol.md
 
-Dispatch and aggregation mechanics for the research review layer's experiment review.
-This is a focused subprocedure of `conclusion_review.md` for claim-bearing
-notebook artifacts. It does not replace `process_review.md` or create a third
-promotion gate; its findings feed the conclusion-review verdict and must be
-interpreted under the existing two-axis review.
+Dispatch and aggregation mechanics for optional experiment review. This is a
+focused subprocedure of `conclusion_review.md` for claim-bearing notebook
+artifacts. Use the smallest reviewer set that can test the claim. The
+four-reviewer version is an adversarial audit mode for high-impact promotion,
+external publication, or user-requested deep review; it is not the default path
+for ordinary experiments.
 
 ## Inputs the assistant must gather before dispatch
 
-Before dispatching the four reviewers, collect the following into a context
-bundle. The three specialist reviewers receive the shared bundle plus their own
-group scope. The fourth reviewer, adversarial cold-eye, receives a different
-minimum bundle.
+Before dispatching reviewers, collect the following into a context bundle. For
+ordinary targeted review, pick only the reviewer groups whose scopes bear on
+the claim. For adversarial audit mode, the three specialist reviewers receive
+the shared bundle plus their own group scope, and the fourth reviewer,
+adversarial cold-eye, receives a different minimum bundle.
 
 | Item | Purpose |
 |---|---|
@@ -61,8 +63,9 @@ re-pays for unchanged surfaces. F22 splits the dispatch into two cases.
 ### Initial pass
 
 First time this claim-bearing artifact enters the conclusion-review subprocedure,
-or first time in a new session without a recorded clean baseline: **all 4
-reviewers fire**.
+or first time in a new session without a recorded clean baseline: fire the
+reviewer groups that carry the claim. Use all 4 reviewers only for high-impact
+promotion, external publication, or explicit adversarial-audit requests.
 
 ### Re-verify pass
 
@@ -103,16 +106,17 @@ as a re-verify. Without that attestation, treat as Initial.
 
 ## Dispatch
 
-The four reviewers are dispatched in a single tool-call batch when sub-agents
-are available:
+Available reviewer groups:
 
 1. `research-design`
 2. `evidence-sufficiency`
 3. `context-communication`
 4. `adversarial`
 
-Parallelism is required for the standard path. Sequential dispatch is the
-single-agent fallback.
+When running adversarial audit mode and sub-agents are available, dispatch the
+selected reviewers in a single tool-call batch. Sequential dispatch is the
+single-agent fallback. For ordinary targeted review, one or two reviewer groups
+may be enough.
 
 The adversarial reviewer is structurally different. Its bundle is intentionally
 minimum: the `.py` file plus its own §4 instruction extract and severity rubric,
@@ -164,9 +168,9 @@ relevant group owns it.
 
 ### The "Specific items to chase" pattern
 
-Including 3-7 reviewer-specific chase items is required when the parent
-assistant has already read the notebook and project artifacts. The chase items
-are observations, not conclusions. Phrase them as "X is the case; apply check Y"
+Including 3-7 reviewer-specific chase items is useful when the parent assistant
+has already read the notebook and project artifacts. The chase items are
+observations, not conclusions. Phrase them as "X is the case; apply check Y"
 rather than "X is wrong because Y".
 
 ## Adversarial reviewer dispatch
@@ -219,8 +223,8 @@ specialists. That injects parent-assistant priors.
 ## Aggregation
 
 After all selected reviewers return, the assistant aggregates the findings into
-a single structured review delivered inline. The research review layer does not write a review
-report file and does not append to `decisions.md`.
+a single structured review delivered inline. The research review layer does not
+write a review report file and does not append to `decisions.md`.
 
 1. Concatenate all findings, preserving severity, dimension, and subdimension
    tags.
@@ -239,8 +243,8 @@ report file and does not append to `decisions.md`.
 |---|---|
 | "Whole-file `experiment_review_dimensions.md` is safer." | Each specialist group has a structured scope. Whole-file delivery dilutes attention and collapses the input contract. If another section is genuinely needed, update the contract. |
 | "The adversary should also receive specialist context." | The asymmetry is the mechanism. Giving adversary access to project context makes it another same-prior reviewer, not a cold-eye reader. |
-| "User asked for a comprehensive review, so safer to send whole files." | Comprehensive comes from running all four reviewer groups, not from each reviewer reading every reference whole. |
-| "The fix is small, just re-fire all 4 to be safe." | The surface map exists to skip redundant work. Ambiguous fixes fire candidates plus adversary; clearly local fixes do not need the full set. |
+| "User asked for a comprehensive review, so safer to send whole files." | Comprehensive comes from selecting the right reviewer groups and evidence, not from each reviewer reading every reference whole. |
+| "The fix is small, just re-fire all 4 to be safe." | The surface map exists to skip redundant work. Ambiguous fixes fire affected candidates plus adversary only when adversarial audit is in scope; clearly local fixes do not need the full set. |
 | "I'm unsure which surface this touches, default to skipping." | Default is fire, not skip. Ambiguity is not a redundancy signal. |
 | "Cross-session: I remember the prior verdict was clean." | Without an explicit recorded clean baseline and unchanged surfaces, cross-session is Initial. |
 
@@ -248,16 +252,16 @@ report file and does not append to `decisions.md`.
 
 When parallel dispatch is unavailable:
 
-1. Run the four reviewer groups sequentially in four distinct passes.
+1. Run the selected reviewer groups sequentially in distinct passes.
 2. Between passes, re-read the notebook from scratch. Do not rely on stale notes
    from the previous pass.
 3. Treat each pass's output as if it came from a different reviewer.
-4. Run the adversarial pass with the minimum bundle only. Do not give it earlier
-   pass findings.
+4. If adversarial review is in scope, run it with the minimum bundle only. Do
+   not give it earlier pass findings.
 5. F21 input pre-extraction and F22 trigger-conditional dispatch still apply.
 6. Aggregate the same way.
 
-The fallback is worse than parallel dispatch, but four focused passes are still
+The fallback is worse than parallel dispatch, but focused passes are still
 better than one mixed-scope pass.
 
 ## When findings disagree
@@ -285,11 +289,14 @@ create a `reviews/` folder, write any file, or modify `decisions.md`.
 
 ## Trigger discipline
 
-A "review" that delivers a narrative without:
+A high-impact adversarial audit that delivers a narrative without:
 
-- four reviewer groups explicitly addressed,
+- selected reviewer groups explicitly addressed,
 - severity tags on every finding,
 - a clearly visible verdict line and finding counts,
-- the adversarial reviewer running with the minimum bundle,
+- the adversarial reviewer running with the minimum bundle when adversarial
+  audit is in scope,
 
-has not actually run the research review layer. Do not declare a review verdict from it.
+has not actually run the requested audit mode. Do not declare a review verdict
+from it. Ordinary targeted reviews may be shorter, but must still name scope,
+evidence read, and any claim-blocking findings.

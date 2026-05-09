@@ -41,8 +41,8 @@ Format: `[ ] item — required evidence — citation`
   - Evidence: lock file vs file hash comparison
 - [ ] Pre-registration timestamp predates trial execution timestamp
   - Evidence: `prereg/PR_<id>.lock` UTC timestamp vs trial result
-    timestamp in `results.parquet`, selected tracker record, or exported run
-    inventory
+    timestamp in `results.parquet`, selected tracker record, or
+    decision-relevant run record
 - [ ] No undocumented load-bearing PR/FAQ amendments (claim, mechanism,
   scope, alternatives, evidence type, or promotion language)
   - Evidence: lock / git history reviewed against deviation entries
@@ -115,20 +115,21 @@ Format: `[ ] item — required evidence — citation`
   (Section A check)
   - Evidence: hash citation in § 2.1
 
-### G. Reproducibility (per cited trial + complete run inventory)
+### G. Reproducibility (per cited trial + decision-relevant run set)
 
 - [ ] Data hash, git commit, env lock hash, and seed recorded for every cited
   trial in local stamp files or in the selected tracker record / exported run
-  inventory
+  record
 - [ ] All shared infrastructure pins recorded in
   `reproducibility/shared_pins.txt` or the selected tracker/export record
 - [ ] Reproducibility 3-tuple recorded for each cited trial via
   `scripts/reproducibility_stamp.py` or an equivalent external tracker record
   (for example MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred /
   DVC / organizational tracker)
-- [ ] Complete run inventory/export covers all load-bearing trials, failed
-  attempts, and parameter-sweep/model-selection runs used for trial-count and
-  multiple-testing correction
+- [ ] Decision-relevant run set covers the cited trials, failed attempts, and
+  parameter-sweep/model-selection runs used for trial-count and
+  multiple-testing correction. Exploratory runs outside the claim family are
+  not required.
 - [ ] If an external tracker is used, `trial_id` resolves to a stable run ID
   and artifact URI containing the cited metrics, params, data hash, git
   commit, env lock hash, and seed

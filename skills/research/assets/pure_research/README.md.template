@@ -79,7 +79,7 @@ or decision entries.
 │   ├── results.parquet         # portable default evidence index
 │   ├── figures/
 │   └── intermediate/
-├── tracking/                   # optional tracker exports / complete run inventory
+├── tracking/                   # optional tracker exports / lightweight run notes
 └── reproducibility/
     ├── data_hashes.txt
     ├── shared_pins.txt
@@ -100,11 +100,12 @@ point:
 - [ ] Every trial in `purposes/` has a complete Analysis section (5
   sub-fields, A0-A5 tier explicit) and a `prereg_diff.py` output
   recorded
-- [ ] `decisions.md` has chronological coverage (no gap > 4 weeks
-  without explicit "no progress: <reason>" entry)
-- [ ] Tracking backend selection is recorded in `decisions.md`
-- [ ] Complete run inventory/export exists for all load-bearing, failed,
-  sweep, model-selection, and promotion-eligible attempts
+- [ ] `decisions.md` records durable state transitions and promotion-relevant
+  deviations; ordinary run notes may stay with the tracker or trial artifact
+- [ ] Tracking backend or run-note convention is clear before the first
+  load-bearing claim
+- [ ] Selection, sweep, and failed-run records exist when they affect a
+  multiple-testing or promotion judgment
 - [ ] Reproducibility 3-tuple recorded for every promotion-eligible
   trial via `scripts/reproducibility_stamp.py` or an equivalent selected
   tracking backend

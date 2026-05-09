@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "version": "1.1.1",
-  "description": "v1.1.1 - Agent-driven serious research and R&D workflows with a generic research skill plus a quantitative-finance specialization.",
+  "version": "1.1.2",
+  "description": "v1.1.2 - Agent-driven serious research and R&D workflows with lightweight audit and quant-finance specialization.",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "Research",
     "shortDescription": "Research and R&D protocols with quant finance specialization",
-    "longDescription": "v1.1.1 - Agent-driven serious research and R&D workflows. The plugin exposes a generic research skill for disciplined R&D / Pure Research work, plus a quant-research adapter for financial machine learning, backtests, time-series validation, leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented evidence.",
+    "longDescription": "v1.1.2 - Agent-driven serious research and R&D workflows with lighter tracking and audit requirements. The plugin exposes a generic research skill for disciplined R&D / Pure Research work, plus a quant-research adapter for financial machine learning, backtests, time-series validation, leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented evidence.",
     "developerName": "komoootv",
     "category": "Research",
     "capabilities": [

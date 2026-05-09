@@ -6,7 +6,8 @@ description: >-
   use. Supports Pure Research, R&D, R&D Program coordination,
   Result-to-Question loops, Result-to-Capability loops, A0-A5 analysis depth,
   right-sized rigor, promotion gates, kill criteria, pre-registration,
-  reproducibility, two-axis review, and user-facing outcome reports.
+  reproducibility, lightweight two-axis review at promotion time, and
+  user-facing outcome reports.
   Do not use for ordinary fact lookup, quick background research, or simple
   summaries.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
@@ -97,8 +98,8 @@ non-relaxed:
 - Frozen charter and kill criteria before R&D evidence-producing work can fire
   a kill or promotion-relevant decision.
 - Reproducibility records for every promotion-eligible or claim-cited trial.
-- Process review and conclusion review before promotion or externally
-  load-bearing claims.
+- Focused process review and conclusion review before promotion or externally
+  shared load-bearing claims.
 - Maintenance plan requirements for any `継続改善型` core technology.
 
 ## Framework Boundary
@@ -195,7 +196,7 @@ reference before executing the step:
    sub-question first; de-risk to learn whether to continue, hold, recycle,
    or terminate, not to confirm.
 6. **Workflow** (`references/rd/rd_workflow.md`) — initial-day prohibitions,
-   session-end ritual, stop conditions.
+   state-change logging, stop conditions.
 7. **Promotion** (`references/rd/rd_promotion_gate.md`) — promote a target
    only when every core technology is `established` (all child capabilities
    matured to TRL-6 with kill criteria un-fired and analysis at A4+),
@@ -223,10 +224,12 @@ each linked reference before executing the step:
    After the trial, diff actual vs frozen via `scripts/prereg_diff.py`.
 4. **Explanation ledger**
    (`references/pure_research/explanation_ledger_schema.md`) — single state
-   object. Every trial must move at least one explanation row.
+   object. Claim-cited or promotion-relevant results update explanation rows;
+   exploratory observations may stay in run notes until they become
+   load-bearing.
 5. **Workflow** (`references/pure_research/pr_workflow.md`) — discriminating
    trial loop, deviation handling (deviation severity rubric is enforced
-   here), session-end ritual, stop conditions. Push analysis depth on the
+   here), state-change logging, stop conditions. Push analysis depth on the
    current trial before designing a new trial.
 6. **Promotion** (`references/pure_research/pr_promotion_gate.md`) — promote a
    claim only when a discriminating test against ≥1 serious alternative
@@ -263,20 +266,29 @@ collecting more data without analyzing existing observations is not.
 
 ## Tracking & Audit Backend
 
-Before the first promotion-eligible or claim-cited trial, choose the run
-tracking backend with the user. This skill defines audit requirements, not a
-single mandatory tool. Prefer an established tracker when it fits the project
-better than local helper scripts.
+Choose the run tracking backend briefly during project initialization or before
+the first load-bearing claim, whichever comes first. This is not a ceremony:
+name where run notes, tracker runs, or results rows will live, and how a
+reviewer can resolve the evidence for a claim. This skill defines review
+anchors, not a single mandatory tool.
 
 Acceptable choices include MLflow, Weights & Biases, Neptune, Trackio,
 TensorBoard, Sacred, DVC, local parquet / SQLite / flat-file ledgers, or an
-existing organizational tracker. The selected backend must expose durable run
-IDs, artifact locations, params, metrics, data hashes, code version, env lock,
-and seed records for review.
+existing organizational tracker. Ordinary exploration, smoke tests, debugging,
+and early parameter probing may be recorded as a lightweight run note, tracker
+run, notebook note, or `results` row with enough context to interpret the
+result later.
 
-Record the backend decision in `decisions.md` before the first load-bearing
-trial. Name the selected tool, why it fits this research, where runs are
-stored, and how reviewers resolve `trial_id` to a run record.
+Promotion-eligible, externally shared, or claim-cited results need stronger
+anchors: durable run ID or artifact path, params, headline metrics, data hash,
+code version, env lock, seed where relevant, and enough rerun instructions for
+a reviewer to reproduce or challenge the claim. If an exploratory result later
+becomes load-bearing, rerun or restamp it under this protocol instead of
+retroactively pretending the earlier note was complete.
+
+Record the backend decision in `decisions.md` by project initialization or
+before the first load-bearing claim. Name the selected tool or file pattern,
+where runs are stored, and how reviewers resolve `trial_id` to a run record.
 
 `results/results.parquet` is the portable default evidence index, not the only
 valid source of run metadata. If an external tracker is selected, `results`
@@ -284,15 +296,12 @@ may store a compact index row with `tracker`, `tracking_uri`, `run_id`, and
 `artifact_uri`, while the tracker owns detailed metrics and artifacts. Ledgers
 still own state transitions; trackers and result tables only provide evidence.
 
-External trackers must also provide a **complete run inventory/export** for
-review. The inventory covers every load-bearing, promotion-eligible, or
-claim-cited run; every failed run that informed the decision; and every
-parameter-sweep or model-selection attempt that counts for multiple-testing
-correction. It is not enough to resolve only the cited winning runs. If the
-tracker cannot export that inventory with stable run IDs, artifact URIs,
-params, metrics, data hashes, git commit, env lock, seeds, and timestamps, use
-the local stamp/parquet default or add a separate durable inventory before
-promotion review.
+A complete inventory/export is not mandatory for every project. Keep only the
+run set needed to support honest selection correction, multiple-testing
+adjustment, failed-attempt interpretation, or promotion review. A small project
+may need only a few result rows. A sweep-heavy project must retain the sweep
+space and selection history that informed the claim. The rule is coverage of
+the decision-relevant evidence, not archival completeness for its own sake.
 
 ## Decomposition Discipline (R&D)
 
@@ -357,28 +366,31 @@ matured (capability only, = TRL reached target) / blocked / split / merged /
 stale / parked). Splits create child rows under the parent; merges absorb
 duplicate rows; stale rows are kept (not deleted) for historical traceability.
 
-## Review (run before promotion)
+## Review (run before promotion or external load-bearing claims)
 
-Two-axis review, run both before any R&D transition to `matured`,
-`established`, or `promoted`, and before any Pure Research promotion to
-`supported`:
+Two-axis review is a focused promotion review, not a full-project audit. Run
+the relevant parts before any R&D transition to `matured`, `established`, or
+`promoted`, before any Pure Research promotion to `supported`, or before an
+externally shared load-bearing claim:
 
 - **Process review** (`references/review/process_review.md`) — was the
-  discipline followed? Charter / pre-registration / kill criteria / TRL
-  ordering / pre-reg diff / generic-label decomposition / mode mixing.
+  relevant discipline followed for the claim being promoted? Read only the
+  process areas that could invalidate this state change.
 - **Conclusion review** (`references/review/conclusion_review.md`) — are the
-  conclusions warranted? Implementation correctness / statistical sufficiency
-  / claim discipline / **analysis depth (A4+)** / reproducibility / cold-eye
-  check from the artifact alone.
+  conclusions warranted? Check only the load-bearing axes: implementation
+  correctness, statistical sufficiency, claim discipline, **analysis depth
+  (A4+)**, reproducibility, and cold-eye review where they bear on the claim.
   For claim-bearing notebook artifacts, the focused four-reviewer procedure in
   `references/review/experiment_review_protocol.md` may be used as a
   conclusion-review subprocedure, not as a separate promotion gate.
 
-Both axes are agent-self-executable checklists. Promotion-blocking items and
-state transitions require concrete evidence citation (file:line, hash, numeric
-value, or tool output). Lightweight process observations may be summarized when
+The review documents are menus of possible checks, not mandatory full
+checklists. Mark non-applicable items as out of scope, and do not read or audit
+unrelated history. Promotion-blocking items and state transitions require
+concrete evidence citation (file:line, hash, numeric value, run ID, artifact
+URI, or tool output). Lightweight process observations may be summarized when
 they are not load-bearing. "Overall OK" / "looks good" / "appears correct"
-verdicts are forbidden.
+verdicts are forbidden at promotion or external-claim decision points.
 
 ## User-Facing Outcome Reports
 
@@ -453,14 +465,18 @@ the final report must carry enough intuitive evidence for human judgment.
     suspend the affected branch, file the deviation, re-scope the dependency
     path, then resume.
   - Any rollback to an earlier step requires a dated deviation entry in
-    `decisions.md` citing the blocker. The session-end ritual alone does
+    `decisions.md` citing the blocker. State-change logging alone does
     not satisfy this — moving any ledger row is necessary but not
     sufficient.
-- **Session-end ritual**. Sessions that change durable research state must
+- **State-change logging**. Sessions that change durable research state must
   move at least one ledger row or record `no progress: <reason>` in
   `decisions.md`. Short orientation, environment setup, and interrupted
   sessions may remain outside the durable log unless they change a claim,
   state transition, or gate decision.
+- **Lightweight run tracking is enough for exploration**. Ordinary exploratory,
+  smoke-test, debugging, and non-load-bearing experiments may use a short run
+  note, tracker run, notebook note, or results row. Do not turn every trial into
+  a decision-log entry or full audit package.
 - **Reproducibility 3-tuple**. Every promotion-eligible or claim-cited trial
   stamps data hash + git commit + env lock via the selected tracking backend
   or `scripts/reproducibility_stamp.py`. Exploratory, smoke-test, and
