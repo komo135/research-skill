@@ -38,7 +38,7 @@ def read_tree_text(path: str) -> str:
 
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.1.2"
+        expected = "1.1.3"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -192,7 +192,7 @@ class ProjectBoundaryTests(unittest.TestCase):
                     [
                         "Question under test",
                         "E-pair being discriminated",
-                        "Trial design (copied from frozen pre-reg)",
+                        "Trial design (copied from reviewed pre-reg)",
                         "State updates (explanation_ledger.md)",
                     ],
                 ),
@@ -375,7 +375,7 @@ class ProjectBoundaryTests(unittest.TestCase):
 
         self.assertNotIn("Every trial that produces a metric", skill)
         self.assertIn("promotion-eligible or claim-cited trial", skill)
-        self.assertIn("minimum rerun anchor", reproducibility)
+        self.assertIn("Rerun guidance", reproducibility)
         self.assertNotIn("machine-verifiable proof", reproducibility)
         self.assertNotIn("produce the same result", reproducibility)
         self.assertIn("traceable", reproducibility.lower())
@@ -383,16 +383,16 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("reproduced", reproducibility.lower())
         self.assertIn("validated", reproducibility.lower())
 
-    def test_reproducibility_docs_match_stamp_script_outputs(self) -> None:
+    def test_reproducibility_docs_match_tracking_contract(self) -> None:
         reproducibility = read_text("skills/research/references/shared/reproducibility.md")
         process_review = read_text("skills/research/references/review/process_review.md")
 
         self.assertNotIn("Captures `git rev-parse HEAD` and writes to a per-trial line", reproducibility)
         self.assertNotIn("auto-detected via Python import scan", reproducibility)
         self.assertNotIn("--project <project_name>", reproducibility)
-        self.assertIn("--project-dir <project_dir>", reproducibility)
-        self.assertIn("prints a JSON stamp record", reproducibility)
-        self.assertIn("The trial notebook or caller persists this record", reproducibility)
+        self.assertIn("data_versions.txt", reproducibility)
+        self.assertIn("env_lock_ref.txt", reproducibility)
+        self.assertIn("Local note or tracker record", reproducibility)
         self.assertIn("promotion-eligible or claim-cited", process_review)
         self.assertNotIn("per-trial entry in `results.parquet`", process_review)
         self.assertIn("durable run log", process_review)
@@ -414,11 +414,11 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("Decision-relevant run set exists", process_review)
         self.assertIn("missing early backend selection is a logged gap", process_review)
         self.assertIn("complete export of", process_review.lower())
-        self.assertIn("selected tracker record / exported", conclusion_review)
+        self.assertIn("tracker record / exported", conclusion_review)
         self.assertIn("run record", conclusion_review)
         self.assertNotIn("project trial count from\n    `results.parquet`", process_review)
 
-    def test_lightweight_audit_contract_removes_session_and_trial_forcing(self) -> None:
+    def test_lightweight_review_contract_removes_session_and_trial_forcing(self) -> None:
         combined = "\n".join(
             [
                 read_text("skills/research/SKILL.md"),
@@ -547,8 +547,8 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("Rigor is sized to the research state being changed", skill)
         for phrase in [
             "A4+ for `supported`, `matured`, `established`, or `promoted`",
-            "Frozen pre-registration",
-            "Frozen charter and kill criteria",
+            "Reviewed pre-registration",
+            "Reviewed charter and kill criteria",
             "Reproducibility records",
             "Maintenance plan requirements",
         ]:
@@ -626,69 +626,58 @@ class ProjectBoundaryTests(unittest.TestCase):
         ]:
             self.assertNotIn(phrase, combined_templates)
 
-    def test_reproducibility_stamp_scope_mentions_claim_cited_trials(self) -> None:
-        stamp_script = read_text("skills/research/scripts/reproducibility_stamp.py")
+    def test_reproducibility_contract_mentions_claim_cited_trials(self) -> None:
+        reproducibility = read_text("skills/research/references/shared/reproducibility.md")
 
-        self.assertIn("promotion-eligible or claim-cited trial", stamp_script)
+        self.assertIn("promotion-eligible or claim-cited trial", reproducibility)
 
     def test_exploratory_runs_must_rerun_before_promotion_citation(self) -> None:
         skill = read_text("skills/research/SKILL.md")
 
-        self.assertNotIn("stamp or", skill)
+        self.assertNotIn("retroactively relabel exploratory output as complete", skill)
         self.assertIn("rerun under the promotion-eligible protocol", skill)
 
-    def test_reproducibility_stamp_does_not_write_when_worktree_dirty(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            project = Path(tmp) / "alpha"
-            (project / "reproducibility").mkdir(parents=True)
-            (project / "data").mkdir()
-            (project / "reproducibility" / "uv.lock").write_text("lock\n", encoding="utf-8")
-            (project / "data" / "prices.csv").write_text("x\n1\n", encoding="utf-8")
+    def test_removed_reproducibility_scripts_are_not_referenced(self) -> None:
+        research_tree = read_tree_text("skills/research")
 
-            subprocess.run(["git", "init"], check=True, cwd=project, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            subprocess.run(["git", "add", "."], check=True, cwd=project, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            subprocess.run(
-                [
-                    "git",
-                    "-c",
-                    "user.name=Test",
-                    "-c",
-                    "user.email=test@example.com",
-                    "commit",
-                    "-m",
-                    "initial",
-                ],
-                check=True,
-                cwd=project,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
+        for phrase in [
+            "reproducibility_" + "st" + "amp.py",
+            "reproducibility_" + "verify.py",
+            "data_" + "ha" + "shes.txt",
+            "env_lock_" + "ha" + "sh.txt",
+            "plan-vs-actual " + "helper",
+            "planning-record " + "helper",
+            "rerun" + "-anchor " + "helper",
+        ]:
+            self.assertNotIn(phrase, research_tree)
 
-            (project / "dirty.txt").write_text("uncommitted\n", encoding="utf-8")
-            result = subprocess.run(
-                [
-                    sys.executable,
-                    str(ROOT / "skills/research/scripts/reproducibility_stamp.py"),
-                    "--project-dir",
-                    str(project),
-                    "--trial-id",
-                    "trial_001",
-                    "--data-paths",
-                    str(project / "data" / "prices.csv"),
-                    "--seed",
-                    "42",
-                ],
-                cwd=ROOT,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
+    def test_registration_proof_artifacts_are_not_reintroduced(self) -> None:
+        research_tree = read_tree_text("skills/research")
 
-            self.assertEqual(result.returncode, 1, result.stderr)
-            self.assertFalse((project / "reproducibility" / "data_hashes.txt").exists())
-            self.assertFalse((project / "reproducibility" / "env_lock_hash.txt").exists())
-            self.assertFalse((project / "reproducibility" / "seed.txt").exists())
+        for phrase in [
+            "note " + "reference",
+            "dated " + "note",
+            "record " + "matches",
+            "written " + "down at",
+            "pre-reg " + "reference",
+            "pre-registration " + "record",
+            "env " + "reference",
+            "environment pin " + "reference",
+            "record " + "timestamp",
+            "byte-" + "for-byte",
+            "reference " + "b9",
+            "reference on " + "file",
+            "selected tracker " + "record",
+            "git " + "history",
+            "git " + "log",
+            "commit " + "timestamp",
+            "ledger consistency " + "review",
+            "planning " + "note",
+            "pre-registration " + "log",
+            "project " + "history",
+            "trial notes " + "identify",
+        ]:
+            self.assertNotIn(phrase, research_tree)
 
 
 if __name__ == "__main__":

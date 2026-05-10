@@ -23,7 +23,7 @@ Pure Research first day permits **only** the following:
   scoped by the PR/FAQ
 - Pre-registration of the first trial (`references/pure_research/preregistration.md`)
 - Empty `explanation_ledger.md` skeleton with Mode declared
-- Data infrastructure setup, environment pinning (`uv.lock`), data hash
+- Data infrastructure setup, environment pinning (`uv.lock`), data version
   recording, raw data sourcing, scaffold file creation
 
 Pure Research first day **prohibits**:
@@ -34,7 +34,7 @@ Pure Research first day **prohibits**:
   interpretation, no decomposition)
 - Any explanation row marked anything other than `active`
 
-Why: a trial run before the pre-registration is locked is a shopping
+Why: a trial run before the pre-registration is ready is a shopping
 trip. Once you have seen the data, "pre-registration" written
 afterwards is theater. The 30-60 minutes of PR/FAQ + 1 hour of
 pre-registration prevent months of post-hoc rationalization on weak
@@ -48,9 +48,9 @@ unit of evidence and follows this loop:
 ```
 1. Identify the question to advance (which Q-row in explanation_ledger)
 2. Identify which E pair to discriminate (or test against null)
-3. Pre-register the trial (preregistration.md, hash-locked)
+3. Pre-register the trial (`prereg/PR_<id>.md`, `Status: READY`)
 4. Run the trial (data fetch, computation, verification checks)
-5. prereg_diff against frozen pre-reg
+5. Deviation review against the pre-registration
 6. Analysis section: observation, decomposition, evidence weighing,
    tier rating, gap to next tier (per rd_trial.py.template § 5)
 7. If the result is claim-cited or changes support, scope, or status, update
@@ -77,7 +77,7 @@ Use the existing discriminating trial loop; this section names the return path
 so results do not become orphan observations:
 
 1. State the observed pattern and analysis tier.
-2. Compare the result to the frozen pre-registration and record deviation
+2. Compare the result to the pre-registration and record deviation
    severity.
 3. Identify which Q row and E rows the result touches.
 4. Update `explanation_ledger.md` only as far as the evidence warrants when
@@ -117,7 +117,7 @@ data without analyzing existing observations is not.
 
 ## Deviation severity matrix
 
-After a trial runs, `prereg_diff.py` compares actual analysis vs frozen
+After a trial runs, `deviation review` compares actual analysis vs the
 pre-registration. Deviations are classified per the matrix below:
 
 | Deviation | Severity | Action |
@@ -126,21 +126,20 @@ pre-registration. Deviations are classified per the matrix below:
 | Sample size differs by < 5% (e.g., a few rows dropped due to data quality) | minor | Record in `decisions.md` + continue trial |
 | Imputation method specified differently (e.g., median vs mean) but methodologically equivalent | minor | Record + continue |
 | Test statistic logic adjusted within the same family (e.g., Pearson → robust Pearson under same hypothesis) | minor | Record + continue |
-| **Population period shifted by > 1 year** (e.g., 2015-2024 → 2018-2024) | **major** | **Freeze trial. Required: new pre-registration with new period.** |
-| **Sample size differs by > 10%** | **major** | Freeze + new pre-reg |
-| **Test statistic changed across families** (e.g., Pearson → Spearman, t-test → bootstrap) | **major** | Freeze + new pre-reg |
-| **Competing explanation added post-hoc** | **major** | Freeze + new pre-reg |
-| **Threshold changed after seeing data** (e.g., kill threshold relaxed) | **major** | Freeze + new pre-reg |
+| **Population period shifted by > 1 year** (e.g., 2015-2024 → 2018-2024) | **major** | **Treat the trial as exploratory. Required: new pre-registration with new period.** |
+| **Sample size differs by > 10%** | **major** | Document + new pre-reg |
+| **Test statistic changed across families** (e.g., Pearson → Spearman, t-test → bootstrap) | **major** | Document + new pre-reg |
+| **Competing explanation added post-hoc** | **major** | Document + new pre-reg |
+| **Threshold changed after seeing data** (e.g., kill threshold relaxed) | **major** | Document + new pre-reg |
 | **Multiple-testing trial count under-reported** | **major** | Re-compute correction with honest count; if claim no longer holds, mark E `weakened` |
-| **Imputation method changed in a way that affects test power** (e.g., dropping vs imputing missing) | **major** | Freeze + new pre-reg |
+| **Imputation method changed in a way that affects test power** (e.g., dropping vs imputing missing) | **major** | Document + new pre-reg |
 | **Hypothesis threshold near-miss**: primary metric within 10% of pre-reg threshold band (e.g., pre-reg said r > 0.6, observed r = 0.58) | **minor** | Document in `decisions.md` as "near-miss"; the explanation does not get the predicted support, treat as `weakened` rather than `supported`/`rejected` |
-| **Hypothesis threshold large miss**: primary metric > 10% from pre-reg threshold (e.g., pre-reg said r > 0.6, observed r = 0.30) | **major** | Freeze + new pre-reg if you want to test the boundary behavior; otherwise treat the explanation as `rejected` cleanly |
+| **Hypothesis threshold large miss**: primary metric > 10% from pre-reg threshold (e.g., pre-reg said r > 0.6, observed r = 0.30) | **major** | Document + new pre-reg if you want to test the boundary behavior; otherwise treat the explanation as `rejected` cleanly |
 
-**Major deviations invalidate the trial**. The trial is recorded in
-`decisions.md` as "trial frozen due to major deviation; new
-pre-registration filed as PR_<id+1>". The original pre-reg is
-preserved (hash on file). The new trial under the new pre-reg
-proceeds. The original trial result cannot be cited as evidence.
+**Major deviations invalidate the trial for claim-cited use**. Record the
+major deviation in `decisions.md`, create a new pre-registration for the
+changed design, and run a new trial. The original trial result remains an
+exploratory result and cannot be cited as support for the claim.
 
 This is non-negotiable. The matrix exists because "minor" vs "major" is
 ambiguous in practice; without an explicit rubric, agents and humans
@@ -180,7 +179,7 @@ Supported claim: <E-statement, no stronger than evidence>
 Scope conditions: <where this applies>
 IMRAD draft: <path>
 Sibling explanations status: E2 rejected (trial T_xxx), E_null rejected (trial T_yyy)
-Reproducibility: data hash, git commit, env lock recorded for each cited trial
+Reproducibility: data version, git commit, environment pin recorded for each cited trial
 ```
 
 ### Promotion (negative / null finding)
@@ -207,20 +206,20 @@ the Pivot protocol per `SKILL.md` § First Decision. Same options
 
 Project simply stops being worked on without an explicit decision. When
 returning to a stale project, first decide whether to promote, park, pivot, or
-resume; do not create audit entries for the inactive period.
+resume; do not create review entries for the inactive period.
 
 ## Shared infrastructure governance
 
 Same as R&D's rule (see `references/rd/rd_workflow.md` § Shared
 infrastructure governance). Pure Research projects use the same
-`shared/` folder and pin to specific commit hashes recorded in
+`shared/` folder and record the specific commits used in
 `reproducibility/shared_pins.txt`.
 
 A Pure Research finding may itself become a `shared/` artifact (e.g.,
 a regime classifier proven via Pure Research that is now used by
-multiple R&D projects). The transition is a deliberate move, not a
-copy: the artifact moves to `shared/` with documentation of its origin
-project, and downstream consumers pin to its commit hash.
+multiple R&D projects). The transition is a deliberate move, not a copy: the
+artifact moves to `shared/` with documentation of its origin project, and
+downstream consumers record the commit they used.
 
 ## Code reuse on pivot
 
@@ -257,7 +256,7 @@ Agent should:
 
 - State the **current Q + E pair being discriminated** when starting
   trial design (e.g., "Designing trial to discriminate Q1/E1 vs Q1/E2")
-- Cite the **frozen pre-reg hash** when running a trial
+- Cite the **pre-registration file** when running a trial
 - After any trial, state **deviation severity (none / minor / major)**
   and **analysis tier reached** as the first lines of the trial summary
 
@@ -265,8 +264,8 @@ Agent should:
 
 | Failure | Symptom | Fix |
 |---|---|---|
-| Day 1 trial run | Code computed metrics on real data before pre-reg lock | Block; require pre-reg freeze first; original work is invalidated |
-| Skipping prereg_diff | Trial completes, no diff run | Block promotion-eligibility until diff is recorded |
+| Day 1 trial run | Code computed metrics on real data before pre-registration was ready | Block; require reviewed pre-registration first; original work is exploratory |
+| Skipping deviation review | Trial completes, no comparison to the written pre-registration | Block promotion-eligibility until deviations are recorded |
 | Treating major deviation as minor | "Period shift, but the methodology is the same" | Apply the matrix strictly; period shift > 1y is major |
 | New trial before pushing depth | Run a 2nd trial when 1st is at A2 | Force depth push first |
 | Adding E mid-trial | Discovered alternative not in pre-reg | Counts as major deviation; new pre-reg required |
@@ -279,7 +278,7 @@ Agent should:
   `SKILL.md` § Guardrails; this file is the elaboration
 - PR/FAQ entry: `references/pure_research/prfaq.md`
 - Pre-registration: `references/pure_research/preregistration.md`
-  (deviation matrix in this file is consumed by `prereg_diff.py`)
+  (deviation matrix in this file is consumed by `deviation review`)
 - State object: `references/pure_research/explanation_ledger_schema.md`
 - IMRAD deliverable: `references/pure_research/imrad_draft.md`
 - Promotion gate: `references/pure_research/pr_promotion_gate.md`

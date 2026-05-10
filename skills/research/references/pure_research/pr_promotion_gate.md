@@ -16,11 +16,10 @@ pass with concrete evidence cited.
 
 The promotion gate may not start unless:
 
-- PR/FAQ frozen and on file (`prfaq.md` + `prereg/prfaq.lock`)
-- Pre-registration for the trial(s) backing the claim is frozen
-  (`prereg/PR_<id>.md` + `prereg/PR_<id>.lock`)
-- `prereg_diff.py` has been run with exit code 0 or 2 (no major
-  deviations)
+- PR/FAQ exists, has `Status: READY`, and is linked from the project root
+- Pre-registration for the cited trial(s) exists and had `Status: READY`
+  before execution
+- No unhandled major deviation exists for the cited trial(s)
 - IMRAD draft is producible per
   `references/pure_research/imrad_draft.md` § Sufficiency conditions
 - Process review has run (`references/review/process_review.md`)
@@ -32,30 +31,28 @@ If any pre-condition is missing, state which one and stop.
 
 Format: `[ ] item — required evidence — citation`
 
-### A. Pre-registration integrity
+### A. Planning integrity
 
-- [ ] PR/FAQ exists, frozen, hash matches `prereg/prfaq.lock`
-  - Evidence: `prereg/prfaq.lock` SHA-256 == sha256sum of `prfaq.md`
-- [ ] Pre-registration of the trial exists, frozen, hash matches
-  `prereg/PR_<id>.lock`
-  - Evidence: lock file vs file hash comparison
-- [ ] Pre-registration timestamp predates trial execution timestamp
-  - Evidence: `prereg/PR_<id>.lock` UTC timestamp vs trial result
-    timestamp in `results.parquet`, selected tracker record, or
-    decision-relevant run record
+- [ ] PR/FAQ exists and scoped the trial before it ran
+  - Evidence: `prfaq.md` plus any later deviation entries in `decisions.md`
+- [ ] Pre-registration exists for every cited trial
+  - Evidence: `prereg/PR_<id>.md`
+- [ ] Each cited trial was run under a reviewed pre-registration
+  - Evidence: `Status: READY` in `prereg/PR_<id>.md` and trial notes that
+    cite the matching PR ID
 - [ ] No undocumented load-bearing PR/FAQ amendments (claim, mechanism,
   scope, alternatives, evidence type, or promotion language)
-  - Evidence: lock / git history reviewed against deviation entries
+  - Evidence: current file plus deviation entries for any material changes
 - [ ] No undocumented pre-registration amendments
   - Evidence: same check on `prereg/PR_<id>.md`; formatting-only changes do
     not count as amendments
 
 ### B. Deviation severity
 
-- [ ] `prereg_diff.py` exit code is 0 or 2 (no major deviations)
-  - Evidence: latest run output captured in `decisions.md`
-- [ ] If exit code 2, all minor deviations are documented in
-  `decisions.md` with rationale
+- [ ] No unhandled major deviation exists for the cited trial
+  - Evidence: trial note or `decisions.md` records material deviations, or
+    states that none were identified
+- [ ] Any minor deviation is documented with rationale
   - Evidence: per-deviation `decisions.md` entry
 
 ### C. Discriminating test
@@ -111,28 +108,25 @@ Format: `[ ] item — required evidence — citation`
   - Evidence: cite § 4.3
 - [ ] Limitations honestly listed (≥3 specific limitations)
   - Evidence: cite § 4.4
-- [ ] Methods cites pre-reg hash; this hash matches the lock file
+- [ ] Methods cites the pre-registration file used by the cited trial
   (Section A check)
-  - Evidence: hash citation in § 2.1
+  - Evidence: file citation in § 2.1
 
 ### G. Reproducibility (per cited trial + decision-relevant run set)
 
-- [ ] Data hash, git commit, env lock hash, and seed recorded for every cited
-  trial in local stamp files or in the selected tracker record / exported run
-  record
+- [ ] Data version, git commit, environment pin, and seed recorded for every
+  cited trial in local run notes or in the tracker export
 - [ ] All shared infrastructure pins recorded in
-  `reproducibility/shared_pins.txt` or the selected tracker/export record
-- [ ] Reproducibility 3-tuple recorded for each cited trial via
-  `scripts/reproducibility_stamp.py` or an equivalent external tracker record
-  (for example MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred /
-  DVC / organizational tracker)
+  `reproducibility/shared_pins.txt` or the tracker export
+- [ ] Reproducibility 3-tuple recorded for each cited trial via local note,
+  results row, or equivalent external tracker record
 - [ ] Decision-relevant run set covers the cited trials, failed attempts, and
   parameter-sweep/model-selection runs used for trial-count and
   multiple-testing correction. Exploratory runs outside the claim family are
   not required.
 - [ ] If an external tracker is used, `trial_id` resolves to a stable run ID
-  and artifact URI containing the cited metrics, params, data hash, git
-  commit, env lock hash, and seed
+  and artifact URI containing the cited metrics, params, data version, git
+  commit, environment pin, and seed
 
 ### H. Cold-eye check
 
@@ -180,10 +174,9 @@ uses this template:
 ```markdown
 ## YYYY-MM-DD Pure Research promotion (Q<id>: <Q-statement summary>)
 
-PR/FAQ hash: <SHA-256 from prereg/prfaq.lock>
-Pre-reg hashes (cited trials): PR_<id1>: <hash>, PR_<id2>: <hash>, ...
-prereg_diff status: exit 0 (clean) or exit 2 (minor deviations
-                    documented in decisions.md entries Y, Z)
+PR/FAQ: prfaq.md
+Pre-registrations (cited trials): PR_<id1>: prereg/PR_<id1>.md, PR_<id2>: prereg/PR_<id2>.md, ...
+Deviation status: no unhandled major deviation; minor deviations documented in decisions.md entries Y, Z
 
 Supported claim: <one sentence, no stronger than evidence,
                   scope-explicit>
@@ -200,7 +193,7 @@ Analysis tier: A<4 or 5>
 Cold-eye check: <pass / specific reservations>
 
 IMRAD draft: <path>
-Reproducibility 3-tuple: data hash <...>, git commit <...>, env hash <...>
+Reproducibility 3-tuple: data version <...>, git commit <...>, environment pin <...>
 
 Future work: <derived sub-questions or sibling project candidates>
 ```
@@ -210,7 +203,7 @@ Future work: <derived sub-questions or sibling project candidates>
 | Failure mode | Where caught |
 |---|---|
 | Promote without pre-registration | Section A: pre-reg integrity |
-| Promote with major deviation that should have invalidated trial | Section B: prereg_diff exit code |
+| Promote with major deviation that should have invalidated trial | Section B: deviation handling |
 | Promote without discriminating test | Section C: discriminating test required |
 | Sibling E's still active when promoting | Section C: all siblings must be terminal |
 | Promote with single t > 2 from many trials (no multi-test correction) | Section D: trial count discipline |

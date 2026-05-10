@@ -19,12 +19,12 @@ What gets created:
         configs/                           (project-instance experiment configs)
         src/                               (project-instance implementation)
         tests/                             (project-instance verification)
-        prereg/                            (empty; populated by prereg_freeze.py)
+        prereg/                            (pre-registration drafts live here)
         results/figures/                   (empty)
         results/intermediate/              (empty)
         tracking/                          (optional tracker exports / run notes)
-        reproducibility/data_hashes.txt    (header-only)
-        reproducibility/uv.lock            (placeholder; user runs `uv lock`)
+        reproducibility/data_versions.txt  (header-only)
+        reproducibility/env_lock_ref.txt   (header-only)
         reproducibility/seed.txt           (default seed 42)
 
     R&D mode adds:
@@ -153,14 +153,17 @@ def init_project(name: str, root: Path, mode: str) -> Path:
             shutil.copy(src, dest)
 
     # Reproducibility scaffolding
-    (project_dir / "reproducibility" / "data_hashes.txt").write_text(
-        "# format: <relative path>  <sha256>\n", encoding="utf-8"
+    (project_dir / "reproducibility" / "data_versions.txt").write_text(
+        "# format: <data source or table> | <version/date/path used>\n",
+        encoding="utf-8",
     )
     (project_dir / "reproducibility" / "shared_pins.txt").write_text(
-        "# format: <shared module path>  <commit hash>\n", encoding="utf-8"
+        "# format: <shared module path> | <commit note or revision reference>\n",
+        encoding="utf-8",
     )
-    (project_dir / "reproducibility" / "uv.lock").write_text(
-        "# placeholder — run `uv lock` from the project root to populate\n", encoding="utf-8"
+    (project_dir / "reproducibility" / "env_lock_ref.txt").write_text(
+        "# format: <environment pin source> | <version/path used>\n",
+        encoding="utf-8",
     )
     (project_dir / "reproducibility" / "seed.txt").write_text(
         f"# format: <component>  <seed>\nproject_default_seed  42\n", encoding="utf-8"
@@ -176,21 +179,20 @@ def print_next_steps(project_dir: Path, mode: str) -> None:
     if mode == "rd":
         print(f"  1. Edit {project_dir}/charter.md — answer Heilmeier 8 questions")
         print(f"     OR run: python scripts/charter_interview.py --output {project_dir}/charter.md")
-        print(f"  2. Freeze: python scripts/prereg_freeze.py --type charter --path {project_dir}/charter.md")
+        print(f"  2. When the charter is ready, change its status to READY")
         print(f"  3. Choose a lightweight tracking path before the first load-bearing claim")
-        print(f"     Record the review path in {project_dir}/decisions.md before that claim is cited")
+        print(f"     Record the review path and decision note in {project_dir}/decisions.md")
         print(f"  4. Edit {project_dir}/capability_map.md — Layer 1 (Core Technologies)")
         print(f"     Apply operational filter per references/rd/core_technologies.md")
-        print(f"  5. Verify Layer 1 closure, then add Layer 2 capabilities")
-        print(f"  6. Run: python scripts/validate_ledger.py --project-dir {project_dir}")
+        print(f"  5. Verify Layer 1 closure in review, then add Layer 2 capabilities")
     else:
         print(f"  1. Edit {project_dir}/prfaq.md — write the press release + ≥10 FAQ entries")
-        print(f"  2. Freeze: python scripts/prereg_freeze.py --type prfaq --path {project_dir}/prfaq.md")
+        print(f"  2. When PR/FAQ is ready, change its status to READY")
         print(f"  3. Run targeted literature: python scripts/lit_fetch.py --project-dir {project_dir} --query '<your query>'")
         print(f"  4. Choose a lightweight tracking path before the first load-bearing claim")
-        print(f"     Record the review path in {project_dir}/decisions.md before that claim is cited")
+        print(f"     Record the review path and decision note in {project_dir}/decisions.md")
         print(f"  5. Edit {project_dir}/prereg/PR_001.md — pre-register first trial")
-        print(f"  6. Freeze: python scripts/prereg_freeze.py --type prereg --id PR_001 --path {project_dir}/prereg/PR_001.md")
+        print(f"  6. Review PR_001 before execution")
         print(f"  7. Edit {project_dir}/explanation_ledger.md — add Q1 + ≥2 competing E + null")
         print(f"  8. Run: python scripts/new_trial.py --project-dir {project_dir} --slug <trial_slug> --prereg-id PR_001 --question-id Q1 --discriminating 'E1 vs E2'")
     print()

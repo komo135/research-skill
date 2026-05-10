@@ -198,8 +198,8 @@ def main() -> None:
     print(f"  1. Open {out_path} in marimo: marimo edit {out_path}")
     print("  2. Fill the evidence artifact header (markdown cells) per the template")
     print("  3. Run verification checks BEFORE the main test")
-    print("  4. After trial, run prereg_diff.py (Pure Research) and fill the 5-field Analysis section")
-    print("  5. If used for assessment, cite this artifact from the relevant ledger")
+    print("  4. After trial, write a deviation review note or a deviation note if the run drifted")
+    print("  5. If used for assessment, cite this artifact from the relevant ledger row")
 
 
 if __name__ == "__main__":

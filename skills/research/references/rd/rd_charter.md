@@ -15,10 +15,9 @@ file, evidence-producing R&D work is forbidden: no Stage gate and no
 promotion-cited trial. Setup, scaffolding, and exploratory design notes may
 continue when clearly labeled as non-evidence-producing.
 
-The charter is a **review anchor** — once committed, load-bearing amendments
-require a dated deviation entry in `decisions.md`. Hash-lock via
-`scripts/prereg_freeze.py` (the same mechanism used for Pure Research
-pre-registration).
+The charter is a planning anchor. Once it has `Status: READY`, do not silently
+rewrite load-bearing scope, kill criteria, cost, final exam, consumer, or
+promotion language. Material changes belong in `decisions.md` as deviations.
 
 ## The 8 questions
 
@@ -31,9 +30,9 @@ State the target as a single sentence describing what new capability the
 project will produce. Use no internal jargon, no library names, no model
 names. Imagine explaining it to a smart person from a different domain.
 
-- **Bad**: "Implement benchmark-audit notebooks with library X and dashboard Y."
+- **Bad**: "Implement benchmark-review notebooks with library X and dashboard Y."
 - **Good**: "An automated system that, given a benchmark dataset and recent
-  audit records, estimates whether measurement reliability has drifted enough
+  review records, estimates whether measurement reliability has drifted enough
   that a reviewer should re-route or re-label the affected items."
 
 ### H2. How is this approximated today, and what are the limits?
@@ -46,7 +45,7 @@ where possible.
 - **Good**: "Today reviewers sample 1% of benchmark items manually. It catches
   large rubric drift but misses smaller cohort-specific drift for weeks,
   creating delayed corrections and inconsistent benchmark comparisons.
-  Existing full-audit attempts improved coverage but required 4x reviewer time."
+  Existing full-review attempts improved coverage but required 4x reviewer time."
 
 ### H3. What is new in the proposed approach, and why do we believe it might work?
 
@@ -56,11 +55,11 @@ success plausible. **Novelty axis** (existing / extension / novel) is
 captured here, not on individual core technologies.
 
 - **Bad**: "Try a neural network."
-- **Good**: "Recent benchmark auditing papers combine stratified sampling,
+- **Good**: "Recent benchmark reviewing papers combine stratified sampling,
   disagreement modeling, and rubric-change detection. Prior evidence suggests
   these checks detect small reliability shifts before full relabeling is
   required. If this transfers across benchmark families, it would close the H2
-  gap without requiring a full manual audit every cycle."
+  gap without requiring a full manual review every cycle."
 
 ### H4. Who cares? Who is the consumer, and what decision does this capability serve?
 
@@ -71,7 +70,7 @@ the blocked decision, the capability has no demand.
 - **Bad**: "The whole team would benefit."
 - **Good**: "The benchmark operations team (3 reviewers + 1 platform
   engineer) currently samples 1% of items manually after each release.
-  The proposed audit would feed the review-routing workflow daily,
+  The proposed review would feed the review-routing workflow daily,
   replacing static sampling with drift-aware routing. The decision being
   unblocked is 'which benchmark items need immediate re-review?'"
 
@@ -92,15 +91,15 @@ List the top 3-5 risks. For each, name **specific observable evidence**
 that would cause the project to be killed. These evidence statements become
 the project's binding kill criteria.
 
-The kill criteria written here are **frozen as decision anchors** at charter
-close. They are not a prison: discovering mid-project that a test, threshold,
+The kill criteria written here are **decision anchors** once the charter is
+ready. They are not a prison: discovering mid-project that a test, threshold,
 or data source was wrong is a reason to file a deviation entry and either
 re-scope the criterion for future evidence or start a new charter. It is not a
 reason to silently reinterpret the original criterion after seeing results.
 
 - **Bad**: "It might not work."
 - **Good**:
-  1. "Audit transfer is too weak. KILL if agreement delta ≤ 0.02 on 3
+  1. "Review transfer is too weak. KILL if agreement delta ≤ 0.02 on 3
      representative benchmark families after 2 weeks of evaluation, AND
      calibration does not lift agreement delta ≥ 0.05 within an additional
      week."
@@ -126,7 +125,7 @@ classification of core technologies in the next step).
 Example:
 
 > **One-time**:
-> - Compute: ~200 CPU-hours for audit-protocol sweep
+> - Compute: ~200 CPU-hours for review-protocol sweep
 > - Data: $X for benchmark exports and annotation logs
 > - Wall-clock: 6 weeks of focused work (1 researcher)
 >
@@ -183,7 +182,7 @@ stability):
 
 Example for Midterm + Final + Integration pattern:
 
-> **Midterm**: Reliability scoring protocol calibrated on 6 months of audit
+> **Midterm**: Reliability scoring protocol calibrated on 6 months of review
 > data; held-out agreement delta ≥ 0.05 on a 1-month held-out period; latency
 > measurement establishes feasibility for daily routing.
 >
@@ -195,13 +194,13 @@ Example for Midterm + Final + Integration pattern:
 >
 > **Integration pattern**: Pattern 3 (skeleton + spike). Day 1-3:
 > skeleton with naive cohort score + flat review routing. Day 4: K
-> identification (audit transfer is K1, calibration protocol is K2,
+> identification (review transfer is K1, calibration protocol is K2,
 > routing dynamics is K3 if needed). K's replace skeleton components
 > iteratively, A/B vs skeleton each replacement.
 
 Example:
 
-> **Midterm**: Reliability scoring protocol calibrated on 6 months of audit
+> **Midterm**: Reliability scoring protocol calibrated on 6 months of review
 > data; held-out agreement delta ≥ 0.05 on a 1-month held-out period; latency
 > measurement establishes feasibility for daily routing.
 >
@@ -222,8 +221,7 @@ Structure:
 ```markdown
 # Charter — <project name>
 
-Frozen: <YYYY-MM-DD HH:MM:SS UTC>
-Hash: <SHA-256 from prereg_freeze.py>
+Status: READY
 
 ## H1. What capability should exist?
 [Answer.]
@@ -236,32 +234,24 @@ Hash: <SHA-256 from prereg_freeze.py>
 ## Approval
 - Drafted by: <agent / user>
 - Reviewed by: <user>
-- Frozen at: <timestamp>
 ```
 
-## Freezing the charter
+## Reviewing the charter
 
 After H1-H8 are filled and reviewed:
 
-```bash
-python scripts/prereg_freeze.py --type charter --path charter.md
-```
+Change `Status: DRAFT` to `Status: READY`.
 
-This:
-1. Computes SHA-256 of the file content
-2. Writes `prereg/charter.lock` with hash + UTC timestamp + path
-3. Records the freeze in `decisions.md` as a state transition
-
-After freezing, **do not edit `charter.md` in place for load-bearing changes**.
+After review, **do not silently rewrite `charter.md` for load-bearing changes**.
 Minor typo or formatting fixes may be noted normally. Any change that affects
 scope, kill criteria, cost, final exam, consumer, or promotion language
-requires a dated deviation entry in `decisions.md` naming the H-number that
+requires a deviation entry in `decisions.md` naming the H-number that
 changed and the trigger evidence. Frequent load-bearing deviations mean the
 charter was under-specified; next time, spend more time on this step.
 
 ## Why the charter blocks downstream work
 
-Without a frozen charter:
+Without a reviewed charter:
 
 - **Kill criteria do not exist**. Any "kill" decision later in the project
   would be based on shifting goalposts. Sunk cost will bias the agent
@@ -291,7 +281,7 @@ writing pays for itself within the first week of decomposition.
 
 ## Relationship to other references
 
-- After charter is frozen → read `references/rd/core_technologies.md` to
+- After charter is ready → read `references/rd/core_technologies.md` to
   define Layer 1 (intellectual decomposition).
 - The novelty axis (`既存` / `発展的` / `新規`) lives in H3, not on
   individual core technologies.

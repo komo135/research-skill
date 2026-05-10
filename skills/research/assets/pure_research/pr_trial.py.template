@@ -35,7 +35,7 @@ def _(mo):
 
     - **Project**: <REPLACE: project name>
     - **Mode**: Pure Research
-    - **Optional protocol reference**: <REPLACE: optional prereg reference>
+    - **Optional pre-registration file**: <REPLACE: optional prereg/PR_<id>.md>
     - **Optional ledger target**: <REPLACE: optional ledger row / claim>
     - **Optional contrast**: <REPLACE: optional discriminating contrast>
 
@@ -50,14 +50,14 @@ def _(mo):
 
     ## Reproducibility
 
-    - Tracking note/backend: <REPLACE: lightweight run note, results row, or selected tracker>
+    - Tracking/backend: <REPLACE: lightweight run note, results row, or tracker>
     - Selection/sweep record: <REPLACE: only if this artifact is used for model selection, multiple-testing correction, or promotion>
     - Run ID / artifact URI: <REPLACE: if external tracker is used>
-    - Data hash: <REPLACE: from stamp script or selected tracker if this
+    - Data version: <REPLACE: from run note, results row, or tracker if this
       artifact is promotion-eligible or claim-cited; otherwise link
       lightweight run note>
-    - Git commit: <REPLACE: from stamp script or selected tracker>
-    - uv.lock hash: <REPLACE: from stamp script or selected tracker>
+    - Git commit: <REPLACE: from run note, results row, or tracker>
+    - Environment pin: <REPLACE: from run note, results row, or tracker>
     - Random seed: <REPLACE>
     """
     )
@@ -70,9 +70,9 @@ def _(mo):
         r"""
     ## 1. Setup and data load
 
-    Load data according to the artifact design. If a frozen
-    pre-registration cites this artifact, compare the actual data identity
-    against the planned data identity during ledger assessment.
+    Load data according to the artifact design. If a pre-registration names this
+    artifact, record the actual data source/version in the run note so any
+    material deviation can be assessed after the trial.
     """
     )
     return
@@ -82,8 +82,8 @@ def _(mo):
 def _(pd):
     # data = pd.read_parquet("<REPLACE: data path>")
     # For promotion-eligible or claim-cited artifacts, use the selected
-    # tracking backend or scripts/reproducibility_stamp.py to record the
-    # final data hash.
+    # tracking backend or local run note to record the
+    # final data version.
     pass
     return
 

@@ -3,7 +3,7 @@
 R&D decomposition: Layer 1 (Core Technologies, intellectual) +
 Layer 2 (Capabilities, operational).
 
-Pre-condition: charter frozen. See `charter.md`.
+Pre-condition: charter reviewed. See `charter.md`.
 
 ---
 
@@ -11,7 +11,7 @@ Pre-condition: charter frozen. See `charter.md`.
 
 Schema and operational filter: `references/rd/core_technologies.md`.
 Each row's lifecycle determines project termination semantics (永続型 →
-freeze; 継続改善型 → maintenance plan required at promotion).
+is established; 継続改善型 → maintenance plan required at promotion).
 
 | ID | コア技術 | 研究で確立する問い | target への寄与 | 発展性 | 先行研究 | Status |
 |---|---|---|---|---|---|---|
@@ -75,4 +75,4 @@ Example:
 ## Updates log
 
 Use `decisions.md` for state transitions. This file is the current state;
-git history is the audit trail.
+the capability map and decisions log explain the current state.

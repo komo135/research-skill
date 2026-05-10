@@ -51,7 +51,7 @@ protocol**:
    must name the specific belief that changed and what evidence (even if
    prior) prompted the change.
 2. Decide between two paths based on sunk work:
-   - **Suspend + restart**: freeze the current ledger (append a final
+   - **Suspend + restart**: close the current ledger (append a final
      summary row), start a new project with the correct discipline,
      link both via a `parent_project_id` reference.
    - **Add secondary project**: keep the primary project active, initialize
@@ -94,8 +94,8 @@ Right-sized rigor is not a relaxation path. These requirements are
 non-relaxed:
 
 - A4+ for `supported`, `matured`, `established`, or `promoted`.
-- Frozen pre-registration for Pure Research trials that can support a claim.
-- Frozen charter and kill criteria before R&D evidence-producing work can fire
+- Reviewed pre-registration for Pure Research trials that can support a claim.
+- Reviewed charter and kill criteria before R&D evidence-producing work can fire
   a kill or promotion-relevant decision.
 - Reproducibility records for every promotion-eligible or claim-cited trial.
 - Focused process review and conclusion review before promotion or externally
@@ -200,7 +200,7 @@ reference before executing the step:
 7. **Promotion** (`references/rd/rd_promotion_gate.md`) — promote a target
    only when every core technology is `established` (all child capabilities
    matured to TRL-6 with kill criteria un-fired and analysis at A4+),
-   integration test ran AFTER all upstream exits fired (timestamp verified),
+   integration test ran AFTER all upstream exits fired (ordering verified),
    and — if any core technology is `継続改善型` — a maintenance plan is on
    file in `decisions.md`.
 
@@ -219,9 +219,9 @@ each linked reference before executing the step:
    notebooks and decisions. Stop when competing explanations are clear and
    prior failure modes are documented.
 3. **Pre-registration** (`references/pure_research/preregistration.md`) —
-   freeze question, competing explanations (≥2), test design, and expected
-   diff under each explanation. Hash-lock via `scripts/prereg_freeze.py`.
-   After the trial, diff actual vs frozen via `scripts/prereg_diff.py`.
+   state the question, competing explanations (≥2), test design, and expected
+   contrast under each explanation before the trial. After the trial,
+   compare actual analysis against the planned design and note any deviations.
 4. **Explanation ledger**
    (`references/pure_research/explanation_ledger_schema.md`) — single state
    object. Claim-cited or promotion-relevant results update explanation rows;
@@ -264,7 +264,7 @@ Before designing a new trial, push the analysis on the current trial as far
 as it can go. Increasing analysis depth on existing data is research;
 collecting more data without analyzing existing observations is not.
 
-## Tracking & Audit Backend
+## Tracking Backend
 
 Choose the run tracking backend briefly during project initialization or before
 the first load-bearing claim, whichever comes first. This is not a ceremony:
@@ -280,10 +280,10 @@ run, notebook note, or `results` row with enough context to interpret the
 result later.
 
 Promotion-eligible, externally shared, or claim-cited results need stronger
-anchors: durable run ID or artifact path, params, headline metrics, data hash,
-code version, env lock, seed where relevant, and enough rerun instructions for
+anchors: durable run ID or artifact path, params, headline metrics, data version
+note, code version, environment pin, seed where relevant, and enough rerun instructions for
 a reviewer to reproduce or challenge the claim. If an exploratory result later
-becomes load-bearing, rerun or restamp it under this protocol instead of
+becomes load-bearing, rerun it under this protocol instead of
 retroactively pretending the earlier note was complete.
 
 Record the backend decision in `decisions.md` by project initialization or
@@ -354,7 +354,7 @@ parent `core_tech_id` (or `integration` for cross-cutting work). See
 A target's promotion expression and termination semantics depend on the
 lifecycle composition of its core technologies:
 
-- All core techs `永続型` and `established` → "fully completed", project freezes.
+- All core techs `永続型` and `established` → "fully completed", project closes.
 - Any core tech `継続改善型` → completion = "v1 established + maintenance plan
   scheduled". The project's closing entry in `decisions.md` MUST name the
   re-evaluation cadence and the re-investment trigger condition.
@@ -368,7 +368,7 @@ duplicate rows; stale rows are kept (not deleted) for historical traceability.
 
 ## Review (run before promotion or external load-bearing claims)
 
-Two-axis review is a focused promotion review, not a full-project audit. Run
+Two-axis review is a focused promotion review, not a full-project inspection. Run
 the relevant parts before any R&D transition to `matured`, `established`, or
 `promoted`, before any Pure Research promotion to `supported`, or before an
 externally shared load-bearing claim:
@@ -385,9 +385,9 @@ externally shared load-bearing claim:
   conclusion-review subprocedure, not as a separate promotion gate.
 
 The review documents are menus of possible checks, not mandatory full
-checklists. Mark non-applicable items as out of scope, and do not read or audit
+checklists. Mark non-applicable items as out of scope, and do not read or review
 unrelated history. Promotion-blocking items and state transitions require
-concrete evidence citation (file:line, hash, numeric value, run ID, artifact
+concrete evidence citation (file:line, reference, numeric value, run ID, artifact
 URI, or tool output). Lightweight process observations may be summarized when
 they are not load-bearing. "Overall OK" / "looks good" / "appears correct"
 verdicts are forbidden at promotion or external-claim decision points.
@@ -410,7 +410,7 @@ The report must include:
   table, before/after table, or compact metric table. Choose the form that
   best exposes the key uncertainty, not the form that flatters the result.
 - Evidence citations for every load-bearing claim, linking each visual or table
-  back to file:line, artifact URI, run ID, hash, numeric output, or ledger row.
+  back to file:line, artifact URI, run ID, reference, numeric output, or ledger row.
 - A scope and caveat note: what conditions the result covers, what alternatives
   remain plausible, and what evidence would change the decision.
 - The next decision or action requested from the user, if any.
@@ -431,25 +431,25 @@ the final report must carry enough intuitive evidence for human judgment.
 - **Evidence citation is mandatory for load-bearing claims**. Any claim of
   "passed" / "verified" / "confirmed" that supports `supported`, `matured`,
   `promoted`, `killed`, external sharing, deployment recommendation, major
-  deviation, or claim-scope change must reference a specific file:line, hash,
+  deviation, or claim-scope change must reference a specific file:line, reference,
   numeric value, or tool output. Summary verdicts without citation are
   forbidden at those decision points.
 - **Initial-day prohibitions**.
   - R&D first day: no implementation, charter and capability map (with
     core technologies) only. *Why*: kill criteria (Heilmeier H6) must be
-    frozen before a trial can fire one. Code written before kill criteria
+    ready before a trial can fire one. Code written before kill criteria
     exist accumulates sunk cost that biases future kill decisions.
     Typical time investment: 1-2 hours of charter writing prevents weeks
     of effort on a misframed target.
   - Pure Research first day: no trial execution, PR/FAQ + targeted
     literature + pre-registration only. *Why*: a pre-registered test
     survives the garden of forking paths. A trial run before the
-    pre-registration is locked is a shopping trip — once you have seen the
+    pre-registration is ready is a shopping trip — once you have seen the
     data, "pre-registration" is theater. Typical time investment: 30-60
     minutes of PR/FAQ writing prevents months of post-hoc rationalization
     on weak findings.
   - **What IS allowed on day 1**: data infrastructure setup, environment
-    pinning (`uv.lock`), data hash recording, raw data sourcing, scaffold
+    pinning (`uv.lock`), data version recording, raw data sourcing, scaffold
     file creation. The prohibition targets evidence-producing work
     (implementation that runs / trial that produces metrics), not
     enabling work.
@@ -462,7 +462,7 @@ the final report must carry enough intuitive evidence for human judgment.
     a capability while its parent K, declared dependencies, or integration
     path have incomplete Layer 1 fields.** Unrelated sibling K rows do not
     globally block the branch. If a Stage gate surfaces a new upstream K,
-    suspend the affected branch, file the deviation, re-scope the dependency
+    suspend the affected branch, document the deviation, re-scope the dependency
     path, then resume.
   - Any rollback to an earlier step requires a dated deviation entry in
     `decisions.md` citing the blocker. State-change logging alone does
@@ -476,17 +476,16 @@ the final report must carry enough intuitive evidence for human judgment.
 - **Lightweight run tracking is enough for exploration**. Ordinary exploratory,
   smoke-test, debugging, and non-load-bearing experiments may use a short run
   note, tracker run, notebook note, or results row. Do not turn every trial into
-  a decision-log entry or full audit package.
+  a decision-log entry or full review package.
 - **Reproducibility 3-tuple**. Every promotion-eligible or claim-cited trial
-  stamps data hash + git commit + env lock via the selected tracking backend
-  or `scripts/reproducibility_stamp.py`. Exploratory, smoke-test, and
+  records data version + git commit + environment pin via the selected tracking backend
+  or equivalent local note. Exploratory, smoke-test, and
   debugging runs may use lightweight run notes. If later needed for promotion,
-  rerun under the promotion-eligible protocol; do not retroactively stamp
+  rerun under the promotion-eligible protocol; do not retroactively relabel
   exploratory output as if it had been captured at trial time.
-- **Frozen artifacts**. Charter, pre-registration, and kill-criteria fire log
-  are SHA-256 hash-locked as review anchors. Editing is detectable, not
-  physically impossible; any load-bearing amendment requires an explicit
-  deviation entry in `decisions.md` or a new frozen artifact.
+- **Planning artifacts**. Charter, pre-registration, and kill criteria must be
+  reviewed before they become load-bearing. Any load-bearing amendment requires
+  an explicit deviation entry in `decisions.md` or a new planning artifact.
 - **No placeholders in deliverables**. Templates produce real content; any
   remaining `TBD`, `TODO`, `XXX`, `???`, or `{{...}}` blocks the deliverable.
 
@@ -504,14 +503,14 @@ results/results.parquet          # portable default evidence index
 configs/                         # project-instance experiment configs
 src/                             # project-instance implementation, if any
 tests/                           # project-instance verification, if any
-reproducibility/{uv.lock,data_hashes.txt,seed.txt}
+reproducibility/{uv.lock,env_lock_ref.txt,data_versions.txt,shared_pins.txt,seed.txt}
 tracking/                        # optional local tracker config / exported run refs
 ```
 
 R&D adds:
 
 ```
-charter.md                       # frozen, hash-locked (Heilmeier 8 Q)
+charter.md                       # reviewed charter (Heilmeier 8 Q)
 capability_map.md                # primary state object
                                  #   Section 1: Core Technologies (intellectual layer)
                                  #   Section 2: Capabilities (operational layer, with core_tech_id)
@@ -521,7 +520,7 @@ Pure Research adds:
 
 ```
 prfaq.md                         # working-backwards entry document
-prereg/PR_<id>.lock              # hash-locked pre-registration, one per trial
+prereg/PR_<id>.md                # reviewed pre-registration, one per trial
 explanation_ledger.md            # primary state object
 imrad_draft.md                   # paper-shaped deliverable, started early
 ```
@@ -538,7 +537,7 @@ audience.
 | `shared/analysis_depth.md` | Before any trial interpretation. MANDATORY. |
 | `shared/result_analysis.md` | Before writing any explanation of success or failure. |
 | `shared/literature_review.md` | Project initialization, before any new hypothesis or capability. |
-| `shared/reproducibility.md` | Setting up data hash + git commit + env lock for promotion-eligible or claim-cited trials. |
+| `shared/reproducibility.md` | Setting up data version + git commit + environment pin for promotion-eligible or claim-cited trials. |
 | `shared/results_db_schema.md` | Appending interpreted trial results. |
 
 **R&D** — see § R&D Discipline above for the entry sequence. Key references:
@@ -565,10 +564,7 @@ sequence.
 | `new_project.py --mode rd|pure-research` | Initialize a project with the discipline-specific layout |
 | `new_trial.py` | Generate a numbered trial notebook (mode-aware template) |
 | `aggregate_results.py` | Append interpreted trial rows (mode-aware schema, includes `analysis_tier`) |
-| `validate_ledger.py` | Lint capability_map / explanation_ledger / prereg / analysis-section consistency |
-| `prereg_freeze.py` | SHA-256 + timestamp lock for a pre-registration |
-| `prereg_diff.py` | Diff actual analysis against the frozen pre-registration |
-| `reproducibility_stamp.py` | Capture data hash + git commit + env lock |
+| ledger consistency helper | Lint capability_map / explanation_ledger / analysis-section consistency |
 | `render_capability_dag.py` | Mermaid DAG of the R&D capability dependency graph |
 | `render_explanation_dag.py` | Mermaid DAG of the explanation hierarchy |
 | `charter_interview.py` | Interactive Heilmeier 8-question elicitation |

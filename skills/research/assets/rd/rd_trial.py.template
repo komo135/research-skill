@@ -34,7 +34,7 @@ def _(mo):
 
     - **Project**: <REPLACE: project name>
     - **Mode**: R&D
-    - **Charter hash (frozen)**: <REPLACE: from prereg/charter.lock>
+    - **Charter**: <REPLACE: charter.md status / relevant H section>
 
     ## Artifact design
 
@@ -47,12 +47,12 @@ def _(mo):
 
     ## Reproducibility
 
-    - Tracking note/backend: <REPLACE: lightweight run note, results row, or selected tracker>
+    - Tracking/backend: <REPLACE: lightweight run note, results row, or tracker>
     - Selection/sweep record: <REPLACE: only if this artifact is used for model selection, multiple-testing correction, or promotion>
     - Run ID / artifact URI: <REPLACE: if external tracker is used>
-    - Data hash: <REPLACE: from stamp script or selected tracker>
-    - Git commit: <REPLACE: from stamp script or selected tracker>
-    - uv.lock hash: <REPLACE: from stamp script or selected tracker>
+    - Data version: <REPLACE: from run note, results row, or tracker>
+    - Git commit: <REPLACE: from run note, results row, or tracker>
+    - Environment pin: <REPLACE: from run note, results row, or tracker>
     - Random seed: <REPLACE>
     """
     )
@@ -72,8 +72,8 @@ def _(mo):
 @app.cell
 def _(pd):
     # data = pd.read_parquet("<REPLACE: data path>")
-    # Record the data hash before any computation using the selected
-    # tracking backend or scripts/reproducibility_stamp.py.
+    # Record the data version before any computation using the selected
+    # tracking backend or local run note.
     pass
     return
 

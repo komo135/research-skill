@@ -31,7 +31,7 @@ protocol layer that helps an agent decide what evidence is needed, what state
 can change, and when a result is still only exploratory. Ordinary exploration
 can be tracked with a short run note, tracker run, notebook note, or results
 row; promotion-eligible, externally shared, or claim-cited results need
-evidence citations and rerun anchors.
+evidence citations and rerun guidance.
 
 ## Research Structure
 
@@ -42,7 +42,7 @@ The generic `research` skill separates the work into durable layers:
 - Project instance layer: concrete data, candidates, parameters, code, trial
   notebooks, generated reports, and local decisions.
 - Evidence artifacts: notebooks, result rows, tracker runs, lightweight run
-  notes, figures, and stamps for claim-cited results.
+  notes, figures, and claim-cited result records.
 - State ledgers: capability maps, explanation ledgers, decision logs, and
   promotion records that cite evidence artifacts.
 
@@ -116,7 +116,7 @@ The installed Codex skills are exposed as `research` and `quant-research`.
 1. Choose `research` for generic R&D or Pure Research. Choose
    `quant-research` only when the domain is financial ML, backtesting,
    time-series validation, portfolio research, or trading-system evidence.
-2. Freeze the entry document before expensive work: an R&D charter for
+2. Write down the entry document before expensive work: an R&D charter for
    capability establishment, or PR/FAQ plus pre-registration for Pure Research.
 3. Run the smallest evidence-producing artifact that can answer the current
    question.
@@ -135,8 +135,6 @@ Generic helpers live under `skills/research/scripts/`:
 | `new_project.py` | Initialize a research project folder with the standard layout |
 | `new_trial.py` | Generate a numbered evidence artifact notebook |
 | `aggregate_results.py` | Validate and append queryable evidence records |
-| `reproducibility_stamp.py` | Emit a JSON stamp for promotion-eligible or claim-cited trials |
-| `prereg_freeze.py` / `prereg_diff.py` | Freeze and compare pre-registration documents |
 | `draft_imrad.py` | Draft a manuscript-shaped research summary |
 | `lit_fetch.py` | Fetch literature metadata into local research notes |
 
@@ -162,18 +160,27 @@ v1.1.0, install `research@research-skill`. The old standalone
 
 ## Status
 
-Version 1.1.2 - relaxes tracking and audit requirements while keeping
-stronger anchors for promotion-eligible, externally shared, or claim-cited
-results.
+Version 1.1.3 - removes registration-proof mechanisms while keeping
+plain planning documents, deviation notes, and lightweight tracking for
+promotion-eligible, externally shared, or claim-cited results.
 
 <details>
 <summary>Changelog</summary>
 
-### v1.1.2 (current)
+### v1.1.3 (current)
 
-- Relaxed tracking and audit requirements: ordinary exploration may use
+- Removed registration-proof mechanisms: no hashes, frozen records, dated note
+  references, registration logs, or history/timestamp comparisons for proving
+  planning order.
+- Kept the useful parts: reviewed planning documents, material deviation notes,
+  and rerun guidance for promotion-eligible or claim-cited results.
+- Added regression coverage to block reintroducing proof-artifact language.
+
+### v1.1.2
+
+- Relaxed tracking requirements: ordinary exploration may use
   lightweight run notes, tracker runs, notebook notes, or results rows.
-- Limited strong evidence citations, rerun anchors, and decision-relevant run
+- Limited strong evidence citations, rerun guidance, and decision-relevant run
   sets to promotion-eligible, externally shared, or claim-cited results.
 - Changed process and conclusion review from full mandatory inventories to
   targeted lightweight review of load-bearing axes.
@@ -205,11 +212,11 @@ results.
 
 ### v1.0.6
 
-- Added selectable tracking and audit backends.
+- Added selectable tracking backends.
 - Required complete run inventory/export for external trackers.
   Superseded in v1.1.2 by decision-relevant run sets instead of complete
   inventory for every project.
-- Kept local stamp/parquet compatibility for existing projects.
+- Kept local notes/parquet compatibility for existing projects.
 
 ### v1.0.5
 
@@ -237,7 +244,7 @@ results.
 ### v1.0.0
 
 - Rebuilt the protocol around R&D and Pure Research disciplines, A0-A5 analysis
-  depth, reproducibility stamps, and two-axis review.
+  depth, reproducibility notes, and two-axis review.
 
 </details>
 

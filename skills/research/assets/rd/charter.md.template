@@ -1,8 +1,6 @@
 # Charter — <REPLACE: project name, kebab-case>
 
-Status: DRAFT (replace with `FROZEN at <YYYY-MM-DD HH:MM:SS UTC>` after
-running `python scripts/prereg_freeze.py --type charter --path charter.md`)
-Hash: <REPLACE: SHA-256 from prereg_freeze.py output>
+Status: DRAFT (change to READY after review)
 
 ---
 
@@ -51,7 +49,7 @@ possible. See § H5.>
 
 <REPLACE: list 3-5 risks. For each, name **specific observable evidence**
 that would kill the project. These evidence statements become the
-project's binding kill criteria, frozen here. See § H6 for examples.>
+project's binding kill criteria, stated here. See § H6 for examples.>
 
 1. **<risk name>**. KILL if <numeric or behavioral threshold + condition>.
 2. **<risk name>**. KILL if <...>.
@@ -105,15 +103,11 @@ upfront before any K Stage-Gate cycle:
 
 ---
 
-## Approval
-
 - Drafted by: <REPLACE: agent name and/or user>
 - Reviewed by: <REPLACE: user>
-- Frozen at: <fill after `prereg_freeze.py` runs>
-- Frozen hash: <fill after `prereg_freeze.py` runs>
 
 ---
 
-After freezing this charter, proceed to `references/rd/core_technologies.md`
+After this charter is reviewed, proceed to `references/rd/core_technologies.md`
 to define Layer 1 (intellectual decomposition) before any capability
 writing or implementation.

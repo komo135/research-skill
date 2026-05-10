@@ -149,7 +149,7 @@ Final:   all K's at TRL-6, skeleton was discarded long ago
 **Strengths**:
 - Working version exists by day 3 (between Pattern 1 and Pattern 2)
 - Architecture validated early (integration risk surfaced on day 1)
-- No framework lock-in — skeleton is throwaway, not a permanent
+- No framework record-in — skeleton is throwaway, not a permanent
   abstraction
 - "Research-worthy" K identification done after seeing the skeleton
   work — separates "real research" from "engineering"
@@ -410,7 +410,7 @@ Skeleton is replaced piece by piece as K's mature.
 |---|---|---|
 | No pattern declared in charter | Implicit Pattern 2 default; "no working version yet" complaint | Charter H8 must declare pattern + reason |
 | Pattern 1 with stub baselines | "v0 runs but does nothing" | Use real (if naive) baseline implementations |
-| Pattern 3 skeleton frozen as framework | Skeleton is months old, K's constrained by it | Time-box skeleton; treat as throwaway |
+| Pattern 3 skeleton treated as framework | Skeleton is months old, K's constrained by it | Time-box skeleton; treat as throwaway |
 | Pattern 2 with stakeholder pressure | "Demo wrappers" being built that don't advance K's | Switch to Pattern 1 or 3 |
 | Pattern switch without deviation | Silent shift mid-project | File deviation in decisions.md naming trigger |
 

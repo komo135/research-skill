@@ -32,7 +32,7 @@ could bear on it. Load-bearing checks require concrete evidence cited. "Looks
 good" is forbidden at promotion and external-claim decision points.
 
 ```
-- [x] item — evidence: <file:line, hash, numeric value, or specific tool output>
+- [x] item — evidence: <file:line, reference, numeric value, or specific tool output>
 - [ ] item — FAIL: <what's wrong>
 - [ ] item — N/A (justify why)
 ```
@@ -204,23 +204,23 @@ The trial can be re-run.
 
 - [ ] **3-tuple recorded** for promotion-eligible or claim-cited trial(s) per
   `references/shared/reproducibility.md`:
-  - Data hash, git commit, and env lock hash in local stamp files
-    (`reproducibility/data_hashes.txt`, `results.parquet`,
-    `reproducibility/env_lock_hash.txt`) OR selected tracker record / exported
+  - Data version, git commit, and environment pin in local run notes
+    (`reproducibility/data_versions.txt`, `results.parquet`,
+    `reproducibility/env_lock_ref.txt`) OR tracker record / exported
     run record
   - Evidence: file existence + content, or stable tracker run ID + artifact URI
     resolving to those anchors
 - [ ] **Random seed recorded** and (for stochastic algorithms)
   multiple seeds reported
-  - Evidence: `reproducibility/seed.txt` or selected tracker record + per-seed
+  - Evidence: `reproducibility/seed.txt` or tracker record + per-seed
     result mean ± std (for DL / RL)
 - [ ] **Shared infrastructure pins** recorded if `shared/` is used
   - Evidence: `reproducibility/shared_pins.txt` or selected tracker/export
     record
 - [ ] **Working tree was clean** at trial time (no uncommitted
   changes)
-  - Evidence: `reproducibility_stamp.py` exit 0 logged in `decisions.md`,
-    or selected tracker run record shows clean git state / no dirty-tree flag
+  - Evidence: local run note or tracker record shows clean git state /
+    no dirty-tree flag
 - [ ] **No hardcoded paths** that would break on a different machine
   - Evidence: code review note
 
@@ -349,7 +349,7 @@ Sign-off: conclusion review clean / fail
 | Generic terminal label in success | "the model is good at variance capture" with no mechanism | Axis 4 (no terminal label) |
 | Single-source A4 claim | One numerical evidence cited; A4 needs ≥2 | Axis 4 (multiple sources) |
 | Structural-argument-only claim | "By construction the model must work because ..." with no measured number | Axis 4 (numerical required) |
-| Stale env lock | uv.lock from a prior project state, not the current trial | Axis 5 |
+| Stale environment pin | uv.lock from a prior project state, not the current trial | Axis 5 |
 | No falsifying interpretation attempted | Cold-eye check skipped or "looks good" | Axis 6 |
 | Falsifying interpretation cannot be rebutted | Cold-eye check identifies an alternative; artifact has no internal rebuttal | Axis 6 — promotion blocked |
 

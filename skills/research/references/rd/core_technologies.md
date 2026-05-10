@@ -5,7 +5,7 @@ that require research investment to establish for the target capability.
 
 ## When to read
 
-- Immediately after the charter is frozen, before any capability is written
+- Immediately after the charter is reviewed, before any capability is written
 - Before adding a new candidate K-row to `capability_map.md`
 - When a sibling K is split, merged, or marked stale
 
@@ -210,7 +210,7 @@ The composition of lifecycles in a project's K's determines the project's
 termination semantics:
 
 - **All K's are 永続型** and all `established` → project is **fully
-  completed**. Final entry in `decisions.md` notes the freeze. No
+  completed**. Final entry in `decisions.md` notes the write down. No
   ongoing obligation.
 - **Any K is 継続改善型** → project completion = **"v1 established + maintenance plan scheduled"**. The closing entry in `decisions.md` must
   include a right-sized maintenance plan. For production or external claims,
@@ -261,7 +261,7 @@ Layer 1 is **closed-for-work** when:
    dependency column or sub-section.
 
 After closure, capability writing (Layer 2) may begin. Adding a new K
-after closure requires a dated deviation entry in `decisions.md`.
+after closure requires a deviation entry in `decisions.md`.
 
 ## When to split a capability into its own K
 
@@ -281,7 +281,7 @@ status may need re-evaluation.
 
 ## Worked example
 
-Target (from charter H1): "Automated measurement-reliability audit for
+Target (from charter H1): "Automated measurement-reliability review for
 public benchmark datasets, using reusable statistical checks."
 
 Naive decomposition (rejected):
@@ -294,13 +294,13 @@ Better decomposition (passes filter):
 
 | ID | コア技術 | 研究で確立する問い | target への寄与 | 発展性 | 先行研究 | Status |
 |---|---|---|---|---|---|---|
-| K1 | Cross-dataset audit transfer | Does the audit protocol generalize across text, image, and tabular benchmark families with agreement delta ≥ 0.05? | Decides whether one reusable protocol is viable | 継続改善型 (benchmarks update) | papers.md §A | active |
+| K1 | Cross-dataset review transfer | Does the review protocol generalize across text, image, and tabular benchmark families with agreement delta ≥ 0.05? | Decides whether one reusable protocol is viable | 継続改善型 (benchmarks update) | papers.md §A | active |
 | K2 | Scoring calibration protocol | Which calibration protocol maximizes agreement delta under a realistic review budget? | Adaptation strategy | 継続改善型 | papers.md §B | active |
 | K3 | Latency-bounded inference architecture | Can the chosen checks run at < 100ms per item on production hardware? | Operational viability | 永続型 (once chosen, stable) | papers.md §C | active |
-| K4 | Decision-relevant reliability metric | Which metric (ECE / agreement delta / calibrated outcome metric) best predicts downstream review-routing benefit? | Connects audit output to the consumer decision | 永続型 | (none, novel) | active |
+| K4 | Decision-relevant reliability metric | Which metric (ECE / agreement delta / calibrated outcome metric) best predicts downstream review-routing benefit? | Connects review output to the consumer decision | 永続型 | (none, novel) | active |
 
 This project will require a maintenance plan at completion (K1 and K2 are
-継続改善型). K3 and K4 freeze once established.
+継続改善型). K3 and K4 become static once established.
 
 ## Common failure modes
 

@@ -1,32 +1,32 @@
 # preregistration.md
 
-AEA-style Pre-Analysis Plan (PAP) — the hash-locked design freeze that
+AEA-style Pre-Analysis Plan (PAP) — the planned design document that
 the trial must follow. Pre-registration is the single most effective
 intervention against p-hacking and post-hoc rationalization. In this skill it
 is mandatory for Pure Research trials that may support a claim, promote an
 explanation to `supported`, or be shared externally as load-bearing evidence.
-Exploratory probes may remain lightweight, but must be rerun under a frozen
+Exploratory probes may remain lightweight, but must be rerun under a reviewed
 pre-registration before they become claim-cited.
 
 ## When to read
 
-- Designing a Pure Research trial (after PR/FAQ is frozen and targeted
+- Designing a Pure Research trial (after PR/FAQ is ready and targeted
   literature is done)
 - Reviewing whether a deviation from pre-registration is acceptable
-- Operating `scripts/prereg_freeze.py` or `scripts/prereg_diff.py`
+- Running post-trial deviation review
 
 ## Purpose
 
-Pre-registration freezes the **question, competing explanations, test
-design, and expected outcomes** before any data is inspected. After the
-trial, the actual analysis is diffed against the frozen pre-registration;
-deviations are categorized by severity and either accepted (with
-documentation) or trigger a fresh trial.
+Pre-registration states the **question, competing explanations, test design,
+and expected outcomes** before any data is inspected. After the trial, compare
+the actual analysis against the pre-registration and record material
+deviations. Minor deviations can be carried forward; major deviations require a
+fresh trial before the result can support a claim.
 
-The mechanism: HARKing (Hypothesizing After Results are Known) and the
-garden of forking paths are eliminated when the design is committed
-before the data is touched. Without pre-registration, finding-driven
-narrative shifts are undetectable.
+The mechanism: HARKing (Hypothesizing After Results are Known) and the garden
+of forking paths are reduced when the design is written before the data is
+touched. Without pre-registration, finding-driven narrative shifts are too easy
+to rationalize.
 
 AEA requires pre-registration for all field experiments submitted to its
 journals since 2018. This skill applies the same standard to all Pure
@@ -94,7 +94,7 @@ The exact methodology, in enough detail that a different agent could
 re-run the test and get the same result.
 
 ```
-Data: <source, hash if available, period, frequency>
+Data: <source, reference if available, period, frequency>
 Sample / split: <how data is split for the test, e.g., rolling 3-year
                  windows>
 Metric: <primary metric (single number) + secondary metrics if needed>
@@ -106,8 +106,8 @@ Multiple testing: <how many distinct hypotheses or sub-strategies are
 ```
 
 > Example:
-> - Data: public benchmark audit records, period 2010-01 through 2024-12,
->   data hash a3f8...
+> - Data: public benchmark review records, period 2010-01 through 2024-12,
+>   data version a3f8...
 > - Sample: rolling 3-year primary metric windows, computed at month-end, no
 >   look-ahead in label availability
 > - Primary metric: difference between mean primary metric of windows ending
@@ -129,7 +129,7 @@ and prevents post-hoc fitting**.
 > - If E1 (task-distribution shift) true: measurement-noise metric increases
 >   materially across the two periods (e.g., > 1 std dev shift).
 >   Carry primary metric difference is largely explained by measurement-noise shift.
-> - If E2 (annotation drift) true: audit-rubric change count increases > 2x;
+> - If E2 (annotation drift) true: review-rubric change count increases > 2x;
 >   primary metric difference correlates with rubric-change density
 >   (r > 0.5 across rolling sub-periods).
 > - If E3 (null) true: bootstrap CI on primary metric difference includes 0;
@@ -146,56 +146,36 @@ trials drift into "let's try one more thing" territory.
 > insufficient to discriminate (sample size in 2020-2024 too small,
 > CFTC data unavailable for the period).
 
-## Freezing the pre-registration
+## Reviewing the pre-registration
 
 After the document is complete and reviewed:
 
-```bash
-python scripts/prereg_freeze.py --type prereg --id PR_<id> --path prereg/PR_<id>.md
-```
+1. Change `Status: DRAFT` to `Status: READY`.
+2. Run the trial under that PR ID.
+3. Do not silently change the plan after seeing data.
 
-This:
-1. Computes SHA-256 of the file content
-2. Writes `prereg/PR_<id>.lock` with hash + UTC timestamp + path
-3. Records the freeze in `decisions.md` as a state transition
+If a load-bearing change is needed after data inspection, record it as a
+deviation and apply the severity matrix in
+`references/pure_research/pr_workflow.md`. Major deviations require a new
+pre-registration and a new trial.
 
-After freezing, the document **cannot be edited in place**. Any change
-goes through the deviation severity matrix in
-`references/pure_research/pr_workflow.md`.
+## Post-trial comparison
 
-## prereg_diff output specification
+After the trial, compare the actual trial artifact against the written
+pre-registration and record only material differences. The comparison should
+cover:
 
-`scripts/prereg_diff.py` compares the actual trial output against the
-frozen pre-registration. The output **must include** all of:
+- the cited `prereg/PR_<id>.md`
+- actual data source / version versus the planned data identity
+- sample size, period, population, and split
+- test statistic and primary metric definition
+- multiple-testing count and correction
+- any threshold, stop-condition, or competing-explanation changes
 
-- **Pre-reg hash check**: actual `prereg/PR_<id>.md` hash matches
-  `prereg/PR_<id>.lock` (proves no in-place edit happened)
-- **Data hash match**: actual data source hash vs pre-reg-stated hash;
-  any mismatch is a major deviation
-- **Sample size match**: actual N vs pre-reg-expected N (with rounding
-  tolerance); period / population shifts manifest here
-- **Period match flag**: actual data period matches pre-reg period
-  (start and end dates within tolerance, e.g., ±5 operational days)
-- **Test statistic match**: actual statistic name matches pre-reg
-  (e.g., Pearson vs Spearman is a major deviation)
-- **Primary metric value vs pre-reg expected**: not an equality check
-  (results genuinely differ from expectations) but the recorded
-  expected value, for review
-- **Multiple testing correction**: trial count actually used vs
-  pre-reg-stated count; honest count is required for selection-adjusted statistic / Bonferroni
-
-The script returns:
-- exit code 0 if all checks pass (only acceptable: pre-reg-hash matches
-  and the semantic checks pass, even if the metric value differs from
-  expectation)
-- exit code 1 if any **major** deviation detected (data hash mismatch,
-  sample size > tolerance, period mismatch, test statistic changed,
-  multiple testing count under-reported)
-- exit code 2 if minor deviations only (proceed with documentation)
-
-The promotion gate (`references/pure_research/pr_promotion_gate.md`)
-requires `prereg_diff.py` to have been run with exit code 0 or 2 and
-the deviation log on file.
+Classify deviations with `references/pure_research/pr_workflow.md`. Minor
+deviations can be documented and carried forward. Major deviations invalidate
+the claim-cited use of that trial; use a new pre-registration for the changed
+question or design.
 
 ## HARKing prevention discipline
 
@@ -203,13 +183,13 @@ Pre-registration is enforcement, not a suggestion. The following
 patterns are explicitly prohibited:
 
 - **Post-hoc pre-registration**: writing a pre-registration after the
-  trial has run, claiming it was the plan all along. The hash-lock
-  prevents this — `prereg_freeze.py` records the timestamp and
-  refuses to backdate.
+  trial has run, claiming it was the plan all along. Treat that trial as
+  exploratory; it cannot be claim-cited without a fresh trial under a reviewed
+  pre-registration.
 - **Multiple pre-registrations**: writing several pre-registrations
-  with different test designs and only "registering" the one that
-  the data supports. Detected by `validate_ledger.py` (any prereg
-  not used by a trial that ran is flagged for review).
+  with different test designs and only using the one that the data supports.
+  Treat unused alternatives as drafts or future-trial plans; do not use them to
+  justify the completed trial.
 - **Trial-and-retry**: running a trial, ignoring the result, modifying
   the test design, and re-running. Each rerun is a new trial under a
   new pre-registration. The original trial's result is part of the
@@ -221,7 +201,7 @@ patterns are explicitly prohibited:
 - **Goalpost shift**: changing thresholds after seeing the data
   ("the trial showed primary metric difference -0.4, just under the -0.5
   threshold; let's say -0.3 was the threshold"). Detected as a major
-  deviation by `prereg_diff.py`.
+  deviation by `deviation review`.
 
 The structural defense: anything that requires changing the
 pre-registration after seeing the data is a deviation that must be
@@ -237,20 +217,20 @@ trial is invalidated and a new pre-registration is required.
 | No expected diff predictions | "We'll compute primary metric and see" | Each E must have an ex ante predicted observation |
 | Multiple testing under-reporting | "We tested one hypothesis" when 3 sub-strategies were swept | Honest trial count for selection-adjusted statistic / Bonferroni |
 | No stop condition | Trial drifts indefinitely | Specific observable condition for trial end |
-| Pre-reg post-trial | Hash timestamp falls after trial timestamp | `prereg_freeze.py` blocks; the pattern is detectable |
+| Pre-reg post-trial | pre-registration was written after the result was known | Treat the trial as exploratory; rerun under a valid pre-registration before citing it |
 
 ## Relationship to other references
 
 - Pre-conditions for pre-registration: `references/pure_research/prfaq.md`
-  (PR/FAQ frozen first) and `references/shared/literature_review.md`
+  (PR/FAQ ready first) and `references/shared/literature_review.md`
   (targeted literature complete)
-- After pre-registration freeze: trial may run. Post-trial,
+- After pre-registration review: trial may run. Post-trial,
   `references/pure_research/pr_workflow.md` § Deviation severity matrix
   decides what counts as minor vs major deviation.
 - The promotion gate
   (`references/pure_research/pr_promotion_gate.md`) requires:
-  - Pre-reg hash matches lock file
-  - prereg_diff exit code 0 or 2
-  - Deviation log on file
+  - the cited pre-registration was ready before the trial
+  - deviations are classified and major deviations are not used as claim-cited evidence
+  - deviations are documented
 - project-specific multiple-testing plan for trial-count discipline
   (Romano-Wolf, Harvey t > 3.0, Bonferroni, selection-adjusted statistic).

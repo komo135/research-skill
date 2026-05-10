@@ -5,8 +5,8 @@ questions per `references/rd/rd_charter.md`. Validates each answer against
 the discipline (concrete kill criteria, one-time vs recurring cost split,
 integration pattern declaration). Outputs charter.md.
 
-Does NOT auto-freeze. After the user reviews charter.md, run
-`scripts/prereg_freeze.py --type charter --path charter.md`.
+After the user reviews `charter.md`, change its status to READY and proceed to
+decomposition.
 
 Usage:
     python scripts/charter_interview.py --output <path-to-charter.md>
@@ -204,8 +204,7 @@ def render_charter(answers: list[Answer], project_name: str = "<REPLACE: project
     parts = [
         f"# Charter — {project_name}",
         "",
-        "Status: DRAFT (run `python scripts/prereg_freeze.py --type charter --path charter.md` to freeze)",
-        "Hash: <fill after prereg_freeze.py runs>",
+        "Status: DRAFT (change to READY after review)",
         "",
         "---",
         "",
@@ -220,10 +219,8 @@ def render_charter(answers: list[Answer], project_name: str = "<REPLACE: project
     parts.append("## Approval")
     parts.append("- Drafted by: agent (charter_interview.py)")
     parts.append("- Reviewed by: <REPLACE: user>")
-    parts.append("- Frozen at: <fill after prereg_freeze.py>")
-    parts.append("- Frozen hash: <fill after prereg_freeze.py>")
     parts.append("")
-    parts.append("After freezing, proceed to `references/rd/core_technologies.md` to define Layer 1.")
+    parts.append("After the charter is reviewed, proceed to `references/rd/core_technologies.md` to define Layer 1.")
     return "\n".join(parts)
 
 
@@ -300,8 +297,8 @@ def main() -> None:
     print()
     print("Next steps:")
     print(f"  1. Review {args.output} — fill any <REPLACE> markers")
-    print(f"  2. Run: python scripts/prereg_freeze.py --type charter --path {args.output}")
-    print("  3. Append a freeze entry to decisions.md")
+    print("  2. Change the status to READY after review")
+    print("  3. Proceed to `references/rd/core_technologies.md`")
 
 
 if __name__ == "__main__":

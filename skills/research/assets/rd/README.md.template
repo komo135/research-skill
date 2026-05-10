@@ -6,7 +6,7 @@ TRL-tracked capability map, and Cooper Stage-Gate per capability.
 ## Status
 
 - **Current state**: <REPLACE: drafting | active | assessment | promoted | killed | parked | pivoted>
-- **Charter**: [`charter.md`](charter.md) (frozen at <REPLACE: timestamp>, hash <REPLACE: short hash>)
+- **Charter**: [`charter.md`](charter.md) (status: <REPLACE: DRAFT | READY>)
 - **Capability map**: [`capability_map.md`](capability_map.md)
 - **Decisions log**: [`decisions.md`](decisions.md)
 - **Pending stop-condition decision**: <REPLACE: none | promote | kill | park | pivot>
@@ -54,14 +54,14 @@ assessment.
 ```
 <project_name>/
 ├── README.md               # this file
-├── charter.md              # frozen Heilmeier 8 Q
+├── charter.md              # reviewed Heilmeier 8 Q
 ├── capability_map.md       # Section 1 (Layer 1) + Section 2 (Layer 2)
 ├── decisions.md            # state transitions, deviation entries, session summaries
 ├── configs/                # concrete experiment configs and parameter grids
 ├── src/                    # project-specific implementation, if needed
 ├── tests/                  # verification for project-specific implementation
 ├── prereg/
-│   └── charter.lock        # SHA-256 hash + UTC timestamp from prereg_freeze.py
+│   └── charter note        # optional project note
 ├── literature/
 │   ├── papers.md           # prior work, indexed by K
 │   └── differentiation.md  # how this project differs from prior work
@@ -74,9 +74,9 @@ assessment.
 │   └── intermediate/       # parquet outputs of feature notebooks etc.
 ├── tracking/               # optional tracker exports / lightweight run notes
 └── reproducibility/
-    ├── data_hashes.txt     # sha256 of each data source
-    ├── shared_pins.txt     # commit hashes of shared/ infrastructure used
-    ├── uv.lock             # python env lock
+    ├── data_versions.txt     # version/extraction note for each data source
+    ├── shared_pins.txt     # commit references of shared/ infrastructure used
+    ├── uv.lock             # python environment pin
     └── seed.txt            # random seed(s)
 ```
 
@@ -85,7 +85,7 @@ assessment.
 For an agent or user to verify the project is in good shape at any
 point:
 
-- [ ] `charter.md` is frozen (`prereg/charter.lock` exists, hash matches)
+- [ ] `charter.md` is reviewed and status is READY
 - [ ] `capability_map.md` Section 1 is closed-for-work (per
   `references/rd/core_technologies.md` § Layer 1 closure)
 - [ ] Evidence artifacts used for capability assessment are linked from
@@ -99,7 +99,7 @@ point:
 - [ ] Selection, sweep, and failed-run records exist when they affect a
   multiple-testing or promotion judgment
 - [ ] Reproducibility 3-tuple is recorded for every promotion-eligible
-  trial via `scripts/reproducibility_stamp.py` or an equivalent selected
+  trial via a local run note, results row, or equivalent tracker record
   tracking backend
 
 ## Promotion intent

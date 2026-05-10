@@ -170,7 +170,7 @@ an explicit deviation entry.
 
 ## Schema validation
 
-`scripts/validate_ledger.py` enforces:
+The schema checker enforces:
 
 - Every capability has `core_tech_id` set and the K exists in Section 1
 - Every `core_tech_id = integration` capability has at least 2
@@ -195,9 +195,9 @@ For the measurement reliability project from
 
 | ID | capability | core_tech_id | parent_id | depends_on | dependent_on_research | current_TRL | target_TRL | exit_criteria | kill_criteria | blocking_uncertainty | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| C1 | Baseline measurement-reliability audit on one benchmark family | K1 | | | | 1 | 6 | Agreement delta ≥ 0.05 on a held-out audit subset | Agreement delta < 0.02 across 3 held-out audit subsets after verification checks pass | Whether item-level vs cohort-level framing matters | active |
+| C1 | Baseline measurement-reliability review on one benchmark family | K1 | | | | 1 | 6 | Agreement delta ≥ 0.05 on a held-out review subset | Agreement delta < 0.02 across 3 held-out review subsets after verification checks pass | Whether item-level vs cohort-level framing matters | active |
 | C2 | Verification sweep for C1 (data freshness, calibration, sign) | K1 | | | | 0 | 4 | All generic verification or domain-adapter implementation checks pass | Randomized-label benchmark passes (evaluator broken) | | active |
-| C3 | Alternative scoring protocol sweep on 6 months of audit data | K2 | | C1 | | 0 | 6 | Best alternative score improves primary metric by ≥ 0.03 on held-out data, with config recorded | All sweep configs fail to beat baseline | Whether enough data exists for stable scoring | blocked |
+| C3 | Alternative scoring protocol sweep on 6 months of review data | K2 | | C1 | | 0 | 6 | Best alternative score improves primary metric by ≥ 0.03 on held-out data, with config recorded | All sweep configs fail to beat baseline | Whether enough data exists for stable scoring | blocked |
 | C4 | Inference latency benchmark on production hardware | K3 | | | | 0 | 6 | Median latency ≤ 100ms across 1000 trial items on production HW | Median latency > 500ms with no obvious optimization remaining | | active |
 | C5 | Calibration metric vs decision benefit on shadow data | K4 | | C1 | | 0 | 6 | One calibrated outcome metric explains ≥ 70% of variance in decision-error reduction in shadow simulation | All candidate metrics explain < 30% | Decision-sizing logic is partially open at consumer side | active |
 | C6 | Integration: drive review-routing logic on 2-week shadow run | integration | | C1, C3, C4, C5 | | 0 | 6 | 2-week shadow run with all upstream caps matured AND agreement delta ≥ 0.04, ECE ≤ 0.10, latency ≤ 100ms | Shadow run decision error worse than baseline routing | | blocked |
@@ -215,7 +215,7 @@ Notes from this example:
   zero-shot baseline.
 - C6 is `integration`, with multi-cap dependency. It is `blocked` until
   C1, C3, C4, C5 all mature. The integration test cannot run earlier;
-  the promotion gate will verify the timestamp.
+  the promotion gate checks that dependency ordering.
 - Each `kill_criteria` is concrete (numeric or behavioral) and would
   itself require A4 analysis to fire (e.g., low IC after fine-tuning
   sweep — but C3 might fail because of bad hyperparameter range, not

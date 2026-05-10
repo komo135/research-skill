@@ -5,7 +5,7 @@ C2 / C3. New unit per mode:
 
 - R&D: capability (next test = next TRL transition for one capability)
 - Pure Research: explanation discrimination (next test = next discriminating
-  trial under hash-locked pre-registration)
+  trial under reviewed pre-registration)
 
 Use the mode-specific trial templates instead:
 - R&D: `assets/rd/rd_trial.py.template`

@@ -8,7 +8,7 @@ TensorBoard, Sacred, DVC, or an organizational experiment store.
 ## When to read
 
 - A trial artifact should be queryable across notebooks.
-- A claim is being considered for promotion and needs an audit trail.
+- A claim is being considered for promotion and needs an review trail.
 - Prior evidence is being compared by mode, method, context, metric, or
   failure mode.
 
@@ -68,14 +68,14 @@ Projects may add optional evidence fields such as:
     "tracking_uri": str,
     "run_id": str,
     "artifact_uri": str,
-    "data_hash_sha256": str,
+    "data_version_ref": str,
     "git_commit": str,
-    "env_lock_hash": str,
+    "env_lock_ref": str,
 }
 ```
 
 These fields are optional only for exploratory rows and for local rows where
-the information is stored in the local stamp files. They become required under
+the information is stored in the local run notes. They become required under
 the conditions below.
 
 ## Conditional required fields
@@ -89,16 +89,16 @@ promotion-eligible, or claim-cited row must include:
     "tracking_uri": str,
     "run_id": str,
     "artifact_uri": str,
-    "data_hash_sha256": str,
+    "data_version_ref": str,
     "git_commit": str,
-    "env_lock_hash": str,
+    "env_lock_ref": str,
     "seed": str,
 }
 ```
 
-When local stamp/parquet is the canonical run store, the same anchors may live
-in `reproducibility/data_hashes.txt`, `results/results.parquet`,
-`reproducibility/env_lock_hash.txt`, and `reproducibility/seed.txt`, but the
+When local notes/parquet is the canonical run store, the same anchors may live
+in `reproducibility/data_versions.txt`, `results/results.parquet`,
+`reproducibility/env_lock_ref.txt`, and `reproducibility/seed.txt`, but the
 row or ledger citation must tell reviewers where to find them.
 
 ## Decision-relevant run set / export
@@ -137,8 +137,8 @@ Backend: <MLflow / W&B / Neptune / Trackio / DVC / local parquet / other>
 Storage: <local path, tracking URI, remote project, or registry>
 Reason: <why this fits this research and collaboration model>
 Review retrieval: <how a reviewer resolves trial_id -> run record>
-Minimum persisted fields: trial_id, run_id, artifact_uri, data hash,
-git commit, env lock hash, seed, params, headline metrics
+Minimum persisted fields: trial_id, run_id, artifact_uri, data version,
+git commit, environment pin, seed, params, headline metrics
 Decision-relevant run set/export: <path or tracker query covering cited runs
 and failed/sweep/model-selection attempts that affect this claim>
 ```
@@ -185,9 +185,9 @@ append_result(
         "run_timestamp": datetime.now(timezone.utc),
         "mode": "pure-research",
         "subject": "public benchmark v2",
-        "context": "2020-2024 audit subset",
+        "context": "2020-2024 review subset",
         "split": "test",
-        "method": "paired audit comparison",
+        "method": "paired review comparison",
         "model_type": "statistical test",
         "sample_size": 223,
         "primary_metric_name": "agreement_delta",

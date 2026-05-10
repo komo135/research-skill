@@ -44,15 +44,16 @@ Prior work has established [...] (cite literature/papers.md §A, §B).
 However, prior work has not addressed [the gap], specifically [...].
 
 [Paragraph 3: this study's contribution]
-This study tests [research question, copied from frozen PR/FAQ Part 1
-headline + qualifications]. We pre-registered [pre-reg hash] before
-data inspection. The discriminating evidence is [...].
+This study tests [research question, copied from PR/FAQ Part 1 headline +
+qualifications]. The planned question, alternatives, metric, threshold, and
+stop condition are listed in `prereg/PR_<id>.md`. The discriminating evidence
+is [...].
 ```
 
 The Introduction must:
 - Cite ≥3 prior works (from `literature/papers.md`)
-- State the research question matching the frozen PR/FAQ
-- Reference the pre-registration hash (proves no HARKing)
+- State the research question matching the PR/FAQ
+- Identify the pre-registration file used for the trial
 - State the contribution in 1 sentence
 
 ### Section 2: Methods (~400-600 words)
@@ -64,12 +65,12 @@ could re-run it. Past tense throughout.
 ## 2. Methods
 
 ### 2.1 Pre-registration
-Question, competing explanations (≥2), test design, expected
-predictions per explanation, multiple testing correction. Pre-reg
-frozen at <timestamp>, hash <SHA-256>. Available at <prereg/PR_<id>.md>.
+Question, competing explanations (≥2), test design, expected predictions per
+explanation, and multiple-testing correction. Available at
+`prereg/PR_<id>.md`.
 
 ### 2.2 Data
-Source, period, frequency, hash. Universe scope.
+Source, period, frequency, and data version. Universe scope.
 
 ### 2.3 Sample
 How data was split (train / val / test, holdout replication, repeated holdout, etc.).
@@ -81,16 +82,15 @@ reject of each competing explanation. Multiple-testing correction
 method (Bonferroni / Romano-Wolf / domain-appropriate selection correction).
 
 ### 2.5 Deviations from pre-registration
-List from `prereg_diff.py` output. For each: what changed, why,
-severity (minor only — major deviations would have invalidated the
-trial per `pr_workflow.md`). If no deviations, state "none".
+List material deviations from the trial note or `decisions.md`. For each:
+what changed, why, and severity. If no deviations, state "none".
 
 ### 2.6 Reproducibility
-Data hash, code commit hash, env lock hash. Random seed(s).
+Data version, code commit, environment pin, and random seed(s).
 ```
 
 Methods must:
-- Reference the pre-reg hash (matches Section 1)
+- Identify the pre-registration file used for the trial
 - List every deviation from pre-reg (or state "none")
 - Provide reproducibility 3-tuple
 
@@ -190,8 +190,8 @@ when:
 
 - [ ] All four sections exist and meet length / content requirements
   above
-- [ ] Methods cites the pre-reg hash; pre-reg matches actual analysis
-  per `prereg_diff.py` exit 0 or 2
+- [ ] Methods identifies the pre-registration file and no unhandled major
+  deviation exists
 - [ ] Results contains observations matching each explanation's
   ex ante predictions in Methods
 - [ ] Discussion reaches A4+ analysis depth
@@ -199,7 +199,7 @@ when:
 - [ ] Negative claims (if any) are documented with mechanism and
   evidence
 - [ ] Limitations section is honest (not "no significant limitations")
-- [ ] Reproducibility 3-tuple stamped
+- [ ] Reproducibility 3-tuple recorded
 
 The promotion gate (`references/pure_research/pr_promotion_gate.md`)
 checks each of these as part of the conclusion review.
@@ -250,8 +250,8 @@ python scripts/draft_imrad.py --project <project-name>
 ```
 
 It reads:
-- `prfaq.md` (frozen) for Section 1 contribution
-- `prereg/PR_<id>.md` (frozen) for Section 2 § 2.1 and § 2.4
+- `prfaq.md` for Section 1 contribution
+- `prereg/PR_<id>.md` for Section 2 § 2.1 and § 2.4
 - `explanation_ledger.md` for Section 3 (per-explanation observations
   from `current_evidence_summary` of each E)
 - `decisions.md` for state transitions and deviation entries
@@ -267,18 +267,18 @@ The agent (or user) must:
   said one thing, the trial result says another — this gap must be
   addressed in the Discussion)
 - Write the limitations and future work sections
-- Verify the prereg hash references and reproducibility stamp
+- Verify the cited pre-registration file and reproducibility notes
 
 ## Common failure modes
 
 | Failure | Symptom | Fix |
 |---|---|---|
 | Discussion uses generic labels | "The model did well because GBM is good at variance" | Per `result_analysis.md`, decompose into mechanism-level claims |
-| Methods skips deviation list | Section 2.5 says "none" but `prereg_diff.py` showed minor deviations | Always list, even if minor |
+| Methods skips deviation list | Section 2.5 says "none" but `deviation review` showed minor deviations | Always list, even if minor |
 | Results contains interpretation | "The primary metric declined, suggesting crowding" | Move to Discussion; Results is observation only |
 | No negative claims when E was rejected | E2 status `rejected` in ledger but Discussion only discusses E1 supported | Add Discussion § 4.3 negative claim with same A4 rigor |
 | Unrealistic limitations | "No significant limitations" | Identify ≥3 honest limitations |
-| Pre-reg not cited | Section 1 doesn't mention the pre-reg hash | Without the hash citation, HARKing risk is high; cite it |
+| Pre-reg not cited | Section 1 doesn't mention the pre-registration file | Without the file citation, HARKing risk is high; cite it |
 | IMRAD generated only at the end | First draft attempted at promotion gate, found to be incoherent | Start early per § Lifecycle |
 
 ## Relationship to other references

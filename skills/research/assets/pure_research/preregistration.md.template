@@ -1,10 +1,8 @@
 # Pre-Registration — PR_<REPLACE: id, e.g., 001>
 
-Status: DRAFT (replace with `FROZEN at <YYYY-MM-DD HH:MM:SS UTC>` after
-running `python scripts/prereg_freeze.py --type prereg --id PR_<id> --path prereg/PR_<id>.md`)
-Hash: <REPLACE: SHA-256 from prereg_freeze.py output>
+Status: DRAFT (change to READY after review, before trial execution)
 
-PR/FAQ reference: <REPLACE: path to frozen prfaq.md + hash>
+PR/FAQ: <REPLACE: path to prfaq.md section that scopes this trial>
 
 ---
 
@@ -34,7 +32,7 @@ null-result) and (if correlative) the gap to causation. See
 - **Frequency**: <REPLACE: e.g., daily, 5-min>
 - **Universe**: <REPLACE: instruments included>
 - **Planned data identity**: <REPLACE: path / vendor version / expected
-  snapshot date. Final content hash is stamped at trial time.>
+  snapshot date. Fill the actual data version in the trial note.>
 
 ### 3.2 Sample / split
 
@@ -66,7 +64,7 @@ Train / val / test? Sample size per split?>
 
 ## 4. Expected diff under each explanation
 
-(Forces ex ante prediction. After the trial, prereg_diff.py compares
+(Forces ex ante prediction. After the trial, deviation review compares
 actual results against these predictions.)
 
 - **If E1 true → expected pattern**: <REPLACE: precise, observable>
@@ -82,22 +80,18 @@ this, trials drift.>
 
 - Random seed(s): <REPLACE>
 - Code commit (planned at trial run): <fill at trial time>
-- Env lock hash (planned at trial run): <fill at trial time>
+- Environment pin (planned at trial run): <fill at trial time>
 - Tracking note/backend (planned): <run note, results row, or selected tracker>
 - Decision-relevant run set (planned): <only if selection, multiple-testing correction, or promotion will depend on multiple attempts>
-- Data hash (final, trial-time): <fill from stamp script or selected tracker>
+- Data version (final, trial-time): <fill from run note or selected tracker>
 
 ---
-
-## Approval
 
 - Drafted by: <REPLACE: agent and/or user>
 - Reviewed by: <REPLACE: user>
-- Frozen at: <fill after `prereg_freeze.py` runs>
-- Frozen hash: <fill after `prereg_freeze.py` runs>
 
 ---
 
-After freezing this pre-registration, the trial may run. Post-trial,
-run `scripts/prereg_diff.py --id PR_<id>` and apply the deviation
-severity matrix in `references/pure_research/pr_workflow.md`.
+After this pre-registration is reviewed, the trial may run. Post-trial,
+compare the trial against `PR_<id>` and apply the deviation severity matrix in
+`references/pure_research/pr_workflow.md`.

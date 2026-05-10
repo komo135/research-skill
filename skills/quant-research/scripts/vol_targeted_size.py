@@ -8,7 +8,7 @@ normal returns, std ≈ MAD × √(π/2) ≈ MAD × 1.2533. The function
 `atr_to_std` performs this conversion (with an `assume` parameter so the
 caller declares whether they're providing ATR-as-MAD or ATR-as-std).
 
-Per the audit: silently treating ATR as std under-estimates true volatility
+Per the review: silently treating ATR as std under-estimates true volatility
 by ~25%, causing the vol-targeting routine to assign positions ~25% larger
 than the target_vol implies. The conversion is mandatory for honest sizing.
 

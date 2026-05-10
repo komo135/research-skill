@@ -9,7 +9,7 @@ must:
 - Add narrative paragraphs the script cannot generate from structured data
 - Reconcile any inconsistencies between artifacts
 - Write the limitations and future-work sections
-- Verify the prereg hash references and reproducibility stamp
+- Verify that planned methods and reproducibility notes are complete
 
 Usage:
     python scripts/draft_imrad.py --project-dir <path>
@@ -18,9 +18,7 @@ Usage:
 
 Inputs scanned:
     <project>/prfaq.md
-    <project>/prereg/prfaq.lock
     <project>/prereg/PR_*.md
-    <project>/prereg/PR_*.lock
     <project>/explanation_ledger.md
     <project>/decisions.md
     <project>/literature/papers.md
@@ -82,19 +80,6 @@ def get_col(row: dict[str, str], *candidates: str) -> str:
     return ""
 
 
-def parse_lock(path: Path) -> dict[str, str]:
-    out: dict[str, str] = {}
-    if not path.exists():
-        return out
-    for line in path.read_text(encoding="utf-8").splitlines():
-        s = line.strip()
-        if not s or s.startswith("#") or ":" not in s:
-            continue
-        k, _, v = s.partition(":")
-        out[k.strip()] = v.strip()
-    return out
-
-
 def extract_section(text: str, header_pattern: str) -> str:
     """Extract a section from markdown by matching its header. Returns empty
     string if not found."""
@@ -110,6 +95,12 @@ def extract_section(text: str, header_pattern: str) -> str:
     return text[start:end].strip()
 
 
+def extract_field(text: str, label: str) -> str:
+    pat = re.compile(rf"^{re.escape(label)}\s*:\s*(.+?)\s*$", re.MULTILINE | re.IGNORECASE)
+    match = pat.search(text)
+    return match.group(1).strip() if match else ""
+
+
 # ---------------------------------------------------------------------------
 # Artifact loaders
 # ---------------------------------------------------------------------------
@@ -119,9 +110,8 @@ def extract_section(text: str, header_pattern: str) -> str:
 class ProjectArtifacts:
     project_dir: Path
     prfaq_text: str = ""
-    prfaq_hash: str = ""
     prereg_files: list[Path] = None
-    prereg_hashes: dict[str, str] = None
+    prereg_notes: dict[str, dict[str, str]] = None
     ledger_q: list[dict] = None
     ledger_e: list[dict] = None
     ledger_claims: list[dict] = None
@@ -130,7 +120,7 @@ class ProjectArtifacts:
 
     def __post_init__(self):
         self.prereg_files = self.prereg_files or []
-        self.prereg_hashes = self.prereg_hashes or {}
+        self.prereg_notes = self.prereg_notes or {}
         self.ledger_q = self.ledger_q or []
         self.ledger_e = self.ledger_e or []
         self.ledger_claims = self.ledger_claims or []
@@ -143,17 +133,14 @@ def load_artifacts(project_dir: Path) -> ProjectArtifacts:
     if prfaq.exists():
         art.prfaq_text = prfaq.read_text(encoding="utf-8")
 
-    prfaq_lock = project_dir / "prereg" / "prfaq.lock"
-    info = parse_lock(prfaq_lock)
-    art.prfaq_hash = info.get("sha256", "")
-
     prereg_dir = project_dir / "prereg"
     if prereg_dir.exists():
         for md in sorted(prereg_dir.glob("PR_*.md")):
             art.prereg_files.append(md)
-            lock = prereg_dir / f"{md.stem}.lock"
-            info = parse_lock(lock)
-            art.prereg_hashes[md.stem] = info.get("sha256", "")
+            prereg_text = md.read_text(encoding="utf-8")
+            art.prereg_notes[md.stem] = {
+                "path": f"prereg/{md.name}",
+            }
 
     ledger = project_dir / "explanation_ledger.md"
     if ledger.exists():
@@ -198,8 +185,17 @@ def section_introduction(art: ProjectArtifacts, supported_e: str) -> str:
         "",
         "> " + pr_part.replace("\n", "\n> "),
         "",
-        f"This study was pre-registered. PR/FAQ hash: `{art.prfaq_hash[:16]}...`. " +
-        f"Pre-registration hash(es): " + ", ".join(f"{stem} `{h[:16]}...`" for stem, h in art.prereg_hashes.items()) + ".",
+        "The planned question and methods are documented in "
+        + "`prfaq.md` and the project pre-registration file(s): "
+        + (
+            ", ".join(
+                f"`{info.get('path', f'prereg/{stem}.md')}`"
+                for stem, info in art.prereg_notes.items()
+            )
+            if art.prereg_notes
+            else "<REPLACE: add pre-registration file path>"
+        )
+        + ".",
         "",
     ]
     return "\n".join(intro)
@@ -213,8 +209,8 @@ def section_methods(art: ProjectArtifacts, supported_e: str) -> str:
         "### 2.1 Pre-registration",
     ]
 
-    for stem in sorted(art.prereg_hashes):
-        h = art.prereg_hashes[stem]
+    for stem in sorted(art.prereg_notes):
+        note_info = art.prereg_notes[stem]
         prereg_path = art.project_dir / "prereg" / f"{stem}.md"
         text = prereg_path.read_text(encoding="utf-8") if prereg_path.exists() else ""
         question = extract_section(text, r"1\.\s*Question") or "<REPLACE>"
@@ -223,8 +219,7 @@ def section_methods(art: ProjectArtifacts, supported_e: str) -> str:
 
         methods.extend([
             f"#### Pre-reg `{stem}`",
-            f"- Hash: `{h[:16]}...`",
-            f"- Frozen: see `prereg/{stem}.lock`",
+            f"- Source: `{note_info.get('path', f'prereg/{stem}.md')}`",
             "- Question:",
             f"  > {question[:300]}{'...' if len(question) > 300 else ''}",
             "- Competing explanations (≥2 + null):",
@@ -235,7 +230,7 @@ def section_methods(art: ProjectArtifacts, supported_e: str) -> str:
     methods.extend([
         "",
         "### 2.2 Data",
-        "<REPLACE: source, period, frequency, hash from `reproducibility/data_hashes.txt`>",
+        "<REPLACE: source, period, frequency, and data version from `reproducibility/data_versions.txt`>",
         "",
         "### 2.3 Sample / split",
         "<REPLACE: split methodology, N per split>",
@@ -259,7 +254,7 @@ def section_methods(art: ProjectArtifacts, supported_e: str) -> str:
     methods.extend([
         "",
         "### 2.6 Reproducibility",
-        "<REPLACE: data hash, git commit, env lock hash from `reproducibility/`. Random seed(s).>",
+        "<REPLACE: data version note, git commit note, env lock reference from `reproducibility/`. Random seed(s).>",
         "",
     ])
     return "\n".join(methods)
@@ -378,16 +373,18 @@ def section_discussion(art: ProjectArtifacts, supported_e: str) -> str:
     return "\n".join(discussion)
 
 
-def appendix_prereg_log(art: ProjectArtifacts) -> str:
+def appendix_trial_planning_summary(art: ProjectArtifacts) -> str:
     lines = [
-        "## Appendix B: Pre-registration log",
+        "## Appendix B: Trial Planning Summary",
         "",
-        "| PR ID | Hash (truncated) | Source file |",
-        "|---|---|---|",
+        "| Trial plan | Source file |",
+        "|---|---|",
     ]
-    for stem in sorted(art.prereg_hashes):
-        h = art.prereg_hashes[stem]
-        lines.append(f"| {stem} | `{h[:16]}...` | `prereg/{stem}.md` |")
+    for stem in sorted(art.prereg_notes):
+        info = art.prereg_notes[stem]
+        lines.append(
+            f"| {stem} | `{info.get('path', f'prereg/{stem}.md')}` |"
+        )
     return "\n".join(lines)
 
 
@@ -402,9 +399,15 @@ def render_imrad(art: ProjectArtifacts, supported_e: str) -> str:
         "",
         f"Status: <REPLACE: draft | revising | promotion-ready | promoted>",
         "",
-        f"Pre-registration references:",
-        f"- PR/FAQ hash: `{art.prfaq_hash[:16] if art.prfaq_hash else '(missing)'}...`",
-        f"- Pre-reg files: " + ", ".join(art.prereg_hashes) if art.prereg_hashes else "(none)",
+        f"Planning files:",
+        f"- PR/FAQ: `prfaq.md`",
+        (
+            f"- Pre-reg files: "
+            + ", ".join(
+                f"{stem} (`{info.get('path', f'prereg/{stem}.md')}`)"
+                for stem, info in art.prereg_notes.items()
+            )
+        ) if art.prereg_notes else "(none)",
         "",
         "---",
         "",
@@ -419,7 +422,7 @@ def render_imrad(art: ProjectArtifacts, supported_e: str) -> str:
         "",
         "<REPLACE: extract bibliography from literature/papers.md, filtered to references actually cited in Sections 1-4>",
         "",
-        appendix_prereg_log(art),
+        appendix_trial_planning_summary(art),
     ]
     return "\n".join(parts)
 

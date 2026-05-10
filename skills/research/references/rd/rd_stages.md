@@ -85,7 +85,7 @@ remains the source of truth for R&D state.
 
 The loop also does not permit goalpost shifting. If a result shows that an
 exit criterion, kill criterion, threshold, data source, or test design was
-wrong, record a dated deviation and use a prospective re-scope. Do not
+wrong, record a deviation and use a prospective re-scope. Do not
 reinterpret the old result under the new criterion.
 
 ### Stage 1 — Scoping
@@ -247,8 +247,8 @@ In all patterns: demonstrate the K under representative workload.
   data flow; measure under realistic conditions
 - Measure cost (compute, latency, memory) against charter H7 budget
 - Confirm kill criteria un-fired
-- Record reproducibility 3-tuple via the selected tracking backend or
-  `scripts/reproducibility_stamp.py`
+- Record reproducibility 3-tuple via the selected tracking backend or local
+  run note
 - Final A4+ analysis
 
 **Exit (Gate 5)**:

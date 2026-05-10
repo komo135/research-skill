@@ -216,7 +216,7 @@ trial structure.
 | Confusing FWER and FDR | Project claims FWER control but uses BH-FDR (less conservative) | Document method and what's controlled |
 | Skipping correction entirely | "p-value 0.04, significant" with no correction | Promotion gate blocks; require correction |
 | Cherry-picking the favorable correction | Try Bonferroni, get rejected; try BH-FDR, get accepted; report BH-FDR | Pre-register the correction method in `preregistration.md` § 3.5 |
-| Pre-reg states 1 hypothesis but trial tests 5 | Major deviation per `pr_workflow.md` | Freeze trial, new pre-reg with honest count |
+| Pre-reg states 1 hypothesis but trial tests 5 | Major deviation per `pr_workflow.md` | Treat the trial as exploratory; create a new pre-reg with honest count |
 
 ## Implementations bundled in this skill
 

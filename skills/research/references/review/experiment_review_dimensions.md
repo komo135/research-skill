@@ -25,15 +25,15 @@ Each dimension lists:
 ### Scope
 
 Whether the question being asked is testable, whether the thresholds for
-acceptance / rejection were genuinely fixed before the result was seen, and whether the
-research state history shows honest cycles or post-hoc curation. Does NOT cover
+acceptance / rejection are stated before interpreting the result, and whether
+the research state shows honest cycles rather than post-hoc curation. Does NOT cover
 dataset / context range (that is `scope`) or method choice (that is `method`).
 
 ### Inputs
 
 - The notebook's *Research design* cell
-- The relevant design artifact and its git history (was the claim edited after results came in?)
-- The research state ledger (does the time-ordering of decisions corroborate pre-registration?)
+- The relevant design artifact
+- The research state ledger
 - `capability_map.md` or `explanation_ledger.md` (the cycle history, where applicable)
 
 ### Checks
@@ -42,8 +42,8 @@ dataset / context range (that is `scope`) or method choice (that is `method`).
 |---|---|---|
 | Question is a falsifiable comparison statement | "Does X work?" rather than "Does X beat baseline B by metric M with threshold T?" | high |
 | Acceptance condition is a numeric threshold present in the design cell | "supported if primary metric > X" not "supported if it looks good" | high |
-| Threshold pre-registration corroborated by the design artifact git history | Threshold was added or changed *after* results were observed | high |
-| Design artifact and research state ledger are git-tracked and committed | Untracked files cannot corroborate pre-registration; a self-asserted date with no commit hash is not an audit trail | high |
+| Threshold stated before interpretation | Threshold is absent until after the result is discussed | high |
+| Design artifact and research state ledger are present and readable | The reviewer cannot locate the stated design or state rows | high |
 | Claim was not silently rewritten to match the result | The claim in the abstract differs in direction or strength from the original design artifact entry | high |
 | Cycle count is ≥ 3 (minimum) or ≥ 5 (standard) | Single-shot experiment carrying the weight of the claim | medium |
 | Across cycles, the *best* result is not being cherry-picked into the abstract | C1 -> C2 -> C3 with monotonically improving primary metric and only the best one declared `supported` is selection bias | medium |
@@ -149,7 +149,7 @@ of those choices was correct (that is `validation`).
 | The proposed method beats both baselines | Proposed beats the floor but not the upper bound | high |
 | Feature construction has its own notebook with leak checks | Feature engineering and model fit in one notebook | medium |
 | Hyperparameter trial count is documented | The trial count is implicit / unstated | medium |
-| In sequential or repeated validation, hyperparameter retraining cadence is stated where applicable | Hyperparameters fixed on the early validation path then frozen across later paths, leaking early validation information into later claims | medium |
+| In sequential or repeated validation, hyperparameter retraining cadence is stated where applicable | Hyperparameters fixed on the early validation path then reused across later paths, leaking early validation information into later claims | medium |
 | Model-selection trial count is fed honestly into the multiple-testing correction | Trial count = 1 reported for an experiment that obviously tried more | high |
 | Latest version of the model class is used (or older version is justified) | Using a 2015-era LSTM design with no comment when 2024-era equivalents exist | low |
 
@@ -227,7 +227,7 @@ systematically blind to their own overstatement.
 | Deployment recommendation, if present, is supported by the testing scope | "Recommend operational use" without comparison to a strong baseline or validation on other relevant datasets | high |
 | Operational decision logic behind any deployment claim is named | Deployment claim without specifying decision rule, constraints, and monitoring boundary | medium |
 | Effect size in the abstract matches the test-set effect size, not the in-sample | Quoting an in-sample number in the abstract | high |
-| Verdict matches the *honest* selection-adjusted statistic | `verdict = "supported"` when the multiple-testing correction fails after trial-count audit | high |
+| Verdict matches the *honest* selection-adjusted statistic | `verdict = "supported"` when the multiple-testing correction fails after trial-count review | high |
 | Conclusion does not rebrand a fail as a "novel insight" | "We could not predict the outcome; this contributes to the literature on null effects" without a counter-evidence design | medium |
 | Conclusion does not rebrand a *local replication* (Weak-tier achievement) as a *novel finding* | Abstract says "this work shows that method M improves outcome Y on cohort C during period P" framed as a contribution, when the claim's pathway-forecasted tier was Medium and the achieved differentiation against established prior work is only a period or parameter extension — the work confirmed an established result; the abstract must say so | high |
 | Forward-looking claims separated from backward-looking findings | Mixing "the model achieved effect size X" with "we expect effect size X going forward" | medium |
@@ -338,7 +338,7 @@ context, but do not require files that are absent from the project tree.
 | Headline figures use plotly / altair (or the project's specified equivalent), full width, height ≥ 450 px | Static matplotlib at default size hides detail and removes interactivity | medium |
 | At least one `mo.ui` widget exists for evidence drill-down (and the widget does NOT select numbers that flow into `results.parquet`) | No drill-down; OR worse, an interactive widget feeds into the persisted result, breaking reproducibility | medium (no widget) / high (widget feeds results) |
 | A "Cannot conclude" section exists and enumerates untested dimensions | Generality is asserted by silence | high |
-| Update-reminders cell at the bottom is present and corresponding artifacts (research state ledger, `capability_map.md` or `explanation_ledger.md`, and any design artifact) are actually updated | The notebook says "remember to update X" but X is not updated — the audit trail is broken at the boundary | medium |
+| Update-reminders cell at the bottom is present and corresponding artifacts (research state ledger, `capability_map.md` or `explanation_ledger.md`, and any design artifact) are actually updated | The notebook says "remember to update X" but X is not updated — the review trail is broken at the boundary | medium |
 | Standalone-readability test: a reader who opens *only* the `.py` file (no marimo runtime, no chat context, no slides) can answer: what was investigated, why, how, and what was concluded | The `.py` file alone is insufficient — the notebook depends on out-of-file context to be understood | high |
 | Cell granularity follows the project's notebook convention, or the domain adapter's cell-granularity guide if one exists: one fit / one evaluation per cell | A single cell loops over models × features × targets, hiding which configuration produced which number | medium |
 | No unfilled `{{PLACEHOLDER}}` markers, no untouched copy-paste residue from the experiment template | Visible template artifacts indicate the notebook was generated but not curated | medium |

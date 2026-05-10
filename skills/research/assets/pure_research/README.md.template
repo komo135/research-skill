@@ -1,13 +1,13 @@
 # <REPLACE: project name>
 
 Pure Research project — reduces ignorance about a phenomenon via
-PR/FAQ + hash-locked pre-registration + competing-explanation
+PR/FAQ + reviewed pre-registration + competing-explanation
 pruning + IMRAD-shaped manuscript draft.
 
 ## Status
 
-- **Current state**: <REPLACE: prfaq-drafting | prfaq-frozen | literature-active | prereg-frozen | trial-N-running | analysis-pushing | promotion-review | promoted | killed | parked | pivoted>
-- **PR/FAQ**: [`prfaq.md`](prfaq.md) (frozen at <REPLACE: timestamp>, hash <REPLACE: short hash>)
+- **Current state**: <REPLACE: prfaq-drafting | prfaq-ready | literature-active | prereg-ready | trial-N-running | analysis-pushing | promotion-review | promoted | killed | parked | pivoted>
+- **PR/FAQ**: [`prfaq.md`](prfaq.md) (status: <REPLACE: DRAFT | READY>)
 - **Active pre-registrations**: <REPLACE: list `prereg/PR_<id>.md` files with status>
 - **Explanation ledger**: [`explanation_ledger.md`](explanation_ledger.md)
 - **Decisions log**: [`decisions.md`](decisions.md)
@@ -20,7 +20,7 @@ pruning + IMRAD-shaped manuscript draft.
 
 ## Boundary contract
 
-**Protocol/state source of truth**: `prfaq.md`, frozen pre-registrations,
+**Protocol/state source of truth**: `prfaq.md`, reviewed pre-registrations,
 `explanation_ledger.md`, and `decisions.md` define the scoped question,
 competing explanations, trial commitments, evidence status, and durable state
 transitions.
@@ -55,7 +55,7 @@ or decision entries.
 ```
 <project_name>/
 ├── README.md                   # this file
-├── prfaq.md                    # frozen Working Backwards entry doc
+├── prfaq.md                    # Working Backwards entry doc
 ├── explanation_ledger.md       # primary state object
 ├── decisions.md                # state transitions, deviation entries, session summaries
 ├── imrad_draft.md              # paper-shaped deliverable, started early
@@ -63,11 +63,8 @@ or decision entries.
 ├── src/                        # project-specific implementation, if needed
 ├── tests/                      # verification for project-specific implementation
 ├── prereg/
-│   ├── prfaq.lock              # SHA-256 + UTC timestamp from prereg_freeze.py
 │   ├── PR_001.md               # pre-registration of trial 1
-│   ├── PR_001.lock             # hash + timestamp
 │   ├── PR_002.md
-│   ├── PR_002.lock
 │   └── ...
 ├── literature/
 │   ├── papers.md               # prior work, indexed by topic
@@ -81,7 +78,7 @@ or decision entries.
 │   └── intermediate/
 ├── tracking/                   # optional tracker exports / lightweight run notes
 └── reproducibility/
-    ├── data_hashes.txt
+    ├── data_versions.txt
     ├── shared_pins.txt
     ├── uv.lock
     └── seed.txt
@@ -92,13 +89,13 @@ or decision entries.
 For an agent or user to verify the project is in good shape at any
 point:
 
-- [ ] `prfaq.md` is frozen (`prereg/prfaq.lock` exists, hash matches)
-- [ ] Every active or completed trial has a frozen pre-registration
-  (`prereg/PR_<id>.lock` exists, frozen before trial timestamp)
+- [ ] `prfaq.md` is reviewed and status is READY
+- [ ] Every active or completed trial has a reviewed pre-registration
+  (`prereg/PR_<id>.md` status is READY before claim-cited execution)
 - [ ] `explanation_ledger.md` has at least 2 competing explanations
   per active question (≥1 should be a null / artifact explanation)
 - [ ] Every trial in `purposes/` has a complete Analysis section (5
-  sub-fields, A0-A5 tier explicit) and a `prereg_diff.py` output
+  sub-fields, A0-A5 tier explicit) and a `deviation review` output
   recorded
 - [ ] `decisions.md` records durable state transitions and promotion-relevant
   deviations; ordinary run notes may stay with the tracker or trial artifact
@@ -107,11 +104,10 @@ point:
 - [ ] Selection, sweep, and failed-run records exist when they affect a
   multiple-testing or promotion judgment
 - [ ] Reproducibility 3-tuple recorded for every promotion-eligible
-  trial via `scripts/reproducibility_stamp.py` or an equivalent selected
-  tracking backend
+  trial via a local run note, results row, or equivalent tracker record
 - [ ] No major deviations from any pre-registration unaddressed (any
   major deviation should have triggered a fresh pre-registration)
-- [ ] IMRAD draft started after PR/FAQ freeze (not deferred to the end)
+- [ ] IMRAD draft started after PR/FAQ readiness (not deferred to the end)
 
 ## Promotion intent
 

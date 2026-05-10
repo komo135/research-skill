@@ -6,8 +6,8 @@ Common required fields (both modes):
     project, trial_id, mode, run_timestamp, primary_metric,
     verdict, notebook_path, analysis_tier (A0-A5)
 
-Reproducibility 3-tuple (both modes, recommended for promotion-eligible):
-    data_hash_sha256, git_commit, env_lock_hash
+Reproducibility notes (both modes, recommended for promotion-eligible):
+    data_version_note, git_commit, env_lock_ref
 
 Usage in Python:
     from aggregate_results import append_result
@@ -21,9 +21,9 @@ Usage in Python:
         "analysis_tier": "A4",
         "verdict": "supported_candidate",
         "notebook_path": "purposes/trial_007_*.py",
-        "data_hash_sha256": "...",
+        "data_version_note": "reproducibility/data_versions.txt#2026-05-03",
         "git_commit": "...",
-        "env_lock_hash": "...",
+        "env_lock_ref": "reproducibility/env_lock_ref.txt#trial_007",
     })
 
 Usage from CLI (query):
@@ -75,14 +75,13 @@ def validate_row(row: dict[str, Any]) -> list[str]:
     mode = row.get("mode")
     if mode not in VALID_MODES:
         errors.append(f"mode must be one of {VALID_MODES}, got {mode!r}")
-    elif row.get("prereg_diff_exit") is not None:
-        prereg_diff = row.get("prereg_diff_exit")
-        if prereg_diff not in (0, 1, 2):
-            errors.append(f"prereg_diff_exit must be 0/1/2, got {prereg_diff!r}")
-
     tier = row.get("analysis_tier")
     if tier and tier not in VALID_TIERS:
         errors.append(f"analysis_tier must be one of {VALID_TIERS}, got {tier!r}")
+
+    for field in ("data_version_note", "env_lock_ref"):
+        if field in row and not str(row[field]).strip():
+            errors.append(f"{field} must be a non-empty string when provided")
 
     return errors
 

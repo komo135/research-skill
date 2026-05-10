@@ -11,7 +11,7 @@ Both are lightweight, targeted reviews before any R&D transition to `matured`,
 - Before running the promotion gate
   (`rd_promotion_gate.md` / `pr_promotion_gate.md`)
 - Reviewing another agent's promotion claim
-- Auditing a project mid-stream when "something feels off" about the
+- Reviewing a project mid-stream when "something feels off" about the
   process
 
 ## Purpose
@@ -39,7 +39,7 @@ that inventory.
 For in-scope items, write:
 
 ```
-- [x] item — evidence: <file:line, hash, or specific observation>
+- [x] item — evidence: <file:line, reference, or specific observation>
 - [ ] item — FAIL: <what's missing or violated>
 - [ ] item — N/A (justify why)
 ```
@@ -76,37 +76,36 @@ These checks apply regardless of discipline:
   - For R&D: check only the relevant Layer 1 closure, Stage gate, fired kill
     criterion, charter deviation, or integration-test clearance that supports
     the transition under review
-  - For Pure Research: check only the relevant PR/FAQ freeze,
-    pre-registration freeze, `prereg_diff.py` status, explanation transition,
+  - For Pure Research: check only the relevant PR/FAQ readiness,
+    pre-registration readiness, `deviation review` status, explanation transition,
     or PR/FAQ deviation that supports the claim under review
   - Evidence: targeted per-category presence check
 - [ ] **Initial-day prohibitions respected**: no implementation /
   trial execution on day 1; only setup, scaffolding, charter / PR/FAQ
   - Evidence: review first 1-2 days' commits and decisions; flag any
     code run that produced metrics before charter / pre-reg
-    was frozen
-- [ ] **Reproducibility 3-tuple stamped** on every promotion-eligible or claim-cited
-  trial via `scripts/reproducibility_stamp.py` or an equivalent external
-  tracker record
-  - Evidence: persisted JSON stamp record in `results.parquet`, the trial
-    analysis section, or another durable run log showing data hash + git
-    commit + env lock hash
+    was ready
+- [ ] **Reproducibility 3-tuple recorded** on every promotion-eligible or claim-cited
+  trial via a local run note, results row, or equivalent external tracker record
+  - Evidence: persisted JSON run record in `results.parquet`, the trial
+    analysis section, or another durable run log showing data version + git
+    commit + environment pin
 - [ ] **Tracking backend was selected by project initialization or before the
   first load-bearing claim** and recorded in `decisions.md`
   - Evidence: backend decision names tool, storage location, review retrieval
-    path, and minimum persisted fields. Acceptable backends include the local
-    stamp/parquet default, MLflow, W&B, Neptune, Trackio, TensorBoard, Sacred,
+    path, and minimum persisted fields. Acceptable backends include local
+    notes/parquet, MLflow, W&B, Neptune, Trackio, TensorBoard, Sacred,
     DVC, or an organizational tracker.
   - Compatibility: for projects that already had valid local
-    `scripts/reproducibility_stamp.py` records before this requirement,
+    local run notes before this requirement,
     missing early backend selection is a logged gap, not a promotion blocker.
-    Treat local stamp/parquet as the implicit backend and require an explicit
+    Treat local notes/parquet as the implicit backend and require an explicit
     backend decision before the next load-bearing claim.
-- [ ] **External tracker records, if used, satisfy the same audit anchors**
-  as the local stamp protocol
+- [ ] **External tracker records, if used, satisfy the same review anchors**
+  as the local notes protocol
   - Evidence: for each load-bearing or promotion-eligible `trial_id`, reviewer
-    can resolve tracker run ID, artifact URI, data hash, git commit, env lock
-    hash, seed, params, and headline metrics
+    can resolve tracker run ID, artifact URI, data version, git commit,
+    environment pin, seed, params, and headline metrics
 - [ ] **Decision-relevant run set exists** for multiple-testing, selection
   correction, and promotion judgment when those issues apply
   - Evidence: `results/results.parquet`, tracker query/export, or durable
@@ -114,11 +113,11 @@ These checks apply regardless of discipline:
     cited winners, relevant failed attempts, parameter-sweep combinations,
     model-selection attempts, and robustness variants. A complete export of
     every exploratory run is not required unless the correction depends on it.
-- [ ] **Frozen artifacts not edited in place**: charter, PR/FAQ,
-  pre-registration files have hash matching their `.lock` files
-  - Evidence: `git log` + hash comparison
+- [ ] **Planning artifacts were not silently rewritten**: charter, PR/FAQ,
+  and pre-registration changes that affect claims have deviation entries
+  - Evidence: relevant `decisions.md` deviation entries and current planning files
 
-## R&D mode process audit
+## R&D mode process review
 
 For R&D projects only. Check in this order:
 
@@ -126,8 +125,8 @@ For R&D projects only. Check in this order:
 
 - [ ] **Charter exists** at project root (`charter.md`)
   - Evidence: file path + size > 0
-- [ ] **Charter is frozen** (`prereg/charter.lock` exists, hash matches)
-  - Evidence: `sha256sum charter.md` == content of `charter.lock`
+- [ ] **Charter is reviewed and ready**
+  - Evidence: `charter.md` status is `READY`
 - [ ] **All 8 Heilmeier questions answered** with concrete content
   (no `<REPLACE: ...>` markers, no `TBD`)
   - Evidence: regex scan against `<REPLACE` and `TBD`/`TODO`/`???`
@@ -146,9 +145,8 @@ For R&D projects only. Check in this order:
 
 - [ ] **Layer 1 closed-for-work before any capability was written**
   per `references/rd/core_technologies.md` § Layer 1 closure
-  - Evidence: `decisions.md` shows Layer 1 closure entry timestamped
-    BEFORE any Section 2 row appears in `capability_map.md` git
-    history
+  - Evidence: `decisions.md` shows Layer 1 closure before capability work is
+    treated as promotion-relevant
 - [ ] **Operational filter applied per K**: each K's
   `decisions.md`-recorded justification names which Conditions 0-3
   it passes
@@ -170,7 +168,7 @@ For R&D projects only. Check in this order:
 ### Layer 2 (Capabilities)
 
 - [ ] **Every capability has `core_tech_id` set** (or `integration`)
-  - Evidence: `validate_ledger.py` output
+  - Evidence: capability map review
 - [ ] **Capability granularity rule respected**: each capability
   sized for one test → one TRL transition
   - Evidence: per-capability `exit_criteria` is a single concrete
@@ -182,29 +180,25 @@ For R&D projects only. Check in this order:
     Evidence weighing / Tier rating / Gap
 - [ ] **TRL skip not detected**: no single state-change advanced TRL
   by > 1
-  - Evidence: `validate_ledger.py` TRL transition check
+  - Evidence: capability map transition review
 - [ ] **Stage gates ran in order**: Scoping → De-risk → Build →
   Validate → Integrate; no Stage gate ran while Layer 1 was
   incomplete
-  - Evidence: `decisions.md` Stage gate entries timestamped vs Layer
-    1 closure timestamp
+  - Evidence: Stage gate entries are ordered after Layer 1 closure
 
 ### Capability maturity dependency ordering
 
 - [ ] **For every capability C_i with `depends_on` upstream
-  capabilities, the timestamp of C_i's `matured` transition is later
-  than every upstream capability's `matured` timestamp**
-  - Evidence: `results.parquet` or `decisions.md` matured timestamps
-    per capability; for each dependency edge in
-    `capability_map.md` Section 2 `depends_on` field, verify no
-    time-reversal
+  capabilities, C_i reaches `matured` only after every upstream capability
+  reaches `matured`**
+  - Evidence: for each dependency edge in `capability_map.md` Section 2
+    `depends_on` field, verify no dependency reversal
   - Failure mode: C5 matured AFTER C6 (which depends on C5) — C6
     consumed an unmatured upstream
-- [ ] **Integration test ran AFTER all upstream `matured` timestamps**
+- [ ] **Integration test ran AFTER all upstream capabilities reached `matured`**
   (special case of dependency ordering applied to the integration
   capability)
-  - Evidence: timestamp comparison from `results.parquet` or
-    `decisions.md`
+  - Evidence: integration notes cite the upstream mature capability rows
 
 ### Cross-project dependencies
 
@@ -213,14 +207,15 @@ For R&D projects only. Check in this order:
   - Evidence: cross-reference to source project's
     `explanation_ledger.md` Claims section
 
-## Pure Research mode process audit
+## Pure Research mode process review
 
 For Pure Research projects only. Check in this order:
 
 ### PR/FAQ (per `references/pure_research/prfaq.md`)
 
 - [ ] **PR/FAQ exists** at project root (`prfaq.md`)
-- [ ] **PR/FAQ is frozen** (`prereg/prfaq.lock` exists, hash matches)
+- [ ] **PR/FAQ is reviewed and ready**
+  - Evidence: `prfaq.md` status is `READY`
 - [ ] **Part 1 (Press Release) is concrete**: states the finding,
   mechanism, scope, alternatives ruled out, evidence type
   - Evidence: read Part 1; verify all 5 elements present
@@ -231,10 +226,9 @@ For Pure Research projects only. Check in this order:
 
 ### Targeted literature
 
-- [ ] **Targeted literature search happened AFTER PR/FAQ freeze**
+- [ ] **Targeted literature search happened AFTER PR/FAQ readiness**
   (PR/FAQ scopes the search; reverse order risks unfocused search)
-  - Evidence: `decisions.md` literature search entry timestamp vs
-    `prfaq.lock` timestamp
+  - Evidence: literature notes are scoped to the ready PR/FAQ question
 - [ ] **Literature is genuinely targeted**: papers cited in
   `literature/papers.md` relate to the PR/FAQ question, not generic
   topic browsing
@@ -244,10 +238,9 @@ For Pure Research projects only. Check in this order:
 ### Pre-registration
 
 - [ ] **Pre-registration exists** for every cited trial
-  (`prereg/PR_<id>.md` + `.lock`)
-- [ ] **Pre-registration timestamp predates trial execution timestamp**
-  - Evidence: `prereg/PR_<id>.lock` UTC vs trial result timestamp in
-    `results.parquet`, selected tracker record, or decision-relevant run record
+  (`prereg/PR_<id>.md`)
+- [ ] **Pre-registration was reviewed before claim-cited execution**
+  - Evidence: `prereg/PR_<id>.md` status is `READY` before the trial is cited
 - [ ] **≥2 competing explanations + null enumerated** per pre-reg
 - [ ] **Each E has evidence type declared** (causal / correlative /
   null-result) per `references/pure_research/preregistration.md` § 2
@@ -258,12 +251,12 @@ For Pure Research projects only. Check in this order:
 
 ### Trial execution
 
-- [ ] **`prereg_diff.py` ran with exit 0 or 2** (no major deviations)
+- [ ] **`deviation review` ran with exit 0 or 2** (no major deviations)
   for every cited trial
   - Evidence: `decisions.md` records the exit code per trial
 - [ ] **Major deviations triggered new pre-registration**: if any
-  trial had a major deviation, the trial is marked frozen and a new
-  pre-reg PR_<id+1> is on file
+  trial had a major deviation, the trial is marked exploratory and a new
+  pre-reg PR_<id+1> is used for claim-cited evidence
   - Evidence: per-major-deviation entry in `decisions.md`
 - [ ] **Verification checks ran before main test** in trial notebooks
   - Evidence: trial notebook § Verification checks cell + pass status
@@ -277,20 +270,17 @@ For Pure Research projects only. Check in this order:
 (Per D-19 / C2.13 — a focused subset of pre-reg discipline checks
 specifically targeting Hypothesizing After Results are Known)
 
-- [ ] **Pre-reg hash predates first data inspection** for the trial
+- [ ] **Pre-registration was ready before the claim-cited run** for the trial
   (no shopping trip)
-  - Evidence: `prereg/PR_<id>.lock` timestamp vs first data-load
-    log entry
-- [ ] **No "alternative pre-registration" patterns**: no
-  pre-registrations on file that were not used by an actual trial
-  - Evidence: `validate_ledger.py` flags unused pre-regs
-- [ ] **Test design byte-for-byte matches pre-reg**: trial notebook
-  § Trial design (copied from frozen pre-reg) is identical to
-  `prereg/PR_<id>.md` § 3
-  - Evidence: text diff; any difference is a deviation that should
-    appear in `prereg_diff.py` output
+  - Evidence: the trial plan was reviewed before the claim-cited run
+- [ ] **No "alternative pre-registration" patterns**: multiple draft designs
+  are not selectively re-labeled after seeing a result
+  - Evidence: draft alternatives are not used to justify the completed trial
+- [ ] **Trial design follows pre-reg**: trial notebook § Trial design matches
+  `prereg/PR_<id>.md` § 3 on load-bearing choices
+  - Evidence: any material difference appears in `deviation review` output
 - [ ] **Threshold not changed after seeing data** (goalpost shifting)
-  - Evidence: `prereg_diff.py` major-deviation row for "threshold
+  - Evidence: `deviation review` major-deviation row for "threshold
     changed after seeing data" is empty
 - [ ] **All pre-registered secondary tests reported**, not just
   favorable ones
@@ -318,37 +308,37 @@ specifically targeting Hypothesizing After Results are Known)
   a new pre-registration** (per
   `references/pure_research/explanation_ledger_schema.md` allowed
   transitions)
-  - Evidence: ledger transition history; any re-open requires new
-    PR_<id> on file
+  - Evidence: the ledger entry explains the re-open and points to a new trial
+    plan
 
 ### IMRAD draft
 
-- [ ] **IMRAD draft started after PR/FAQ freeze** (not deferred to
+- [ ] **IMRAD draft started after PR/FAQ readiness** (not deferred to
   promotion review)
-  - Evidence: `imrad_draft.md` first commit timestamp ≤ PR/FAQ
-    freeze timestamp + ~1 week
+  - Evidence: `imrad_draft.md` has early Section 1 scaffolding, not a
+    single end-of-project write-up
 - [ ] **Sections 1-2 (scaffolding) updated as pre-reg / literature
   evolved**; Sections 3-4 only filled after trials with required
   analysis depth
-  - Evidence: `imrad_draft.md` git history shows incremental updates,
-    not a single end-of-project commit
+  - Evidence: `imrad_draft.md` contains early Section 1-2 scaffolding and
+    trial-backed Section 3-4 content
 - [ ] **Methods § 2.5 lists every deviation** from pre-registration
   (or states "none")
-  - Evidence: cross-reference with `prereg_diff.py` outputs
+  - Evidence: cross-reference with `deviation review` outputs
 
 ## Common process violations
 
 | Violation | Symptom | Where caught |
 |---|---|---|
 | Mode mixing without pivot protocol | R&D ledger has Pure Research artifacts (PR/FAQ, prereg) without `decisions.md` pivot entry | Common pre-conditions § Mode mixing |
-| Implementation on day 1 | Code commits before charter / PR/FAQ freeze | Common pre-conditions § Initial-day prohibitions |
-| Charter rewritten mid-project | `git log charter.md` count > deviation entry count | R&D § Charter, no undocumented amendments |
-| Layer 1 incomplete when Layer 2 work started | Section 2 rows in `capability_map.md` git history before Layer 1 closure entry | R&D § Layer 1 |
+| Implementation on day 1 | Code commits before charter / PR/FAQ readiness | Common pre-conditions § Initial-day prohibitions |
+| Charter rewritten mid-project | Material charter change has no deviation entry | R&D § Charter, no undocumented amendments |
+| Layer 1 incomplete when Layer 2 work started | Capability work is promoted before Layer 1 closure | R&D § Layer 1 |
 | TRL skip via single-update transition | TRL advances by > 1 in single state change | R&D § Layer 2 § TRL skip |
-| Integration test ran before upstream matured | Integration timestamp earlier than upstream `matured` timestamps | R&D § Integration test ordering |
-| Post-hoc pre-registration | `prereg/PR_<id>.lock` timestamp after trial result timestamp | PR § Pre-registration timestamp predates trial |
-| Major deviation treated as minor | `prereg_diff.py` exit 1 followed by "we'll just document it" | PR § Trial execution § major deviations |
-| HARKing via shopping trip | Data inspection before pre-reg lock | HARKing checklist § pre-reg hash predates inspection |
+| Integration test ran before upstream matured | Integration consumes capabilities not yet `matured` | R&D § Integration test ordering |
+| Post-hoc pre-registration | Pre-registration was completed after the result it claims to plan | PR § pre-registration before claim-cited execution |
+| Major deviation treated as minor | `deviation review` exit 1 followed by "we'll just document it" | PR § Trial execution § major deviations |
+| HARKing via shopping trip | Data inspection before pre-registration readiness | HARKing checklist § pre-registration before inspection |
 | Multiple-testing under-reporting | Headline selection-adjusted statistic computed with low N when project ran many configurations | HARKing checklist § honest trial count |
 | Generic terminal labels in conclusions | "model is good" / "regime suited" / "noise" patterns | Caught in `conclusion_review.md` analysis depth axis |
 

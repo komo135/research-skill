@@ -137,7 +137,7 @@ discipline), `df['x'].quantile(`, `df.corr()` without rolling, etc.
 
 **Helper.** None — this is a read-only review pass.
 
-### 10. Trial-count audit for DSR
+### 10. Trial-count review for DSR
 
 **What.** Enumerate every parameter combination tried across the entire project (not just
 the current notebook), feed it to `scripts/psr_dsr.py`, recompute DSR.

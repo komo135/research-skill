@@ -6,8 +6,8 @@ structure with subgraphs per K and color-coding by lifecycle (K) or
 status (C).
 
 Per CHARTER C14 (Amendment-2: two-layer decomposition) and D-23 / F5
-(critical path automation), this DAG complements `validate_ledger.py`
-visually.
+(critical path automation), this DAG provides a quick visual read of
+dependency structure and capability sequencing.
 
 Usage:
     python scripts/render_capability_dag.py --project-dir <path> > diagram.mmd
@@ -51,7 +51,7 @@ class CRow:
 
 
 def parse_md_table(text: str, header_keywords: list[str]) -> list[dict[str, str]]:
-    """Same parser as validate_ledger.py — duplicated here to keep this script standalone."""
+    """Parse the first markdown table whose headers match the requested keywords."""
     lines = text.splitlines()
     i = 0
     while i < len(lines):

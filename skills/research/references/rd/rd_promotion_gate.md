@@ -16,7 +16,7 @@ summarized, but not used to support the promotion claim.
 
 The promotion gate may not start unless:
 
-- Charter is frozen and on file (`charter.md` + `prereg/charter.lock`)
+- Charter exists and has `Status: READY`
 - `capability_map.md` Section 1 (Layer 1) is closed-for-work per
   `references/rd/core_technologies.md`
 - Process review has run (`references/review/process_review.md`)
@@ -31,11 +31,11 @@ Format: `[ ] item — required evidence — citation`
 
 ### A. Charter integrity
 
-- [ ] Charter exists, frozen, hash matches `prereg/charter.lock`
-  - Evidence: `prereg/charter.lock` SHA-256 == sha256sum of `charter.md`
+- [ ] Charter exists and is reviewed
+  - Evidence: `charter.md` status is `READY`
 - [ ] No undocumented load-bearing charter amendments (scope, kill criteria,
   H7, H8, consumer, or promotion language)
-  - Evidence: charter lock / git history reviewed against deviation entries;
+  - Evidence: current charter plus deviation entries for any material changes;
     formatting-only changes do not count as amendments
 - [ ] Charter H8 final exam criteria are met (cite the actual
   observation against the H8 criteria)
@@ -75,20 +75,19 @@ stale), all of the following:
   explanation ("model is good" / "regime suited" / "data was clean"
   patterns are blocked per `references/shared/result_analysis.md`)
   - Evidence: explicit decomposition of any explanatory phrase
-- [ ] Reproducibility 3-tuple recorded: data hash, git commit hash,
-  uv.lock hash
-  - Evidence: `scripts/reproducibility_stamp.py` output or equivalent
+- [ ] Reproducibility 3-tuple recorded: data version, git commit,
+  environment pin
+  - Evidence: local run note, results row, tracker record, or equivalent
     external tracker record for the trial
 
 ### D. Integration test ordering
 
 - [ ] Integration test (the capability with `core_tech_id == integration`)
-  ran AFTER all upstream capability `matured` timestamps
-  - Evidence: timestamp comparison from `decisions.md` session entries
-    or trial timestamps
+  ran AFTER all upstream capabilities reached `matured`
+  - Evidence: integration notes identify the upstream capabilities consumed
 - [ ] No upstream capability re-opened during integration (no
   `matured → active` transitions in the integration window)
-  - Evidence: `capability_map.md` git history during integration period
+  - Evidence: capability map entries and integration notes
 
 ### E. Cross-project dependencies
 
@@ -147,11 +146,10 @@ For each `継続改善型` core technology:
 
 ### H. Reproducibility (project-wide)
 
-- [ ] Data hash, git commit, env lock hash, and seed recorded for every
-  promotion-cited trial in local stamp files or in the selected tracker record
-  / exported run record
+- [ ] Data version, git commit, environment pin, and seed recorded for every
+  promotion-cited trial in local run notes or in the tracker export
 - [ ] All shared infrastructure pins are recorded in
-  `reproducibility/shared_pins.txt` or the selected tracker/export record per
+  `reproducibility/shared_pins.txt` or the tracker export per
   `references/rd/rd_workflow.md`
 - [ ] Decision-relevant run set covers the promotion-cited trials, failed
   attempts, and parameter-sweep/model-selection runs used for trial-count and
@@ -159,7 +157,7 @@ For each `継続改善型` core technology:
   not required.
 - [ ] If an external tracker is used, every promotion-cited `trial_id`
   resolves to a stable run ID and artifact URI containing cited metrics,
-  params, data hash, git commit, env lock hash, and seed
+  params, data version, git commit, environment pin, and seed
 
 ### I. Documentation
 
@@ -182,7 +180,7 @@ depending on lifecycle composition:
 ## YYYY-MM-DD project promoted (fully completed)
 
 Target: <H1 from charter>
-Charter hash: <sha256 from prereg/charter.lock>
+Charter: charter.md
 Final TRL: every critical-path capability at TRL-6 matured
 Lifecycle composition: all <N> core technologies are 永続型
 
@@ -190,7 +188,7 @@ Promotion claim: <H1> has been established as a TRL-6 operational
 prototype, demonstrated under <H8 final exam conditions>, with kill
 criteria un-fired (evidence cited in promotion review notes).
 
-Project is frozen. No ongoing maintenance. Future use of the
+Project is complete. No ongoing maintenance. Future use of the
 established capability does not require this project to be active.
 ```
 
@@ -200,7 +198,7 @@ established capability does not require this project to be active.
 ## YYYY-MM-DD project promoted v1 (maintenance scheduled)
 
 Target: <H1 from charter>
-Charter hash: <sha256 from prereg/charter.lock>
+Charter: charter.md
 Final TRL: every critical-path capability at TRL-6 matured
 Lifecycle composition: <X> 永続型 + <Y> 継続改善型
 
@@ -223,7 +221,7 @@ Maintenance plan: <inline or link>
 | Promote with kill criterion not explicitly checked | Section C: kill un-fired evidence required |
 | Promote with A1 or A2 analysis | Section C: A4 minimum |
 | Promote with generic "model is good" explanation | Section C: no terminal labels |
-| Promote without integration test ordering verified | Section D: timestamp check |
+| Promote without integration test ordering verified | Section D: ordering check |
 | Promote 継続改善型 project without maintenance plan | Section G: required if any 継続改善型 |
 | Promote with stale Pure Research dependency | Section E: cross-project dep check |
 | Promote with un-reproducible setup | Section H: 3-tuple recorded |
@@ -249,8 +247,8 @@ Maintenance plan: <inline or link>
 - `references/rd/trl_scale.md` (TRL-6 evidence requirements)
 - `references/shared/analysis_depth.md` (A4 requirements)
 - `references/shared/result_analysis.md` (terminal label prohibition)
-- `references/review/process_review.md` (process audit, must run before
+- `references/review/process_review.md` (process review, must run before
   this gate)
-- `references/review/conclusion_review.md` (conclusion audit, must run
+- `references/review/conclusion_review.md` (conclusion review, must run
   before this gate)
 - `references/shared/reproducibility.md` (3-tuple specification)

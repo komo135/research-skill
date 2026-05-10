@@ -13,7 +13,7 @@ Usage:
 
 Output:
     Pretty-printed summary listing each entry from the window, classified by
-    type (state transition / deviation / no-progress / freeze / promotion).
+    type (state transition / deviation / no-progress / planning update / promotion).
 
 Exit codes:
     0: summary printed successfully
@@ -34,7 +34,6 @@ from pathlib import Path
 ENTRY_PATTERNS = [
     (re.compile(r"deviation", re.IGNORECASE), "deviation"),
     (re.compile(r"no progress", re.IGNORECASE), "no-progress"),
-    (re.compile(r"frozen|freeze|freezing", re.IGNORECASE), "freeze"),
     (re.compile(r"promot", re.IGNORECASE), "promotion"),
     (re.compile(r"kill", re.IGNORECASE), "kill"),
     (re.compile(r"matured|established|supported|rejected|merged|stale|parked|active", re.IGNORECASE),
@@ -140,7 +139,7 @@ def main() -> None:
 
     # Print summary by kind
     print("Summary by kind:")
-    for kind in ("promotion", "freeze", "state transition", "stage gate", "trial",
+    for kind in ("promotion", "planning update", "state transition", "stage gate", "trial",
                  "layer 1 closure", "kill", "deviation", "no-progress", "other"):
         if kind in by_kind:
             print(f"  {kind}: {len(by_kind[kind])}")

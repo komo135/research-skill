@@ -22,20 +22,19 @@ note, tracker run, notebook note, or results row.
 ## Tracking backend entry
 
 Record this during project initialization or before the first load-bearing
-claim, whichever comes first. Existing projects that already used the local
-stamp/parquet default can add this before the next load-bearing claim and note
-the earlier implicit default.
+claim, whichever comes first. Existing projects can add this before the next
+load-bearing claim and note where prior run notes or tracker records live.
 
 ```markdown
 ## YYYY-MM-DD — tracking backend selected
 
 - **Mode**: [R&D / Pure Research]
-- **Backend**: [local stamp/parquet / MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred / DVC / organizational tracker]
+- **Backend**: [local notes/parquet / MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred / DVC / organizational tracker]
 - **Storage**: [local path, tracking URI, remote project, registry, or export path]
 - **Lightweight run record**: [run note / tracker run / notebook note / results row pattern for ordinary exploration]
 - **Decision-relevant run set**: [path or tracker query for runs needed for selection correction, multiple-testing, promotion, or external claims]
 - **Review retrieval**: [how a reviewer resolves trial_id -> run record]
-- **Minimum persisted fields for promotion-eligible or claim-cited results**: trial_id, run_id or artifact_uri, data hash, git commit, env lock hash, seed if relevant, params, headline metrics, rerun anchor
+- **Minimum persisted fields for promotion-eligible or claim-cited results**: trial_id, run_id or artifact_uri, data version, git commit, environment pin, seed if relevant, params, headline metrics, rerun guidance
 - **Reason**: [why this backend fits the research and collaboration model]
 ```
 

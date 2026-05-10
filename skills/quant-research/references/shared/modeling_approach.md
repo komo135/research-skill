@@ -67,7 +67,7 @@ Choose based on the structure of the hypothesis.
 | Failure | Check |
 |---|---|
 | Using an outdated version | Confirm the latest version exists before implementation |
-| Demoting a forecaster to a frozen feature extractor | Use the forecast distribution or the generative API directly |
+| Demoting a forecaster to a static feature extractor | Use the forecast distribution or the generative API directly |
 | Generalization failure on financial data | Always compare zero-shot vs. fine-tuned |
 | Inference cost | Cache embeddings, batch inference |
 

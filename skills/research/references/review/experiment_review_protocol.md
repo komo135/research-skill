@@ -3,7 +3,7 @@
 Dispatch and aggregation mechanics for optional experiment review. This is a
 focused subprocedure of `conclusion_review.md` for claim-bearing notebook
 artifacts. Use the smallest reviewer set that can test the claim. The
-four-reviewer version is an adversarial audit mode for high-impact promotion,
+four-reviewer version is an adversarial review mode for high-impact promotion,
 external publication, or user-requested deep review; it is not the default path
 for ordinary experiments.
 
@@ -11,7 +11,7 @@ for ordinary experiments.
 
 Before dispatching reviewers, collect the following into a context bundle. For
 ordinary targeted review, pick only the reviewer groups whose scopes bear on
-the claim. For adversarial audit mode, the three specialist reviewers receive
+the claim. For adversarial review mode, the three specialist reviewers receive
 the shared bundle plus their own group scope, and the fourth reviewer,
 adversarial cold-eye, receives a different minimum bundle.
 
@@ -65,7 +65,7 @@ re-pays for unchanged surfaces. F22 splits the dispatch into two cases.
 First time this claim-bearing artifact enters the conclusion-review subprocedure,
 or first time in a new session without a recorded clean baseline: fire the
 reviewer groups that carry the claim. Use all 4 reviewers only for high-impact
-promotion, external publication, or explicit adversarial-audit requests.
+promotion, external publication, or explicit adversarial-review requests.
 
 ### Re-verify pass
 
@@ -113,7 +113,7 @@ Available reviewer groups:
 3. `context-communication`
 4. `adversarial`
 
-When running adversarial audit mode and sub-agents are available, dispatch the
+When running adversarial review mode and sub-agents are available, dispatch the
 selected reviewers in a single tool-call batch. Sequential dispatch is the
 single-agent fallback. For ordinary targeted review, one or two reviewer groups
 may be enough.
@@ -244,7 +244,7 @@ write a review report file and does not append to `decisions.md`.
 | "Whole-file `experiment_review_dimensions.md` is safer." | Each specialist group has a structured scope. Whole-file delivery dilutes attention and collapses the input contract. If another section is genuinely needed, update the contract. |
 | "The adversary should also receive specialist context." | The asymmetry is the mechanism. Giving adversary access to project context makes it another same-prior reviewer, not a cold-eye reader. |
 | "User asked for a comprehensive review, so safer to send whole files." | Comprehensive comes from selecting the right reviewer groups and evidence, not from each reviewer reading every reference whole. |
-| "The fix is small, just re-fire all 4 to be safe." | The surface map exists to skip redundant work. Ambiguous fixes fire affected candidates plus adversary only when adversarial audit is in scope; clearly local fixes do not need the full set. |
+| "The fix is small, just re-fire all 4 to be safe." | The surface map exists to skip redundant work. Ambiguous fixes fire affected candidates plus adversary only when adversarial review is in scope; clearly local fixes do not need the full set. |
 | "I'm unsure which surface this touches, default to skipping." | Default is fire, not skip. Ambiguity is not a redundancy signal. |
 | "Cross-session: I remember the prior verdict was clean." | Without an explicit recorded clean baseline and unchanged surfaces, cross-session is Initial. |
 
@@ -289,14 +289,14 @@ create a `reviews/` folder, write any file, or modify `decisions.md`.
 
 ## Trigger discipline
 
-A high-impact adversarial audit that delivers a narrative without:
+A high-impact adversarial review that delivers a narrative without:
 
 - selected reviewer groups explicitly addressed,
 - severity tags on every finding,
 - a clearly visible verdict line and finding counts,
 - the adversarial reviewer running with the minimum bundle when adversarial
-  audit is in scope,
+  review is in scope,
 
-has not actually run the requested audit mode. Do not declare a review verdict
+has not actually run the requested review mode. Do not declare a review verdict
 from it. Ordinary targeted reviews may be shorter, but must still name scope,
 evidence read, and any claim-blocking findings.
