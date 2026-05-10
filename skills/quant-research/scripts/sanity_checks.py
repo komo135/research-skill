@@ -137,7 +137,7 @@ def pnl_reconciliation(
     else:
         # No realized_pnl provided — caller can only inspect cum_pnl_recon.
         # Emit a non-applicable ok so the caller's `if not result["ok"]:`
-        # logic doesn't KeyError (per audit fix).
+        # logic doesn't KeyError (per review fix).
         out["ok"] = None  # None = not applicable (no comparison to validate)
         out["rel_diff"] = None
     return out

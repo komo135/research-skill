@@ -205,7 +205,7 @@ def render_charter(answers: list[Answer], project_name: str = "<REPLACE: project
         f"# Charter — {project_name}",
         "",
         "Status: DRAFT (replace with `written down at <YYYY-MM-DD HH:MM:SS UTC>` after review)",
-        "note reference: <REPLACE: stable note identifier from planning-record helper output>",
+        "note reference: <REPLACE: stable note identifier from dated note output>",
         "",
         "---",
         "",

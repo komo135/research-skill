@@ -22,5 +22,5 @@ unfinished.
 
 ## Order
 
-Sequential numbering is for auditability. Dependencies and blocking state rows
+Sequential numbering is for reviewability. Dependencies and blocking state rows
 take precedence over chronology when deciding what to run next.

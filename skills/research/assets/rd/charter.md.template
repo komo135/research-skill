@@ -1,8 +1,8 @@
 # Charter — <REPLACE: project name, kebab-case>
 
-Status: DRAFT (replace with `FROZEN at <YYYY-MM-DD HH:MM:SS UTC>` after
-running `python scripts/prereg_freeze.py --type charter --path charter.md`)
-Hash: <REPLACE: SHA-256 from prereg_freeze.py output>
+Status: DRAFT (replace with `written down at <YYYY-MM-DD HH:MM:SS UTC>` after
+running `python a dated decisions note --type charter --path charter.md`)
+Note reference: <REPLACE: dated decision entry, tracker note, or reviewed file path>
 
 ---
 
@@ -51,7 +51,7 @@ possible. See § H5.>
 
 <REPLACE: list 3-5 risks. For each, name **specific observable evidence**
 that would kill the project. These evidence statements become the
-project's binding kill criteria, frozen here. See § H6 for examples.>
+project's binding kill criteria, written down here. See § H6 for examples.>
 
 1. **<risk name>**. KILL if <numeric or behavioral threshold + condition>.
 2. **<risk name>**. KILL if <...>.
@@ -109,8 +109,8 @@ upfront before any K Stage-Gate cycle:
 
 - Drafted by: <REPLACE: agent name and/or user>
 - Reviewed by: <REPLACE: user>
-- Frozen at: <fill after `prereg_freeze.py` runs>
-- Frozen hash: <fill after `prereg_freeze.py` runs>
+- Written down at: <fill after review runs>
+- Written down note reference: <fill after review>
 
 ---
 

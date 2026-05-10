@@ -198,7 +198,7 @@ def main() -> None:
     print(f"  1. Open {out_path} in marimo: marimo edit {out_path}")
     print("  2. Fill the evidence artifact header (markdown cells) per the template")
     print("  3. Run verification checks BEFORE the main test")
-    print("  4. After trial, write a plan-vs-actual helper note or a deviation note if the run drifted")
+    print("  4. After trial, write a deviation review note or a deviation note if the run drifted")
     print("  5. If used for assessment, cite this artifact and the relevant note reference from the ledger")
 
 

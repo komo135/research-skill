@@ -167,8 +167,8 @@ transition.
 An explanation reaches `supported` only when **all** of:
 
 - The Q's discriminating test against ≥1 serious alternative has been
-  run under a frozen pre-registration
-- `prereg_diff.py` exit code is 0 or 2 (no major deviations)
+  run under a written down pre-registration
+- `deviation review` exit code is 0 or 2 (no major deviations)
 - Multiple testing correction is honest and applied per
   project-specific multiple-testing plan
 - Analysis depth on the trial reaches A4 minimum (per
@@ -224,7 +224,7 @@ delete them.
 
 ## Relationship to other references
 
-- Schema validated by `scripts/validate_ledger.py`
+- Schema validated by `scripts/ledger consistency review`
 - Pre-registration drives explanation status changes — see
   `references/pure_research/preregistration.md`
 - Promotion gate operates on this ledger — see

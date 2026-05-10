@@ -53,11 +53,11 @@ def _(mo):
     - Tracking note/backend: <REPLACE: lightweight run note, results row, or selected tracker>
     - Selection/sweep record: <REPLACE: only if this artifact is used for model selection, multiple-testing correction, or promotion>
     - Run ID / artifact URI: <REPLACE: if external tracker is used>
-    - Data hash: <REPLACE: from stamp script or selected tracker if this
+    - Data version: <REPLACE: from run note or selected tracker if this
       artifact is promotion-eligible or claim-cited; otherwise link
       lightweight run note>
-    - Git commit: <REPLACE: from stamp script or selected tracker>
-    - uv.lock hash: <REPLACE: from stamp script or selected tracker>
+    - Git commit: <REPLACE: from run note or selected tracker>
+    - Environment pin reference: <REPLACE: from run note or selected tracker>
     - Random seed: <REPLACE>
     """
     )
@@ -70,7 +70,7 @@ def _(mo):
         r"""
     ## 1. Setup and data load
 
-    Load data according to the artifact design. If a frozen
+    Load data according to the artifact design. If a written down
     pre-registration cites this artifact, compare the actual data identity
     against the planned data identity during ledger assessment.
     """
@@ -82,8 +82,8 @@ def _(mo):
 def _(pd):
     # data = pd.read_parquet("<REPLACE: data path>")
     # For promotion-eligible or claim-cited artifacts, use the selected
-    # tracking backend or scripts/reproducibility_stamp.py to record the
-    # final data hash.
+    # tracking backend or selected tracker or local run note to record the
+    # final data version.
     pass
     return
 

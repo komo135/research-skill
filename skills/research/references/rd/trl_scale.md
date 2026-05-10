@@ -132,8 +132,8 @@ consumption (or, at the project level, ready for promotion review).
   scope precise)
 - Kill criteria explicitly checked and un-fired (cite the kill criterion
   ID and the evidence)
-- Reproducibility 3-tuple (data hash + git commit + env lock) recorded
-  via the selected tracking backend or `scripts/reproducibility_stamp.py`
+- Reproducibility 3-tuple (data version + git commit + environment pin) recorded
+  via the selected tracking backend or a selected tracker or local run note
 
 **Typical agent action**: Final validation under realistic load. Trigger
 the capability's row to transition `active → matured` in
@@ -162,7 +162,7 @@ either:
   trajectory is actually a single-test capability (in which case file a
   deviation entry, merge or restructure).
 
-The skill checks this in `scripts/validate_ledger.py`: any single
+The skill checks this in `scripts/ledger consistency review`: any single
 transition that advances TRL by > 1 in one row update is flagged.
 
 ## TRL is per-capability, not per-project

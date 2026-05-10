@@ -23,9 +23,9 @@ The acid test: **if you cannot write a coherent PR/FAQ, the question is
 not ready**. This is not a failure — it is a signal to refine the
 question before investing in trials.
 
-The PR/FAQ is a **frozen artifact** — once committed, it can be amended
-only with a dated deviation entry in `decisions.md`. Hash-lock via
-`scripts/prereg_freeze.py` (same mechanism as charter and
+The PR/FAQ is a **written down artifact** — once committed, it can be amended
+only with a dated deviation entry in `decisions.md`. Write down via
+a dated `decisions.md` note (same mechanism as charter and
 pre-registration).
 
 ## Two parts
@@ -73,7 +73,7 @@ question categories:
 - **Practical implication**: If a practitioner used this, what would they
   do differently? At what cost?
 - **HARKing risk**: Was the analysis pre-registered before data was
-  inspected? Show the pre-reg hash.
+  inspected? Show the pre-reg reference.
 
 10-20 FAQ entries is typical. Each gets a 1-3 sentence answer.
 
@@ -94,12 +94,12 @@ ruled out. This is an ML demo, not a research finding.
 > declined 80% in 2020-2024 vs 2010-2019 due to annotation drift,
 > not model degradation.**
 >
-> Primary agreement score for measurement reliability audits dropped from
+> Primary agreement score for measurement reliability reviews dropped from
 > 1.8 (2010-2019) to 0.4 (2020-2024). Bootstrap
 > 95% CI on the difference is [-1.65, -1.05], p < 0.01 after Bonferroni
 > correction across 3 benchmark families.
 >
-> Independent audit logs show the labeling rubric changed twice over
+> Independent review logs show the labeling rubric changed twice over
 > 2020-2024. The measurement-noise stability test weakens the alternative
 > explanation that the underlying task distribution changed fundamentally.
 >
@@ -125,7 +125,7 @@ Problem: hand-wave. Reviewer will press; this is a thin defense.
 > **Q: Is this just data mining? How many strategies were tested before
 > selecting this one?**
 > A: This was a single pre-registered hypothesis, not a search. The
-> pre-registration (hash b9d2..., frozen 2026-01-15, 5 weeks before
+> pre-registration (reference b9d2..., written down 2026-01-15, 5 weeks before
 > trial) specified the test as "rolling 3-year primary metric with bootstrap
 > CI on measurement reliability returns", with 3 competing explanations
 > (annotation drift, task-distribution shift, null). No alternative test designs were
@@ -134,7 +134,7 @@ Problem: hand-wave. Reviewer will press; this is a thin defense.
 
 ## How the PR/FAQ blocks downstream work
 
-Without a frozen PR/FAQ:
+Without a written down PR/FAQ:
 
 - **Literature search is unfocused**. You don't know what to search
   for; you'd browse "benchmark reliability" generally instead of
@@ -145,7 +145,7 @@ Without a frozen PR/FAQ:
 - **The promotion gate has no anchor**. The "discriminating test against
   ≥1 serious alternative passed" requirement is meaningless if the
   alternatives weren't named upfront.
-- **HARKing risk is high**. Without a frozen PR/FAQ, finding-driven
+- **HARKing risk is high**. Without a written down PR/FAQ, finding-driven
   rationalization is undetectable.
 
 If the user pushes to "skip PR/FAQ and just look at the data", the
@@ -190,17 +190,17 @@ ready, or the domain expertise required is missing.
 After Part 1 and Part 2 are complete and reviewed:
 
 ```bash
-python scripts/prereg_freeze.py --type prfaq --path prfaq.md
+python a dated decisions note --type prfaq --path prfaq.md
 ```
 
 This:
-1. Computes SHA-256 of the file content
-2. Writes `prereg/prfaq.lock` with hash + UTC timestamp + path
-3. Records the freeze in `decisions.md` as a state transition
+1. Computes dated note of the file content
+2. Writes `decisions.md PR/FAQ entry` with reference + UTC timestamp + path
+3. Records the write down in `decisions.md` as a state transition
 
 After freezing, **`prfaq.md` cannot be edited in place**. Any change
 requires a dated deviation entry in `decisions.md`. Frequent deviations
-to PR/FAQ are a sign the question was not ready when frozen — next
+to PR/FAQ are a sign the question was not ready when written down — next
 project, spend more time on this step.
 
 ## Common failure modes
@@ -210,12 +210,12 @@ project, spend more time on this step.
 | PR has no concrete finding | "We will study benchmark reliability" (intent, not finding) | Re-write as if research succeeded; the PR is the post-success announcement |
 | FAQ is shallow | 3-5 surface questions | Imagine a senior reviewer; what 15 questions would they ask? |
 | Mechanism unstated | "primary metric declined" without explanation | Mechanism is part of the finding; if you can't state one, the question is not ready |
-| Scope unstated | Universal claim ("the benchmark is unreliable") | Scope must be precise (public benchmark v2, audit subset, 2020-2024) |
+| Scope unstated | Universal claim ("the benchmark is unreliable") | Scope must be precise (public benchmark v2, review subset, 2020-2024) |
 | HARKing-vulnerable PR | Question phrased to fit known data ("we found that 2020-2024 differs from 2010-2019") | Re-frame ex ante: was this prediction made before looking at the data? If not, the PR is post-hoc |
 
 ## Relationship to other references
 
-- After PR/FAQ is frozen → read `references/shared/literature_review.md`
+- After PR/FAQ is written down → read `references/shared/literature_review.md`
   for targeted literature search (now scoped by the PR/FAQ).
 - Then `references/pure_research/preregistration.md` for the formal
   pre-analysis plan (PAP), which formalizes the test design.
