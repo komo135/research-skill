@@ -6,10 +6,12 @@ import tempfile
 import unittest
 import importlib.util
 import json
+import re
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+CJK_RE = re.compile(r"[\u3040-\u30ff\u4e00-\u9fff]")
 
 
 def read_text(path: str) -> str:
@@ -36,9 +38,13 @@ def read_tree_text(path: str) -> str:
     return "\n".join(parts)
 
 
+def normalize_for_assertion(text: str) -> str:
+    return " ".join(text.lower().split())
+
+
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.1.3"
+        expected = "1.1.4"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -607,6 +613,139 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("R&D returns to capability state", result_analysis)
         self.assertIn("goalpost shifting", rd_stages)
         self.assertIn("prospective re-scope", rd_stages)
+
+    def test_pure_research_preregistration_separates_target_from_initial_approach(self) -> None:
+        preregistration = read_text("skills/research/references/pure_research/preregistration.md")
+        pr_workflow = read_text("skills/research/references/pure_research/pr_workflow.md")
+        preregistration_template = read_text("skills/research/assets/pure_research/preregistration.md.template")
+        combined = "\n".join([preregistration, pr_workflow, preregistration_template])
+
+        for document in [preregistration, pr_workflow, preregistration_template]:
+            normalized = normalize_for_assertion(document)
+            for phrase in [
+                "confirmation target",
+                "initial approach",
+                "not the confirmation target itself",
+                "not a major deviation",
+                "new pr is not required",
+                "hypothesis failure",
+                "threshold miss",
+                "result interpretation",
+                "not deviation",
+            ]:
+                self.assertIn(phrase, normalized)
+
+        self.assertIn(
+            "purpose, question to resolve, and initial approach",
+            normalize_for_assertion(preregistration),
+        )
+
+        for document in [preregistration, pr_workflow]:
+            normalized = normalize_for_assertion(document)
+            for phrase in [
+                "harking",
+                "goalpost",
+                "changing thresholds",
+                "after seeing results",
+                "major",
+            ]:
+                self.assertIn(phrase, normalized)
+
+        self.assertIsNone(CJK_RE.search(combined))
+
+    def test_pure_research_separates_exploratory_and_confirmatory_research(self) -> None:
+        skill = read_text("skills/research/SKILL.md")
+        preregistration = read_text("skills/research/references/pure_research/preregistration.md")
+        pr_workflow = read_text("skills/research/references/pure_research/pr_workflow.md")
+        process_review = read_text("skills/research/references/review/process_review.md")
+        promotion_gate = read_text("skills/research/references/pure_research/pr_promotion_gate.md")
+        project_readme_template = read_text("skills/research/assets/pure_research/README.md.template")
+        prfaq_template = read_text("skills/research/assets/pure_research/prfaq.md.template")
+        preregistration_template = read_text("skills/research/assets/pure_research/preregistration.md.template")
+        new_project = read_text("skills/research/scripts/new_project.py")
+        combined = "\n".join(
+            [
+                skill,
+                preregistration,
+                pr_workflow,
+                process_review,
+                promotion_gate,
+                project_readme_template,
+                prfaq_template,
+                preregistration_template,
+                new_project,
+            ]
+        )
+        normalized = " ".join(combined.split())
+
+        for document in [skill, preregistration, pr_workflow, project_readme_template, prfaq_template]:
+            normalized_document = normalize_for_assertion(document)
+            self.assertIn("exploratory research", normalized_document)
+            self.assertIn("confirmatory research", normalized_document)
+
+        for document in [skill, preregistration]:
+            normalized_document = normalize_for_assertion(document)
+            for phrase in [
+                "clearly separates exploratory research from confirmatory research",
+                "pre-registration is a confirmatory-research tool",
+                "not exploratory research itself",
+                "higher reliability",
+                "does not have to be followed by confirmatory research",
+                "supported / external claim / high reliability claim",
+                "move to confirmatory research",
+            ]:
+                self.assertIn(phrase, normalized_document)
+
+        for document, phrases in [
+            (
+                skill,
+                ["before execution", "`pr_<id>`", "current state", "comparing the pre-reg"],
+            ),
+            (
+                preregistration,
+                ["before execution", "`pr_<id>`", "current state", "comparing the pre-reg"],
+            ),
+            (
+                pr_workflow,
+                ["before execution", "`pr_<id>`", "current state", "comparing the pre-reg"],
+            ),
+            (
+                project_readme_template,
+                ["before each confirmatory execution", "`pr_<id>`", "current state"],
+            ),
+            (
+                prfaq_template,
+                ["before execution", "`pr_<id>`", "current state"],
+            ),
+        ]:
+            normalized_document = normalize_for_assertion(document)
+            for phrase in phrases:
+                self.assertIn(phrase, normalized_document)
+
+        self.assertIn("Exploratory Research Loop", combined)
+        self.assertIn("Confirmatory Research Loop", combined)
+        self.assertIn(
+            "In confirmatory research, before execution, compare `PR_<id>` against the current state",
+            normalized,
+        )
+        self.assertIn("claim-bearing confirmation trial", combined)
+        self.assertIn("invalidated confirmatory use under the original PR", combined)
+        self.assertIn("Every claim-cited, promotion-eligible, externally shared, or", project_readme_template)
+        self.assertIn("high-reliability trial has a reviewed pre-registration", project_readme_template)
+        self.assertIn("Then choose the next path", prfaq_template)
+        self.assertIn("Exploratory research", prfaq_template)
+        self.assertIn("Confirmatory research", prfaq_template)
+        self.assertNotIn("Every active or completed trial has a reviewed pre-registration", project_readme_template)
+        self.assertNotIn("pre-registration of trial 1", project_readme_template)
+        self.assertNotIn("then pre-registration per", prfaq_template)
+        self.assertNotIn("same standard to all Pure Research trials", preregistration)
+        self.assertNotIn("pre-register first trial", combined)
+        self.assertNotIn("no implementation / trial evidence-producing runs on day 1", combined)
+        self.assertIsNone(CJK_RE.search(preregistration))
+        self.assertIsNone(CJK_RE.search(pr_workflow))
+        self.assertIsNone(CJK_RE.search(project_readme_template))
+        self.assertIsNone(CJK_RE.search(prfaq_template))
+        self.assertIsNone(CJK_RE.search(preregistration_template))
 
     def test_program_metadata_stays_out_of_evidence_artifacts_and_framework_apis(self) -> None:
         combined_templates = "\n".join(

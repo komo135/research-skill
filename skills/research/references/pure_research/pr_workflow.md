@@ -1,9 +1,9 @@
 # pr_workflow.md
 
-Operating rules for a Pure Research project across sessions: initial-day
-prohibitions, discriminating trial loop, deviation severity matrix,
-state-change logging, stop conditions, shared infrastructure governance,
-code reuse on pivot.
+Operating rules for a Pure Research project across sessions: exploratory
+research loop, confirmatory research loop, pre-registration comparison,
+deviation handling, state-change logging, stop conditions, shared
+infrastructure governance, code reuse on pivot.
 
 ## When to read
 
@@ -21,44 +21,87 @@ Pure Research first day permits **only** the following:
 - PR/FAQ (`references/pure_research/prfaq.md`)
 - Targeted literature review (`references/shared/literature_review.md`)
   scoped by the PR/FAQ
-- Pre-registration of the first trial (`references/pure_research/preregistration.md`)
+- Exploratory research planning, current-state assessment, hypothesis or
+  explanation candidates, and initial-approach search
+- Pre-registration of a confirmatory trial
+  (`references/pure_research/preregistration.md`) when a confirmation target
+  is ready
 - Empty `explanation_ledger.md` skeleton with Mode declared
 - Data infrastructure setup, environment pinning (`uv.lock`), data version
   recording, raw data sourcing, scaffold file creation
 
 Pure Research first day **prohibits**:
 
-- Any trial execution (no model fits, no trial run, no metric computed
-  on real data)
-- Any analysis section produced (no observation logging, no
-  interpretation, no decomposition)
+- Claim-bearing confirmation trial execution before a reviewed
+  pre-registration is ready
+- Presenting exploratory observations as confirmatory, `supported`, or
+  externally reliable
 - Any explanation row marked anything other than `active`
 
-Why: a trial run before the pre-registration is ready is a shopping
-trip. Once you have seen the data, "pre-registration" written
-afterwards is theater. The 30-60 minutes of PR/FAQ + 1 hour of
-pre-registration prevent months of post-hoc rationalization on weak
-findings.
+Why: exploratory research is allowed to learn what is going on. The
+prohibited move is using the same data-dependent discovery as if it had been
+planned independently. A claim-bearing confirmation trial run before the
+pre-registration is ready is a shopping trip; once you have seen the outcome,
+"pre-registration" written afterwards is theater.
 
-## The discriminating trial loop
+## Exploratory Research Loop
 
-After the initial-day setup, work proceeds in trials. Each trial is one
-unit of evidence and follows this loop:
+Use this loop when the goal is to understand the current situation, generate
+candidate explanations, test data feasibility, or find a workable initial
+approach. Exploratory work may inspect data and iterate. Its outputs are
+`exploratory` / `diagnostic`, not `supported`.
+
+```
+1. State the purpose and current uncertainty.
+2. Inspect the current situation: available data, prior notes, constraints,
+   failure modes, and obvious sanity checks.
+3. Generate or refine Q/E candidates in `explanation_ledger.md` only as
+   candidates; keep statuses `active` unless evidence is already
+   promotion-relevant.
+4. Try the smallest useful analyses, plots, probes, or model checks.
+5. Record observations, assumptions tested, and approach changes in run notes,
+   tracker rows, notebook notes, or result rows.
+6. Label conclusions explicitly as exploratory / diagnostic.
+7. Decide next: continue exploring, park/stop, or move to confirmatory
+   research if a
+   specific finding needs higher reliability.
+```
+
+Exploratory research does not have to be followed by confirmatory research.
+Exploration can end with a map, a negative diagnostic result, a parked
+question, or a decision that no claim is worth confirming. If the result will
+become a `supported / external claim / high reliability claim`, move to
+confirmatory research.
+
+## Confirmatory Research Loop
+
+Use this loop when an exploratory result, literature-derived prediction, or
+explicit research question is ready for a reliability-raising test. This is
+where pre-registration belongs.
 
 ```
 1. Identify the question to advance (which Q-row in explanation_ledger)
 2. Identify which E pair to discriminate (or test against null)
-3. Pre-register the trial (`prereg/PR_<id>.md`, `Status: READY`)
-4. Run the trial (data fetch, computation, verification checks)
-5. Deviation review against the pre-registration
-6. Analysis section: observation, decomposition, evidence weighing,
+3. Write or select the pre-registration (`prereg/PR_<id>.md`, `Status: READY`)
+4. Before execution, compare `PR_<id>` against the current state: current
+   question, exploratory result, data availability, assumptions,
+   implementation constraints, and analyst/data exposure. The purpose of
+   comparing the pre-reg against the current state is not only to follow the
+   pre-reg, but also to verify that the current state has not broken the PR's
+   assumptions.
+5. If the PR no longer matches the current situation, do not force it. Return
+   to exploratory research, write transparent changes, or create a new
+   confirmatory PR.
+6. Run the confirmatory trial (data fetch, computation, verification checks)
+7. Deviation review against the pre-registration
+8. Analysis section: observation, decomposition, evidence weighing,
    tier rating, gap to next tier (per rd_trial.py.template § 5)
-7. If the result is claim-cited or changes support, scope, or status, update
+9. If the result is claim-cited or changes support, scope, or status, update
    explanation_ledger row(s): which E weakened / strengthened / rejected /
    unchanged
-8. Record durable state transitions in decisions.md when the result changes a
+10. Record durable state transitions in decisions.md when the result changes a
    claim, promotion path, scope, park/pivot decision, or other commitment
-9. Decide next: push analysis depth on this trial, design next
+11. Decide next: push analysis depth on this trial, design next
    discriminating trial, or escalate to promotion gate
 ```
 
@@ -120,21 +163,37 @@ data without analyzing existing observations is not.
 After a trial runs, `deviation review` compares actual analysis vs the
 pre-registration. Deviations are classified per the matrix below:
 
+The review first separates **confirmation target** from **initial approach**.
+The confirmation target is the thing being tested: question, competing
+explanations, scope, primary metric, thresholds, and interpretation rules. The
+initial approach is the planned way to answer it: analysis method, estimator,
+period-fetch mechanics, data-acquisition route, implementation path, and
+operational choices.
+The initial approach is not the confirmation target itself.
+
+An initial-approach change that preserves the confirmation target, threshold,
+scope, and interpretation is not a major deviation. Record the rationale and
+continue; a new PR is not required, and do not treat the change as hypothesis
+failure. If the change alters the confirmation target, threshold, scope,
+interpretation, or multiple-testing family, classify it with the
+major-deviation rows below.
+
 | Deviation | Severity | Action |
 |---|---|---|
 | Parameter within ±10% of pre-reg (e.g., bandwidth slightly different) | minor | Record in `decisions.md` + continue trial |
 | Sample size differs by < 5% (e.g., a few rows dropped due to data quality) | minor | Record in `decisions.md` + continue trial |
 | Imputation method specified differently (e.g., median vs mean) but methodologically equivalent | minor | Record + continue |
 | Test statistic logic adjusted within the same family (e.g., Pearson → robust Pearson under same hypothesis) | minor | Record + continue |
-| **Population period shifted by > 1 year** (e.g., 2015-2024 → 2018-2024) | **major** | **Treat the trial as exploratory. Required: new pre-registration with new period.** |
+| Initial approach changed while confirmation target, threshold, scope, interpretation, and multiple-testing family are unchanged | minor | Record rationale + continue under the same PR |
+| **Population/scope period shifted by > 1 year** (e.g., confirmation target changes from 2015-2024 to 2018-2024) | **major** | **Treat the trial as exploratory. Required: new pre-registration with new scope period.** |
 | **Sample size differs by > 10%** | **major** | Document + new pre-reg |
-| **Test statistic changed across families** (e.g., Pearson → Spearman, t-test → bootstrap) | **major** | Document + new pre-reg |
+| **Test statistic or estimator changed across families in a way that changes the primary metric, threshold meaning, or interpretation** (e.g., Pearson threshold reinterpreted as Spearman threshold after seeing data) | **major** | Document + new pre-reg |
 | **Competing explanation added post-hoc** | **major** | Document + new pre-reg |
 | **Threshold changed after seeing data** (e.g., kill threshold relaxed) | **major** | Document + new pre-reg |
 | **Multiple-testing trial count under-reported** | **major** | Re-compute correction with honest count; if claim no longer holds, mark E `weakened` |
 | **Imputation method changed in a way that affects test power** (e.g., dropping vs imputing missing) | **major** | Document + new pre-reg |
-| **Hypothesis threshold near-miss**: primary metric within 10% of pre-reg threshold band (e.g., pre-reg said r > 0.6, observed r = 0.58) | **minor** | Document in `decisions.md` as "near-miss"; the explanation does not get the predicted support, treat as `weakened` rather than `supported`/`rejected` |
-| **Hypothesis threshold large miss**: primary metric > 10% from pre-reg threshold (e.g., pre-reg said r > 0.6, observed r = 0.30) | **major** | Document + new pre-reg if you want to test the boundary behavior; otherwise treat the explanation as `rejected` cleanly |
+| **Hypothesis threshold near-miss**: primary metric within 10% of pre-reg threshold band (e.g., pre-reg said r > 0.6, observed r = 0.58) | result interpretation | Threshold miss is result interpretation, not deviation. Document the observed miss; the explanation does not get the predicted support, treat as `weakened` rather than `supported`/`rejected`. New PR is not required unless a future trial changes threshold, scope, or interpretation. |
+| **Hypothesis threshold large miss**: primary metric > 10% from pre-reg threshold (e.g., pre-reg said r > 0.6, observed r = 0.30) | result interpretation | Threshold miss is result interpretation, not deviation. Interpret under the pre-registered rule, usually `rejected` or strongly `weakened`; do not create a new PR merely because the threshold was missed. |
 
 **Major deviations invalidate the trial for claim-cited use**. Record the
 major deviation in `decisions.md`, create a new pre-registration for the
@@ -144,6 +203,11 @@ exploratory result and cannot be cited as support for the claim.
 This is non-negotiable. The matrix exists because "minor" vs "major" is
 ambiguous in practice; without an explicit rubric, agents and humans
 both default to "this is minor" and the discipline collapses.
+
+HARKing and goalpost shifting remain blocking: changing thresholds or scope
+after seeing results, changing interpretation after seeing data, or adding a
+favorable explanation post-hoc is still major. The allowed flexibility applies
+only to initial-approach improvements that preserve what was being checked.
 
 ## State-change logging
 
@@ -264,11 +328,11 @@ Agent should:
 
 | Failure | Symptom | Fix |
 |---|---|---|
-| Day 1 trial run | Code computed metrics on real data before pre-registration was ready | Block; require reviewed pre-registration first; original work is exploratory |
+| Day 1 confirmation run | Code computed claim-bearing metrics before pre-registration was ready | Block confirmatory use; label the work exploratory / diagnostic and pre-register a confirmation if the claim still matters |
 | Skipping deviation review | Trial completes, no comparison to the written pre-registration | Block promotion-eligibility until deviations are recorded |
 | Treating major deviation as minor | "Period shift, but the methodology is the same" | Apply the matrix strictly; period shift > 1y is major |
 | New trial before pushing depth | Run a 2nd trial when 1st is at A2 | Force depth push first |
-| Adding E mid-trial | Discovered alternative not in pre-reg | Counts as major deviation; new pre-reg required |
+| Adding E mid-confirmation | Discovered alternative not in pre-reg and uses it to reinterpret the confirmatory result | Label as exploratory; pre-register a future confirmation if it becomes load-bearing |
 | Drift | Stale ledger | Decide Promotion / Park / Pivot / Resume before new claim-bearing work |
 | `supported` with sibling E still active | Promotion premature | All siblings must be at terminal status first |
 

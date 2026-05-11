@@ -160,14 +160,23 @@ v1.1.0, install `research@research-skill`. The old standalone
 
 ## Status
 
-Version 1.1.3 - removes registration-proof mechanisms while keeping
-plain planning documents, deviation notes, and lightweight tracking for
-promotion-eligible, externally shared, or claim-cited results.
+Version 1.1.4 - separates exploratory and confirmatory Pure Research while
+keeping pre-registration as a confirmatory tool for planned-vs-unplanned
+analysis, current-state comparison, and transparent deviation handling.
 
 <details>
 <summary>Changelog</summary>
 
-### v1.1.3 (current)
+### v1.1.4 (current)
+
+- Clarified that Pure Research has separate exploratory and confirmatory
+  workflows.
+- Clarified that pre-registration is a confirmatory-research tool, not a
+  hypothesis freeze or an automatic approach-failure trigger.
+- Added per-file regression coverage for English-only Pure Research
+  pre-registration docs/templates and `PR_<id>` vs current-state comparison.
+
+### v1.1.3
 
 - Removed registration-proof mechanisms: no hashes, frozen records, dated note
   references, registration logs, or history/timestamp comparisons for proving

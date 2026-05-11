@@ -203,7 +203,7 @@ Future work: <derived sub-questions or sibling project candidates>
 | Failure mode | Where caught |
 |---|---|
 | Promote without pre-registration | Section A: pre-reg integrity |
-| Promote with major deviation that should have invalidated trial | Section B: deviation handling |
+| Promote with major deviation that should have invalidated confirmatory use under the original PR | Section B: deviation handling |
 | Promote without discriminating test | Section C: discriminating test required |
 | Sibling E's still active when promoting | Section C: all siblings must be terminal |
 | Promote with single t > 2 from many trials (no multi-test correction) | Section D: trial count discipline |

@@ -1,14 +1,16 @@
 # <REPLACE: project name>
 
-Pure Research project — reduces ignorance about a phenomenon via
-PR/FAQ + reviewed pre-registration + competing-explanation
-pruning + IMRAD-shaped manuscript draft.
+Pure Research project — reduces ignorance about a phenomenon through
+exploratory research and, when higher reliability is needed, confirmatory
+research. The project keeps PR/FAQ, explanation candidates, exploratory /
+diagnostic notes, reviewed pre-registrations for confirmatory trials, and an
+IMRAD-shaped manuscript draft.
 
 ## Status
 
-- **Current state**: <REPLACE: prfaq-drafting | prfaq-ready | literature-active | prereg-ready | trial-N-running | analysis-pushing | promotion-review | promoted | killed | parked | pivoted>
+- **Current state**: <REPLACE: prfaq-drafting | prfaq-ready | literature-active | exploratory-active | confirmatory-prereg-ready | confirmatory-trial-running | analysis-pushing | promotion-review | promoted | killed | parked | pivoted>
 - **PR/FAQ**: [`prfaq.md`](prfaq.md) (status: <REPLACE: DRAFT | READY>)
-- **Active pre-registrations**: <REPLACE: list `prereg/PR_<id>.md` files with status>
+- **Active pre-registrations**: <REPLACE: list confirmatory `prereg/PR_<id>.md` files with status, or "none yet; exploratory">
 - **Explanation ledger**: [`explanation_ledger.md`](explanation_ledger.md)
 - **Decisions log**: [`decisions.md`](decisions.md)
 - **IMRAD draft**: [`imrad_draft.md`](imrad_draft.md) (started <REPLACE: when>; status: <REPLACE>)
@@ -20,10 +22,11 @@ pruning + IMRAD-shaped manuscript draft.
 
 ## Boundary contract
 
-**Protocol/state source of truth**: `prfaq.md`, reviewed pre-registrations,
-`explanation_ledger.md`, and `decisions.md` define the scoped question,
-competing explanations, trial commitments, evidence status, and durable state
-transitions.
+**Protocol/state source of truth**: `prfaq.md`, `explanation_ledger.md`,
+`decisions.md`, and reviewed pre-registrations for confirmatory trials define
+the scoped question, competing explanations, evidence status, and durable
+state transitions. Exploratory notes may inform candidates; they do not become
+claim-cited evidence until confirmed.
 
 **Project-instance artifacts**: `configs/`, `src/`, `tests/`, `purposes/`,
 and `results/` contain concrete universes, data paths, model definitions,
@@ -63,7 +66,7 @@ or decision entries.
 ├── src/                        # project-specific implementation, if needed
 ├── tests/                      # verification for project-specific implementation
 ├── prereg/
-│   ├── PR_001.md               # pre-registration of trial 1
+│   ├── PR_001.md               # confirmatory pre-registration, when needed
 │   ├── PR_002.md
 │   └── ...
 ├── literature/
@@ -90,8 +93,15 @@ For an agent or user to verify the project is in good shape at any
 point:
 
 - [ ] `prfaq.md` is reviewed and status is READY
-- [ ] Every active or completed trial has a reviewed pre-registration
-  (`prereg/PR_<id>.md` status is READY before claim-cited execution)
+- [ ] Exploratory research and confirmatory research are labeled separately in
+  run notes, tracker rows, notebooks, or result rows
+- [ ] Every claim-cited, promotion-eligible, externally shared, or
+  high-reliability trial has a reviewed pre-registration (`prereg/PR_<id>.md`
+  status is READY before confirmatory execution)
+- [ ] Before each confirmatory execution, `PR_<id>` was compared against the
+  current state:
+  exploratory result, data availability, assumptions, implementation
+  constraints, and current question still match the PR
 - [ ] `explanation_ledger.md` has at least 2 competing explanations
   per active question (≥1 should be a null / artifact explanation)
 - [ ] Every trial in `purposes/` has a complete Analysis section (5

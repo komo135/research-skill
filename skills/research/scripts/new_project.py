@@ -191,13 +191,14 @@ def print_next_steps(project_dir: Path, mode: str) -> None:
         print(f"  3. Run targeted literature: python scripts/lit_fetch.py --project-dir {project_dir} --query '<your query>'")
         print(f"  4. Choose a lightweight tracking path before the first load-bearing claim")
         print(f"     Record the review path and decision note in {project_dir}/decisions.md")
-        print(f"  5. Edit {project_dir}/prereg/PR_001.md — pre-register first trial")
-        print(f"  6. Review PR_001 before execution")
-        print(f"  7. Edit {project_dir}/explanation_ledger.md — add Q1 + ≥2 competing E + null")
-        print(f"  8. Run: python scripts/new_trial.py --project-dir {project_dir} --slug <trial_slug> --prereg-id PR_001 --question-id Q1 --discriminating 'E1 vs E2'")
+        print(f"  5. Choose path: exploratory research first, or confirmatory PR_001 if a confirmation target is ready")
+        print(f"  6. For confirmatory work, compare PR_001 with current state before execution")
+        print(f"  7. Edit {project_dir}/explanation_ledger.md — add Q1 + ≥2 competing E + null candidates")
+        print(f"  8. Optional confirmatory run: python scripts/new_trial.py --project-dir {project_dir} --slug <trial_slug> --prereg-id PR_001 --question-id Q1 --discriminating 'E1 vs E2'")
     print()
-    print("Reminder: per SKILL.md § Initial-day prohibitions, no implementation / trial")
-    print("evidence-producing runs on day 1. Setup, charter / PR-FAQ, and pre-registration only.")
+    print("Reminder: per SKILL.md § Initial-day prohibitions, no claim-bearing")
+    print("confirmation trial runs before the required plan is ready. Exploratory")
+    print("work must be labeled exploratory / diagnostic.")
 
 
 def main() -> None:

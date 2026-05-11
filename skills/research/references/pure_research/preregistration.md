@@ -1,36 +1,84 @@
 # preregistration.md
 
 AEA-style Pre-Analysis Plan (PAP) — the planned design document that
-the trial must follow. Pre-registration is the single most effective
-intervention against p-hacking and post-hoc rationalization. In this skill it
-is mandatory for Pure Research trials that may support a claim, promote an
-explanation to `supported`, or be shared externally as load-bearing evidence.
-Exploratory probes may remain lightweight, but must be rerun under a reviewed
-pre-registration before they become claim-cited.
+a confirmatory trial must follow. Pure Research clearly separates exploratory
+research from confirmatory research. Exploratory research handles purpose,
+current-state assessment, hypothesis or explanation candidates,
+initial-approach search, and observations; its outputs remain `exploratory` /
+`diagnostic`. Confirmatory research exists to confirm exploratory findings
+with higher reliability.
+
+Pre-registration is a confirmatory-research tool, not exploratory research
+itself. It is the
+mechanism for distinguishing planned confirmatory work from unplanned
+exploratory work. Both are legitimate. The problem is mixing them and then
+reporting a data-dependent discovery as if it had been planned in advance.
+
+Exploratory research does not have to be followed by confirmatory research. If
+the output is a
+diagnostic map, candidate explanations, or a stop/park decision, exploratory
+work may be sufficient. If the output will become a `supported / external
+claim / high reliability claim`, move to confirmatory research. In this skill
+pre-registration is mandatory for Pure Research trials that may support a
+claim, promote an explanation to `supported`, or be shared externally as
+load-bearing evidence. Exploratory probes may remain lightweight, but must be
+confirmed under a reviewed pre-registration, holdout/new data, or another
+explicit confirmatory design before they become claim-cited.
 
 ## When to read
 
 - Designing a Pure Research trial (after PR/FAQ is ready and targeted
   literature is done)
+- Deciding whether a result is exploratory or confirmatory
 - Reviewing whether a deviation from pre-registration is acceptable
 - Running post-trial deviation review
 
 ## Purpose
 
 Pre-registration states the **question, competing explanations, test design,
-and expected outcomes** before any data is inspected. After the trial, compare
-the actual analysis against the pre-registration and record material
-deviations. Minor deviations can be carried forward; major deviations require a
-fresh trial before the result can support a claim.
+conditional decision tree, and expected outcomes** before the confirmatory
+analysis is run. In confirmatory research, before execution, compare
+`PR_<id>` against the current state: exploratory result, data availability,
+assumptions, implementation constraints, and current question. The purpose of
+comparing the pre-reg against the current state is not only to follow the
+pre-reg, but also to verify that the current state has not broken the PR's
+assumptions.
+If the PR no longer matches the current situation, return to exploratory
+research or create a new confirmatory PR before running the trial.
+
+After the trial, compare the actual analysis against the pre-registration and
+record material differences. Pre-registration is a plan, not a prison: changes
+do not make the work worthless, but they must be labeled. Planned analyses
+remain confirmatory; unplanned analyses are exploratory or require transparent
+changes / a new confirmatory design before supporting a claim.
 
 The mechanism: HARKing (Hypothesizing After Results are Known) and the garden
-of forking paths are reduced when the design is written before the data is
-touched. Without pre-registration, finding-driven narrative shifts are too easy
-to rationalize.
+of forking paths are reduced when planned and unplanned work are separated.
+Without that separation, finding-driven narrative shifts are too easy to
+rationalize.
 
 AEA requires pre-registration for all field experiments submitted to its
-journals since 2018. This skill applies the same standard to all Pure
-Research trials.
+journals since 2018. This skill applies that standard to confirmatory,
+promotion-eligible, claim-cited, or externally shared Pure Research trials.
+It does not make exploratory probes illegal; it requires that they be labeled
+as exploratory and confirmed before they support a high-reliability claim.
+
+Pre-registration is not a freeze on the hypothesis. It separates
+**purpose, question to resolve, and initial approach**:
+
+- **confirmation target**: the question, competing explanations, scope, primary metric,
+  thresholds, and interpretation rules that determine what the trial can
+  claim.
+- **initial approach**: the planned analysis method, estimator, data-acquisition
+  route, implementation path, and operational choices used to answer the
+  confirmation target.
+
+The initial approach is not the confirmation target itself. Evidence, data availability,
+or implementation constraints may justify changing the initial approach, as
+long as the change does not alter the confirmation target, threshold, scope,
+or interpretation. Such changes must be documented in the trial note or
+deviation review, but they are not automatically hypothesis failure, major
+deviation, or grounds for a new PR.
 
 ## Required content
 
@@ -105,6 +153,12 @@ Multiple testing: <how many distinct hypotheses or sub-strategies are
                    (Bonferroni / Romano-Wolf / domain-appropriate selection correction)>
 ```
 
+Also state which parts are the **confirmation target** and which are the
+**initial approach**. The confirmation target includes the metric, threshold,
+scope, and interpretation rules. The initial approach includes estimator,
+analysis method, implementation route, data-fetch method, and operational
+choices that can be updated if the confirmation target is preserved.
+
 > Example:
 > - Data: public benchmark review records, period 2010-01 through 2024-12,
 >   data version a3f8...
@@ -159,6 +213,11 @@ deviation and apply the severity matrix in
 `references/pure_research/pr_workflow.md`. Major deviations require a new
 pre-registration and a new trial.
 
+An initial-approach change that preserves the confirmation target, threshold,
+scope, and interpretation is not a major deviation. Document the reason and
+continue under the same PR; a new PR is not required, and do not treat the
+change as hypothesis failure.
+
 ## Post-trial comparison
 
 After the trial, compare the actual trial artifact against the written
@@ -176,6 +235,12 @@ Classify deviations with `references/pure_research/pr_workflow.md`. Minor
 deviations can be documented and carried forward. Major deviations invalidate
 the claim-cited use of that trial; use a new pre-registration for the changed
 question or design.
+
+Threshold miss is result interpretation, not deviation: if the observed value
+misses the pre-registered threshold, do not relabel that miss as a deviation or
+create a new PR merely to rescue the result. Interpret it under the
+pre-registered rules. A new PR is needed only for a future trial with a changed
+confirmation target, threshold, scope, or interpretation.
 
 ## HARKing prevention discipline
 
@@ -207,6 +272,10 @@ The structural defense: anything that requires changing the
 pre-registration after seeing the data is a deviation that must be
 documented; if the deviation is "major" per the severity matrix, the
 trial is invalidated and a new pre-registration is required.
+This does not prohibit documented updates to the initial approach when the
+confirmation target stays fixed. It does prohibit changing thresholds or scope
+after seeing results, post-hoc interpretation changes, and other goalpost shift
+patterns.
 
 ## Common failure modes
 

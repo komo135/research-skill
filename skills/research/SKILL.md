@@ -39,7 +39,7 @@ into two projects with separate ledgers.
 | Discipline | Use when | Entry document | Primary state object | Deliverable |
 |---|---|---|---|---|
 | **R&D** | The goal is to make a technical capability exist | `references/rd/rd_charter.md` (Heilmeier 8 questions) | `capability_map.md` (TRL + kill criteria) | TRL-6 demonstrated capability with A4+ analysis |
-| **Pure Research** | The goal is to understand a phenomenon | `references/pure_research/prfaq.md` + `references/pure_research/preregistration.md` | `explanation_ledger.md` (questions + competing explanations) | IMRAD-shaped manuscript draft with A4+ analysis |
+| **Pure Research** | The goal is to understand a phenomenon | `references/pure_research/prfaq.md`, then exploratory or confirmatory path | `explanation_ledger.md` (questions + competing explanations) | IMRAD-shaped manuscript draft with A4+ analysis |
 
 If the discipline shifts mid-trial, never silently switch. Use the **pivot
 protocol**:
@@ -218,20 +218,39 @@ each linked reference before executing the step:
    survey prior work scoped by the PR/FAQ, including the user's own past
    notebooks and decisions. Stop when competing explanations are clear and
    prior failure modes are documented.
-3. **Pre-registration** (`references/pure_research/preregistration.md`) —
+3. **Exploratory / confirmatory research choice** — Pure Research clearly
+   separates exploratory research from confirmatory research. Exploratory
+   research handles purpose, current-state assessment, hypothesis or
+   explanation candidates, initial-approach search, and observations; its
+   outputs remain `exploratory` / `diagnostic`. Confirmatory research exists
+   to confirm exploratory findings with higher reliability. Exploratory
+   research does not have to be followed by confirmatory research.
+   If the outcome is a map of observations, candidate explanations, or a
+   stop/park decision, exploratory work may be sufficient. If the result will
+   become a `supported / external claim / high reliability claim`, then
+   move to confirmatory research.
+4. **Pre-registration** (`references/pure_research/preregistration.md`) —
+   pre-registration is a confirmatory-research tool, not exploratory
+   research itself.
    state the question, competing explanations (≥2), test design, and expected
-   contrast under each explanation before the trial. After the trial,
-   compare actual analysis against the planned design and note any deviations.
-4. **Explanation ledger**
+   contrast under each explanation before the trial. In confirmatory research,
+   before execution, compare `PR_<id>` against the current state: exploratory
+   result, data availability, assumptions, implementation constraints, and
+   current question. The purpose of comparing the pre-reg against the current
+   state is not only to follow the pre-reg, but also to verify that the current
+   state has not broken the PR's assumptions.
+   After the trial, compare actual analysis against the planned design and
+   note any deviations.
+5. **Explanation ledger**
    (`references/pure_research/explanation_ledger_schema.md`) — single state
    object. Claim-cited or promotion-relevant results update explanation rows;
    exploratory observations may stay in run notes until they become
    load-bearing.
-5. **Workflow** (`references/pure_research/pr_workflow.md`) — discriminating
-   trial loop, deviation handling (deviation severity rubric is enforced
-   here), state-change logging, stop conditions. Push analysis depth on the
-   current trial before designing a new trial.
-6. **Promotion** (`references/pure_research/pr_promotion_gate.md`) — promote a
+6. **Workflow** (`references/pure_research/pr_workflow.md`) — Exploratory
+   Research Loop and Confirmatory Research Loop, deviation handling,
+   state-change logging, stop conditions. Push analysis depth on the current
+   result before collecting more data or designing a confirmatory trial.
+7. **Promotion** (`references/pure_research/pr_promotion_gate.md`) — promote a
    claim only when a discriminating test against ≥1 serious alternative
    passed, multiple-testing correction is honest, analysis depth reaches
    A4+, and an IMRAD draft (`references/pure_research/imrad_draft.md`) is
@@ -441,13 +460,15 @@ the final report must carry enough intuitive evidence for human judgment.
     exist accumulates sunk cost that biases future kill decisions.
     Typical time investment: 1-2 hours of charter writing prevents weeks
     of effort on a misframed target.
-  - Pure Research first day: no trial execution, PR/FAQ + targeted
-    literature + pre-registration only. *Why*: a pre-registered test
-    survives the garden of forking paths. A trial run before the
-    pre-registration is ready is a shopping trip — once you have seen the
-    data, "pre-registration" is theater. Typical time investment: 30-60
-    minutes of PR/FAQ writing prevents months of post-hoc rationalization
-    on weak findings.
+  - Pure Research first day: do not run a claim-bearing confirmation trial.
+    PR/FAQ, targeted literature, exploratory planning, explanation
+    candidates, lightweight exploratory probes, scaffold setup, and — when a
+    claim will need high reliability — pre-registration are allowed. *Why*:
+    exploratory research may map the problem before a confirmation target
+    exists, but a claim-bearing confirmatory trial must survive the garden of
+    forking paths. A confirmation trial run before the pre-registration is
+    ready is a shopping trip — once you have seen the data,
+    "pre-registration" is theater.
   - **What IS allowed on day 1**: data infrastructure setup, environment
     pinning (`uv.lock`), data version recording, raw data sourcing, scaffold
     file creation. The prohibition targets evidence-producing work

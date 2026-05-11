@@ -80,11 +80,13 @@ These checks apply regardless of discipline:
     pre-registration readiness, `deviation review` status, explanation transition,
     or PR/FAQ deviation that supports the claim under review
   - Evidence: targeted per-category presence check
-- [ ] **Initial-day prohibitions respected**: no implementation /
-  trial execution on day 1; only setup, scaffolding, charter / PR/FAQ
+- [ ] **Initial-day prohibitions respected**: no claim-bearing confirmation
+  trial before the required plan is ready. Exploratory probes are allowed
+  when they are labeled exploratory / diagnostic and are not used as
+  `supported` or externally reliable evidence.
   - Evidence: review first 1-2 days' commits and decisions; flag any
-    code run that produced metrics before charter / pre-reg
-    was ready
+    confirmation run that produced claim-bearing metrics before charter /
+    pre-reg was ready, or any exploratory output presented as confirmatory
 - [ ] **Reproducibility 3-tuple recorded** on every promotion-eligible or claim-cited
   trial via a local run note, results row, or equivalent external tracker record
   - Evidence: persisted JSON run record in `results.parquet`, the trial
@@ -338,7 +340,7 @@ specifically targeting Hypothesizing After Results are Known)
 | Integration test ran before upstream matured | Integration consumes capabilities not yet `matured` | R&D § Integration test ordering |
 | Post-hoc pre-registration | Pre-registration was completed after the result it claims to plan | PR § pre-registration before claim-cited execution |
 | Major deviation treated as minor | `deviation review` exit 1 followed by "we'll just document it" | PR § Trial execution § major deviations |
-| HARKing via shopping trip | Data inspection before pre-registration readiness | HARKing checklist § pre-registration before inspection |
+| HARKing via shopping trip | Data-dependent result presented as if it had been planned before pre-registration readiness | HARKing checklist § pre-registration before claim-cited execution |
 | Multiple-testing under-reporting | Headline selection-adjusted statistic computed with low N when project ran many configurations | HARKing checklist § honest trial count |
 | Generic terminal labels in conclusions | "model is good" / "regime suited" / "noise" patterns | Caught in `conclusion_review.md` analysis depth axis |
 
