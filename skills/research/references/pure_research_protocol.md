@@ -1,6 +1,6 @@
 # pure_research_protocol.md (RETIRED)
 
-Replaced by the Pure Research mode references:
+Replaced by the Phenomenon / Mechanism Research references:
 
 - `references/pure_research/prfaq.md` — Amazon Working Backwards (PR/FAQ
   entry document, reviewed)

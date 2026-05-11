@@ -6,6 +6,7 @@ import tempfile
 import unittest
 import importlib.util
 import json
+import os
 import re
 from pathlib import Path
 
@@ -44,7 +45,7 @@ def normalize_for_assertion(text: str) -> str:
 
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.1.4"
+        expected = "1.1.5"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -54,6 +55,18 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertEqual(expected, claude_plugin["version"])
         self.assertEqual(expected, claude_marketplace["plugins"][0]["version"])
         self.assertIn(f"### v{expected} (current)", readme)
+
+    def test_superpowers_specs_are_not_tracked_plugin_artifacts(self) -> None:
+        result = subprocess.run(
+            ["git", "ls-files", "docs/superpowers/specs"],
+            check=True,
+            cwd=ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+
+        self.assertEqual("", result.stdout.strip())
 
     def test_plugin_identity_is_research_skill(self) -> None:
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
@@ -128,9 +141,11 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertIn("before the first load-bearing claim", result.stdout)
 
             project = Path(tmp) / "alpha"
+            workstream = project / "workstreams" / "WS001-capability"
             for path in [
-                "charter.md",
-                "capability_map.md",
+                "project_state.md",
+                "workstreams/WS001-capability/charter.md",
+                "workstreams/WS001-capability/capability_map.md",
                 "decisions.md",
                 "configs/.gitkeep",
                 "src/.gitkeep",
@@ -140,6 +155,9 @@ class ProjectBoundaryTests(unittest.TestCase):
                 "tracking/.gitkeep",
             ]:
                 self.assertTrue((project / path).exists(), path)
+            self.assertFalse((project / "charter.md").exists())
+            self.assertFalse((project / "capability_map.md").exists())
+            self.assertTrue(workstream.exists())
 
             decisions = (project / "decisions.md").read_text(encoding="utf-8")
             self.assertIn("tracking backend selected", decisions)
@@ -174,9 +192,397 @@ class ProjectBoundaryTests(unittest.TestCase):
             )
 
             project = Path(tmp) / "alpha"
-            self.assertTrue((project / "prereg/PR_001.md").exists())
-            content = (project / "prereg/PR_001.md").read_text(encoding="utf-8")
+            workstream = project / "workstreams" / "WS001-phenomenon"
+            self.assertTrue((workstream / "prereg/PR_001.md").exists())
+            self.assertFalse((project / "prereg/PR_001.md").exists())
+            self.assertFalse((project / "explanation_ledger.md").exists())
+            content = (workstream / "prereg/PR_001.md").read_text(encoding="utf-8")
             self.assertIn("Pre-Registration", content)
+
+    def test_mode_shortcut_generated_docs_do_not_reclassify_the_project(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            for project_name, mode, workstream_name, expected_label in [
+                (
+                    "cap",
+                    "rd",
+                    "WS001-capability",
+                    "Capability / Technology Research workstream",
+                ),
+                (
+                    "phen",
+                    "pure-research",
+                    "WS001-phenomenon",
+                    "Phenomenon / Mechanism Research workstream",
+                ),
+            ]:
+                subprocess.run(
+                    [
+                        sys.executable,
+                        str(ROOT / "skills/research/scripts/new_project.py"),
+                        project_name,
+                        "--mode",
+                        mode,
+                        "--root",
+                        tmp,
+                    ],
+                    check=True,
+                    cwd=ROOT,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
+
+                project = Path(tmp) / project_name
+                workstream = project / "workstreams" / workstream_name
+                generated_docs = "\n".join(
+                    file.read_text(encoding="utf-8")
+                    for file in sorted([*workstream.glob("*.md"), project / "decisions.md"])
+                )
+
+                self.assertIn(expected_label, generated_docs)
+                self.assertIn("Workstream", generated_docs)
+                for phrase in [
+                    "R&D project",
+                    "Pure Research project",
+                    "this R&D project",
+                    "separate Pure Research project",
+                    "kill this project",
+                    "- **Mode**:",
+                    "[Project / R&D / Pure Research]",
+                ]:
+                    self.assertNotIn(phrase, generated_docs)
+
+    def test_workstream_helpers_resolve_mode_shortcut_state_objects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/new_project.py"),
+                    "cap",
+                    "--mode",
+                    "rd",
+                    "--root",
+                    tmp,
+                ],
+                check=True,
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            cap_project = Path(tmp) / "cap"
+            cap_result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/render_capability_dag.py"),
+                    "--project-dir",
+                    str(cap_project),
+                    "--workstream",
+                    "WS001-capability",
+                ],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            self.assertEqual(cap_result.returncode, 0, cap_result.stderr)
+            self.assertIn("flowchart", cap_result.stdout)
+
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/new_project.py"),
+                    "phen",
+                    "--mode",
+                    "pure-research",
+                    "--root",
+                    tmp,
+                ],
+                check=True,
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            phen_project = Path(tmp) / "phen"
+            phen_workstream = phen_project / "workstreams" / "WS001-phenomenon"
+            explanation_result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/render_explanation_dag.py"),
+                    "--project-dir",
+                    str(phen_project),
+                ],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            self.assertEqual(explanation_result.returncode, 0, explanation_result.stderr)
+            self.assertIn("flowchart", explanation_result.stdout)
+
+            imrad_output = phen_workstream / "imrad_draft.md"
+            imrad_output.unlink()
+            imrad_result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/draft_imrad.py"),
+                    "--project-dir",
+                    str(phen_project),
+                ],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            self.assertEqual(imrad_result.returncode, 0, imrad_result.stderr)
+            self.assertTrue(imrad_output.exists())
+            self.assertFalse((phen_project / "imrad_draft.md").exists())
+
+    def test_research_skill_maps_state_before_workstream_gates(self) -> None:
+        skill = read_text("skills/research/SKILL.md")
+        normalized = normalize_for_assertion(skill)
+
+        self.assertIn("First Decision: Map the Current Research State", skill)
+        self.assertNotIn("First Decision: Choose the Discipline", skill)
+        for phrase in [
+            "project can contain multiple workstreams",
+            "project itself is not pure research or r&d",
+            "workstream is the unit that selects a state object and gate",
+            "project decision gate",
+            "does not re-score trl, support status, or a-tier",
+            "phenomenon / mechanism research",
+            "capability / technology research",
+        ]:
+            self.assertIn(phrase, normalized)
+
+    def test_mixed_project_scaffold_does_not_require_exclusive_mode(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/new_project.py"),
+                    "alpha",
+                    "--root",
+                    tmp,
+                ],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Map the current research state", result.stdout)
+            self.assertIn("Create the first workstream", result.stdout)
+
+            project = Path(tmp) / "alpha"
+            for path in [
+                "README.md",
+                "project_state.md",
+                "decisions.md",
+                "workstreams",
+                "purposes/INDEX.md",
+                "configs/.gitkeep",
+                "src/.gitkeep",
+                "tests/.gitkeep",
+            ]:
+                self.assertTrue((project / path).exists(), path)
+            for old_mode_root_artifact in [
+                "charter.md",
+                "capability_map.md",
+                "prfaq.md",
+                "explanation_ledger.md",
+            ]:
+                self.assertFalse((project / old_mode_root_artifact).exists())
+
+    def test_new_trial_uses_selected_workstream_state_in_mixed_project(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "alpha"
+            (project / "purposes").mkdir(parents=True)
+            (project / "purposes" / "INDEX.md").write_text(
+                read_text("skills/research/assets/shared/INDEX.md.template"),
+                encoding="utf-8",
+            )
+            capability = project / "workstreams" / "WS002-capability"
+            phenomenon = project / "workstreams" / "WS001-phenomenon"
+            capability.mkdir(parents=True)
+            phenomenon.mkdir(parents=True)
+            (capability / "charter.md").write_text("# Charter\n", encoding="utf-8")
+            (capability / "capability_map.md").write_text("# Capability Map\n", encoding="utf-8")
+            (phenomenon / "prfaq.md").write_text("# PR/FAQ\n", encoding="utf-8")
+            (phenomenon / "explanation_ledger.md").write_text("# Explanation Ledger\n", encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/new_trial.py"),
+                    "--project-dir",
+                    str(project),
+                    "--workstream",
+                    "WS002-capability",
+                    "--slug",
+                    "latency_benchmark",
+                ],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            trial = project / "purposes/trial_001_latency_benchmark.py"
+            self.assertTrue(trial.exists())
+            index = (project / "purposes/INDEX.md").read_text(encoding="utf-8")
+            self.assertIn(
+                "| trial_001 | rd | purposes/trial_001_latency_benchmark.py | WS002-capability | in-progress | pending |",
+                index,
+            )
+
+    def test_research_skill_exposes_only_implemented_workstream_labels(self) -> None:
+        skill = read_text("skills/research/SKILL.md")
+        table = "| Workstream label |" + skill.split(
+            "| Workstream label |",
+            maxsplit=1,
+        )[1].split("\n\n", maxsplit=1)[0]
+        labels = []
+        for line in table.splitlines():
+            match = re.match(r"\| \*\*(.*?)\*\*", line)
+            if match:
+                labels.append(match.group(1))
+
+        self.assertEqual(
+            [
+                "Phenomenon / Mechanism Research",
+                "Capability / Technology Research",
+            ],
+            labels,
+        )
+
+    def test_project_state_template_offers_only_implemented_state_objects(self) -> None:
+        project_state = read_text("skills/research/assets/shared/project_state.md.template")
+        match = re.search(
+            r"\| <REPLACE: workstream name> \| <REPLACE: ([^>]+)> \|",
+            project_state,
+        )
+
+        self.assertIsNotNone(match)
+        assert match is not None
+        state_options = [option.strip() for option in match.group(1).split(";")]
+        self.assertEqual(
+            [
+                "Capability / Technology Research",
+                "Phenomenon / Mechanism Research",
+            ],
+            state_options,
+        )
+
+    def test_new_trial_rejects_mixed_artifacts_inside_one_workstream(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "alpha"
+            (project / "purposes").mkdir(parents=True)
+            (project / "workstreams" / "WS999-ambiguous").mkdir(parents=True)
+            ambiguous = project / "workstreams" / "WS999-ambiguous"
+            (ambiguous / "capability_map.md").write_text("# Capability Map\n", encoding="utf-8")
+            (ambiguous / "prfaq.md").write_text("# PR/FAQ\n", encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/new_trial.py"),
+                    "--project-dir",
+                    str(project),
+                    "--workstream",
+                    "WS999-ambiguous",
+                    "--slug",
+                    "ambiguous_trial",
+                ],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("mixed workstream artifacts", result.stderr.lower())
+
+    def test_new_trial_rejects_workstream_symlink_escape(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "alpha"
+            workstreams = project / "workstreams"
+            external = Path(tmp) / "external"
+            workstreams.mkdir(parents=True)
+            external.mkdir()
+            (external / "capability_map.md").write_text("# Capability Map\n", encoding="utf-8")
+            link = workstreams / "WS999-link"
+            try:
+                os.symlink(external, link, target_is_directory=True)
+            except (OSError, NotImplementedError):
+                self.skipTest("symlink creation is not available in this environment")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/new_trial.py"),
+                    "--project-dir",
+                    str(project),
+                    "--workstream",
+                    "WS999-link",
+                    "--slug",
+                    "escape_trial",
+                ],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("must resolve under", result.stderr.lower())
+
+    def test_new_trial_uses_workstream_preregistration_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "alpha"
+            (project / "purposes").mkdir(parents=True)
+            (project / "purposes" / "INDEX.md").write_text(
+                read_text("skills/research/assets/shared/INDEX.md.template"),
+                encoding="utf-8",
+            )
+            phenomenon = project / "workstreams" / "WS001-phenomenon"
+            (phenomenon / "prereg").mkdir(parents=True)
+            (phenomenon / "prfaq.md").write_text("# PR/FAQ\n", encoding="utf-8")
+            (phenomenon / "explanation_ledger.md").write_text("# Explanation Ledger\n", encoding="utf-8")
+            (phenomenon / "prereg" / "PR_001.md").write_text("# Pre-Registration\n", encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/new_trial.py"),
+                    "--project-dir",
+                    str(project),
+                    "--workstream",
+                    "WS001-phenomenon",
+                    "--slug",
+                    "regime_probe",
+                    "--prereg-id",
+                    "PR_001",
+                    "--question-id",
+                    "Q1",
+                ],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            content = (project / "purposes/trial_001_regime_probe.py").read_text(encoding="utf-8")
+            self.assertIn("workstreams/WS001-phenomenon/prereg/PR_001.md", content)
+            self.assertIn("- **Optional ledger target**: Q1", content)
+            self.assertNotIn("<REPLACE: optional prereg", content)
 
     def test_trial_scaffold_is_protocol_agnostic_evidence_artifact(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -309,7 +715,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             )
 
             index = (project / "purposes/INDEX.md").read_text(encoding="utf-8")
-            row = "| trial_001 | rd | purposes/trial_001_latency_benchmark.py | none | in-progress | pending |"
+            row = "| trial_001 | rd | purposes/trial_001_latency_benchmark.py | WS001-capability | in-progress | pending |"
             self.assertIn(row, index)
             self.assertLess(index.index(row), index.index("## Artifact-status legend"))
 
@@ -362,6 +768,42 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertNotIn("legacy", new_project.lower())
         self.assertNotIn("legacy", new_trial.lower())
         self.assertNotIn("purpose.py.template", new_trial)
+
+    def test_process_review_uses_workstream_labels_not_project_modes(self) -> None:
+        process_review = read_text("skills/research/references/review/process_review.md")
+
+        self.assertIn("Workstream label is explicitly declared", process_review)
+        self.assertIn("Capability / Technology Research workstream", process_review)
+        self.assertIn("Phenomenon / Mechanism Research workstream", process_review)
+        for phrase in [
+            "Mode is explicitly declared",
+            "Mode field",
+            "No mode mixing",
+            "Mode mixing",
+            "For R&D projects only",
+            "For Pure Research projects only",
+        ]:
+            self.assertNotIn(phrase, process_review)
+
+    def test_retired_docs_do_not_reintroduce_project_mode_protocol(self) -> None:
+        retired_docs = "\n".join(
+            [
+                read_text("skills/research/references/research_state.md"),
+                read_text("skills/research/assets/decisions.md.template"),
+                read_text("skills/research/assets/purpose.py.template"),
+                read_text("skills/quant-research/references/hypothesis_quality.md"),
+            ]
+        )
+
+        self.assertIn("workstream", retired_docs.lower())
+        for phrase in [
+            "mode-specific",
+            "project's mode",
+            "- **Mode**",
+            "[R&D / Pure Research]",
+            "R&D and Pure Research are separate disciplines",
+        ]:
+            self.assertNotIn(phrase, retired_docs)
 
     def test_kill_policy_reserves_kill_for_terminal_evidence(self) -> None:
         skill = read_text("skills/research/SKILL.md")
@@ -490,9 +932,12 @@ class ProjectBoundaryTests(unittest.TestCase):
         research_tree = read_tree_text("skills/research")
 
         for phrase in [
-            "Use for serious research or R&D projects",
+            "Use for serious research or capability/technology workstreams",
             "Do not use for ordinary fact lookup",
-            "First Decision: Choose the Discipline",
+            "First Decision: Map the Current Research State",
+            "project decision gate",
+            "Capability / Technology Research",
+            "Phenomenon / Mechanism Research",
             "R&D Program",
             "Right-Sized Rigor",
             "Result-to-Question",
@@ -600,7 +1045,7 @@ class ProjectBoundaryTests(unittest.TestCase):
             normalized_quant,
         )
 
-    def test_result_loops_route_to_mode_specific_state_objects(self) -> None:
+    def test_result_loops_route_to_workstream_state_objects(self) -> None:
         pr_workflow = read_text("skills/research/references/pure_research/pr_workflow.md")
         rd_stages = read_text("skills/research/references/rd/rd_stages.md")
         result_analysis = read_text("skills/research/references/shared/result_analysis.md")
@@ -609,10 +1054,48 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("explanation_ledger.md", pr_workflow)
         self.assertIn("Result-to-Capability Loop", rd_stages)
         self.assertIn("capability_map.md", rd_stages)
-        self.assertIn("Pure Research returns to Q/E state", result_analysis)
-        self.assertIn("R&D returns to capability state", result_analysis)
+        normalized_result_analysis = " ".join(result_analysis.split())
+        self.assertIn("selected workstream state object", normalized_result_analysis)
+        self.assertIn("Phenomenon / Mechanism Research", result_analysis)
+        self.assertIn("Capability / Technology Research", result_analysis)
+        self.assertNotIn("mode-specific state object", result_analysis)
+        self.assertNotIn("Pure Research returns to Q/E state", result_analysis)
+        self.assertNotIn("R&D returns to capability state", result_analysis)
         self.assertIn("goalpost shifting", rd_stages)
         self.assertIn("prospective re-scope", rd_stages)
+
+    def test_quant_adapter_defers_to_research_workstream_state_not_project_discipline(self) -> None:
+        quant_skill = read_text("skills/quant-research/SKILL.md")
+        normalized_quant = " ".join(quant_skill.split())
+
+        self.assertIn("Use research first for the project workstream", normalized_quant)
+        self.assertIn("state object", quant_skill)
+        self.assertNotIn("project discipline", quant_skill)
+        self.assertNotIn("Pure Research vs R&D", quant_skill)
+
+    def test_skill_corpus_does_not_restore_project_discipline_language(self) -> None:
+        combined = "\n".join(
+            [
+                read_tree_text("skills/research"),
+                read_tree_text("skills/quant-research"),
+            ]
+        )
+        normalized = normalize_for_assertion(combined)
+
+        for phrase in [
+            "R&D project",
+            "Pure Research project",
+            "project discipline",
+            "R&D mode",
+            "Pure Research mode",
+            "mode-specific",
+            "Mode is explicitly declared",
+            "Mode mixing",
+            "single 4-section ledger",
+            "- **Mode**:",
+            "Project / R&D / Pure Research",
+        ]:
+            self.assertNotIn(normalize_for_assertion(phrase), normalized)
 
     def test_pure_research_preregistration_separates_target_from_initial_approach(self) -> None:
         preregistration = read_text("skills/research/references/pure_research/preregistration.md")

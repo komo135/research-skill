@@ -1,14 +1,15 @@
-"""render_explanation_dag.py — Render the Pure Research explanation hierarchy as Mermaid.
+"""render_explanation_dag.py — Render an explanation hierarchy as Mermaid.
 
-Reads `<project>/explanation_ledger.md` (Pure Research mode), parses Q rows
-and E rows, and emits a Mermaid DAG showing question → competing
-explanations with color-coding by E status (active / weakened / rejected /
-supported / merged / parked).
+Reads a Phenomenon / Mechanism Research workstream's `explanation_ledger.md`,
+parses Q rows and E rows, and emits a Mermaid DAG showing question →
+competing explanations with color-coding by E status (active / weakened /
+rejected / supported / merged / parked).
 
 Per `references/pure_research/explanation_ledger_schema.md`.
 
 Usage:
     python scripts/render_explanation_dag.py --project-dir <path> > diagram.mmd
+    python scripts/render_explanation_dag.py --project-dir <path> --workstream WS001-phenomenon
     python scripts/render_explanation_dag.py --project-dir <path> --output diagram.mmd
 
 Exit codes:
@@ -40,6 +41,38 @@ class ERow:
     statement: str
     mechanism: str
     status: str
+
+
+def resolve_state_dir(project_dir: Path, workstream: str | None, state_file: str) -> Path:
+    project_dir = project_dir.resolve()
+    if workstream:
+        workstreams_dir = (project_dir / "workstreams").resolve()
+        state_dir = (workstreams_dir / workstream).resolve()
+        if workstreams_dir != state_dir and workstreams_dir not in state_dir.parents:
+            raise ValueError(f"workstream must resolve under {workstreams_dir}: {workstream}")
+        state_path = state_dir / state_file
+        if not state_path.exists():
+            raise FileNotFoundError(f"{state_file} not found at {state_path}")
+        return state_dir
+
+    root_state = project_dir / state_file
+    if root_state.exists():
+        return project_dir
+
+    workstreams_dir = project_dir / "workstreams"
+    if not workstreams_dir.exists():
+        raise FileNotFoundError(f"{state_file} not found at {root_state}")
+
+    candidates = sorted(
+        child for child in workstreams_dir.iterdir()
+        if child.is_dir() and (child / state_file).exists()
+    )
+    if len(candidates) == 1:
+        return candidates[0]
+    if len(candidates) > 1:
+        names = ", ".join(candidate.name for candidate in candidates)
+        raise ValueError(f"multiple workstreams contain {state_file}: {names}; pass --workstream")
+    raise FileNotFoundError(f"{state_file} not found in {project_dir} or {workstreams_dir}")
 
 
 def parse_md_table(text: str, header_keywords: list[str]) -> list[dict[str, str]]:
@@ -195,14 +228,18 @@ def render(q_rows: list[QRow], e_rows: list[ERow]) -> str:
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--project-dir", required=True, type=Path)
+    p.add_argument("--workstream", default=None,
+                   help="workstream directory name under <project>/workstreams")
     p.add_argument("--output", type=Path, default=None)
     args = p.parse_args()
 
-    el = args.project_dir / "explanation_ledger.md"
-    if not el.exists():
-        print(f"ERROR: explanation_ledger.md not found at {el}", file=sys.stderr)
+    try:
+        state_dir = resolve_state_dir(args.project_dir, args.workstream, "explanation_ledger.md")
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(1)
 
+    el = state_dir / "explanation_ledger.md"
     text = el.read_text(encoding="utf-8")
     q_rows, e_rows = parse_ledger(text)
 

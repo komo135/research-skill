@@ -1,7 +1,7 @@
-"""draft_imrad.py — Generate IMRAD draft from project artifacts.
+"""draft_imrad.py — Generate IMRAD draft from workstream artifacts.
 
-Reads the Pure Research project's artifacts (PR/FAQ, pre-registrations,
-explanation_ledger, decisions, results) and produces a starting-point
+Reads the Phenomenon / Mechanism Research workstream's artifacts (PR/FAQ,
+pre-registrations, explanation_ledger, decisions, results) and produces a starting-point
 IMRAD-shaped draft per `references/pure_research/imrad_draft.md`.
 
 The output is a STARTING POINT, not a final manuscript. The agent or user
@@ -13,13 +13,14 @@ must:
 
 Usage:
     python scripts/draft_imrad.py --project-dir <path>
+    python scripts/draft_imrad.py --project-dir <path> --workstream WS001-phenomenon
     python scripts/draft_imrad.py --project-dir <path> --output imrad_draft.md
     python scripts/draft_imrad.py --project-dir <path> --supported-e E2
 
 Inputs scanned:
-    <project>/prfaq.md
-    <project>/prereg/PR_*.md
-    <project>/explanation_ledger.md
+    <project>/workstreams/<workstream>/prfaq.md
+    <project>/workstreams/<workstream>/prereg/PR_*.md
+    <project>/workstreams/<workstream>/explanation_ledger.md
     <project>/decisions.md
     <project>/literature/papers.md
     <project>/results/results.parquet (optional, requires polars or pandas)
@@ -109,6 +110,7 @@ def extract_field(text: str, label: str) -> str:
 @dataclass
 class ProjectArtifacts:
     project_dir: Path
+    state_dir: Path
     prfaq_text: str = ""
     prereg_files: list[Path] = None
     prereg_notes: dict[str, dict[str, str]] = None
@@ -126,23 +128,65 @@ class ProjectArtifacts:
         self.ledger_claims = self.ledger_claims or []
 
 
-def load_artifacts(project_dir: Path) -> ProjectArtifacts:
-    art = ProjectArtifacts(project_dir=project_dir)
+def relative_to_project(project_dir: Path, path: Path) -> str:
+    try:
+        return path.relative_to(project_dir).as_posix()
+    except ValueError:
+        return path.as_posix()
 
-    prfaq = project_dir / "prfaq.md"
+
+def resolve_state_dir(project_dir: Path, workstream: str | None, state_file: str) -> Path:
+    project_dir = project_dir.resolve()
+    if workstream:
+        workstreams_dir = (project_dir / "workstreams").resolve()
+        state_dir = (workstreams_dir / workstream).resolve()
+        if workstreams_dir != state_dir and workstreams_dir not in state_dir.parents:
+            raise ValueError(f"workstream must resolve under {workstreams_dir}: {workstream}")
+        state_path = state_dir / state_file
+        if not state_path.exists():
+            raise FileNotFoundError(f"{state_file} not found at {state_path}")
+        return state_dir
+
+    root_state = project_dir / state_file
+    if root_state.exists():
+        return project_dir
+
+    workstreams_dir = project_dir / "workstreams"
+    if not workstreams_dir.exists():
+        raise FileNotFoundError(f"{state_file} not found at {root_state}")
+
+    candidates = sorted(
+        child for child in workstreams_dir.iterdir()
+        if child.is_dir() and (child / state_file).exists()
+    )
+    if len(candidates) == 1:
+        return candidates[0]
+    if len(candidates) > 1:
+        names = ", ".join(candidate.name for candidate in candidates)
+        raise ValueError(f"multiple workstreams contain {state_file}: {names}; pass --workstream")
+    raise FileNotFoundError(f"{state_file} not found in {project_dir} or {workstreams_dir}")
+
+
+def load_artifacts(project_dir: Path, workstream: str | None = None) -> ProjectArtifacts:
+    project_dir = project_dir.resolve()
+    state_dir = resolve_state_dir(project_dir, workstream, "prfaq.md")
+    art = ProjectArtifacts(project_dir=project_dir, state_dir=state_dir)
+
+    prfaq = state_dir / "prfaq.md"
     if prfaq.exists():
         art.prfaq_text = prfaq.read_text(encoding="utf-8")
 
-    prereg_dir = project_dir / "prereg"
+    prereg_dir = state_dir / "prereg"
     if prereg_dir.exists():
         for md in sorted(prereg_dir.glob("PR_*.md")):
             art.prereg_files.append(md)
             prereg_text = md.read_text(encoding="utf-8")
             art.prereg_notes[md.stem] = {
-                "path": f"prereg/{md.name}",
+                "path": relative_to_project(project_dir, md),
+                "abs_path": str(md),
             }
 
-    ledger = project_dir / "explanation_ledger.md"
+    ledger = state_dir / "explanation_ledger.md"
     if ledger.exists():
         text = ledger.read_text(encoding="utf-8")
         art.ledger_q = parse_md_table(text, ["ID", "question"])
@@ -186,7 +230,7 @@ def section_introduction(art: ProjectArtifacts, supported_e: str) -> str:
         "> " + pr_part.replace("\n", "\n> "),
         "",
         "The planned question and methods are documented in "
-        + "`prfaq.md` and the project pre-registration file(s): "
+        + "`prfaq.md` and the workstream pre-registration file(s): "
         + (
             ", ".join(
                 f"`{info.get('path', f'prereg/{stem}.md')}`"
@@ -211,7 +255,8 @@ def section_methods(art: ProjectArtifacts, supported_e: str) -> str:
 
     for stem in sorted(art.prereg_notes):
         note_info = art.prereg_notes[stem]
-        prereg_path = art.project_dir / "prereg" / f"{stem}.md"
+        abs_path = note_info.get("abs_path")
+        prereg_path = Path(abs_path) if abs_path else art.state_dir / "prereg" / f"{stem}.md"
         text = prereg_path.read_text(encoding="utf-8") if prereg_path.exists() else ""
         question = extract_section(text, r"1\.\s*Question") or "<REPLACE>"
         explanations = extract_section(text, r"2\.\s*Competing\s*explanations") or "<REPLACE>"
@@ -389,7 +434,8 @@ def appendix_trial_planning_summary(art: ProjectArtifacts) -> str:
 
 
 def render_imrad(art: ProjectArtifacts, supported_e: str) -> str:
-    title_line = f"# IMRAD draft — {art.project_dir.name}"
+    title_line = f"# IMRAD draft — {art.project_dir.name} / {art.state_dir.name}"
+    prfaq_path = relative_to_project(art.project_dir, art.state_dir / "prfaq.md")
     parts = [
         title_line,
         "",
@@ -400,7 +446,7 @@ def render_imrad(art: ProjectArtifacts, supported_e: str) -> str:
         f"Status: <REPLACE: draft | revising | promotion-ready | promoted>",
         "",
         f"Planning files:",
-        f"- PR/FAQ: `prfaq.md`",
+        f"- PR/FAQ: `{prfaq_path}`",
         (
             f"- Pre-reg files: "
             + ", ".join(
@@ -430,21 +476,27 @@ def render_imrad(art: ProjectArtifacts, supported_e: str) -> str:
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--project-dir", required=True, type=Path)
+    p.add_argument("--workstream", default=None,
+                   help="workstream directory name under <project>/workstreams")
     p.add_argument("--supported-e", default="E1",
                    help="ID of the explanation being promoted to supported (e.g., E2)")
     p.add_argument("--output", type=Path, default=None,
-                   help="output path (default: <project>/imrad_draft.md)")
+                   help="output path (default: selected workstream's imrad_draft.md)")
     args = p.parse_args()
 
-    art = load_artifacts(args.project_dir)
+    try:
+        art = load_artifacts(args.project_dir, args.workstream)
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
     if not art.prfaq_text:
-        print(f"ERROR: prfaq.md not found at {args.project_dir}/prfaq.md", file=sys.stderr)
+        print(f"ERROR: prfaq.md not found at {art.state_dir}/prfaq.md", file=sys.stderr)
         sys.exit(1)
     if not art.ledger_e:
         print(f"WARN: explanation_ledger.md missing or empty — draft will have many <REPLACE> markers", file=sys.stderr)
 
     draft = render_imrad(art, args.supported_e)
-    out = args.output or (args.project_dir / "imrad_draft.md")
+    out = args.output or (art.state_dir / "imrad_draft.md")
     out.write_text(draft, encoding="utf-8")
     print(f"Wrote {len(draft.splitlines())} lines to {out}")
     n_replace = draft.count("<REPLACE")

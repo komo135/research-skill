@@ -95,8 +95,8 @@ Day final: integration capability runs (depends on all K's)
 **Strengths**:
 - Each K can be optimized without integration constraints
 - Technical surprises in K stay isolated (don't break other K's)
-- Pure research mode aligns with this — you're truly establishing
-  each technology
+- Phenomenon-oriented sibling workstreams may align with this when the
+  target is truly establishing each technology before integration
 
 **Weaknesses**:
 - No working end-to-end until very late

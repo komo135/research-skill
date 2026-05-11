@@ -1,8 +1,9 @@
 # analysis_depth.md
 
 The A0–A5 analysis depth tier system. **MANDATORY reading before any
-trial interpretation** in either R&D or Pure Research mode. The tier is
-the primary deliverable axis of this skill (CHARTER C13).
+trial interpretation** in either Capability / Technology Research or
+Phenomenon / Mechanism Research workstreams. The tier is the primary
+deliverable axis of this skill (CHARTER C13).
 
 ## When to read
 

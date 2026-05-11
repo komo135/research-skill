@@ -1,15 +1,15 @@
 # Explanation Ledger — <REPLACE: project name>
 
-The single state object for this Pure Research project. Schema:
+The single state object for this Phenomenon / Mechanism Research workstream. Schema:
 `references/pure_research/explanation_ledger_schema.md`. Claim-cited or
 promotion-relevant results update rows; exploratory runs may stay in run notes,
 tracker runs, notebook notes, or results rows until they become load-bearing.
 
-## Mode
+## Workstream label
 
-Pure Research. <REPLACE: one-sentence reason this is Pure Research,
-not R&D. E.g., "The deliverable is understanding of phenomenon X, not
-a deployable capability.">
+Phenomenon / Mechanism Research. <REPLACE: one-sentence reason this workstream
+updates an explanation question rather than a capability claim. E.g., "The
+deliverable is understanding of phenomenon X, not a deployable capability.">
 
 ---
 

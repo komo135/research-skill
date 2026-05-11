@@ -8,8 +8,8 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v1.1.4 - Agent-driven serious research and R&D workflows with exploratory/confirmatory Pure Research separation and quant-finance specialization.",
-      "version": "1.1.4"
+      "description": "v1.1.5 - Workstream-aware serious research and R&D workflows with quant-finance specialization.",
+      "version": "1.1.5"
     }
   ]
 }

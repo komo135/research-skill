@@ -7,15 +7,16 @@ description: >-
   cost review, Sharpe / PSR / DSR review, leakage checks, walk-forward
   validation, CPCV, PBO, and financial time-series research. This is a finance
   adapter on top of the research skill: Use research first for the project
-  discipline, then apply quant-research for finance-specific evidence,
-  validation, implementation, and failure-mode checks.
+  workstream and state object, then apply quant-research for finance-specific
+  evidence, validation, implementation, and failure-mode checks.
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # Quant Research
 
-`quant-research` is a finance adapter for the generic `research` skill. Use research first
-for project discipline: Pure Research vs R&D, R&D Program,
+`quant-research` is a finance adapter for the generic `research` skill. Use
+research first for the project workstream and state object: Phenomenon /
+Mechanism Research, Capability / Technology Research, R&D Program,
 Result-to-Question, Result-to-Capability, A0-A5 analysis depth, right-sized
 rigor, promotion, park, kill, and pivot decisions.
 

@@ -1,10 +1,16 @@
 # README.md.template (RETIRED at this location)
 
-Replaced by mode-specific README templates per CHARTER C1:
+Replaced by workstream-aware project scaffolds and compatibility README
+templates:
 
-- R&D: `assets/rd/README.md.template`
-- Pure Research: `assets/pure_research/README.md.template`
+- default mixed project: `assets/shared/project_state.md.template`
+- Capability / Technology Research compatibility scaffold:
+  `assets/rd/README.md.template`
+- Phenomenon / Mechanism Research compatibility scaffold:
+  `assets/pure_research/README.md.template`
 
-`scripts/new_project.py --mode rd|pure-research` selects the correct one.
+`scripts/new_project.py` creates a mixed project shell. Passing
+`--mode rd|pure-research` is only an initial-workstream shortcut inside that
+mixed shell.
 
 Do not use this template directly.

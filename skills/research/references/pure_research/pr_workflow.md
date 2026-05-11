@@ -1,22 +1,24 @@
 # pr_workflow.md
 
-Operating rules for a Pure Research project across sessions: exploratory
+Operating rules for a Phenomenon / Mechanism Research workstream across
+sessions. This is the Pure Research-compatible workflow for exploratory
 research loop, confirmatory research loop, pre-registration comparison,
 deviation handling, state-change logging, stop conditions, shared
-infrastructure governance, code reuse on pivot.
+infrastructure governance, and handoff to capability workstreams.
 
 ## When to read
 
-- First session of a new Pure Research project
+- First session of a new Phenomenon / Mechanism Research workstream
 - After any trial result, before deciding whether to update the ledger
   or run the next trial
 - When a deviation from pre-registration is being considered
 - Setting up shared infrastructure
-- Pivoting from Pure Research to R&D
+- Adding, splitting, or handing off to a Capability / Technology Research
+  workstream
 
 ## Initial-day prohibitions
 
-Pure Research first day permits **only** the following:
+Phenomenon / Mechanism Research first day permits **only** the following:
 
 - PR/FAQ (`references/pure_research/prfaq.md`)
 - Targeted literature review (`references/shared/literature_review.md`)
@@ -26,11 +28,11 @@ Pure Research first day permits **only** the following:
 - Pre-registration of a confirmatory trial
   (`references/pure_research/preregistration.md`) when a confirmation target
   is ready
-- Empty `explanation_ledger.md` skeleton with Mode declared
+- Empty `explanation_ledger.md` skeleton with workstream ID and label declared
 - Data infrastructure setup, environment pinning (`uv.lock`), data version
   recording, raw data sourcing, scaffold file creation
 
-Pure Research first day **prohibits**:
+Phenomenon / Mechanism Research first day **prohibits**:
 
 - Claim-bearing confirmation trial execution before a reviewed
   pre-registration is ready
@@ -95,12 +97,13 @@ where pre-registration belongs.
 6. Run the confirmatory trial (data fetch, computation, verification checks)
 7. Deviation review against the pre-registration
 8. Analysis section: observation, decomposition, evidence weighing,
-   tier rating, gap to next tier (per rd_trial.py.template § 5)
+   tier rating, gap to next tier (per pr_trial.py.template § 5)
 9. If the result is claim-cited or changes support, scope, or status, update
    explanation_ledger row(s): which E weakened / strengthened / rejected /
    unchanged
 10. Record durable state transitions in decisions.md when the result changes a
-   claim, promotion path, scope, park/pivot decision, or other commitment
+   claim, promotion path, scope, park decision, workstream operation, or other
+   commitment
 11. Decide next: push analysis depth on this trial, design next
    discriminating trial, or escalate to promotion gate
 ```
@@ -110,11 +113,11 @@ The loop runs until a stop condition (below) or a question is
 
 ## Result-to-Question Loop
 
-After every claim-cited or promotion-relevant interpreted result, Pure Research
-returns to Q/E state in `explanation_ledger.md`. The result may strengthen,
-weaken, reject, split, merge, park, or leave unchanged one or more explanation
-rows. Ordinary exploratory observations may stay in run notes, tracker runs,
-notebook notes, or result rows until they become load-bearing.
+After every claim-cited or promotion-relevant interpreted result, the
+workstream returns to Q/E state in `explanation_ledger.md`. The result may
+strengthen, weaken, reject, split, merge, park, or leave unchanged one or more
+explanation rows. Ordinary exploratory observations may stay in run notes,
+tracker runs, notebook notes, or result rows until they become load-bearing.
 
 Use the existing discriminating trial loop; this section names the return path
 so results do not become orphan observations:
@@ -128,7 +131,7 @@ so results do not become orphan observations:
 5. Record durable transitions in `decisions.md`; do not record ordinary
    exploratory runs there.
 6. Decide whether the next move is deeper analysis on the current result,
-   another discriminating trial, promotion review, park, or pivot.
+   another discriminating trial, promotion review, park, add, split, or handoff.
 
 This loop does not create a second research-state object. The ledger remains
 the source of truth for questions and explanations.
@@ -223,9 +226,9 @@ run notes do not need `decisions.md` entries. The loop discipline above (push
 analysis before new trial, deviation matrix applied) still applies when the
 result is claim-cited.
 
-## Stop conditions — when does a Pure Research project end?
+## Stop conditions — when does a phenomenon workstream end?
 
-A project terminates when one of:
+A workstream terminates when one of:
 
 ### Promotion (positive finding)
 
@@ -256,63 +259,72 @@ The IMRAD draft documents the elimination.
 
 The Q cannot progress because of a named external unblock condition
 (data unavailable, sample size insufficient until time passes, prior
-project must complete). Differs from promotion: the project will
-resume when the unblock fires.
+workstream must complete). Differs from promotion: the workstream will resume
+when the unblock fires.
 
-### Pivot
+### Add / split / handoff
 
-User realizes mid-project that the goal is actually R&D (build a
-capability) rather than Pure Research (understand a phenomenon). Use
-the Pivot protocol per `SKILL.md` § First Decision. Same options
-(suspend + restart vs add secondary project) apply.
+Evidence shows that a capability uncertainty must be handled separately. Add a
+dependent workstream, split the current workstream, or hand off a supported
+finding to a Capability / Technology Research workstream. Treat design,
+evaluation, and engineering-support work as activities inside the selected
+phenomenon or capability workstream unless they expose a separate
+research-state claim. Record the trigger, affected workstream IDs, ledger rows,
+reused evidence scope, parent / child relationship, and next gate in
+`decisions.md`.
+
+Project-level pivot is reserved for a change in final intent or decision
+audience, not for ordinary mixed research.
 
 ### Drift (anti-pattern)
 
-Project simply stops being worked on without an explicit decision. When
-returning to a stale project, first decide whether to promote, park, pivot, or
-resume; do not create review entries for the inactive period.
+Workstream simply stops being worked on without an explicit decision. When
+returning to stale state, first decide whether to promote, park, add, split,
+handoff, or resume; do not create review entries for the inactive period.
 
 ## Shared infrastructure governance
 
-Same as R&D's rule (see `references/rd/rd_workflow.md` § Shared
-infrastructure governance). Pure Research projects use the same
+Same as Capability / Technology Research's rule (see
+`references/rd/rd_workflow.md` § Shared infrastructure governance).
+Phenomenon / Mechanism Research workstreams use the same
 `shared/` folder and record the specific commits used in
 `reproducibility/shared_pins.txt`.
 
-A Pure Research finding may itself become a `shared/` artifact (e.g.,
-a regime classifier proven via Pure Research that is now used by
-multiple R&D projects). The transition is a deliberate move, not a copy: the
-artifact moves to `shared/` with documentation of its origin project, and
-downstream consumers record the commit they used.
+A Phenomenon / Mechanism Research finding may itself become a `shared/`
+artifact (e.g., a regime classifier proven in a phenomenon workstream that is
+now used by multiple capability workstreams). The transition is a deliberate
+move, not a copy: the artifact moves to `shared/` with documentation of its
+origin workstream, and downstream consumers record the commit they used.
 
-## Code reuse on pivot
+## Code reuse on workstream handoff
 
-Same principle as R&D: reuse the bricks (data pipeline, helpers,
-verification-check scripts), not the house (problem framing, decision logs,
-ledgers / charters). The new project gets a fresh `decisions.md`
-referencing the source via `parent_project_id`.
+Same principle as Capability / Technology Research: reuse the bricks (data
+pipeline, helpers, verification-check scripts), not the house (problem
+framing, decision logs, ledgers / charters). A new workstream gets its own
+ledger and cites the source via parent / child workstream IDs.
 
-What can be reused from a pivoted Pure Research project:
+What can be reused from a phenomenon workstream:
 - Data pipeline code, feature library, validation harness
 - Sanity-check scripts
 - Specific computational helpers
 
 What cannot be reused as-is:
-- The PR/FAQ (the new R&D charter is a different document)
-- Pre-registrations (R&D doesn't use these)
-- The explanation_ledger (R&D uses capability_map)
-- Trial notebooks (re-purposed only with explicit role re-declaration)
+- The PR/FAQ as a capability charter
+- Pre-registrations as capability kill criteria
+- The explanation_ledger as a capability_map
+- Trial notebooks as capability evidence without explicit role
+  re-declaration
 
-When the pivot direction is Pure Research → R&D: an `explanation_ledger`
-finding may be cited as a literature reference in the new R&D charter
-(H3 novelty justification). The Pure Research project's
-`decisions.md` link is preserved as `parent_project_id`.
+When the handoff direction is phenomenon -> capability: an
+`explanation_ledger` finding may be cited as a literature reference in the
+capability charter (H3 novelty justification). The phenomenon workstream's
+`decisions.md` link is preserved as a parent workstream reference.
 
-For a Research-to-Technology Handoff, the R&D project may consume the Pure
-Research finding as an assumption, requirement, dependency, scope condition,
-benchmark, or maintenance trigger. It must not copy the supported claim into
-the R&D ledger as though R&D re-proved it; cite the Pure Research
-`explanation_ledger.md` row and promotion decision instead.
+For a Research-to-Technology Handoff, the capability workstream may consume
+the phenomenon finding as an assumption, requirement, dependency, scope
+condition, benchmark, or maintenance trigger. It must not copy the supported
+claim into the capability ledger as though capability research re-proved it;
+cite the phenomenon `explanation_ledger.md` row and support decision instead.
 
 ## Communication conventions during a session
 
@@ -333,7 +345,7 @@ Agent should:
 | Treating major deviation as minor | "Period shift, but the methodology is the same" | Apply the matrix strictly; period shift > 1y is major |
 | New trial before pushing depth | Run a 2nd trial when 1st is at A2 | Force depth push first |
 | Adding E mid-confirmation | Discovered alternative not in pre-reg and uses it to reinterpret the confirmatory result | Label as exploratory; pre-register a future confirmation if it becomes load-bearing |
-| Drift | Stale ledger | Decide Promotion / Park / Pivot / Resume before new claim-bearing work |
+| Drift | Stale ledger | Decide Promotion / Park / Add/split/handoff / Resume before new claim-bearing work |
 | `supported` with sibling E still active | Promotion premature | All siblings must be at terminal status first |
 
 ## Relationship to other references
@@ -348,4 +360,5 @@ Agent should:
 - Promotion gate: `references/pure_research/pr_promotion_gate.md`
 - Multiple testing discipline: project-specific multiple-testing plan
 - Analysis depth: `references/shared/analysis_depth.md`
-- R&D side rules for shared infra and pivot: `references/rd/rd_workflow.md`
+- Capability / Technology Research side rules for shared infra and handoff:
+  `references/rd/rd_workflow.md`

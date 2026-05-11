@@ -1,13 +1,16 @@
 # research_modes.md (RETIRED)
 
-The mode-selection content has been absorbed into `SKILL.md` § "First
-Decision: Choose the Discipline" per CHARTER C1.
+The mode-selection content has been replaced by `SKILL.md` § "First
+Decision: Map the Current Research State".
 
-The decision criteria (R&D when goal is to make a capability exist;
-Pure Research when goal is to understand a phenomenon) are stated there
-together with the entry documents and primary state objects.
+Project-level mode selection is retired. A project may contain multiple
+workstreams. Each workstream selects the local state object and gate:
+Capability / Technology Research uses the R&D-compatible capability map path;
+Phenomenon / Mechanism Research uses the Pure Research-compatible explanation
+ledger path.
 
-Pivot protocol (when the discipline shifts mid-project) is in `SKILL.md`
-§ "First Decision" + § "Pivot protocol".
+Project-level pivot is reserved for final-intent or decision-audience changes.
+Ordinary mixed research uses workstream add / split / merge / park / retire
+operations recorded in `decisions.md`.
 
 Do not consult this file for current protocol.

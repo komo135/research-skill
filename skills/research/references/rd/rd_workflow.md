@@ -1,22 +1,24 @@
 # rd_workflow.md
 
-Operating rules for an R&D project across sessions: initial-day
-prohibitions, state-change logging, stop conditions, shared infrastructure
-governance, and the rules for code reuse on a discipline pivot.
+Operating rules for a Capability / Technology Research workstream across
+sessions. This is the R&D-compatible workflow for initial-day prohibitions,
+state-change logging, stop conditions, shared infrastructure governance, and
+handoff to other workstreams.
 
 ## When to read
 
-- First session of a new R&D project (initial-day prohibitions)
+- First session of a new Capability / Technology Research workstream
+  (initial-day prohibitions)
 - End of a session that changed durable research state
-- When deciding whether the project should close (stop conditions)
-- Setting up shared code / data pipelines that may serve both R&D and
-  Pure Research projects
-- Pivoting from R&D to Pure Research (or vice versa) and deciding what
-  artifacts to carry over
+- When deciding whether the workstream should close (stop conditions)
+- Setting up shared code / data pipelines that may serve capability and
+  phenomenon workstreams
+- Adding, splitting, or handing off to a Phenomenon / Mechanism Research
+  workstream and deciding what artifacts to carry over
 
 ## Initial-day prohibitions
 
-R&D first day permits **only** the following:
+Capability / Technology Research first day permits **only** the following:
 
 - Charter (`references/rd/rd_charter.md`) — Heilmeier 8 questions
 - Layer 1 closure (`references/rd/core_technologies.md`) — core
@@ -26,7 +28,7 @@ R&D first day permits **only** the following:
 - Data infrastructure setup, environment pinning (`uv.lock`), data version
   recording, raw data sourcing, scaffold file creation
 
-R&D first day **prohibits**:
+Capability / Technology Research first day **prohibits**:
 
 - Any implementation that runs (no model training, no trial run, no trial
   that produces a metric)
@@ -85,9 +87,9 @@ State-change logging is **necessary but not sufficient** for the session-level
 R&D sequencing guardrail (per `SKILL.md` § Guardrails); moving any row records
 the transition, but the sequencing rule still applies.
 
-## Stop conditions — when does an R&D project end?
+## Stop conditions — when does a capability workstream end?
 
-A project terminates when one of:
+A workstream terminates when one of:
 
 ### Promotion (success path)
 
@@ -101,7 +103,8 @@ See `references/rd/rd_promotion_gate.md` for the full checklist.
 ### Kill (failure path)
 
 Charter-level kill criterion (Heilmeier H6) fires with A4-decomposed
-evidence. The whole project is killed, not just one capability.
+evidence. The capability workstream or target is killed, not just one
+low-level task.
 
 The closing entry in `decisions.md`:
 
@@ -115,43 +118,43 @@ The closing entry in `decisions.md`:
 
 ### Park (deferred)
 
-The project is not making progress because of a named external
+The workstream is not making progress because of a named external
 unblock condition (e.g., "waiting for vendor data feed", "waiting for
-prior project K to mature"). Differs from kill: the project will resume
+prior workstream K to mature"). Differs from kill: the workstream will resume
 when the unblock fires.
 
 The closing entry must name the **specific unblock condition** and the
-**check cadence**. A project parked for > 6 months without the unblock
+**check cadence**. A workstream parked for > 6 months without the unblock
 firing should be re-evaluated for kill.
 
-### Pivot (discipline shift)
+### Add / split / handoff
 
-The user realizes mid-project that the goal is actually Pure Research
-(understand a phenomenon) rather than R&D (build a capability). Use the
-Pivot protocol per `SKILL.md` § First Decision.
+Evidence shows that a phenomenon or mechanism uncertainty must be handled
+separately. Add a dependent workstream, split the current workstream, or hand
+off an observation to a Phenomenon / Mechanism Research workstream. Treat
+design, evaluation, and engineering-support work as activities inside the
+selected capability or phenomenon workstream unless they expose a separate
+research-state claim. Record the trigger, affected workstream IDs, ledger
+rows, reused evidence scope, parent / child relationship, and next gate in
+`decisions.md`.
 
-Two paths:
-
-- **Suspend + restart** the project as Pure Research, link via
-  `parent_project_id` in `decisions.md`
-- **Add secondary** Pure Research project alongside the still-active R&D
-  project, with declared cross-project dependencies
-
-See § Code reuse on pivot below.
+Project-level pivot is reserved for a change in final intent or decision
+audience, not for ordinary mixed research. See § Code reuse on workstream
+handoff below.
 
 ### Drift (anti-pattern, not an acceptable termination)
 
-The project stops being worked on without an explicit Promotion / Kill / Park /
-Pivot decision. When returning to a stale project, first ask whether it should
-promote, kill, park, pivot, or resume; do not manufacture review entries for the
-inactive period.
+The workstream stops being worked on without an explicit Promotion / Kill /
+Park / Add / Split / Handoff decision. When returning to stale state, first ask
+whether it should promote, kill, park, add, split, hand off, or resume; do not
+manufacture review entries for the inactive period.
 
 ## Shared infrastructure governance
 
-Many R&D projects use the same data pipeline, the same feature library,
-the same trial harness as other projects (R&D or Pure Research). The
-"separate ledgers" rule (`SKILL.md` § First Decision) applies to
-**decision tracking**, not to infrastructure code.
+Many capability workstreams use the same data pipeline, the same feature
+library, or the same trial harness as other workstreams. The workstream-ledger
+rule in `SKILL.md` § First Decision applies to **decision tracking**, not to
+infrastructure code.
 
 ### Layout
 
@@ -166,29 +169,30 @@ workspace/
 │   ├── trial run_harness/
 │   └── ... (libraries, helpers, utilities)
 ├── projects/
-│   ├── rd_intraday_vol_forecasting/
-│   │   ├── charter.md
-│   │   ├── capability_map.md
+│   ├── alpha/
+│   │   ├── project_state.md
 │   │   ├── decisions.md
+│   │   ├── workstreams/
+│   │   │   ├── WS001-capability/
+│   │   │   │   ├── charter.md
+│   │   │   │   └── capability_map.md
+│   │   │   └── WS002-phenomenon/
+│   │   │       ├── prfaq.md
+│   │   │       ├── prereg/
+│   │   │       └── explanation_ledger.md
 │   │   ├── purposes/
 │   │   ├── results/
 │   │   └── reproducibility/
-│   ├── pr_vol_decay/
-│   │   ├── prfaq.md
-│   │   ├── prereg/
-│   │   ├── explanation_ledger.md
-│   │   ├── decisions.md
-│   │   └── ...
 │   └── ...
 ```
 
 ### Pinning
 
-Each project that consumes shared infrastructure pins to a **specific
-git commit** of `shared/`, recorded in the project's
+Each project or workstream that consumes shared infrastructure pins to a
+**specific git commit** of `shared/`, recorded in the project's
 `reproducibility/data_versions.txt` (or a similar file `shared_pins.txt`).
 
-When a project starts a new trial, the pin is part of the reproducibility
+When a workstream starts a new trial, the pin is part of the reproducibility
 3-tuple recorded via the selected tracking backend or local run note.
 
 ### Updating shared infrastructure
@@ -197,27 +201,26 @@ A change to `shared/` is its own deliberate change, recorded in
 `shared/decisions.md` (a small ledger inside `shared/`). Projects that
 depend on `shared/` decide independently whether to update their pin.
 
-Updating a pin while a project is mid-trial is a **deviation**: file an
-entry in the project's `decisions.md` naming the new pin and the
+Updating a pin while a workstream is mid-trial is a **deviation**: file an
+entry in the project's or workstream's `decisions.md` naming the new pin and the
 rationale.
 
 ### Anti-patterns
 
 - Forking the data pipeline into the project's folder ("just for this
-  project") → defeats reuse, creates drift across projects, makes
+  workstream") → defeats reuse, creates drift across workstreams, makes
   reproducibility comparisons impossible.
-- Sharing decision-tracking files across projects → undermines the
-  separate-ledgers rule, makes review ambiguous.
-- Modifying `shared/` from inside a project session without filing
+- Sharing decision-tracking files across workstreams → undermines the
+  separate-ledgers rule and makes review ambiguous.
+- Modifying `shared/` from inside a workstream session without filing
   `shared/decisions.md` entry → silent change, breaks downstream
   reproducibility.
 
-## Code reuse on pivot
+## Code reuse on workstream handoff
 
-When a project pivots discipline (R&D → Pure Research or vice versa),
-existing code, notebooks, and figures may be relevant to the new
-project. The default is to reuse what's reusable, but reuse must be
-**explicit**.
+When a capability workstream adds, splits, or hands off to another workstream,
+existing code, notebooks, and figures may be relevant. The default is to reuse
+what is reusable, but reuse must be **explicit**.
 
 ### What can be reused
 
@@ -229,27 +232,27 @@ project. The default is to reuse what's reusable, but reuse must be
 
 ### What cannot be reused as-is
 
-- Trial notebooks (the trial was designed for the old discipline; in the
-  new discipline, the trial design must be re-stated)
-- Decision log entries (new project gets a fresh `decisions.md`, with
-  the pivot's `parent_project_id` link to the old one)
+- Trial notebooks (the trial was designed for the old workstream role; in the
+  new workstream, the trial design must be re-stated)
+- Decision log entries (the new workstream gets its own state rows and cites
+  the parent workstream)
 - Capability map ↔ explanation ledger (different schemas, not portable)
 - Charter ↔ PR/FAQ (different documents, must be re-written for the new
-  discipline)
+  workstream role)
 
 ### Reuse procedure
 
-1. In the new project's `README.md`, declare the source project:
-   `parent_project_id: <old project name>` (also recorded in
+1. In the new workstream's note or ledger header, declare the source
+   workstream: `parent_workstream_id: <old workstream id>` (also recorded in
    `decisions.md`).
 2. List reusable artifacts: a `decisions.md` entry naming each file or
-   module to be reused and the **role it plays in the new project**
+   module to be reused and the **role it plays in the new workstream**
    (the role may differ from the old).
-3. Move (do not copy) reusable artifacts to the new project folder, OR
-   move shared-eligible items to `shared/` and pin from the new project.
-4. Trial notebooks from the old project: archive in
-   `<old_project>/archive/` rather than carrying over. Reference them
-   from the new project as `prior_work` in `literature/papers.md` if
+3. Move (do not copy) reusable artifacts to the new workstream folder, OR
+   move shared-eligible items to `shared/` and pin from the new workstream.
+4. Trial notebooks from the old workstream: archive or leave in place as
+   prior evidence rather than carrying over silently. Reference them
+   from the new workstream as `prior_work` in `literature/papers.md` if
    they produced findings worth citing.
 
 The principle: reuse the bricks, not the house. Code and data
@@ -276,7 +279,7 @@ another agent without requiring every exploratory session to enter
 |---|---|---|
 | Day 1 implementation | Code committed before charter readiness | Block; require reviewed charter first |
 | Durable state change not recorded | Capability promoted or killed with no ledger / decision entry | File the missing transition with evidence |
-| Project drifts | Stale `capability_map.md` | Decide Promotion / Kill / Park / Pivot / Resume before new claim-bearing work |
+| Workstream drifts | Stale `capability_map.md` | Decide Promotion / Kill / Park / Add/Split/Handoff / Resume before new claim-bearing work |
 | Shared infra forked into project | Duplicate copies of data pipeline | Move back to `shared/`, pin from project |
 | Reuse without role declaration | Old code shows up in new project with no decisions.md entry | File the entry; state the role |
 
@@ -285,9 +288,9 @@ another agent without requiring every exploratory session to enter
 - Initial-day prohibitions appear in summarized form in
   `SKILL.md` § Guardrails; this file is the elaboration.
 - Stop conditions integrate with `references/rd/rd_promotion_gate.md`
-  (Promotion path) and the kill / park / pivot patterns embedded in
+  (Promotion path) and the kill / park / handoff patterns embedded in
   `SKILL.md` and `decisions.md` template.
 - Shared infrastructure governance is parallel to the version pinning done by
   the selected tracking backend or local run note.
-- Pivot protocol is defined in `SKILL.md` § First Decision; this file
-  covers the code-reuse follow-up.
+- Workstream operations are defined in `SKILL.md` § First Decision; this file
+  covers the code-reuse follow-up for capability workstreams.

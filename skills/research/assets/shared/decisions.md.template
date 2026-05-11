@@ -10,7 +10,9 @@ note, tracker run, notebook note, or results row.
 ```markdown
 ## YYYY-MM-DD — <short title>
 
-- **Mode**: [R&D / Pure Research]
+- **Decision layer**: [project-level / workstream-level]
+- **Workstream**: [project-level / workstreams/<name>]
+- **Workstream label**: [N/A / Capability / Technology Research / Phenomenon / Mechanism Research]
 - **Trigger**: [what observation, dependency, or user decision forced this entry]
 - **State transition**:
   - [Q1/E2/C3/H4]: [active -> rejected / active -> merged / planned -> stale / ...]
@@ -28,7 +30,9 @@ load-bearing claim and note where prior run notes or tracker records live.
 ```markdown
 ## YYYY-MM-DD — tracking backend selected
 
-- **Mode**: [R&D / Pure Research]
+- **Decision layer**: [project-level / workstream-level]
+- **Workstream**: [project-level / workstreams/<name>]
+- **Workstream label**: [N/A / Capability / Technology Research / Phenomenon / Mechanism Research]
 - **Backend**: [local notes/parquet / MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred / DVC / organizational tracker]
 - **Storage**: [local path, tracking URI, remote project, registry, or export path]
 - **Lightweight run record**: [run note / tracker run / notebook note / results row pattern for ordinary exploration]
@@ -40,18 +44,19 @@ load-bearing claim and note where prior run notes or tracker records live.
 
 ## Rules
 
-- Record decisions that change what the project will or will not do.
+- Record decisions that change what the project or workstream will or will not do.
 - Record the tracking backend selection because it changes the review path for
   load-bearing claims.
 - Record hypothesis deletion, merging, stale marking, and parking.
-- Record R&D promotion to `promoted` and Pure Research promotion to
-  `supported` only after the relevant promotion gate.
+- Record Capability / Technology Research promotion to `promoted` and
+  Phenomenon / Mechanism Research promotion to `supported` only after the
+  relevant workstream gate.
 - Avoid vague decisions such as "try more models" or "need more data" unless
   they name the exact unblock condition.
 - A decision entry is invalid if its only transition is `planned -> planned`,
   `none -> planned`, or "try / test / run X". Planning or narrating an ordinary
   experiment belongs in the run note, tracker run, trial notebook, results row,
-  and the relevant state object (`capability_map.md` or
+  and the relevant workstream state object (`capability_map.md` or
   `explanation_ledger.md`); `decisions.md` records pruning, merging, rejection,
   parking, promotion, scope change, or durable commitment.
 - User requests are not durable triggers by themselves. The trigger must name

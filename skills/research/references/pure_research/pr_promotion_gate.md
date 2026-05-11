@@ -1,9 +1,9 @@
 # pr_promotion_gate.md
 
-The Pure Research promotion checklist. Run this before declaring an
-explanation `supported` (i.e., the project's claim has passed). Like
-the R&D promotion gate, this is the highest bar: every load-bearing item must
-pass with concrete evidence cited.
+The Phenomenon / Mechanism Research promotion checklist. Run this before
+declaring an explanation `supported` (i.e., the workstream claim has passed).
+Like the Capability / Technology Research promotion gate, this is the highest
+bar: every load-bearing item must pass with concrete evidence cited.
 
 ## When to read
 
@@ -16,7 +16,8 @@ pass with concrete evidence cited.
 
 The promotion gate may not start unless:
 
-- PR/FAQ exists, has `Status: READY`, and is linked from the project root
+- PR/FAQ exists in the selected workstream, has `Status: READY`, and is
+  linked from the project state
 - Pre-registration for the cited trial(s) exists and had `Status: READY`
   before execution
 - No unhandled major deviation exists for the cited trial(s)

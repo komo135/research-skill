@@ -1,0 +1,31 @@
+# <REPLACE: project name>
+
+Workstream-aware research project.
+
+This project starts as a mixed research container. Do not classify the whole
+project as Pure Research or R&D. Use `project_state.md` to map the project
+intent, current uncertainties, workstreams, dependencies, and project decision
+gate.
+
+Workstreams choose the local state object and gate:
+
+- Capability / Technology Research: `workstreams/<name>/charter.md` and
+  `workstreams/<name>/capability_map.md`
+- Phenomenon / Mechanism Research: `workstreams/<name>/prfaq.md` and
+  `workstreams/<name>/explanation_ledger.md`
+
+Evidence artifacts under `purposes/` are neutral. Use
+`scripts/new_trial.py --project-dir <project> --workstream <name> --slug <slug>`
+so the trial cites the selected workstream.
+
+## Boundary contract
+
+**Protocol/state source of truth**: `project_state.md`, `decisions.md`, and the
+selected workstream state object.
+
+**Project-instance artifacts**: `configs/`, `src/`, `tests/`, `tracking/`,
+`results/`, and `purposes/`.
+
+**Generated report snapshots**: any generated report, notebook export, or
+trial file is evidence. It does not own research-state transitions until the
+selected workstream state object or `decisions.md` cites it.

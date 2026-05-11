@@ -20,6 +20,8 @@ claim, capability, or explanation assessment.
 An artifact can be complete without moving research state. The ledger
 assessment column records whether `capability_map.md`,
 `explanation_ledger.md`, or `decisions.md` later cites it.
+For mixed projects, the optional protocol link is the workstream directory name
+selected with `scripts/new_trial.py --workstream <name>`.
 
 ## Order
 

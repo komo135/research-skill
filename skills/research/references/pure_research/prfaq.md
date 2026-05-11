@@ -1,16 +1,17 @@
 # prfaq.md
 
-Amazon "Working Backwards" PR/FAQ — the entry document for any Pure
-Research project. Write the press release for the finding you would
-publish if research succeeded, then anticipate the skeptical reviewer's
+Amazon "Working Backwards" PR/FAQ — the entry document for a Phenomenon /
+Mechanism Research workstream. Write the press release for the finding you
+would publish if research succeeded, then anticipate the skeptical reviewer's
 questions.
 
 ## When to read
 
-- The very first step of any Pure Research project, before literature
+- The very first step of any Phenomenon / Mechanism Research workstream, before literature
   search, pre-registration, or trial design
-- When a Pure Research project's question feels unfocused
-- Before pivoting from R&D into Pure Research mode
+- When a Phenomenon / Mechanism Research workstream's question feels unfocused
+- Before handing off from a Capability / Technology Research workstream to a
+  Phenomenon / Mechanism Research workstream
 
 ## Purpose
 

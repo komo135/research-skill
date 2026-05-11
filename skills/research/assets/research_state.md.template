@@ -1,11 +1,15 @@
 # research_state.md.template (RETIRED)
 
-Replaced by mode-specific primary state objects per CHARTER C2 / C3:
+Replaced by workstream-local primary state objects:
 
-- R&D: use `assets/rd/capability_map.md.template` (Layer 1 + Layer 2)
-- Pure Research: use `assets/pure_research/explanation_ledger.md.template`
+- Capability / Technology Research: use `assets/rd/capability_map.md.template`
+  (Layer 1 + Layer 2)
+- Phenomenon / Mechanism Research: use
+  `assets/pure_research/explanation_ledger.md.template`
 
-The new `scripts/new_project.py --mode rd|pure-research` automatically
-selects the correct template.
+`scripts/new_project.py` now creates a mixed project shell by default.
+Workstreams select the local state object and gate. Passing
+`--mode rd|pure-research` is only an initial-workstream shortcut inside that
+mixed shell.
 
 Do not use this template for new projects.

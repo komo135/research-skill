@@ -120,9 +120,8 @@ Bonferroni / Romano-Wolf correction. A compact local index may point to
 external artifacts, but it must not hide uncited or failed attempts that bear
 on the promoted claim.
 
-Mode-specific protocol identifiers, if needed, belong in the ledger
-assessment that cites the row. They are not required columns in the evidence
-record.
+Workstream protocol identifiers, if needed, belong in the ledger assessment
+that cites the row. They are not required columns in the evidence record.
 
 ## Tracking backend selection
 

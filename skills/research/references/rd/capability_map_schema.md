@@ -46,7 +46,7 @@ core_technologies.md § Layer 1 closure).
 |---|---|
 | `active` | Currently being worked on |
 | `matured` | Reached `target_TRL`, kill criteria un-fired, analysis at A4+, ready to be consumed by upstream caps or count toward parent K's `established` status |
-| `blocked` | Cannot progress until a named dependency (capability, K, or Pure Research project) changes |
+| `blocked` | Cannot progress until a named dependency (capability, K, or Phenomenon / Mechanism Research workstream) changes |
 | `split` | Decomposed into 2+ children; original row stays for traceability |
 | `merged` | Absorbed into another capability (record absorbing ID) |
 | `stale` | No longer relevant after scope change |
@@ -128,7 +128,7 @@ are evidence-heavy by design.
 
 Setting `dependent_on_research: <project>:<min_tier>` (e.g.,
 `pure_vol_decay:A4`) means this capability cannot be promoted to
-`matured` until the named Pure Research project produces a claim at
+`matured` until the named Phenomenon / Mechanism Research workstream produces a claim at
 the named analysis tier or higher.
 
 The promotion gate (`references/rd/rd_promotion_gate.md`) checks all
@@ -138,7 +138,7 @@ dependencies block promotion regardless of TRL or kill state.
 Cross-project dependencies are unidirectional: R&D consumes Pure
 Research findings, not vice versa. Two-way feedback creates
 circularity; if the user needs feedback from R&D into Pure Research,
-that requires a new Pure Research project (with its own pre-registration)
+that requires a new Phenomenon / Mechanism Research workstream (with its own pre-registration)
 that consumes R&D outputs as data.
 
 For a Research-to-Technology Handoff, use `dependent_on_research` or charter

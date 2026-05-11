@@ -33,7 +33,7 @@ def _(mo):
     ## Evidence artifact header
 
     - **Project**: <REPLACE: project name>
-    - **Mode**: R&D
+    - **Workstream label**: Capability / Technology Research
     - **Charter**: <REPLACE: charter.md status / relevant H section>
 
     ## Artifact design

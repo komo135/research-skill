@@ -1,9 +1,10 @@
 ---
 name: research
 description: >-
-  Use for serious research or R&D projects where conclusions, claims, or
+  Use for serious research or capability/technology workstreams where conclusions, claims, or
   technical capabilities must survive replication, review, or later decision
-  use. Supports Pure Research, R&D, R&D Program coordination,
+  use. Supports workstream-aware research projects, Pure Research and R&D
+  compatibility labels, R&D Program coordination,
   Result-to-Question loops, Result-to-Capability loops, A0-A5 analysis depth,
   right-sized rigor, promotion gates, kill criteria, pre-registration,
   reproducibility, lightweight two-axis review at promotion time, and
@@ -24,57 +25,101 @@ to estimation or assertion level, and progress by the smallest defensible step.
 **Fact collection is not research. Fact + causal analysis at A4 (estimation)
 or A5 (assertion) is research.**
 
-A `supported` claim — for either an R&D capability or a Pure Research finding
-— requires the analysis to reach **A4 minimum**. "It worked" and "it failed"
-are both A0, not results. Read `references/shared/analysis_depth.md` before
-any trial interpretation, and `references/shared/result_analysis.md` before
-writing any explanation of success or failure.
+A `supported` claim — for either a capability / technology research result or
+a phenomenon / mechanism research finding — requires the analysis to reach
+**A4 minimum**. "It worked" and "it failed" are both A0, not results. Read
+`references/shared/analysis_depth.md` before any trial interpretation, and
+`references/shared/result_analysis.md` before writing any explanation of
+success or failure.
 
-## First Decision: Choose the Discipline
+## First Decision: Map the Current Research State
 
-Before any charter, capability map, hypothesis, or trial design: choose one
-discipline and commit. Do not mix; if a single project needs both, split it
-into two projects with separate ledgers.
+Before any charter, capability map, hypothesis, or trial design, map the
+current research state. The first question is not "which discipline is this
+project?" It is "which uncertainty is blocking progress, and which state will
+this work update?"
 
-| Discipline | Use when | Entry document | Primary state object | Deliverable |
-|---|---|---|---|---|
-| **R&D** | The goal is to make a technical capability exist | `references/rd/rd_charter.md` (Heilmeier 8 questions) | `capability_map.md` (TRL + kill criteria) | TRL-6 demonstrated capability with A4+ analysis |
-| **Pure Research** | The goal is to understand a phenomenon | `references/pure_research/prfaq.md`, then exploratory or confirmatory path | `explanation_ledger.md` (questions + competing explanations) | IMRAD-shaped manuscript draft with A4+ analysis |
+A project can contain multiple workstreams. The project itself is not Pure
+Research or R&D, and it must not be locked into an exclusive mode at startup.
+The project owns the final intent, decision context, uncertainty list,
+workstream list, cross-workstream dependencies, and durable decision log. A
+workstream is the unit that selects a state object and gate.
 
-If the discipline shifts mid-trial, never silently switch. Use the **pivot
-protocol**:
+Use these implemented workstream labels to choose the local ledger and
+protocol gate:
 
-1. Document the trigger in `decisions.md` — what observation, result, or
-   reflection forced the pivot? Triggers can be a trial result, an analysis
-   artifact, a literature finding, OR a structured realization in
-   conversation / planning. A reflection-based trigger is acceptable but
-   must name the specific belief that changed and what evidence (even if
-   prior) prompted the change.
-2. Decide between two paths based on sunk work:
-   - **Suspend + restart**: close the current ledger (append a final
-     summary row), start a new project with the correct discipline,
-     link both via a `parent_project_id` reference.
-   - **Add secondary project**: keep the primary project active, initialize
-     a secondary project of the other discipline, declare cross-project
-     dependencies in both `decisions.md` files. Use this when the original
-     primary is still valuable in its discipline.
-3. Either path requires the explicit decision in `decisions.md` before any
-   work proceeds in the new direction.
+| Workstream label | Use when | State object | Gate / review |
+|---|---|---|---|
+| **Phenomenon / Mechanism Research** (Pure Research-compatible) | Reduce uncertainty about a phenomenon, mechanism, cause, or boundary condition without making an artificial capability the direct deliverable | `explanation_ledger.md` | PR/FAQ, targeted literature, confirmatory pre-registration when a claim needs high reliability, A4+ support gate |
+| **Capability / Technology Research** (R&D-compatible) | Reduce technical uncertainty about an unestablished capability by identifying design hypotheses, success conditions, failure conditions, and operating constraints | `capability_map.md` | reviewed charter, kill criteria, TRL / stage gate, A4+ promotion-relevant analysis |
 
-Sneaking the pivot in by relabeling rows or quietly broadening scope is the
-failure mode this protocol prevents.
+Evaluation, design, exploration, and engineering support are activities or
+artifacts inside a selected workstream, not workstream labels. Do not create a
+new durable ledger or classification for them. If such work needs to support a
+claim, state whether the claim updates an explanation question or a capability
+claim, then use the matching state object and gate above.
+
+R&D remains a compatibility label for Capability / Technology Research; it is
+not PoC development. A prototype is an evidence device and possible
+deliverable, but "it runs" does not update research state unless the analysis
+identifies why it works or fails, under what boundary conditions, against which
+alternatives, and with what reproducibility. Pure Research remains a
+compatibility label for Phenomenon / Mechanism Research; it is not the only
+place where mechanism work can happen.
+
+Start with the smallest defensible state map:
+
+1. Write project intent: what decision, explanation, capability, or artifact
+   the project ultimately serves.
+2. List current uncertainties that block progress.
+3. Pick the initial workstream with the highest decision value. The label is
+   provisional.
+4. Select exactly one implemented state object for that workstream:
+   `explanation_ledger.md` for Phenomenon / Mechanism Research or
+   `capability_map.md` for Capability / Technology Research.
+5. Write the evidence plan: which artifact could update which explanation
+   question or capability claim.
+6. Select the protocol gate. A capability workstream that produces
+   promotion-relevant evidence needs reviewed charter and kill criteria. A
+   phenomenon workstream that can support a claim needs PR/FAQ, targeted
+   literature, and reviewed pre-registration when entering confirmatory
+   research. A4+, reproducibility, focused process review, and conclusion
+   review are not relaxed.
+7. Add, split, merge, park, or retire workstreams as evidence reveals new
+   uncertainty.
+
+Workstream operations must not become silent pivots. `add` may introduce a new
+dependent workstream when new uncertainty appears. `split`, `merge`, `park`,
+and `retire` require a `decisions.md` entry naming the trigger, affected
+workstream IDs and ledger rows, evidence reused or excluded, parent / child
+links, and the gate that applies next. Quietly relabeling scope, thresholds,
+interpretation, support status, or TRL is forbidden.
+
+## Project Decision Gate
+
+The project decision gate decides project completion, park, kill, handoff, or
+external sharing by citing child workstream gate results. It does not re-score
+TRL, support status, or A-tier, and it does not create a project-level support
+status that overrides child ledgers.
+
+Project decisions must cite the authoritative workstream source:
+`capability_map.md`, `explanation_ledger.md`, the relevant promotion or support
+review, and the durable `decisions.md` entry. If a project-level question
+requires changing TRL, support status, analysis tier, claim scope, kill state,
+or promotion, stop and perform that change inside the affected workstream's
+protocol first.
 
 ## R&D Program
 
 An R&D Program is an optional coordination layer, not a third discipline. Use
-it only when several R&D and/or Pure Research projects need a shared roadmap,
+it only when several projects or major workstreams need a shared roadmap,
 dependency view, or sequencing discussion across separate ledgers.
 
-The program layer reads child project gate results and dependency declarations.
-It does not re-score TRL, analysis tier, promotion, claim truth, kill state, or
-support status. Those decisions remain inside each child project's
-`capability_map.md`, `explanation_ledger.md`, promotion gate, and
-`decisions.md`.
+The program layer reads child project or workstream gate results and dependency
+declarations. It does not re-score TRL, analysis tier, promotion, claim truth,
+kill state, or support status. Those decisions remain inside each child
+project or workstream's `capability_map.md`, `explanation_ledger.md`,
+promotion gate, and `decisions.md`.
 
 Read `references/program/program_map.md` when coordinating multiple projects.
 Program notes may summarize why one child blocks another, which handoff is
@@ -87,8 +132,8 @@ Rigor is sized to the research state being changed. Orientation, literature
 triage, scaffold setup, smoke tests, and non-load-bearing exploration may use
 lighter notes because they do not move durable research state. Any update that
 changes a claim, TRL, support status, scope, kill decision, promotion, or
-cross-project dependency uses the full protocol required by that state
-transition.
+cross-workstream or cross-project dependency uses the full protocol required by
+that state transition.
 
 Right-sized rigor is not a relaxation path. These requirements are
 non-relaxed:
@@ -165,17 +210,20 @@ interchangeable; conflating them invalidates promotion review.
 | **established** | Core technology (Layer 1) | All child capabilities matured, kill criteria un-fired, analysis at A4+ | Core tech ready for upstream consumption |
 | **promoted** | Project (target) | All core techs established, integration test ran AFTER upstream exits, and (if any core tech is `継続改善型`) maintenance plan filed | Project closure or transition to maintenance cadence |
 
-For Pure Research the equivalent project-level term is **`supported`** for
-a claim, with the same A4+ requirement at the analysis-depth axis.
+For Phenomenon / Mechanism Research, the equivalent claim-level term is
+**`supported`**, with the same A4+ requirement at the analysis-depth axis.
 
-## R&D Discipline
+## Capability / Technology Research (R&D-compatible)
 
-R&D establishes a technical capability. Required sequence — read each linked
-reference before executing the step:
+Capability / Technology Research establishes the knowledge needed for a
+technical capability to work under stated conditions. R&D is retained as a
+compatibility label for this workstream type. Required sequence — read each
+linked reference before executing the step:
 
 1. **Charter** (`references/rd/rd_charter.md`) — answer the 8 Heilmeier
    questions, including kill criteria (H6: what evidence would kill this
-   project). Without a charter on file, decomposition is forbidden.
+   workstream or target). Without a charter on file, decomposition is
+   forbidden.
 2. **Core Technologies** (`references/rd/core_technologies.md`) —
    intellectual decomposition. Identify the minimal set of technologies that
    require research investment to establish for this target. Each core
@@ -204,10 +252,12 @@ reference before executing the step:
    and — if any core technology is `継続改善型` — a maintenance plan is on
    file in `decisions.md`.
 
-## Pure Research Discipline
+## Phenomenon / Mechanism Research (Pure Research-compatible)
 
-Pure Research reduces ignorance about a phenomenon. Required sequence — read
-each linked reference before executing the step:
+Phenomenon / Mechanism Research reduces ignorance about a phenomenon,
+mechanism, cause, or boundary condition. Pure Research is retained as a
+compatibility label for this workstream type. Required sequence — read each
+linked reference before executing the step:
 
 1. **PR/FAQ** (`references/pure_research/prfaq.md`) — write the press release
    for the finding you would publish if research succeeded. If you cannot
@@ -256,7 +306,7 @@ each linked reference before executing the step:
    A4+, and an IMRAD draft (`references/pure_research/imrad_draft.md`) is
    producible.
 
-## Analysis Depth (both disciplines)
+## Analysis Depth (all workstreams)
 
 Analysis depth is the primary deliverable, not a side note. Tier scale:
 
@@ -454,13 +504,13 @@ the final report must carry enough intuitive evidence for human judgment.
   numeric value, or tool output. Summary verdicts without citation are
   forbidden at those decision points.
 - **Initial-day prohibitions**.
-  - R&D first day: no implementation, charter and capability map (with
+  - Capability / Technology Research first day: no implementation, charter and capability map (with
     core technologies) only. *Why*: kill criteria (Heilmeier H6) must be
     ready before a trial can fire one. Code written before kill criteria
     exist accumulates sunk cost that biases future kill decisions.
     Typical time investment: 1-2 hours of charter writing prevents weeks
     of effort on a misframed target.
-  - Pure Research first day: do not run a claim-bearing confirmation trial.
+  - Phenomenon / Mechanism Research first day: do not run a claim-bearing confirmation trial.
     PR/FAQ, targeted literature, exploratory planning, explanation
     candidates, lightweight exploratory probes, scaffold setup, and — when a
     claim will need high reliability — pre-registration are allowed. *Why*:
@@ -474,8 +524,9 @@ the final report must carry enough intuitive evidence for human judgment.
     file creation. The prohibition targets evidence-producing work
     (implementation that runs / trial that produces metrics), not
     enabling work.
-- **Session-level R&D sequencing**. Once the charter is complete, the seven
-  R&D steps must preserve dependency order:
+- **Session-level Capability / Technology Research sequencing**. Once the
+  charter is complete, the seven R&D-compatible steps must preserve dependency
+  order:
   - No capability row may be written until its parent Layer 1 core technology
     has complete fields and passes the operational filter (§ Decomposition
     Discipline).
@@ -510,12 +561,13 @@ the final report must carry enough intuitive evidence for human judgment.
 - **No placeholders in deliverables**. Templates produce real content; any
   remaining `TBD`, `TODO`, `XXX`, `???`, or `{{...}}` blocks the deliverable.
 
-## Required Artifacts (per project)
+## Required Artifacts
 
-Common to both disciplines:
+Common to a workstream-aware project:
 
 ```
-README.md                        # mode declaration, goal, current state
+project_state.md                 # project intent, uncertainties, workstreams
+README.md                        # goal, current state, entry points
 decisions.md                     # durable state transitions only
 literature/papers.md             # prior work
 literature/differentiation.md    # how this differs from prior work
@@ -526,9 +578,10 @@ src/                             # project-instance implementation, if any
 tests/                           # project-instance verification, if any
 reproducibility/{uv.lock,env_lock_ref.txt,data_versions.txt,shared_pins.txt,seed.txt}
 tracking/                        # optional local tracker config / exported run refs
+workstreams/                     # recommended home for workstream ledgers
 ```
 
-R&D adds:
+Capability / Technology Research workstreams add:
 
 ```
 charter.md                       # reviewed charter (Heilmeier 8 Q)
@@ -537,7 +590,7 @@ capability_map.md                # primary state object
                                  #   Section 2: Capabilities (operational layer, with core_tech_id)
 ```
 
-Pure Research adds:
+Phenomenon / Mechanism Research workstreams add:
 
 ```
 prfaq.md                         # working-backwards entry document
@@ -551,7 +604,7 @@ imrad_draft.md                   # paper-shaped deliverable, started early
 Read only what applies to your current step. References are organized by
 audience.
 
-**Shared (both disciplines)**
+**Shared (all workstreams)**
 
 | Reference | When to read |
 |---|---|
@@ -561,7 +614,7 @@ audience.
 | `shared/reproducibility.md` | Setting up data version + git commit + environment pin for promotion-eligible or claim-cited trials. |
 | `shared/results_db_schema.md` | Appending interpreted trial results. |
 
-**R&D** — see § R&D Discipline above for the entry sequence. Key references:
+**Capability / Technology Research (R&D-compatible)** — see the entry sequence above. Key references:
 `rd/rd_charter.md` (Heilmeier 8 Q) ·
 `rd/core_technologies.md` (intellectual decomposition, lifecycle) ·
 `rd/capability_map_schema.md` (operational decomposition with core_tech_id) ·
@@ -570,7 +623,7 @@ audience.
 `rd/rd_workflow.md` ·
 `rd/rd_promotion_gate.md`.
 
-**Pure Research** — see § Pure Research Discipline above for the entry
+**Phenomenon / Mechanism Research (Pure Research-compatible)** — see the entry
 sequence.
 
 **Program coordination** — optional multi-project roadmap:
@@ -582,8 +635,8 @@ sequence.
 
 | Script | Purpose |
 |---|---|
-| `new_project.py --mode rd|pure-research` | Initialize a project with the discipline-specific layout |
-| `new_trial.py` | Generate a numbered trial notebook (mode-aware template) |
+| `new_project.py` | Initialize a project shell; compatibility `--mode rd|pure-research` may create a first workstream layout |
+| `new_trial.py` | Generate a numbered neutral evidence artifact |
 | `aggregate_results.py` | Append interpreted trial rows (mode-aware schema, includes `analysis_tier`) |
 | ledger consistency helper | Lint capability_map / explanation_ledger / analysis-section consistency |
 | `render_capability_dag.py` | Mermaid DAG of the R&D capability dependency graph |

@@ -34,7 +34,7 @@ def _(mo):
     ## Evidence artifact header
 
     - **Project**: <REPLACE: project name>
-    - **Mode**: Pure Research
+    - **Workstream label**: Phenomenon / Mechanism Research
     - **Optional pre-registration file**: <REPLACE: optional prereg/PR_<id>.md>
     - **Optional ledger target**: <REPLACE: optional ledger row / claim>
     - **Optional contrast**: <REPLACE: optional discriminating contrast>

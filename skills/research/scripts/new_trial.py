@@ -1,7 +1,8 @@
-"""new_trial.py — Create a numbered trial notebook (mode-aware).
+"""new_trial.py — Create a numbered trial notebook (workstream-aware).
 
-Replaces the older `new_purpose.py`. Mode-aware: chooses the correct
-template based on whether the project is R&D or Pure Research.
+Replaces the older `new_purpose.py`. Chooses the correct template based on the
+selected workstream state object, or on project-root compatibility state
+objects.
 
 Per CHARTER C1 and the templates:
 - R&D: assets/rd/rd_trial.py.template (protocol-agnostic evidence artifact)
@@ -11,16 +12,19 @@ Per CHARTER C1 and the templates:
 Trial files are named `trial_NNN_<slug>.py` in `<project>/purposes/`.
 
 Usage:
-    # R&D
+    # Mixed project workstream
+    python scripts/new_trial.py --project-dir <path> --workstream WS002-capability --slug latency_benchmark
+
+    # Project-root compatibility R&D
     python scripts/new_trial.py --project-dir <path> --slug latency_benchmark
 
-    # Pure Research
+    # Project-root compatibility Pure Research
     python scripts/new_trial.py --project-dir <path> --slug vol_carry_decay_test
 
 Exit codes:
     0: trial notebook created
     1: project not found
-    2: missing required argument for the project's mode
+    2: missing or ambiguous workstream state selection
     3: trial slug collides
 """
 
@@ -33,24 +37,113 @@ from pathlib import Path
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
+RD_STATE_FILES = {"charter.md", "capability_map.md"}
+PR_STATE_FILES = {"prfaq.md", "explanation_ledger.md", "imrad_draft.md"}
 
-def detect_mode(project_dir: Path) -> str:
-    """Detect project mode by which top-level artifact is present."""
-    has_charter = (project_dir / "charter.md").exists()
-    has_prfaq = (project_dir / "prfaq.md").exists()
+
+def detect_mode_from_state_dir(state_dir: Path, label: str) -> str:
+    """Detect mode from a state directory's primary state object."""
+    present_rd = sorted(name for name in RD_STATE_FILES if (state_dir / name).exists())
+    present_pr = sorted(name for name in PR_STATE_FILES if (state_dir / name).exists())
+    if present_rd and present_pr:
+        raise ValueError(
+            f"{label} contains mixed workstream artifacts: "
+            f"{', '.join(present_rd + present_pr)}. Split them into separate "
+            "workstreams or remove the unrelated state files."
+        )
+
+    has_capability_map = (state_dir / "capability_map.md").exists()
+    has_explanation_ledger = (state_dir / "explanation_ledger.md").exists()
+    if has_capability_map and has_explanation_ledger:
+        raise ValueError(
+            f"{label} contains both capability_map.md and explanation_ledger.md; "
+            "select one primary state object for the trial."
+        )
+    if has_capability_map:
+        return "rd"
+    if has_explanation_ledger:
+        return "pure-research"
+
+    # Compatibility with older or hand-built projects that only have entry
+    # documents available when the first trial is created.
+    has_charter = (state_dir / "charter.md").exists()
+    has_prfaq = (state_dir / "prfaq.md").exists()
     if has_charter and has_prfaq:
         raise ValueError(
-            "Both charter.md and prfaq.md present — mode mixing detected. "
-            "Per CHARTER C1, project must be one mode only."
+            f"{label} contains both charter.md and prfaq.md; add the primary "
+            "state object or pass a more specific --workstream."
         )
     if has_charter:
         return "rd"
     if has_prfaq:
         return "pure-research"
+
     raise FileNotFoundError(
-        "Neither charter.md nor prfaq.md found in project — "
-        "run scripts/new_project.py to scaffold first."
+        f"No state object found in {label}; expected capability_map.md or "
+        "explanation_ledger.md."
     )
+
+
+def resolve_workstream_dir(project_dir: Path, workstream: str) -> Path:
+    """Return the selected workstream directory, rejecting path traversal."""
+    if workstream in {"", ".", ".."} or "/" in workstream or "\\" in workstream:
+        raise ValueError("--workstream must be a directory name under workstreams/")
+    workstream_path = Path(workstream)
+    if workstream_path.name != workstream or workstream_path.is_absolute():
+        raise ValueError("--workstream must be a directory name under workstreams/")
+    workstreams_dir = (project_dir / "workstreams").resolve()
+    workstream_dir = project_dir / "workstreams" / workstream
+    if not workstream_dir.exists():
+        raise FileNotFoundError(f"workstream not found: {workstream_dir}")
+    if not workstream_dir.is_dir():
+        raise ValueError(f"workstream is not a directory: {workstream_dir}")
+    resolved = workstream_dir.resolve()
+    try:
+        resolved.relative_to(workstreams_dir)
+    except ValueError as exc:
+        raise ValueError(
+            f"--workstream must resolve under {workstreams_dir}: {resolved}"
+        ) from exc
+    return resolved
+
+
+def detect_mode_and_workstream(
+    project_dir: Path, workstream: str | None = None
+) -> tuple[str, str | None]:
+    """Detect trial mode and the selected workstream, if any."""
+    if workstream:
+        workstream_dir = resolve_workstream_dir(project_dir, workstream)
+        return detect_mode_from_state_dir(workstream_dir, f"workstream {workstream}"), workstream
+
+    try:
+        return detect_mode_from_state_dir(project_dir, "project root"), None
+    except FileNotFoundError as exc:
+        workstreams_dir = project_dir / "workstreams"
+        if workstreams_dir.exists():
+            candidates: list[tuple[str, str]] = []
+            for child in sorted(workstreams_dir.iterdir()):
+                if not child.is_dir():
+                    continue
+                try:
+                    candidates.append(
+                        (child.name, detect_mode_from_state_dir(child, f"workstream {child.name}"))
+                    )
+                except FileNotFoundError:
+                    continue
+            if len(candidates) == 1:
+                selected_workstream, selected_mode = candidates[0]
+                return selected_mode, selected_workstream
+            raise FileNotFoundError(
+                "No project-root state object found. Pass --workstream <dir-name> "
+                "to select the workstream state object."
+            ) from exc
+        raise
+
+
+def detect_mode(project_dir: Path, workstream: str | None = None) -> str:
+    """Detect trial mode from a workstream or project-root compatibility state object."""
+    mode, _ = detect_mode_and_workstream(project_dir, workstream)
+    return mode
 
 
 def next_trial_number(purposes_dir: Path) -> int:
@@ -95,7 +188,8 @@ def substitute_rd(content: str, slug: str, nnn: str, project_name: str) -> str:
 
 
 def substitute_pr(content: str, prereg_id: str | None, question_id: str | None,
-                  discriminating: str | None, slug: str, nnn: str, project_name: str) -> str:
+                  discriminating: str | None, slug: str, nnn: str, project_name: str,
+                  workstream: str | None) -> str:
     """Replace <REPLACE: ...> markers in PR trial template that we can fill from args."""
     content = (
         content
@@ -107,7 +201,12 @@ def substitute_pr(content: str, prereg_id: str | None, question_id: str | None,
     if question_id:
         content = content.replace("<REPLACE: optional ledger row / claim>", question_id)
     if prereg_id:
-        content = content.replace("<REPLACE: optional prereg reference>", f"prereg/{prereg_id}.md")
+        prereg_path = (
+            f"workstreams/{workstream}/prereg/{prereg_id}.md"
+            if workstream else f"prereg/{prereg_id}.md"
+        )
+        content = content.replace("<REPLACE: optional prereg reference>", prereg_path)
+        content = content.replace("<REPLACE: optional prereg/PR_<id>.md>", prereg_path)
     if discriminating:
         content = content.replace("<REPLACE: optional discriminating contrast>", discriminating)
     return content
@@ -118,7 +217,7 @@ def create_trial(args: argparse.Namespace) -> Path:
     if not project_dir.exists():
         raise FileNotFoundError(f"project not found: {project_dir}")
 
-    mode = detect_mode(project_dir)
+    mode, selected_workstream = detect_mode_and_workstream(project_dir, args.workstream)
 
     purposes_dir = project_dir / "purposes"
     n = next_trial_number(purposes_dir)
@@ -138,7 +237,7 @@ def create_trial(args: argparse.Namespace) -> Path:
     else:
         content = substitute_pr(
             content, args.prereg_id, args.question_id, args.discriminating,
-            slug, nnn, project_dir.name,
+            slug, nnn, project_dir.name, selected_workstream,
         )
 
     out_path.write_text(content, encoding="utf-8")
@@ -147,14 +246,15 @@ def create_trial(args: argparse.Namespace) -> Path:
     index_path = purposes_dir / "INDEX.md"
     if index_path.exists():
         index = index_path.read_text(encoding="utf-8")
+        protocol_link = selected_workstream or "none"
         if mode == "rd":
             new_row = (
-                f"| trial_{nnn} | rd | purposes/trial_{nnn}_{slug}.py | none | in-progress | pending |\n"
+                f"| trial_{nnn} | rd | purposes/trial_{nnn}_{slug}.py | {protocol_link} | in-progress | pending |\n"
             )
         else:
             new_row = (
                 f"| trial_{nnn} | pure-research | purposes/trial_{nnn}_{slug}.py | "
-                f"none | in-progress | pending |\n"
+                f"{protocol_link} | in-progress | pending |\n"
             )
         marker = "\n## Artifact-status legend"
         if marker in index:
@@ -171,6 +271,7 @@ def main() -> None:
         description="Create a numbered research trial evidence artifact.",
     )
     p.add_argument("--project-dir", required=True, type=Path)
+    p.add_argument("--workstream", help="workstream directory name under <project>/workstreams/")
     p.add_argument("--slug", required=True, help="trial slug (letters, numbers, and _)")
     # R&D trials are protocol-agnostic evidence artifacts; ledger files link
     # them to capability claims during assessment.

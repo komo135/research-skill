@@ -1,14 +1,15 @@
 # hypotheses.md.template (RETIRED)
 
-The "hypothesis" abstraction has been removed in both modes per CHARTER
-C2 / C3. New unit per mode:
+The "hypothesis" abstraction has been removed from current workstream state
+per CHARTER C2 / C3. Current units:
 
-- R&D: capability (next test = next TRL transition for one capability)
-- Pure Research: explanation discrimination (next test = next discriminating
-  trial under reviewed pre-registration)
+- Capability / Technology Research: capability (next test = next TRL
+  transition for one capability)
+- Phenomenon / Mechanism Research: explanation discrimination (next test =
+  next discriminating trial under reviewed pre-registration)
 
-Use the mode-specific trial templates instead:
-- R&D: `assets/rd/rd_trial.py.template`
-- Pure Research: `assets/pure_research/pr_trial.py.template`
+Use the workstream-targeted trial templates instead:
+- Capability / Technology Research: `assets/rd/rd_trial.py.template`
+- Phenomenon / Mechanism Research: `assets/pure_research/pr_trial.py.template`
 
 Do not use this template for new projects.

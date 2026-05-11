@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "version": "1.1.4",
-  "description": "v1.1.4 - Agent-driven serious research and R&D workflows with exploratory/confirmatory Pure Research separation and quant-finance specialization.",
+  "version": "1.1.5",
+  "description": "v1.1.5 - Workstream-aware serious research and R&D workflows with quant-finance specialization.",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "Research",
     "shortDescription": "Research and R&D protocols with quant finance specialization",
-    "longDescription": "v1.1.4 - Agent-driven serious research and R&D workflows with exploratory/confirmatory Pure Research separation, lightweight tracking, and no registration-proof machinery. The plugin exposes a generic research skill for disciplined R&D / Pure Research work, plus a quant-research adapter for financial machine learning, backtests, time-series validation, leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented evidence.",
+    "longDescription": "v1.1.5 - Workstream-aware serious research and R&D workflows with lightweight tracking and no registration-proof machinery. The plugin exposes a generic research skill for mixed research projects with local workstream gates, plus a quant-research adapter for financial machine learning, backtests, time-series validation, leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented evidence.",
     "developerName": "komoootv",
     "category": "Research",
     "capabilities": [

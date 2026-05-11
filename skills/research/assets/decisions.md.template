@@ -1,58 +1,11 @@
-# Decision log
+# decisions.md.template (RETIRED)
 
-Time-ordered record of durable research-state transitions and commitments.
-Do not use this file to narrate every experiment. Ordinary exploratory,
-smoke-test, debugging, and non-load-bearing runs can live in a lightweight run
-note, tracker run, notebook note, or results row.
+Use `assets/shared/decisions.md.template` for current projects.
 
-## Format
+The current protocol records project-level and workstream-level decisions with
+an explicit workstream label when applicable:
 
-```markdown
-## YYYY-MM-DD — <short title>
+- Capability / Technology Research
+- Phenomenon / Mechanism Research
 
-- **Mode**: [R&D / Pure Research]
-- **Trigger**: [what observation, dependency, or user decision forced this entry]
-- **State transition**:
-  - [Q1/E2/C3/H4]: [active -> rejected / active -> merged / planned -> stale / ...]
-- **Reason**: [specific evidence or design argument]
-- **Alternatives considered**: [serious competing interpretation or action]
-- **Next discriminating step**: [smallest next step, or "none; line closed"]
-```
-
-## Tracking backend entry
-
-Record this during project initialization or before the first load-bearing
-claim, whichever comes first. Existing projects can add this before the next
-load-bearing claim and note where prior run notes or tracker records live.
-
-```markdown
-## YYYY-MM-DD — tracking backend selected
-
-- **Mode**: [R&D / Pure Research]
-- **Backend**: [local notes/parquet / MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred / DVC / organizational tracker]
-- **Storage**: [local path, tracking URI, remote project, registry, or export path]
-- **Lightweight run record**: [run note / tracker run / notebook note / results row pattern for ordinary exploration]
-- **Decision-relevant run set**: [path or tracker query for runs needed for selection correction, multiple-testing, promotion, or external claims]
-- **Review retrieval**: [how a reviewer resolves trial_id -> run record]
-- **Minimum persisted fields for promotion-eligible or claim-cited results**: trial_id, run_id or artifact_uri, data version, git commit, environment pin, seed if relevant, params, headline metrics, rerun guidance
-- **Reason**: [why this backend fits the research and collaboration model]
-```
-
-## Rules
-
-- Record decisions that change what the project will or will not do.
-- Record the tracking backend selection because it changes the review path for
-  load-bearing claims.
-- Record hypothesis deletion, merging, stale marking, and parking.
-- Record R&D promotion to `promoted` and Pure Research promotion to
-  `supported` only after the relevant promotion gate.
-- Avoid vague decisions such as "try more models" or "need more data" unless
-  they name the exact unblock condition.
-- A decision entry is invalid if its only transition is `planned -> planned`,
-  `none -> planned`, or "try / test / run X". Planning or narrating an ordinary
-  experiment belongs in the run note, tracker run, trial notebook, results row,
-  and `hypotheses.md`; `decisions.md` records pruning, merging, rejection,
-  parking, promotion, scope change, or durable commitment.
-- User requests are not durable triggers by themselves. The trigger must name
-  the evidence, dependency, contradiction, scope change, or state-compression
-  reason that forced the decision.
+Do not use this retired template for new projects.

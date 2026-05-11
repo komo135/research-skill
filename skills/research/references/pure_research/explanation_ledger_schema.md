@@ -1,24 +1,25 @@
 # explanation_ledger_schema.md
 
-`explanation_ledger.md` — the single state object for a Pure Research
-project. Tracks research questions and the explanations that compete to
-answer them. Claim-cited or promotion-relevant results update explanation rows;
-ordinary exploratory runs may remain as lightweight run notes until they become
-load-bearing.
+`explanation_ledger.md` — the single state object for a Phenomenon /
+Mechanism Research workstream. Tracks research questions and the explanations
+that compete to answer them. Claim-cited or promotion-relevant results update
+explanation rows; ordinary exploratory runs may remain as lightweight run
+notes until they become load-bearing.
 
 ## When to read
 
 - Before adding a question or explanation row
 - Updating a row after a trial result
 - Before declaring a claim `supported`
-- Reviewing whether a Pure Research project's state is still consistent
+- Reviewing whether a Phenomenon / Mechanism Research workstream's state is still consistent
 
 ## Position in the project
 
-`explanation_ledger.md` is the Pure Research counterpart to R&D's
-`capability_map.md`. It sits at the project root and is the primary
-state surface. Trials feed into it; the IMRAD draft is generated from
-it; the promotion gate reads it.
+`explanation_ledger.md` is the Phenomenon / Mechanism Research state object,
+paired with the Capability / Technology Research `capability_map.md`. It sits
+in the selected workstream and is that workstream's primary state surface.
+Trials feed into it; the IMRAD draft is generated from it; the promotion gate
+reads it.
 
 ## Two-level hierarchy
 
@@ -122,8 +123,9 @@ fresh pre-registration that explicitly addresses the contradiction.
 ```markdown
 # Explanation Ledger — <project name>
 
-## Mode
-Pure Research. <One-sentence reason this is Pure Research not R&D.>
+## Workstream label
+Phenomenon / Mechanism Research. <One-sentence reason this workstream updates
+an explanation question rather than a capability claim.>
 
 ## Active questions
 | ID | parent_Q | question | why_it_matters | current_best_answer | Status | next_discriminating_step |

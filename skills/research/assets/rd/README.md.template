@@ -1,14 +1,15 @@
-# <REPLACE: project name>
+# <REPLACE: project name> — Capability / Technology Research workstream
 
-R&D project — establishes a technical capability via Heilmeier charter,
-TRL-tracked capability map, and Cooper Stage-Gate per capability.
+Capability / Technology Research workstream — establishes a technical
+capability via Heilmeier charter, TRL-tracked capability map, and Cooper
+Stage-Gate per capability. The project container may hold other workstreams.
 
 ## Status
 
 - **Current state**: <REPLACE: drafting | active | assessment | promoted | killed | parked | pivoted>
 - **Charter**: [`charter.md`](charter.md) (status: <REPLACE: DRAFT | READY>)
 - **Capability map**: [`capability_map.md`](capability_map.md)
-- **Decisions log**: [`decisions.md`](decisions.md)
+- **Decisions log**: [`../../decisions.md`](../../decisions.md)
 - **Pending stop-condition decision**: <REPLACE: none | promote | kill | park | pivot>
 
 ## Target
@@ -18,21 +19,22 @@ TRL-tracked capability map, and Cooper Stage-Gate per capability.
 ## Boundary contract
 
 **Protocol/state source of truth**: `charter.md`, `capability_map.md`, and
-`decisions.md` define research questions, capability assessment criteria,
-current status, and durable state transitions.
+the project decision log define research questions, capability assessment
+criteria, current status, and durable state transitions.
 
-**Project-instance artifacts**: `configs/`, `src/`, `tests/`, `purposes/`,
-and `results/` contain concrete symbols, universes, data paths, parameters,
-implementation, evidence artifacts, generated notebooks, and run outputs.
+**Project-instance artifacts**: `../../configs/`, `../../src/`,
+`../../tests/`, `../../purposes/`, and `../../results/` contain concrete
+symbols, universes, data paths, parameters, implementation, evidence artifacts,
+generated notebooks, and run outputs.
 
-**Generated report snapshots**: reports under `results/` may summarize a run,
-but they do not update project state by themselves. Promote, kill, park, or
-pivot only by updating `capability_map.md` and recording the transition in
-`decisions.md` with evidence links.
+**Generated report snapshots**: reports under `../../results/` may summarize a
+run, but they do not update workstream state by themselves. Promote, kill,
+park, or pivot only by updating `capability_map.md` and recording the
+transition in `../../decisions.md` with evidence links.
 
 Do not put active candidates, tuned parameters, current performance metrics, or trial-specific
-conclusions in reusable workflow docs. Those belong in configs, trial reports,
-or decision entries.
+conclusions in reusable workflow docs. Those belong in project-instance
+configs, trial reports, or decision entries.
 
 ## Consumer
 
@@ -52,11 +54,14 @@ assessment.
 ## Folder layout
 
 ```
-<project_name>/
+<project_name>/workstreams/<workstream_name>/
 ├── README.md               # this file
 ├── charter.md              # reviewed Heilmeier 8 Q
 ├── capability_map.md       # Section 1 (Layer 1) + Section 2 (Layer 2)
-├── decisions.md            # state transitions, deviation entries, session summaries
+└── ...
+
+<project_name>/
+├── decisions.md            # project/workstream state transitions
 ├── configs/                # concrete experiment configs and parameter grids
 ├── src/                    # project-specific implementation, if needed
 ├── tests/                  # verification for project-specific implementation
@@ -106,9 +111,9 @@ point:
 
 <REPLACE: "Promotion expected at <date>" | "Promotion blocked on <blocker>" | "Promoted at <date> as <fully completed | v1 + maintenance>" | "Killed at <date> per H6 criterion <id>" | "Parked since <date>, unblock condition: <...>">
 
-## Pivot history
+## Handoff history
 
-<REPLACE: "none" or "pivoted from project <name> at <date>; see decisions.md">
+<REPLACE: "none" or "split from / handed off to workstream <name> at <date>; see decisions.md">
 
-If this project was pivoted from another, the source project's
-`README.md` should reference this one as `pivoted_to`.
+If this workstream was split from another, the parent workstream should
+reference this one in the project decision log.

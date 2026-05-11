@@ -3,8 +3,10 @@
 A Claude Code and Codex plugin for agent-driven serious research and R&D.
 It ships two public skills in one plugin:
 
-- `research` - the generic base skill for disciplined R&D, Pure Research,
-  stage gates, result analysis, lightweight experiment tracking,
+- `research` - the generic base skill for disciplined, workstream-aware
+  research across Capability / Technology Research (R&D-compatible) and
+  Phenomenon / Mechanism Research (Pure Research-compatible), stage gates,
+  result analysis, lightweight experiment tracking,
   reproducibility for claim-cited results, process review, and conclusion
   review.
 - `quant-research` - a quantitative-finance adapter layered on top of
@@ -21,8 +23,11 @@ evidence that survives the relevant gate should change project state.
 Use this plugin when the work is more than ordinary fact lookup or ordinary
 implementation:
 
-- R&D work that establishes or improves a technical capability.
-- Pure Research work that resolves a phenomenon, explanation, or claim.
+- Capability / Technology Research work that establishes or improves a
+  technical capability while explaining success conditions, failure
+  conditions, and design alternatives.
+- Phenomenon / Mechanism Research work that resolves a phenomenon,
+  explanation, boundary condition, or claim.
 - Quantitative-finance research where conclusions must survive replication,
   leakage checks, validation-design review, and cost-aware interpretation.
 
@@ -39,16 +44,22 @@ The generic `research` skill separates the work into durable layers:
 
 - Protocol layer: reusable rules, schemas, gates, review requirements, and
   promotion criteria.
+- Project layer: final intent, decision context, current uncertainties,
+  workstream list, cross-workstream dependencies, and durable decisions.
+- Workstream layer: the local unit that selects a state object and gate.
 - Project instance layer: concrete data, candidates, parameters, code, trial
-  notebooks, generated reports, and local decisions.
+  notebooks, generated reports, and local implementation decisions.
 - Evidence artifacts: notebooks, result rows, tracker runs, lightweight run
   notes, figures, and claim-cited result records.
 - State ledgers: capability maps, explanation ledgers, decision logs, and
   promotion records that cite evidence artifacts.
 
-R&D mode focuses on establishing a capability. Pure Research mode focuses on
-resolving a question or explanation. Optional R&D Program files coordinate
-multiple child projects but do not own truth, TRL, promotion, or claim status.
+A project can contain multiple workstreams. The project itself is not Pure
+Research or R&D; those names remain compatibility labels for workstream types.
+Project decision gates cite child workstream gate results and do not re-score
+TRL, support status, or A-tier. Optional R&D Program files coordinate multiple
+projects or major workstreams but do not own truth, TRL, promotion, or claim
+status.
 
 ## Repository Layout
 
@@ -113,16 +124,20 @@ The installed Codex skills are exposed as `research` and `quant-research`.
 
 ## Usage Flow
 
-1. Choose `research` for generic R&D or Pure Research. Choose
+1. Choose `research` for generic serious research or R&D. Choose
    `quant-research` only when the domain is financial ML, backtesting,
    time-series validation, portfolio research, or trading-system evidence.
-2. Write down the entry document before expensive work: an R&D charter for
-   capability establishment, or PR/FAQ plus pre-registration for Pure Research.
-3. Run the smallest evidence-producing artifact that can answer the current
-   question.
-4. Analyze the result before adding variants. A result should update a question,
-   split an explanation, recycle a capability, or justify a gate decision.
-5. Promote only when the relevant process review and conclusion review axes
+2. Map the current research state: project intent, current uncertainties, the
+   first workstream, its state object, and its gate.
+3. Write the entry document before expensive claim-bearing work: reviewed
+   charter and kill criteria for a capability workstream, or PR/FAQ plus
+   pre-registration when a phenomenon workstream enters confirmatory research.
+4. Run the smallest evidence-producing artifact that can answer the current
+   workstream question.
+5. Analyze the result before adding variants. A result should update a question,
+   split an explanation, recycle a capability, add a dependent workstream, or
+   justify a gate decision.
+6. Promote only when the relevant process review and conclusion review axes
    pass for the load-bearing claim. Claim-bearing notebooks use the folded
    experiment review references inside `research/references/review/`.
 
@@ -160,15 +175,28 @@ v1.1.0, install `research@research-skill`. The old standalone
 
 ## Status
 
-Version 1.1.4 - separates exploratory and confirmatory Pure Research while
-keeping pre-registration as a confirmatory tool for planned-vs-unplanned
-analysis, current-state comparison, and transparent deviation handling.
+Version 1.1.5 - makes research projects workstream-aware so mixed research can
+start from project intent and current uncertainty without forcing a project-wide
+Pure Research / R&D choice.
 
 <details>
 <summary>Changelog</summary>
 
-### v1.1.4 (current)
+### v1.1.5 (current)
 
+- Made the research entry workstream-aware: projects can contain multiple
+  workstreams, while R&D and Pure Research remain compatibility labels for
+  local state objects and gates.
+- Added mixed project scaffolding and workstream-targeted trial generation;
+  `--mode` now creates an initial workstream inside the mixed container rather
+  than classifying the whole project.
+- Limited implemented workstream labels to Capability / Technology Research
+  and Phenomenon / Mechanism Research; evaluation, design, exploration, and
+  engineering support remain activities inside a selected workstream.
+- Added regression coverage so ignored `docs/superpowers/specs` files are not
+  packaged as plugin artifacts.
+
+### v1.1.4
 - Clarified that Pure Research has separate exploratory and confirmatory
   workflows.
 - Clarified that pre-registration is a confirmatory-research tool, not a

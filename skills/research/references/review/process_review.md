@@ -2,9 +2,10 @@
 
 Process review — was the discipline followed? This is the first of two
 review axes (the other is `conclusion_review.md` for claim warrant).
-Both are lightweight, targeted reviews before any R&D transition to `matured`,
-`established`, or `promoted`, before any Pure Research promotion to
-`supported`, or before an externally shared load-bearing claim.
+Both are lightweight, targeted reviews before any Capability / Technology
+Research transition to `matured`, `established`, or `promoted`, before any
+Phenomenon / Mechanism Research promotion to `supported`, or before an
+externally shared load-bearing claim.
 
 ## When to read
 
@@ -50,19 +51,20 @@ specific citation. Lightweight process checks may use a concise summary when
 they are not used to support promotion. Out-of-scope items should be marked
 `N/A — not load-bearing for this review`.
 
-## Common pre-conditions (both modes)
+## Common pre-conditions (all workstreams)
 
-These checks apply regardless of discipline:
+These checks apply regardless of selected workstream label:
 
-- [ ] **Mode is explicitly declared** in `README.md` and matches the
-  decisions log
-  - Evidence: `README.md` Mode field + `decisions.md` first entry
-- [ ] **No mode mixing**: project hasn't silently switched between
-  R&D and Pure Research mid-stream
-  - Evidence: `decisions.md` reviewed for any pivot — if pivoted, the
-    pivot protocol per `SKILL.md` § First Decision was followed
-    (suspend+restart or add secondary project, both with explicit
-    `decisions.md` entry)
+- [ ] **Workstream label is explicitly declared** in `project_state.md` and
+  matches the selected workstream state object
+  - Evidence: `project_state.md` workstream row + selected workstream
+    `README.md` + relevant `decisions.md` entry
+- [ ] **No silent state-object switch**: a workstream has not mixed
+  `capability_map.md` and `explanation_ledger.md`, or silently changed from
+  Capability / Technology Research to Phenomenon / Mechanism Research
+  mid-stream
+  - Evidence: `decisions.md` reviewed for add / split / handoff entries per
+    `SKILL.md` § First Decision
 - [ ] **Durable state changes are logged where they matter**: claims, gates,
   promotion evidence, kill decisions, pivots, and scope changes have ledger or
   decision-log entries. Ordinary exploratory runs may be represented only by a
@@ -73,12 +75,13 @@ These checks apply regardless of discipline:
 - [ ] **Decision-log covers the state transition under review**:
   `decisions.md` has the entries needed to explain this promotion, kill, pivot,
   or external claim. It does not need to narrate every experiment.
-  - For R&D: check only the relevant Layer 1 closure, Stage gate, fired kill
-    criterion, charter deviation, or integration-test clearance that supports
-    the transition under review
-  - For Pure Research: check only the relevant PR/FAQ readiness,
-    pre-registration readiness, `deviation review` status, explanation transition,
-    or PR/FAQ deviation that supports the claim under review
+  - For a Capability / Technology Research workstream: check only the relevant
+    Layer 1 closure, Stage gate, fired kill criterion, charter deviation, or
+    integration-test clearance that supports the transition under review
+  - For a Phenomenon / Mechanism Research workstream: check only the relevant
+    PR/FAQ readiness, pre-registration readiness, `deviation review` status,
+    explanation transition, or PR/FAQ deviation that supports the claim under
+    review
   - Evidence: targeted per-category presence check
 - [ ] **Initial-day prohibitions respected**: no claim-bearing confirmation
   trial before the required plan is ready. Exploratory probes are allowed
@@ -119,13 +122,13 @@ These checks apply regardless of discipline:
   and pre-registration changes that affect claims have deviation entries
   - Evidence: relevant `decisions.md` deviation entries and current planning files
 
-## R&D mode process review
+## Capability / Technology Research workstream process review
 
-For R&D projects only. Check in this order:
+For Capability / Technology Research workstreams only. Check in this order:
 
 ### Charter (per `references/rd/rd_charter.md`)
 
-- [ ] **Charter exists** at project root (`charter.md`)
+- [ ] **Charter exists** at workstream root (`charter.md`)
   - Evidence: file path + size > 0
 - [ ] **Charter is reviewed and ready**
   - Evidence: `charter.md` status is `READY`
@@ -204,18 +207,18 @@ For R&D projects only. Check in this order:
 
 ### Cross-project dependencies
 
-- [ ] **Every `dependent_on_research` capability has the named Pure
-  Research project at the required tier**
-  - Evidence: cross-reference to source project's
+- [ ] **Every `dependent_on_research` capability has the named Phenomenon /
+  Mechanism Research workstream at the required tier**
+  - Evidence: cross-reference to the source workstream's
     `explanation_ledger.md` Claims section
 
-## Pure Research mode process review
+## Phenomenon / Mechanism Research workstream process review
 
-For Pure Research projects only. Check in this order:
+For Phenomenon / Mechanism Research workstreams only. Check in this order:
 
 ### PR/FAQ (per `references/pure_research/prfaq.md`)
 
-- [ ] **PR/FAQ exists** at project root (`prfaq.md`)
+- [ ] **PR/FAQ exists** at workstream root (`prfaq.md`)
 - [ ] **PR/FAQ is reviewed and ready**
   - Evidence: `prfaq.md` status is `READY`
 - [ ] **Part 1 (Press Release) is concrete**: states the finding,
@@ -332,7 +335,7 @@ specifically targeting Hypothesizing After Results are Known)
 
 | Violation | Symptom | Where caught |
 |---|---|---|
-| Mode mixing without pivot protocol | R&D ledger has Pure Research artifacts (PR/FAQ, prereg) without `decisions.md` pivot entry | Common pre-conditions § Mode mixing |
+| State-object mixing without add / split / handoff | Capability workstream has phenomenon artifacts (PR/FAQ, prereg) without `decisions.md` add / split / handoff entry | Common pre-conditions § state-object switch |
 | Implementation on day 1 | Code commits before charter / PR/FAQ readiness | Common pre-conditions § Initial-day prohibitions |
 | Charter rewritten mid-project | Material charter change has no deviation entry | R&D § Charter, no undocumented amendments |
 | Layer 1 incomplete when Layer 2 work started | Capability work is promoted before Layer 1 closure | R&D § Layer 1 |

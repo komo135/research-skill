@@ -1,9 +1,9 @@
-"""render_capability_dag.py — Render the R&D capability dependency graph as Mermaid.
+"""render_capability_dag.py — Render a capability dependency graph as Mermaid.
 
-Reads `<project>/capability_map.md` (R&D mode), parses Section 1 (K rows)
-and Section 2 (C rows), and emits a Mermaid DAG showing the dependency
-structure with subgraphs per K and color-coding by lifecycle (K) or
-status (C).
+Reads a Capability / Technology Research workstream's `capability_map.md`,
+parses Section 1 (K rows) and Section 2 (C rows), and emits a Mermaid DAG
+showing the dependency structure with subgraphs per K and color-coding by
+lifecycle (K) or status (C).
 
 Per CHARTER C14 (Amendment-2: two-layer decomposition) and D-23 / F5
 (critical path automation), this DAG provides a quick visual read of
@@ -11,6 +11,7 @@ dependency structure and capability sequencing.
 
 Usage:
     python scripts/render_capability_dag.py --project-dir <path> > diagram.mmd
+    python scripts/render_capability_dag.py --project-dir <path> --workstream WS001-capability
     python scripts/render_capability_dag.py --project-dir <path> --output diagram.mmd
 
 Output (stdout or --output): a Mermaid `flowchart` block ready to embed
@@ -48,6 +49,38 @@ class CRow:
     current_trl: int
     target_trl: int
     status: str
+
+
+def resolve_state_dir(project_dir: Path, workstream: str | None, state_file: str) -> Path:
+    project_dir = project_dir.resolve()
+    if workstream:
+        workstreams_dir = (project_dir / "workstreams").resolve()
+        state_dir = (workstreams_dir / workstream).resolve()
+        if workstreams_dir != state_dir and workstreams_dir not in state_dir.parents:
+            raise ValueError(f"workstream must resolve under {workstreams_dir}: {workstream}")
+        state_path = state_dir / state_file
+        if not state_path.exists():
+            raise FileNotFoundError(f"{state_file} not found at {state_path}")
+        return state_dir
+
+    root_state = project_dir / state_file
+    if root_state.exists():
+        return project_dir
+
+    workstreams_dir = project_dir / "workstreams"
+    if not workstreams_dir.exists():
+        raise FileNotFoundError(f"{state_file} not found at {root_state}")
+
+    candidates = sorted(
+        child for child in workstreams_dir.iterdir()
+        if child.is_dir() and (child / state_file).exists()
+    )
+    if len(candidates) == 1:
+        return candidates[0]
+    if len(candidates) > 1:
+        names = ", ".join(candidate.name for candidate in candidates)
+        raise ValueError(f"multiple workstreams contain {state_file}: {names}; pass --workstream")
+    raise FileNotFoundError(f"{state_file} not found in {project_dir} or {workstreams_dir}")
 
 
 def parse_md_table(text: str, header_keywords: list[str]) -> list[dict[str, str]]:
@@ -237,15 +270,19 @@ def render(k_rows: list[KRow], c_rows: list[CRow]) -> str:
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--project-dir", required=True, type=Path)
+    p.add_argument("--workstream", default=None,
+                   help="workstream directory name under <project>/workstreams")
     p.add_argument("--output", type=Path, default=None,
                    help="output file (default: stdout)")
     args = p.parse_args()
 
-    cm = args.project_dir / "capability_map.md"
-    if not cm.exists():
-        print(f"ERROR: capability_map.md not found at {cm}", file=sys.stderr)
+    try:
+        state_dir = resolve_state_dir(args.project_dir, args.workstream, "capability_map.md")
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(1)
 
+    cm = state_dir / "capability_map.md"
     text = cm.read_text(encoding="utf-8")
     k_rows, c_rows = parse_capability_map(text)
 

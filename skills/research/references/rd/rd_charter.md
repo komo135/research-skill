@@ -1,10 +1,10 @@
 # rd_charter.md
 
-DARPA Heilmeier Catechism — the 8-question entry document for any R&D project.
+DARPA Heilmeier Catechism — the 8-question entry document for any Capability / Technology Research workstream.
 
 ## When to read
 
-- The very first step of any R&D project, before decomposition or implementation
+- The very first step of any Capability / Technology Research workstream, before decomposition or implementation
 - When a sub-agent is asked to elicit a charter from the user
 - Before any other R&D reference is consulted
 
@@ -212,9 +212,9 @@ Example:
 
 ## Charter format
 
-The charter lives at the project root as `charter.md`. It uses the template
-at `assets/rd/charter.md.template`. Length: 1 page (~50-80 lines of content
-including the answers).
+The charter lives in the Capability / Technology Research workstream as
+`charter.md`. It uses the template at `assets/rd/charter.md.template`.
+Length: 1 page (~50-80 lines of content including the answers).
 
 Structure:
 

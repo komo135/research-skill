@@ -1,13 +1,14 @@
 """purpose.py.template (RETIRED)
 
-Replaced by mode-specific trial notebook templates per CHARTER C1:
+Replaced by workstream-targeted trial notebook templates per CHARTER C1:
 
-- R&D: `assets/rd/rd_trial.py.template` (evidence artifact)
-- Pure Research: `assets/pure_research/pr_trial.py.template`
+- Capability / Technology Research: `assets/rd/rd_trial.py.template`
+  (evidence artifact)
+- Phenomenon / Mechanism Research: `assets/pure_research/pr_trial.py.template`
   (evidence artifact)
 
-Use `scripts/new_trial.py --project-dir <path> --slug <name>` — the script
-auto-detects the project's mode and uses the correct template.
+Use `scripts/new_trial.py --project-dir <path> --workstream <name> --slug
+<name>` — the script selects the template from the workstream state object.
 
 Do not use this template for new trials.
 """

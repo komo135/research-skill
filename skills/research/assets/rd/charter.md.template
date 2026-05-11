@@ -32,12 +32,13 @@ blocked decision, the capability has no demand. See § H4.>
 
 ## H4b. Research payload boundary
 
-<REPLACE: state what this R&D project will and will not claim. If this project
-builds a framework, pipeline, evaluator, or infrastructure, its success is the
-capability working against fixed acceptance fixtures. Newly discovered effect,
-factor validity, market mechanism, or strategy profitability claims must be
-tracked as separate project-instance trials, and promoted only through the
-appropriate R&D capability gate or a separate Pure Research project.>
+<REPLACE: state what this Capability / Technology Research workstream will and
+will not claim. If this workstream builds a framework, pipeline, evaluator, or
+infrastructure, its success is the capability working against fixed acceptance
+fixtures. Newly discovered effect, factor validity, market mechanism, or
+strategy profitability claims must be tracked as separate project-instance
+trials, and promoted only through the appropriate capability gate or a
+Phenomenon / Mechanism Research workstream.>
 
 ## H5. If we succeed, what changes downstream?
 
@@ -45,11 +46,11 @@ appropriate R&D capability gate or a separate Pure Research project.>
 workflows change? What metrics improve? What gets retired? Quantify if
 possible. See § H5.>
 
-## H6. What are the dominant risks, and what evidence would kill this project?
+## H6. What are the dominant risks, and what evidence would kill this workstream?
 
 <REPLACE: list 3-5 risks. For each, name **specific observable evidence**
-that would kill the project. These evidence statements become the
-project's binding kill criteria, stated here. See § H6 for examples.>
+that would kill the workstream. These evidence statements become the
+workstream's binding kill criteria, stated here. See § H6 for examples.>
 
 1. **<risk name>**. KILL if <numeric or behavioral threshold + condition>.
 2. **<risk name>**. KILL if <...>.

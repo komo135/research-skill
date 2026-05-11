@@ -7,8 +7,8 @@ mechanism-level explanations to count as research.
 
 ## When to read
 
-- Writing the Analysis section of a trial notebook (R&D or Pure
-  Research)
+- Writing the Analysis section of a trial notebook for Capability /
+  Technology Research or Phenomenon / Mechanism Research
 - Interpreting a failed or ambiguous trial
 - Interpreting a positive / "successful" trial — the same rigor applies
 - About to write "the result was X because Y" in any deliverable
@@ -26,9 +26,11 @@ The same decomposition discipline applies to both. The skill enforces
 this symmetry because agents (and humans) systematically apply rigor
 to failure but skim past success.
 
-After decomposition, route the result back to the mode-specific state object:
-Pure Research returns to Q/E state in `explanation_ledger.md`; R&D returns to capability state in `capability_map.md`. Result writeups are evidence
-artifacts, not state owners.
+After decomposition, route the result back to the selected workstream state
+object: Phenomenon / Mechanism Research updates Q/E state in
+`explanation_ledger.md`; Capability / Technology Research updates capability
+state in `capability_map.md`. Result writeups are evidence artifacts, not
+state owners.
 
 ## Generic terminal labels — forbidden as final explanations
 

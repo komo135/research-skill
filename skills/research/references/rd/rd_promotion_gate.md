@@ -8,7 +8,7 @@ summarized, but not used to support the promotion claim.
 
 ## When to read
 
-- About to mark an R&D project as promoted
+- About to mark a Capability / Technology Research workstream as promoted
 - Reviewing another agent's promotion claim
 - Before the closing entry in `decisions.md`
 
@@ -92,7 +92,7 @@ stale), all of the following:
 ### E. Cross-project dependencies
 
 - [ ] Every capability with `dependent_on_research` set has the named
-  Pure Research project's claim at the required tier or higher
+  Phenomenon / Mechanism Research workstream's claim at the required tier or higher
   - Evidence: cross-reference to the named project's
     `explanation_ledger.md` claim status
 

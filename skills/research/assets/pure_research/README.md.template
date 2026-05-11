@@ -1,10 +1,10 @@
-# <REPLACE: project name>
+# <REPLACE: project name> — Phenomenon / Mechanism Research workstream
 
-Pure Research project — reduces ignorance about a phenomenon through
-exploratory research and, when higher reliability is needed, confirmatory
-research. The project keeps PR/FAQ, explanation candidates, exploratory /
-diagnostic notes, reviewed pre-registrations for confirmatory trials, and an
-IMRAD-shaped manuscript draft.
+Phenomenon / Mechanism Research workstream — reduces ignorance about a
+phenomenon through exploratory research and, when higher reliability is needed,
+confirmatory research. The workstream keeps PR/FAQ, explanation candidates,
+exploratory / diagnostic notes, reviewed pre-registrations for confirmatory
+trials, and an IMRAD-shaped manuscript draft.
 
 ## Status
 
@@ -12,7 +12,7 @@ IMRAD-shaped manuscript draft.
 - **PR/FAQ**: [`prfaq.md`](prfaq.md) (status: <REPLACE: DRAFT | READY>)
 - **Active pre-registrations**: <REPLACE: list confirmatory `prereg/PR_<id>.md` files with status, or "none yet; exploratory">
 - **Explanation ledger**: [`explanation_ledger.md`](explanation_ledger.md)
-- **Decisions log**: [`decisions.md`](decisions.md)
+- **Decisions log**: [`../../decisions.md`](../../decisions.md)
 - **IMRAD draft**: [`imrad_draft.md`](imrad_draft.md) (started <REPLACE: when>; status: <REPLACE>)
 - **Pending stop-condition decision**: <REPLACE: none | promote | park | pivot>
 
@@ -23,23 +23,24 @@ IMRAD-shaped manuscript draft.
 ## Boundary contract
 
 **Protocol/state source of truth**: `prfaq.md`, `explanation_ledger.md`,
-`decisions.md`, and reviewed pre-registrations for confirmatory trials define
-the scoped question, competing explanations, evidence status, and durable
-state transitions. Exploratory notes may inform candidates; they do not become
-claim-cited evidence until confirmed.
+the project decision log, and reviewed pre-registrations for confirmatory
+trials define the scoped question, competing explanations, evidence status, and
+durable state transitions. Exploratory notes may inform candidates; they do not
+become claim-cited evidence until confirmed.
 
-**Project-instance artifacts**: `configs/`, `src/`, `tests/`, `purposes/`,
-and `results/` contain concrete universes, data paths, model definitions,
-parameters, implementation, generated notebooks, and run outputs.
+**Project-instance artifacts**: `../../configs/`, `../../src/`,
+`../../tests/`, `../../purposes/`, and `../../results/` contain concrete
+universes, data paths, model definitions, parameters, implementation,
+generated notebooks, and run outputs.
 
-**Generated report snapshots**: reports under `results/` may summarize a run,
-but they do not update project state by themselves. Support, reject, merge,
-park, or pivot only by updating `explanation_ledger.md` and recording the
-transition in `decisions.md` with evidence links.
+**Generated report snapshots**: reports under `../../results/` may summarize a
+run, but they do not update workstream state by themselves. Support, reject,
+merge, park, or pivot only by updating `explanation_ledger.md` and recording
+the transition in `../../decisions.md` with evidence links.
 
 Do not put active candidates, tuned parameters, current performance metrics, or trial-specific
-conclusions in reusable workflow docs. Those belong in configs, trial reports,
-or decision entries.
+conclusions in reusable workflow docs. Those belong in project-instance
+configs, trial reports, or decision entries.
 
 ## Why it matters
 
@@ -56,19 +57,22 @@ or decision entries.
 ## Folder layout
 
 ```
-<project_name>/
+<project_name>/workstreams/<workstream_name>/
 ├── README.md                   # this file
 ├── prfaq.md                    # Working Backwards entry doc
 ├── explanation_ledger.md       # primary state object
-├── decisions.md                # state transitions, deviation entries, session summaries
 ├── imrad_draft.md              # paper-shaped deliverable, started early
-├── configs/                    # concrete experiment configs and parameter grids
-├── src/                        # project-specific implementation, if needed
-├── tests/                      # verification for project-specific implementation
 ├── prereg/
 │   ├── PR_001.md               # confirmatory pre-registration, when needed
 │   ├── PR_002.md
 │   └── ...
+└── ...
+
+<project_name>/
+├── decisions.md                # project/workstream state transitions
+├── configs/                    # concrete experiment configs and parameter grids
+├── src/                        # project-specific implementation, if needed
+├── tests/                      # verification for project-specific implementation
 ├── literature/
 │   ├── papers.md               # prior work, indexed by topic
 │   └── differentiation.md      # how this project differs from prior work
@@ -123,9 +127,9 @@ point:
 
 <REPLACE: "Promotion expected at <date>" | "Promotion blocked on <blocker>" | "Promoted at <date> as supported claim on E<id>" | "Negative findings promoted at <date> as rejected E<id> + Q<id> answered 'none of above'" | "Parked since <date>, unblock condition: <...>">
 
-## Pivot history
+## Handoff history
 
-<REPLACE: "none" or "pivoted from project <name> at <date>; see decisions.md">
+<REPLACE: "none" or "split from / handed off to workstream <name> at <date>; see decisions.md">
 
-If this project was pivoted from another, the source project's
-`README.md` should reference this one as `pivoted_to`.
+If this workstream was split from another, the parent workstream should
+reference this one in the project decision log.
