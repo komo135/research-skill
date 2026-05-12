@@ -39,7 +39,7 @@ A: <REPLACE>
 
 ### Q2: What was planned before interpreting the result?
 A: <REPLACE: planned question, alternatives, metric, threshold, stop condition,
-and any material deviations.>
+and any material changes disclosed in Transparent Changes.>
 
 ### Q3: How was multiple testing handled? What is the corrected
 t-statistic / p-value?
@@ -108,7 +108,7 @@ Then choose the next path:
   `exploratory` / `diagnostic`.
 - **Confirmatory research**: use this when a specific finding should become
   `supported / external claim / high reliability claim`. Write or update
-  `prereg/PR_<id>.md`, then compare `PR_<id>` against the current state
-  before execution:
+  `prereg/PR_<id>_<slug>.md`, then compare `PR_<id>_<slug>.md` against the
+  current state before execution:
   exploratory result, data availability, assumptions, implementation
   constraints, and current question must still match the PR.

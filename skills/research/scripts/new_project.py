@@ -23,6 +23,7 @@ What gets created:
         src/                               (project-instance implementation)
         tests/                             (project-instance verification)
         results/figures/                   (empty)
+        results/reports/                   (empty report package root)
         results/intermediate/              (empty)
         tracking/                          (optional tracker exports / run notes)
         reproducibility/data_versions.txt  (header-only)
@@ -38,7 +39,7 @@ What gets created:
 
     Phenomenon / Mechanism Research shortcut adds:
         workstreams/WS001-phenomenon/prfaq.md
-        workstreams/WS001-phenomenon/prereg/PR_001.md
+        workstreams/WS001-phenomenon/prereg/PR_001_initial.md
         workstreams/WS001-phenomenon/explanation_ledger.md
         workstreams/WS001-phenomenon/imrad_draft.md
 
@@ -79,7 +80,7 @@ RD_FILES = [
 
 PR_FILES = [
     ("prfaq.md.template", "prfaq.md"),
-    ("preregistration.md.template", "prereg/PR_001.md"),
+    ("preregistration.md.template", "prereg/PR_001_initial.md"),
     ("explanation_ledger.md.template", "explanation_ledger.md"),
     ("imrad_draft.md.template", "imrad_draft.md"),
     ("README.md.template", "README.md"),
@@ -113,6 +114,24 @@ def find_template(name: str, mode_subdir: str | None) -> Path:
     raise FileNotFoundError(f"template not found in any of: {candidates}")
 
 
+def keep_only_exploratory_body(content: str) -> str:
+    """Render the shortcut preregistration as an exploratory starter file."""
+    confirmatory_marker = "## Confirmatory body"
+    exploratory_marker = "## Exploratory body"
+    if confirmatory_marker not in content or exploratory_marker not in content:
+        return content
+
+    prefix, after_confirmatory = content.split(confirmatory_marker, 1)
+    _, exploratory = after_confirmatory.split(exploratory_marker, 1)
+    prefix = prefix.replace(
+        "Complete these fields for both confirmatory and exploratory preregistrations.\n"
+        "Delete the body section that does not match `preregistration_type`.",
+        "Complete these fields for this exploratory preregistration. Create a "
+        "separate confirmatory pre-registration when a confirmation target is ready.",
+    )
+    return prefix + exploratory_marker + exploratory
+
+
 def init_project(name: str, root: Path, mode: str | None = None) -> Path:
     if mode is not None and mode not in ("rd", "pure-research"):
         raise ValueError(f"unknown mode: {mode}")
@@ -128,6 +147,7 @@ def init_project(name: str, root: Path, mode: str | None = None) -> Path:
         "purposes",
         "results/figures",
         "results/intermediate",
+        "results/reports",
         "tracking",
         "reproducibility",
         "src",
@@ -143,6 +163,7 @@ def init_project(name: str, root: Path, mode: str | None = None) -> Path:
         "results/.gitkeep",
         "results/figures/.gitkeep",
         "results/intermediate/.gitkeep",
+        "results/reports/.gitkeep",
         "tracking/.gitkeep",
         "src/.gitkeep",
         "tests/.gitkeep",
@@ -181,13 +202,20 @@ def init_project(name: str, root: Path, mode: str | None = None) -> Path:
         if dest_rel == "README.md":
             content = src.read_text(encoding="utf-8").replace("<REPLACE: project name>", name)
             dest.write_text(content, encoding="utf-8")
-        elif dest_rel == "prereg/PR_001.md":
+        elif dest_rel == "prereg/PR_001_initial.md":
             content = (
                 src.read_text(encoding="utf-8")
+                .replace("PR_<REPLACE: id, e.g., 001>_<REPLACE: slug, e.g., initial>", "PR_001_initial")
+                .replace("RPT_<REPLACE: id, e.g., 001>_<REPLACE: slug>", "RPT_001_initial")
                 .replace("PR_<REPLACE: id, e.g., 001>", "PR_001")
+                .replace("PR_<id>_<slug>", "PR_001_initial")
+                .replace("RPT_<id>_<slug>", "RPT_001_initial")
+                .replace("preregistration_type: confirmatory | exploratory", "preregistration_type: exploratory")
                 .replace("PR_<id>", "PR_001")
                 .replace("<REPLACE: id>", "001")
+                .replace("<REPLACE: slug>", "initial")
             )
+            content = keep_only_exploratory_body(content)
             dest.write_text(content, encoding="utf-8")
         else:
             shutil.copy(src, dest)
@@ -273,10 +301,10 @@ def print_next_steps(project_dir: Path, mode: str | None) -> None:
         print(f"  3. Run targeted literature: python scripts/lit_fetch.py --project-dir {project_dir} --query '<your query>'")
         print(f"  4. Choose a lightweight tracking path before the first load-bearing claim")
         print(f"     Record the review path and decision note in {project_dir}/decisions.md")
-        print(f"  5. Choose path: exploratory research first, or confirmatory PR_001 if a confirmation target is ready")
-        print(f"  6. For confirmatory work, compare PR_001 with current state before execution")
+        print(f"  5. Choose path: exploratory research first, use PR_001_initial for a scoped exploratory pass. Create a separate confirmatory pre-registration if a confirmation target is ready")
+        print(f"  6. Before any run, compare its matching pre-registration with current state before execution")
         print(f"  7. Edit {workstream_dir}/explanation_ledger.md — add Q1 + ≥2 competing E + null candidates")
-        print(f"  8. Optional confirmatory run: python scripts/new_trial.py --project-dir {project_dir} --workstream {workstream['directory']} --slug <trial_slug> --prereg-id PR_001 --question-id Q1 --discriminating 'E1 vs E2'")
+        print(f"  8. Optional confirmatory run: create a confirmatory PR, then run python scripts/new_trial.py --project-dir {project_dir} --workstream {workstream['directory']} --slug <trial_slug> --prereg-id <confirmatory_pr_id> --question-id Q1 --discriminating 'E1 vs E2'")
     print()
     print("Reminder: per SKILL.md § Initial-day prohibitions, no claim-bearing")
     print("confirmation trial runs before the required plan is ready. Exploratory")

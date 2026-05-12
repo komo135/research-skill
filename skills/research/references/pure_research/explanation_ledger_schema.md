@@ -170,7 +170,8 @@ An explanation reaches `supported` only when **all** of:
 
 - The Q's discriminating test against ≥1 serious alternative has been
   run under a reviewed pre-registration
-- `deviation review` exit code is 0 or 2 (no major deviations)
+- Transparent Changes show no material change that invalidates claim-cited use,
+  or any material change has been disclosed and handled before promotion
 - Multiple testing correction is honest and applied per
   project-specific multiple-testing plan
 - Analysis depth on the trial reaches A4 minimum (per
@@ -218,9 +219,9 @@ delete them.
 | Failure | Symptom | Fix |
 |---|---|---|
 | Single explanation per Q | Only one E listed under each Q | Force ≥2 from PR/FAQ Part 2 (FAQ already enumerated alternatives) |
-| Generic `supports` / `weakens` | "would support: yes; would weaken: no" | Each must name observable evidence type (numerical metric, structural argument, null result, literature ref) |
+| Generic `supports` / `weakens` | "would support: yes; would weaken: no" | Each must name observable evidence form (numerical metric, structural argument, null result, literature ref) |
 | Merging `supported` and `weakened` | Two E's both at status `weakened` indefinitely | At least one must transition to `rejected` or `supported` for the Q to progress |
-| Adding new E mid-trial | Discovered alternative not in pre-reg | Counts as deviation; if major, requires new pre-reg |
+| Adding new E mid-trial | Discovered alternative not in pre-reg | Disclose as a material change; if the original plan no longer answers the intended question, use a new pre-registration before claim-cited use |
 | Skipping `parked` unblock | Row sits at `parked` for months without unblock | Re-evaluate; transition to `stale` if the unblock is unlikely |
 | Promoting a row labeled `supported` while sibling E's not addressed | Sibling E's still at `active` | All siblings must reach a terminal state (rejected / merged / stale / parked) before the supported promotion |
 

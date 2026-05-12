@@ -205,8 +205,10 @@ def substitute_pr(content: str, prereg_id: str | None, question_id: str | None,
             f"workstreams/{workstream}/prereg/{prereg_id}.md"
             if workstream else f"prereg/{prereg_id}.md"
         )
+        compat_prereg_placeholder = "<REPLACE: optional " + "prereg/PR_<" + "id>.md>"
         content = content.replace("<REPLACE: optional prereg reference>", prereg_path)
-        content = content.replace("<REPLACE: optional prereg/PR_<id>.md>", prereg_path)
+        content = content.replace(compat_prereg_placeholder, prereg_path)
+        content = content.replace("<REPLACE: optional prereg/PR_<id>_<slug>.md>", prereg_path)
     if discriminating:
         content = content.replace("<REPLACE: optional discriminating contrast>", discriminating)
     return content
@@ -276,7 +278,7 @@ def main() -> None:
     # R&D trials are protocol-agnostic evidence artifacts; ledger files link
     # them to capability claims during assessment.
     # Optional protocol links. Evidence artifacts do not require them.
-    p.add_argument("--prereg-id", help="(optional) pre-registration ID, e.g. PR_001")
+    p.add_argument("--prereg-id", help="(optional) pre-registration ID, e.g. PR_001_initial")
     p.add_argument("--question-id", help="(optional) question ID, e.g. Q1")
     p.add_argument("--discriminating", help="(optional) E pair, e.g. 'E1 vs E2'")
     args = p.parse_args()
@@ -299,7 +301,7 @@ def main() -> None:
     print(f"  1. Open {out_path} in marimo: marimo edit {out_path}")
     print("  2. Fill the evidence artifact header (markdown cells) per the template")
     print("  3. Run verification checks BEFORE the main test")
-    print("  4. After trial, write a deviation review note or a deviation note if the run drifted")
+    print("  4. After trial, update the outcome report's Transparent Changes section if the run drifted from its pre-registration")
     print("  5. If used for assessment, cite this artifact from the relevant ledger row")
 
 

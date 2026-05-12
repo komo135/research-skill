@@ -296,24 +296,25 @@ linked reference before executing the step:
    become a `supported / external claim / high reliability claim`, then
    move to confirmatory research.
 4. **Pre-registration** (`references/pure_research/preregistration.md`) —
-   pre-registration is a confirmatory-research tool, not exploratory
-   research itself.
-   state the question, competing explanations (≥2), test design, and expected
-   contrast under each explanation before the trial. In confirmatory research,
-   before execution, compare `PR_<id>` against the current state: exploratory
-   result, data availability, assumptions, implementation constraints, and
-   current question. The purpose of comparing the pre-reg against the current
-   state is not only to follow the pre-reg, but also to verify that the current
-   state has not broken the PR's assumptions.
-   After the trial, compare actual analysis against the planned design and
-   note any deviations.
+   pre-registration is a general planning and reporting discipline: write the
+   plan before work starts, run research or experiments against that plan,
+   disclose important changes transparently, and produce a readable outcome
+   report. Each file declares exactly one
+   `preregistration_type: confirmatory | exploratory` and uses
+   `prereg/PR_<id>_<slug>.md`. Shared fields are Study Information, Sampling /
+   Data Plan, and Variables / Measures. Confirmatory plans emphasize
+   hypotheses, analysis plan, inference / decision criteria, and comparison
+   with current state before execution. Exploratory plans emphasize objective,
+   scope, allowed transformations / procedures, selection or follow-up
+   criteria, and expected outputs. After execution, compare actual work against
+   the plan and publish the Transparent Changes Policy in the report.
 5. **Explanation ledger**
    (`references/pure_research/explanation_ledger_schema.md`) — single state
    object. Claim-cited or promotion-relevant results update explanation rows;
    exploratory observations may stay in run notes until they become
    load-bearing.
 6. **Workflow** (`references/pure_research/pr_workflow.md`) — Exploratory
-   Research Loop and Confirmatory Research Loop, deviation handling,
+   Research Loop and Confirmatory Research Loop, Transparent Changes handling,
    state-change logging, stop conditions. Push analysis depth on the current
    result before collecting more data or designing a confirmatory trial.
 7. **Promotion** (`references/pure_research/pr_promotion_gate.md`) — promote a
@@ -502,6 +503,23 @@ The report must include:
   remain plausible, and what evidence would change the decision.
 - The next decision or action requested from the user, if any.
 
+Preregistered work that produces a report uses the package shape from
+`references/shared/outcome_reports.md`:
+
+```text
+results/reports/
+  RPT_<id>_<slug>/
+    report.md
+    report.pdf
+    figures/
+    tables/
+    attachments/
+```
+
+External tracker run IDs are optional for these reports. Evidence should point
+to figures, tables, appendices, local source artifacts, artifact URI, run ID,
+or ledger row only when that source actually exists and helps a reviewer.
+
 Visuals and tables are explanatory snapshots, not state owners. The ledger and
 review gates still decide support, maturity, promotion, kill, and pivot. If no
 visual is possible, state why and provide the smallest table that lets the user
@@ -521,7 +539,7 @@ the final report must carry enough intuitive evidence for human judgment.
 - **Evidence citation is mandatory for load-bearing claims**. Any claim of
   "passed" / "verified" / "confirmed" that supports `supported`, `matured`,
   `established`, `promoted`, `killed`, external sharing, deployment
-  recommendation, major deviation, or claim-scope change must reference a
+  recommendation, material change from a plan, or claim-scope change must reference a
   specific file:line, reference, numeric value, or tool output. Summary verdicts
   without citation are forbidden at those decision points.
 - **Entry guardrails**.
@@ -581,7 +599,8 @@ the final report must carry enough intuitive evidence for human judgment.
   exploratory output as if it had been captured at trial time.
 - **Planning artifacts**. Charter, pre-registration, and kill criteria must be
   reviewed before they become load-bearing. Any load-bearing amendment requires
-  an explicit deviation entry in `decisions.md` or a new planning artifact.
+  an explicit decision entry, report Transparent Changes entry, or a new
+  planning artifact.
 - **No placeholders in deliverables**. Templates produce real content; any
   remaining `TBD`, `TODO`, `XXX`, `???`, or `{{...}}` blocks the deliverable.
 
@@ -597,6 +616,7 @@ literature/papers.md             # prior work
 literature/differentiation.md    # how this differs from prior work
 purposes/INDEX.md                # evidence artifact index
 results/results.parquet          # portable default evidence index
+results/reports/                 # preregistered report packages
 configs/                         # project-instance experiment configs
 src/                             # project-instance implementation, if any
 tests/                           # project-instance verification, if any
@@ -618,7 +638,7 @@ Phenomenon / Mechanism Research workstreams add:
 
 ```
 prfaq.md                         # working-backwards entry document
-prereg/PR_<id>.md                # reviewed pre-registration, one per trial
+prereg/PR_<id>_<slug>.md         # reviewed pre-registration, confirmatory or exploratory
 explanation_ledger.md            # primary state object
 imrad_draft.md                   # paper-shaped deliverable, started early
 ```
@@ -637,6 +657,7 @@ audience.
 | `shared/literature_review.md` | Project initialization, before any new hypothesis or capability. |
 | `shared/reproducibility.md` | Setting up data version + git commit + environment pin for promotion-eligible or claim-cited trials. |
 | `shared/results_db_schema.md` | Appending interpreted trial results. |
+| `shared/outcome_reports.md` | Creating preregistered report packages and report PDFs. |
 
 **Capability / Technology Research (R&D-compatible)** — see the entry sequence above. Key references:
 `rd/rd_charter.md` (Heilmeier 8 Q) ·

@@ -26,6 +26,7 @@ selected workstream state object.
 **Project-instance artifacts**: `configs/`, `src/`, `tests/`, `tracking/`,
 `results/`, and `purposes/`.
 
-**Generated report snapshots**: any generated report, notebook export, or
-trial file is evidence. It does not own research-state transitions until the
-selected workstream state object or `decisions.md` cites it.
+**Generated report snapshots**: report packages under `results/reports/`,
+notebook exports, and trial files are evidence. They do not own research-state
+transitions until the selected workstream state object or `decisions.md` cites
+them.

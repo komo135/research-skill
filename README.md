@@ -131,7 +131,10 @@ The installed Codex skills are exposed as `research` and `quant-research`.
    first workstream, its state object, and its gate.
 3. Write the entry document before expensive claim-bearing work: reviewed
    charter and kill criteria for a capability workstream, or PR/FAQ plus
-   pre-registration when a phenomenon workstream enters confirmatory research.
+   pre-registration for phenomenon workstreams when planning/reporting
+   discipline is useful. Pre-registration may guide exploratory research or
+   confirmatory research; only the latter creates claim-cited confirmation
+   evidence.
 4. Run the smallest evidence-producing artifact that can answer the current
    workstream question.
 5. Analyze the result before adding variants. A result should update a question,
@@ -175,13 +178,22 @@ v1.1.0, install `research@research-skill`. The old standalone
 
 ## Status
 
-Version 1.1.7 - keeps A4 rigor for load-bearing claims while allowing faster
-exploratory go / no-go, park, deprioritize, and reject-for-now decisions.
+Version 1.1.8 - adds general preregistration planning, Transparent Changes,
+and outcome report packages.
 
 <details>
 <summary>Changelog</summary>
 
-### v1.1.7 (current)
+### v1.1.8 (current)
+
+- Reworked pre-registration as a general planning and reporting discipline
+  with explicit `confirmatory` and `exploratory` types.
+- Added outcome report package guidance with `report.md`, `report.pdf`,
+  figures, tables, attachments, Plan-to-Result tables, and Transparent Changes.
+- Updated scaffolds and IMRAD generation for `PR_<id>_<slug>` /
+  `RPT_<id>_<slug>` naming and report-package Transparent Changes extraction.
+
+### v1.1.7
 
 - Reserved A4+ for supported, matured, established, promoted, external-claim,
   deployment-recommendation, and terminal-kill decisions.
@@ -219,18 +231,19 @@ exploratory go / no-go, park, deprioritize, and reject-for-now decisions.
 ### v1.1.4
 - Clarified that Pure Research has separate exploratory and confirmatory
   workflows.
-- Clarified that pre-registration is a confirmatory-research tool, not a
-  hypothesis freeze or an automatic approach-failure trigger.
+- Clarified that pre-registration is a planning and reporting discipline, not
+  a hypothesis freeze or an automatic approach-failure trigger.
 - Added per-file regression coverage for English-only Pure Research
-  pre-registration docs/templates and `PR_<id>` vs current-state comparison.
+  pre-registration docs/templates and `PR_<id>_<slug>` vs current-state
+  comparison.
 
 ### v1.1.3
 
 - Removed registration-proof mechanisms: no hashes, frozen records, dated note
   references, registration logs, or history/timestamp comparisons for proving
   planning order.
-- Kept the useful parts: reviewed planning documents, material deviation notes,
-  and rerun guidance for promotion-eligible or claim-cited results.
+- Kept the useful parts: reviewed planning documents, material-change
+  disclosure, and rerun guidance for promotion-eligible or claim-cited results.
 - Added regression coverage to block reintroducing proof-artifact language.
 
 ### v1.1.2

@@ -44,10 +44,11 @@ Prior work has established [...] (cite literature/papers.md §A, §B).
 However, prior work has not addressed [the gap], specifically [...].
 
 [Paragraph 3: this study's contribution]
-This study tests [research question, copied from PR/FAQ Part 1 headline +
-qualifications]. The planned question, alternatives, metric, threshold, and
-stop condition are listed in `prereg/PR_<id>.md`. The discriminating evidence
-is [...].
+This study tests or explores [research question, copied from PR/FAQ Part 1
+headline + qualifications]. The planned Study Information, Hypotheses /
+Exploratory Objective, Analysis Plan / Allowed Transformations, and
+Transparent Changes policy are listed in `prereg/PR_<id>_<slug>.md`. The
+discriminating or diagnostic evidence is [...].
 ```
 
 The Introduction must:
@@ -65,9 +66,11 @@ could re-run it. Past tense throughout.
 ## 2. Methods
 
 ### 2.1 Pre-registration
-Question, competing explanations (≥2), test design, expected predictions per
-explanation, and multiple-testing correction. Available at
-`prereg/PR_<id>.md`.
+Study Information; Hypotheses / Exploratory Objective; Design Plan /
+Exploration Scope; Analysis Plan / Allowed Transformations; Inference /
+Decision Criteria or Selection or Follow-Up Criteria; Data Exclusion / Missing
+Data Handling or Expected Outputs; and Transparent Changes policy. Available at
+`prereg/PR_<id>_<slug>.md`.
 
 ### 2.2 Data
 Source, period, frequency, and data version. Universe scope.
@@ -77,13 +80,17 @@ How data was split (train / val / test, holdout replication, repeated holdout, e
 Sample size (N) per split.
 
 ### 2.4 Test design
-Primary metric. Secondary metrics. Threshold for support / weaken /
-reject of each competing explanation. Multiple-testing correction
-method (Bonferroni / Romano-Wolf / domain-appropriate selection correction).
+Primary metric or exploratory output. Secondary metrics. Threshold for
+support / weaken / reject from Inference / Decision Criteria, or selection
+criteria for exploratory work. Multiple-testing correction method when
+applicable (Bonferroni / Romano-Wolf / domain-appropriate selection
+correction).
 
-### 2.5 Deviations from pre-registration
-List material deviations from the trial note or `decisions.md`. For each:
-what changed, why, and severity. If no deviations, state "none".
+### 2.5 Transparent Changes from pre-registration
+Copy the report package Transparent Changes section. For each material
+change, state what changed, why, and its effect on study results or
+conclusions. If no material changes occurred, state "No material changes
+from the preregistration."
 
 ### 2.6 Reproducibility
 Data version, code commit, environment pin, and random seed(s).
@@ -91,7 +98,9 @@ Data version, code commit, environment pin, and random seed(s).
 
 Methods must:
 - Identify the pre-registration file used for the trial
-- List every deviation from pre-reg (or state "none")
+- Summarize Study Information, Hypotheses / Exploratory Objective, Analysis
+  Plan / Allowed Transformations, Design Plan / Exploration Scope, Data
+  Exclusion / Missing Data Handling or Expected Outputs, and Transparent Changes
 - Provide reproducibility 3-tuple
 
 ### Section 3: Results (~300-500 words)
@@ -108,8 +117,10 @@ from 1.8 (95% CI [1.5, 2.1]) in 2010-2019 to 0.4 (95% CI
 [0.1, 0.7]) in 2020-2024."]
 
 ### 3.2 Per-explanation observations
-[For each competing explanation enumerated in Methods, what was
-observed. Match against Methods § 2.4 expected predictions.]
+[For each hypothesis, competing explanation, or exploratory objective
+enumerated in Methods, what was observed. Match against Methods § 2.1
+Hypotheses / Exploratory Objective and Methods § 2.4 Analysis Plan /
+Allowed Transformations.]
 
 - **E1 (regime change)**: [observation, e.g., "Vol-of-vol metric
   remained stable across periods (rolling 60-day measurement-noise
@@ -130,8 +141,8 @@ generic verification or domain-adapter implementation checks.]
 ```
 
 Results must:
-- Match the per-explanation predictions stated in Methods § 2.4
-  (ex ante predictions, not ex post fits)
+- Match the Hypotheses / Exploratory Objective and the Analysis Plan /
+  Allowed Transformations stated in Methods
 - Include uncertainty bands or CIs on every numeric claim
 - Pass the sanity check subset relevant to this trial type
 
@@ -190,10 +201,10 @@ when:
 
 - [ ] All four sections exist and meet length / content requirements
   above
-- [ ] Methods identifies the pre-registration file and no unhandled major
-  deviation exists
-- [ ] Results contains observations matching each explanation's
-  ex ante predictions in Methods
+- [ ] Methods identifies the pre-registration file and records Transparent
+  Changes
+- [ ] Results contains observations matching the Hypotheses / Exploratory
+  Objective and Analysis Plan / Allowed Transformations in Methods
 - [ ] Discussion reaches A4+ analysis depth
 - [ ] No generic terminal labels in Discussion
 - [ ] Negative claims (if any) are documented with mechanism and
@@ -212,7 +223,7 @@ The IMRAD draft is **started early**, not at the end. Specifically:
   written from the PR/FAQ Part 1 (the press release becomes the
   contribution paragraph)
 - **After pre-registration**: Section 2 (Methods) § 2.1 and § 2.4
-  can be written from the pre-reg
+  can be written from the pre-registration
 - **After each trial**: Section 3 (Results) accumulates observations
 - **Before promotion**: Section 4 (Discussion) is written, and all
   earlier sections are revised for coherence
@@ -251,10 +262,13 @@ python scripts/draft_imrad.py --project <project-name>
 
 It reads:
 - `prfaq.md` for Section 1 contribution
-- `prereg/PR_<id>.md` for Section 2 § 2.1 and § 2.4
+- `prereg/PR_<id>_<slug>.md` for Section 2 Study Information, Hypotheses /
+  Exploratory Objective, Design Plan / Exploration Scope, Analysis Plan /
+  Allowed Transformations, Data Exclusion / Missing Data Handling or Expected
+  Outputs, and Transparent Changes
 - `explanation_ledger.md` for Section 3 (per-explanation observations
   from `current_evidence_summary` of each E)
-- `decisions.md` for state transitions and deviation entries
+- `decisions.md` for state transitions and Transparent Changes entries
 - `results/results.parquet` for headline metrics (filter by E-IDs
   with status `supported` or `rejected` for the active Q)
 - `literature/papers.md` for Section 1 citations
@@ -274,11 +288,11 @@ The agent (or user) must:
 | Failure | Symptom | Fix |
 |---|---|---|
 | Discussion uses generic labels | "The model did well because GBM is good at variance" | Per `result_analysis.md`, decompose into mechanism-level claims |
-| Methods skips deviation list | Section 2.5 says "none" but `deviation review` showed minor deviations | Always list, even if minor |
+| Methods skips Transparent Changes | Section 2.5 says "No material changes from the preregistration." but trial notes or the report package show material changes | Always list material changes, including rationale and effect |
 | Results contains interpretation | "The primary metric declined, suggesting crowding" | Move to Discussion; Results is observation only |
 | No negative claims when E was rejected | E2 status `rejected` in ledger but Discussion only discusses E1 supported | Add Discussion § 4.3 negative claim with same A4 rigor |
 | Unrealistic limitations | "No significant limitations" | Identify ≥3 honest limitations |
-| Pre-reg not cited | Section 1 doesn't mention the pre-registration file | Without the file citation, HARKing risk is high; cite it |
+| Pre-registration not cited | Section 1 doesn't mention the pre-registration file | Without the file citation, planning-integrity risk is high; cite it |
 | IMRAD generated only at the end | First draft attempted at promotion gate, found to be incoherent | Start early per § Lifecycle |
 
 ## Relationship to other references

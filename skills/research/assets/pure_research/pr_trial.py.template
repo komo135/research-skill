@@ -35,7 +35,7 @@ def _(mo):
 
     - **Project**: <REPLACE: project name>
     - **Workstream label**: Phenomenon / Mechanism Research
-    - **Optional pre-registration file**: <REPLACE: optional prereg/PR_<id>.md>
+    - **Optional pre-registration file**: <REPLACE: optional prereg/PR_<id>_<slug>.md>
     - **Optional ledger target**: <REPLACE: optional ledger row / claim>
     - **Optional contrast**: <REPLACE: optional discriminating contrast>
 
@@ -72,7 +72,8 @@ def _(mo):
 
     Load data according to the artifact design. If a pre-registration names this
     artifact, record the actual data source/version in the run note so any
-    material deviation can be assessed after the trial.
+    material change can be disclosed in the report package's Transparent Changes
+    section after the trial.
     """
     )
     return

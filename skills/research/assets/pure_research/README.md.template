@@ -3,14 +3,14 @@
 Phenomenon / Mechanism Research workstream — reduces ignorance about a
 phenomenon through exploratory research and, when higher reliability is needed,
 confirmatory research. The workstream keeps PR/FAQ, explanation candidates,
-exploratory / diagnostic notes, reviewed pre-registrations for confirmatory
-trials, and an IMRAD-shaped manuscript draft.
+exploratory / diagnostic notes, reviewed pre-registrations for planning and
+reporting discipline, and an IMRAD-shaped manuscript draft.
 
 ## Status
 
 - **Current state**: <REPLACE: prfaq-drafting | prfaq-ready | literature-active | exploratory-active | confirmatory-prereg-ready | confirmatory-trial-running | analysis-pushing | promotion-review | promoted | killed | parked | pivoted>
 - **PR/FAQ**: [`prfaq.md`](prfaq.md) (status: <REPLACE: DRAFT | READY>)
-- **Active pre-registrations**: <REPLACE: list confirmatory `prereg/PR_<id>.md` files with status, or "none yet; exploratory">
+- **Active pre-registrations**: <REPLACE: list `prereg/PR_<id>_<slug>.md` files with type/status, or "none yet">
 - **Explanation ledger**: [`explanation_ledger.md`](explanation_ledger.md)
 - **Decisions log**: [`../../decisions.md`](../../decisions.md)
 - **IMRAD draft**: [`imrad_draft.md`](imrad_draft.md) (started <REPLACE: when>; status: <REPLACE>)
@@ -23,20 +23,22 @@ trials, and an IMRAD-shaped manuscript draft.
 ## Boundary contract
 
 **Protocol/state source of truth**: `prfaq.md`, `explanation_ledger.md`,
-the project decision log, and reviewed pre-registrations for confirmatory
-trials define the scoped question, competing explanations, evidence status, and
+the project decision log, and reviewed pre-registrations define the scoped
+question, competing explanations, planning commitments, evidence status, and
 durable state transitions. Exploratory notes may inform candidates; they do not
-become claim-cited evidence until confirmed.
+become claim-cited evidence until rerun or confirmed under the appropriate
+promotion-eligible protocol.
 
 **Project-instance artifacts**: `../../configs/`, `../../src/`,
 `../../tests/`, `../../purposes/`, and `../../results/` contain concrete
 universes, data paths, model definitions, parameters, implementation,
 generated notebooks, and run outputs.
 
-**Generated report snapshots**: reports under `../../results/` may summarize a
-run, but they do not update workstream state by themselves. Support, reject,
-merge, park, or pivot only by updating `explanation_ledger.md` and recording
-the transition in `../../decisions.md` with evidence links.
+**Generated report snapshots**: reports under `../../results/reports/` may
+summarize a run, but they do not update workstream state by themselves.
+Support, reject, merge, park, or pivot only by updating
+`explanation_ledger.md` and recording the transition in `../../decisions.md`
+with evidence links.
 
 Do not put active candidates, tuned parameters, current performance metrics, or trial-specific
 conclusions in reusable workflow docs. Those belong in project-instance
@@ -63,8 +65,8 @@ configs, trial reports, or decision entries.
 ├── explanation_ledger.md       # primary state object
 ├── imrad_draft.md              # paper-shaped deliverable, started early
 ├── prereg/
-│   ├── PR_001.md               # confirmatory pre-registration, when needed
-│   ├── PR_002.md
+│   ├── PR_001_initial.md       # initial exploratory pre-registration
+│   ├── PR_002_<slug>.md
 │   └── ...
 └── ...
 
@@ -81,6 +83,13 @@ configs, trial reports, or decision entries.
 │   └── trial_NNN_*.py          # marimo notebooks, one per trial
 ├── results/
 │   ├── results.parquet         # portable default evidence index
+│   ├── reports/
+│   │   └── RPT_<id>_<slug>/    # example package, created when report is produced
+│   │       ├── report.md
+│   │       ├── report.pdf
+│   │       ├── figures/
+│   │       ├── tables/
+│   │       └── attachments/
 │   ├── figures/
 │   └── intermediate/
 ├── tracking/                   # optional tracker exports / lightweight run notes
@@ -100,27 +109,31 @@ point:
 - [ ] Exploratory research and confirmatory research are labeled separately in
   run notes, tracker rows, notebooks, or result rows
 - [ ] Every claim-cited, promotion-eligible, externally shared, or
-  high-reliability trial has a reviewed pre-registration (`prereg/PR_<id>.md`
+  high-reliability trial has a reviewed pre-registration (`prereg/PR_<id>_<slug>.md`
   status is READY before confirmatory execution)
-- [ ] Before each confirmatory execution, `PR_<id>` was compared against the
-  current state:
+- [ ] Before claim-bearing confirmatory execution, `PR_<id>_<slug>.md` was
+  compared against the current state:
   exploratory result, data availability, assumptions, implementation
   constraints, and current question still match the PR
+- [ ] Preregistered outcome reports, when produced, use
+  `../../results/reports/RPT_<id>_<slug>/` with `report.md`, `report.pdf`,
+  `figures/`, `tables/`, and `attachments/`
 - [ ] `explanation_ledger.md` has at least 2 competing explanations
   per active question (≥1 should be a null / artifact explanation)
 - [ ] Every trial in `purposes/` has a complete Analysis section (5
-  sub-fields, A0-A5 tier explicit) and a `deviation review` output
-  recorded
+  sub-fields, A0-A5 tier explicit), and preregistered outcome reports include
+  Transparent Changes
 - [ ] `decisions.md` records durable state transitions and promotion-relevant
-  deviations; ordinary run notes may stay with the tracker or trial artifact
+  material changes; ordinary run notes may stay with the tracker or trial artifact
 - [ ] Tracking backend or run-note convention is clear before the first
   load-bearing claim
 - [ ] Selection, sweep, and failed-run records exist when they affect a
   multiple-testing or promotion judgment
 - [ ] Reproducibility 3-tuple recorded for every promotion-eligible
   trial via a local run note, results row, or equivalent tracker record
-- [ ] No major deviations from any pre-registration unaddressed (any
-  major deviation should have triggered a fresh pre-registration)
+- [ ] No material change from any pre-registration is unaddressed; claim-cited
+  use is narrowed or rerun when the original plan no longer answers the
+  intended question
 - [ ] IMRAD draft started after PR/FAQ readiness (not deferred to the end)
 
 ## Promotion intent
