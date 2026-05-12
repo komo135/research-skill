@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "description": "v1.1.7 - Keeps A4 rigor for load-bearing claims while allowing faster exploratory decisions.",
-  "version": "1.1.7",
+  "description": "v1.1.8 - Adds general preregistration planning, Transparent Changes, and outcome report packages.",
+  "version": "1.1.8",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"

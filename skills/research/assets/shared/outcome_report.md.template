@@ -1,0 +1,64 @@
+# Report — RPT_<REPLACE: id, e.g., 001>_<REPLACE: slug>
+
+Editable source for:
+`results/reports/RPT_<REPLACE: id>_<REPLACE: slug>/report.pdf`
+
+## Preregistration Reference
+
+- **Preregistration**: `prereg/PR_<REPLACE: id>_<REPLACE: slug>.md`
+- **Preregistration type**: <REPLACE: confirmatory or exploratory>
+- **Report package**: `results/reports/RPT_<REPLACE: id>_<REPLACE: slug>/`
+
+## Summary
+
+<REPLACE: plain-language outcome, decision status, and what changed or did not
+change.>
+
+## Plan-to-Result Table
+
+| planned_item | executed_as_planned | result_summary | evidence | notes |
+|---|---|---|---|---|
+| <REPLACE> | <yes / no / partial> | <REPLACE> | <figure/table/appendix/local artifact/citation> | <REPLACE> |
+
+## Key Figures / Tables
+
+- Figure/table source files should live under `figures/` or `tables/`.
+- Refer to local source artifacts only when they help a reviewer resolve the
+  evidence.
+
+## Transparent Changes
+
+No material changes from the preregistration.
+
+If material changes occurred, replace the sentence above with:
+
+```markdown
+### Change <n>: <short name>
+- Description of change:
+- Rationale:
+- Effect on study results or conclusions:
+```
+
+If a change was made with knowledge of its effect on the outcome, say that the
+affected result has weaker diagnostic value. If the original plan no longer
+answers the intended question, say so plainly.
+
+## Scope / Limitations
+
+<REPLACE: scope covered, known limitations, plausible alternatives, and what
+evidence would change the decision.>
+
+## Follow-up or next decision
+
+<REPLACE or N/A>
+
+## Provenance Appendix
+
+```text
+Preregistration: prereg/PR_<id>_<slug>.md
+Report source: results/reports/RPT_<id>_<slug>/report.md
+Figures: results/reports/RPT_<id>_<slug>/figures/
+Tables: results/reports/RPT_<id>_<slug>/tables/
+Source data or artifact: <path or citation>
+External tracker run ID: <omit unless a tracker was actually used>
+```
