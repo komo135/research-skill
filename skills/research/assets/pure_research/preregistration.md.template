@@ -1,119 +1,181 @@
-# Pre-Registration — PR_<REPLACE: id, e.g., 001>
+# Pre-Registration — PR_<REPLACE: id, e.g., 001>_<REPLACE: slug, e.g., initial>
 
-Status: DRAFT (change to READY after review, before trial execution)
+Status: DRAFT (change to READY after review, before execution)
 
-PR/FAQ: <REPLACE: path to prfaq.md section that scopes this trial>
+preregistration_type: confirmatory | exploratory
+
+Related plan or PR/FAQ: <REPLACE: path or "N/A">
 
 ---
 
-## 1. Question
+Pre-registration is a general planning and reporting discipline: write the
+plan before work starts, execute against it, disclose important changes, and
+produce a readable outcome report.
 
-<REPLACE: one sentence. Identical to or a sub-question of the PR/FAQ
-question. Frame as an unknown to reduce.>
+## Shared fields
 
-## 1.1 Confirmation target and initial approach
+Complete these fields for both confirmatory and exploratory preregistrations.
+Delete the body section that does not match `preregistration_type`.
 
-- **confirmation target**: <REPLACE: what this PR is trying to confirm or discriminate:
-  question, E-pair/null, scope, primary metric, threshold, and interpretation
-  rule>
+## Study Information
+
+- **Title**: <REPLACE>
+- **Description**: <REPLACE>
+- **Preregistration type**: <REPLACE: confirmatory or exploratory>
+- **Authors / responsible agent**: <REPLACE or N/A>
+- **Related prior work**: <REPLACE or N/A>
+- **Notes**: <REPLACE or N/A>
+
+## Sampling / Data Plan
+
+- **Existing data / data collection status**: <REPLACE>
+- **Data source or procedure**: <REPLACE>
+- **Sample size, data range, or planned observation scope**: <REPLACE>
+- **Inclusion / exclusion rules**: <REPLACE>
+- **Sample size rationale**: <REPLACE or N/A>
+- **Stopping rule**: <REPLACE or N/A>
+- **Access constraints**: <REPLACE or N/A>
+
+## Variables / Measures
+
+For confirmatory work, fix the planned analysis variables. For exploratory
+work, define the variable space and out-of-scope variables.
+
+- **Primary outcome / dependent variable**: <REPLACE or N/A>
+- **Predictors / independent variables**: <REPLACE or N/A>
+- **Covariates**: <REPLACE or N/A>
+- **Manipulated or measured variables**: <REPLACE or N/A>
+- **Indices, formulas, units, and aggregation**: <REPLACE or N/A>
+- **Variables or measures to inspect**: <REPLACE or N/A>
+- **Feature families or derived measures**: <REPLACE or N/A>
+- **Allowed transformations**: <REPLACE or N/A>
+- **Out-of-scope variables**: <REPLACE or N/A>
+- **Selection or ranking criteria**: <REPLACE or N/A>
+
+## Confirmatory body
+
+Use this body when `preregistration_type: confirmatory`.
+
+### Hypotheses
+
+<REPLACE: hypotheses or competing explanations, including null/artifact where
+applicable.>
+
+### Design Plan
+
+<REPLACE: design, intervention/manipulation if any, comparison groups,
+randomization/blinding if any, and execution order.>
+
+### Confirmation target and initial approach
+
+- **confirmation target**: <REPLACE: question, hypotheses or E-pair/null,
+  scope, primary metric, threshold, and interpretation rule>
 - **initial approach**: <REPLACE: planned analysis method, estimator,
   data-acquisition route, implementation path, period-fetch mechanics, and
   operational choices>
 
 The initial approach is not the confirmation target itself. An
 initial-approach change that preserves the confirmation target, threshold,
-scope, and interpretation is not a major deviation.
-If evidence, data access, or implementation constraints require an approach
-change while the confirmation target remains fixed, document the rationale and
-continue under this PR; a new PR is not required and do not treat the change
-as hypothesis failure.
+scope, and interpretation is not a plan-breaking material change. If evidence,
+data access, or implementation constraints require an approach change while
+the confirmation target remains fixed, document the rationale in Transparent
+Changes and continue under this PR; a new PR is not required and do not treat
+the change as hypothesis failure.
 
-## 2. Competing explanations (≥2 required, including null/artifact)
+### Analysis Plan
 
-For each E, also declare evidence type (causal / correlative /
-null-result) and (if correlative) the gap to causation. See
-`references/pure_research/preregistration.md` § 2.
+<REPLACE: estimator/model/test, parameters, primary and secondary analyses,
+multiple-testing plan, robustness checks, and exact execution sequence. If
+multiple tests or model variants are planned, state interpretation rules.>
 
-| ID | Statement | Mechanism | Ex ante predicted observation | Evidence type | Causation gap (if correlative) |
-|---|---|---|---|---|---|
-| E1 | <REPLACE: explanation statement> | <REPLACE: causal mechanism> | <REPLACE: what observation would best support this E> | causal \| correlative \| null-result | <REPLACE or N/A> |
-| E2 | <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE or N/A> |
-| E_null | <REPLACE: null / artifact / measurement-error / sample-variance explanation> | <REPLACE> | <REPLACE: e.g., bootstrap CI includes 0> | null-result | N/A |
+### Inference / Decision Criteria
 
-## 3. Test design
+- **Support hypothesis / explanation if**: <REPLACE>
+- **Weaken or reject if**: <REPLACE>
+- **Ambiguous if**: <REPLACE>
 
-### 3.1 Data
+Threshold miss is result interpretation, not a plan-breaking material change.
+If the observed result misses a pre-registered threshold, interpret it under
+the rules above; do not change the threshold after seeing data and do not open
+a new PR solely because the threshold was missed.
 
-- **Source**: <REPLACE>
-- **Period**: <REPLACE: start to end>
-- **Frequency**: <REPLACE: e.g., daily, 5-min>
-- **Universe**: <REPLACE: instruments included>
-- **Planned data identity**: <REPLACE: path / vendor version / expected
-  snapshot date. Fill the actual data version in the trial note.>
+### Data Exclusion / Missing Data Handling
 
-### 3.2 Sample / split
+<REPLACE: planned exclusions, missingness treatment, imputation, and checks for
+whether exclusions changed the answer.>
 
-<REPLACE: how data is split for the test. Holdout windows? repeated validation?
-Train / val / test? Sample size per split?>
+### Optional Confirmatory Sections
 
-### 3.3 Metric
+- **Randomization**: <REPLACE or N/A>
+- **Blinding**: <REPLACE or N/A>
+- **Sample Size Rationale**: <REPLACE or N/A>
+- **Stopping Rule**: <REPLACE or N/A>
+- **Secondary Analyses**: <REPLACE or N/A>
+- **Other Notes**: <REPLACE or N/A>
 
-- **Primary**: <REPLACE: single number, e.g., difference in rolling
-  3-year primary metric across two periods>
-- **Secondary**: <REPLACE: list any secondary metrics that will be
-  reported>
+## Exploratory body
 
-### 3.4 Threshold
+Use this body when `preregistration_type: exploratory`.
 
-- **Support E1 if**: <REPLACE: observable threshold>
-- **Support E2 if**: <REPLACE: observable threshold>
-- **Support E_null if**: <REPLACE: observable threshold>
-- **Ambiguous if**: <REPLACE: condition where no E clearly wins>
+### Exploratory Objective
 
-Threshold miss is result interpretation, not deviation. If the observed result
-misses a pre-registered threshold, interpret it under the rules above; do not
-change the threshold after seeing data and do not open a new PR solely because
-the threshold was missed.
+<REPLACE: what uncertainty this exploration will reduce.>
 
-### 3.5 Multiple testing correction
+### Exploration Scope
 
-- **Number of distinct hypotheses tested across this trial**: <REPLACE>
-- **Number of distinct hypotheses tested across the whole project so
-  far**: <REPLACE: be honest>
-- **Correction method**: <REPLACE: Bonferroni / Romano-Wolf step-down
-  / domain-appropriate selection correction or significance hurdle>
-- **Corrected significance threshold**: <REPLACE>
+<REPLACE: in-scope data, variables, procedures, candidate explanations, and
+boundaries.>
 
-## 4. Expected diff under each explanation
+### Allowed Transformations / Procedures
 
-(Forces ex ante prediction. After the trial, deviation review compares
-actual results against these predictions.)
+<REPLACE: diagnostics, plots, feature engineering, model families, ranking,
+clustering, ablations, or other procedures allowed during exploration.>
 
-- **If E1 true → expected pattern**: <REPLACE: precise, observable>
-- **If E2 true → expected pattern**: <REPLACE>
-- **If E_null true → expected pattern**: <REPLACE>
+### Selection or Follow-Up Criteria
 
-## 5. Stop condition
+<REPLACE: criteria for selecting patterns, explanations, failures, variables,
+or next questions for follow-up.>
 
-<REPLACE: the observable condition that ends this trial. Without
-this, trials drift.>
+### Expected Outputs
 
-## 6. Reproducibility
+<REPLACE: artifact kind only, such as diagnostic map, candidate explanations,
+ranked patterns, failure analysis, narrowed question, or future confirmatory
+plan. This is not a reporting plan.>
 
-- Random seed(s): <REPLACE>
-- Code commit (planned at trial run): <fill at trial time>
-- Environment pin (planned at trial run): <fill at trial time>
-- Tracking note/backend (planned): <run note, results row, or selected tracker>
-- Decision-relevant run set (planned): <only if selection, multiple-testing correction, or promotion will depend on multiple attempts>
-- Data version (final, trial-time): <fill from run note or selected tracker>
+### Optional Exploratory Sections
+
+- **Hypotheses or Expectations**: <REPLACE or N/A>
+- **Constraints / Risks**: <REPLACE or N/A>
+- **Trigger for Future Confirmatory Preregistration**: <REPLACE or N/A>
+- **Other Notes**: <REPLACE or N/A>
+
+## Transparent Changes Policy
+
+Every report package must include `Transparent Changes`.
+
+If no material changes occurred:
+
+```markdown
+No material changes from the preregistration.
+```
+
+If material changes occurred:
+
+```markdown
+### Change <n>: <short name>
+- Description of change:
+- Rationale:
+- Effect on study results or conclusions:
+```
+
+If a change was made with knowledge of its effect on the outcome, the affected
+result has weaker diagnostic value. If the change means the original plan no
+longer answers the intended question, say so plainly in the report.
 
 ---
 
 - Drafted by: <REPLACE: agent and/or user>
 - Reviewed by: <REPLACE: user>
 
----
-
-After this pre-registration is reviewed, the trial may run. Post-trial,
-compare the trial against `PR_<id>` and apply the deviation severity matrix in
-`references/pure_research/pr_workflow.md`.
+After review, run work against this file and report with the package shape in
+`results/reports/RPT_<id>_<slug>/`.

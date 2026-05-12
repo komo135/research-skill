@@ -27,10 +27,10 @@ criteria, current status, and durable state transitions.
 symbols, universes, data paths, parameters, implementation, evidence artifacts,
 generated notebooks, and run outputs.
 
-**Generated report snapshots**: reports under `../../results/` may summarize a
-run, but they do not update workstream state by themselves. Promote, kill,
-park, or pivot only by updating `capability_map.md` and recording the
-transition in `../../decisions.md` with evidence links.
+**Generated report snapshots**: reports under `../../results/reports/` may
+summarize a run, but they do not update workstream state by themselves.
+Promote, kill, park, or pivot only by updating `capability_map.md` and
+recording the transition in `../../decisions.md` with evidence links.
 
 Do not put active candidates, tuned parameters, current performance metrics, or trial-specific
 conclusions in reusable workflow docs. Those belong in project-instance
@@ -75,6 +75,7 @@ assessment.
 │   └── trial_NNN_*.py      # marimo evidence artifacts
 ├── results/
 │   ├── results.parquet     # portable default evidence index
+│   ├── reports/            # report packages, if produced
 │   ├── figures/
 │   └── intermediate/       # parquet outputs of feature notebooks etc.
 ├── tracking/               # optional tracker exports / lightweight run notes

@@ -20,7 +20,8 @@ The promotion gate may not start unless:
   linked from the project state
 - Pre-registration for the cited trial(s) exists and had `Status: READY`
   before execution
-- No unhandled major deviation exists for the cited trial(s)
+- Transparent Changes for the cited report package exist and no material
+  change invalidates claim-cited use
 - IMRAD draft is producible per
   `references/pure_research/imrad_draft.md` § Sufficiency conditions
 - Process review has run (`references/review/process_review.md`)
@@ -35,26 +36,33 @@ Format: `[ ] item — required evidence — citation`
 ### A. Planning integrity
 
 - [ ] PR/FAQ exists and scoped the trial before it ran
-  - Evidence: `prfaq.md` plus any later deviation entries in `decisions.md`
+  - Evidence: `prfaq.md` plus any later material-change entries in
+    `decisions.md` or report package Transparent Changes
 - [ ] Pre-registration exists for every cited trial
-  - Evidence: `prereg/PR_<id>.md`
+  - Evidence: `prereg/PR_<id>_<slug>.md`
 - [ ] Each cited trial was run under a reviewed pre-registration
-  - Evidence: `Status: READY` in `prereg/PR_<id>.md` and trial notes that
+  - Evidence: `Status: READY` in `prereg/PR_<id>_<slug>.md` and trial notes that
     cite the matching PR ID
 - [ ] No undocumented load-bearing PR/FAQ amendments (claim, mechanism,
-  scope, alternatives, evidence type, or promotion language)
-  - Evidence: current file plus deviation entries for any material changes
+  scope, alternatives, evidence role, or promotion language)
+  - Evidence: current file plus Transparent Changes or decision entries for
+    any material changes
 - [ ] No undocumented pre-registration amendments
-  - Evidence: same check on `prereg/PR_<id>.md`; formatting-only changes do
+  - Evidence: same check on `prereg/PR_<id>_<slug>.md`; formatting-only changes do
     not count as amendments
 
-### B. Deviation severity
+### B. Transparent Changes
 
-- [ ] No unhandled major deviation exists for the cited trial
-  - Evidence: trial note or `decisions.md` records material deviations, or
-    states that none were identified
-- [ ] Any minor deviation is documented with rationale
-  - Evidence: per-deviation `decisions.md` entry
+- [ ] Report package includes `Transparent Changes` for every cited trial
+  - Evidence: `results/reports/RPT_<id>_<slug>/report.md` states
+    "No material changes from the preregistration." or lists material changes
+- [ ] Any material change is documented with description, rationale, and
+  effect on study results or conclusions
+  - Evidence: per-change entries include `Description of change`,
+    `Rationale`, and `Effect on study results or conclusions`
+- [ ] No material change invalidates claim-cited use
+  - Evidence: Transparent Changes and trial notes either preserve the
+    confirmation target or narrow / rerun the claim before promotion
 
 ### C. Discriminating test
 
@@ -176,16 +184,16 @@ uses this template:
 ## YYYY-MM-DD Pure Research promotion (Q<id>: <Q-statement summary>)
 
 PR/FAQ: prfaq.md
-Pre-registrations (cited trials): PR_<id1>: prereg/PR_<id1>.md, PR_<id2>: prereg/PR_<id2>.md, ...
-Deviation status: no unhandled major deviation; minor deviations documented in decisions.md entries Y, Z
+Pre-registrations (cited trials): PR_<id1>_<slug1>: prereg/PR_<id1>_<slug1>.md, PR_<id2>_<slug2>: prereg/PR_<id2>_<slug2>.md, ...
+Transparent Changes: report package states "No material changes from the preregistration." or lists each Description of change, Rationale, and Effect on study results or conclusions
 
 Supported claim: <one sentence, no stronger than evidence,
                   scope-explicit>
 Mechanism: <causal mechanism, A4+>
 Scope: <universe, period, regime, market structure preconditions>
 Discriminating evidence:
-  - vs E<id> (alternative): <evidence type + observation>
-  - vs E_null: <evidence type + observation>
+  - vs E<id> (alternative): <evidence form + observation>
+  - vs E_null: <evidence form + observation>
 Negative claims (if any):
   - E<id>: rejected, mechanism: <...>, evidence: <...>
 
@@ -204,7 +212,7 @@ Future work: <derived sub-questions or sibling project candidates>
 | Failure mode | Where caught |
 |---|---|
 | Promote without pre-registration | Section A: pre-reg integrity |
-| Promote with major deviation that should have invalidated confirmatory use under the original PR | Section B: deviation handling |
+| Promote with material change that should have invalidated confirmatory use under the original PR | Section B: Transparent Changes |
 | Promote without discriminating test | Section C: discriminating test required |
 | Sibling E's still active when promoting | Section C: all siblings must be terminal |
 | Promote with single t > 2 from many trials (no multi-test correction) | Section D: trial count discipline |
@@ -230,10 +238,9 @@ Future work: <derived sub-questions or sibling project candidates>
 ## Relationship to other references
 
 - `references/pure_research/prfaq.md` (pre-condition for the gate)
-- `references/pure_research/preregistration.md` (deviation severity
-  matrix consumed here)
-- `references/pure_research/pr_workflow.md` (workflow rules; deviation
-  matrix lives here)
+- `references/pure_research/preregistration.md` (Transparent Changes policy)
+- `references/pure_research/pr_workflow.md` (workflow rules; severity guidance
+  for claim-cited confirmatory changes lives here)
 - `references/pure_research/explanation_ledger_schema.md` (state
   object; promotion updates the Claims section)
 - `references/pure_research/imrad_draft.md` (deliverable; sufficiency

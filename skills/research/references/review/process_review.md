@@ -79,9 +79,9 @@ These checks apply regardless of selected workstream label:
     Layer 1 closure, Stage gate, fired kill criterion, charter deviation, or
     integration-test clearance that supports the transition under review
   - For a Phenomenon / Mechanism Research workstream: check only the relevant
-    PR/FAQ readiness, pre-registration readiness, `deviation review` status,
-    explanation transition, or PR/FAQ deviation that supports the claim under
-    review
+    PR/FAQ readiness, pre-registration readiness, Transparent Changes report
+    status, explanation transition, or PR/FAQ change that supports the claim
+    under review
   - Evidence: targeted per-category presence check
 - [ ] **Entry guardrails respected**: no claim-bearing confirmation trial or
   promotion-relevant implementation before the required plan is ready.
@@ -122,8 +122,9 @@ These checks apply regardless of selected workstream label:
     model-selection attempts, and robustness variants. A complete export of
     every exploratory run is not required unless the correction depends on it.
 - [ ] **Planning artifacts were not silently rewritten**: charter, PR/FAQ,
-  and pre-registration changes that affect claims have deviation entries
-  - Evidence: relevant `decisions.md` deviation entries and current planning files
+  and pre-registration changes that affect claims have explicit change entries
+  - Evidence: relevant `decisions.md` entries, current planning files, and
+    report `Transparent Changes` sections where reports exist
 
 ## Capability / Technology Research workstream process review
 
@@ -228,11 +229,11 @@ For Phenomenon / Mechanism Research workstreams only. Check in this order:
 - [ ] **PR/FAQ is reviewed and ready**
   - Evidence: `prfaq.md` status is `READY`
 - [ ] **Part 1 (Press Release) is concrete**: states the finding,
-  mechanism, scope, alternatives ruled out, evidence type
+  mechanism, scope, alternatives ruled out, and evidence form
   - Evidence: read Part 1; verify all 5 elements present
 - [ ] **Part 2 (FAQ) has ≥10 entries** covering statistical sufficiency,
   robustness, mechanism, alternatives, replication, scope, practical
-  implication, HARKing risk
+  implication, and post-hoc rationalization risk
   - Evidence: count Q's; verify topic coverage
 
 ### Targeted literature
@@ -248,27 +249,82 @@ For Phenomenon / Mechanism Research workstreams only. Check in this order:
 
 ### Pre-registration
 
-- [ ] **Pre-registration exists** for every cited trial
-  (`prereg/PR_<id>.md`)
-- [ ] **Pre-registration was reviewed before claim-cited execution**
-  - Evidence: `prereg/PR_<id>.md` status is `READY` before the trial is cited
-- [ ] **≥2 competing explanations + null enumerated** per pre-reg
-- [ ] **Each E has evidence type declared** (causal / correlative /
-  null-result) per `references/pure_research/preregistration.md` § 2
-- [ ] **Each E has ex ante predicted observation** (not just "we will
-  measure X")
-- [ ] **Multiple-testing correction method specified** in pre-reg
-  § 3.5 with honest trial count
+Use `references/pure_research/preregistration.md`. The current template has
+shared fields plus separate confirmatory and exploratory bodies.
 
-### Trial execution
+#### Confirmatory pre-registration
 
-- [ ] **`deviation review` ran with exit 0 or 2** (no major deviations)
-  for every cited trial
-  - Evidence: `decisions.md` records the exit code per trial
-- [ ] **Major deviations triggered new pre-registration**: if any
-  trial had a major deviation, the trial is marked exploratory and a new
-  pre-reg PR_<id+1> is used for claim-cited evidence
-  - Evidence: per-major-deviation entry in `decisions.md`
+Use this subsection for claim-cited, promotion-eligible, externally shared, or
+high-reliability confirmatory trials.
+
+- [ ] **Confirmatory pre-registration exists** for every cited trial
+  (`prereg/PR_<id>_<slug>.md`)
+- [ ] **Confirmatory pre-registration was reviewed before claim-cited
+  execution**
+  - Evidence: `prereg/PR_<id>_<slug>.md` status is `READY` before the trial is cited
+- [ ] **Study Information and shared fields are complete**
+  - Evidence: `Study Information`, `Sampling / Data Plan`, and
+    `Variables / Measures` have concrete entries or justified `N/A`
+- [ ] **Hypotheses are stated before execution**
+  - Evidence: `Hypotheses` names the hypotheses or competing explanations,
+    including null / artifact candidates where applicable
+- [ ] **Design Plan is concrete enough to identify what was run**
+  - Evidence: `Design Plan` names the design, comparison groups,
+    randomization / blinding if any, and execution order
+- [ ] **Analysis Plan is specific enough to execute and audit**
+  - Evidence: `Analysis Plan` names estimator/model/test, primary and
+    secondary analyses, robustness checks, and multiple-testing plan when
+    applicable
+- [ ] **Inference / Decision Criteria are fixed before seeing results**
+  - Evidence: `Inference / Decision Criteria` states support, weaken/reject,
+    and ambiguous-result rules
+- [ ] **Data Exclusion / Missing Data Handling is specified**
+  - Evidence: exclusions, missingness treatment, imputation, and checks for
+    whether exclusions changed the answer are present
+
+#### Exploratory pre-registration
+
+Use this subsection when an exploratory preregistration is used as planning and
+reporting discipline for exploratory research. It does not make the result
+confirmatory by itself.
+
+- [ ] **Exploratory pre-registration was reviewed before execution if it is
+  cited as a planned exploratory run**
+  - Evidence: `prereg/PR_<id>_<slug>.md` status is `READY` before the
+    exploratory artifact was run
+- [ ] **Study Information and shared fields are complete**
+  - Evidence: `Study Information`, `Sampling / Data Plan`, and
+    `Variables / Measures` have concrete entries or justified `N/A`
+- [ ] **Exploratory Objective states the uncertainty being reduced**
+  - Evidence: `Exploratory Objective` is concrete and scoped
+- [ ] **Exploration Scope bounds the search area**
+  - Evidence: `Exploration Scope` names in-scope data, variables, procedures,
+    candidate explanations, and boundaries
+- [ ] **Allowed Transformations / Procedures bound researcher degrees of
+  freedom**
+  - Evidence: diagnostics, plots, model families, feature engineering,
+    ranking, clustering, ablations, or other procedures are listed before
+    execution
+- [ ] **Selection or follow-up criteria are stated before execution**
+  - Evidence: criteria for selecting patterns, explanations, failures,
+    variables, or next questions are present
+- [ ] **Expected Outputs state the intended artifact kind**
+  - Evidence: `Expected Outputs` names a diagnostic map, candidate
+    explanations, ranked patterns, failure analysis, narrowed question, or
+    future confirmatory plan
+
+### Trial execution and outcome reporting
+
+- [ ] **Transparent Changes exists for every preregistered outcome report**
+  - Evidence: report package includes `Transparent Changes` with either
+    "No material changes from the preregistration." or per-change
+    description, rationale, and effect on study results or conclusions
+- [ ] **Material changes were handled without overclaiming**: if a change means
+  the original plan no longer answers the intended question, the result is
+  narrowed, marked exploratory, or rerun under a suitable pre-registration
+  before being used as claim-cited evidence
+  - Evidence: report `Transparent Changes`, trial notes, and `decisions.md`
+    explain the handling
 - [ ] **Verification checks ran before main test** in trial notebooks
   - Evidence: trial notebook § Verification checks cell + pass status
 - [ ] **No post-hoc explanation addition**: any post-trial candidate
@@ -276,10 +332,10 @@ For Phenomenon / Mechanism Research workstreams only. Check in this order:
   future trials (per `pr_workflow.md`)
   - Evidence: trial notebook § 6.2 Decomposition flags
 
-### HARKing prevention checklist
+### Planning integrity checklist
 
-(Per D-19 / C2.13 — a focused subset of pre-reg discipline checks
-specifically targeting Hypothesizing After Results are Known)
+This is a focused subset of pre-registration discipline checks targeting
+post-hoc rationalization, goalpost shifting, and selective reporting.
 
 - [ ] **Pre-registration was ready before the claim-cited run** for the trial
   (no shopping trip)
@@ -288,11 +344,12 @@ specifically targeting Hypothesizing After Results are Known)
   are not selectively re-labeled after seeing a result
   - Evidence: draft alternatives are not used to justify the completed trial
 - [ ] **Trial design follows pre-reg**: trial notebook § Trial design matches
-  `prereg/PR_<id>.md` § 3 on load-bearing choices
-  - Evidence: any material difference appears in `deviation review` output
+  the confirmatory `Analysis Plan` or exploratory `Allowed Transformations /
+  Procedures` on load-bearing choices
+  - Evidence: any material difference appears in `Transparent Changes`
 - [ ] **Threshold not changed after seeing data** (goalpost shifting)
-  - Evidence: `deviation review` major-deviation row for "threshold
-    changed after seeing data" is empty
+  - Evidence: `Inference / Decision Criteria` and report
+    `Transparent Changes` show no outcome-dependent threshold change
 - [ ] **All pre-registered secondary tests reported**, not just
   favorable ones
   - Evidence: trial notebook § 4 Observation lists every secondary
@@ -300,7 +357,8 @@ specifically targeting Hypothesizing After Results are Known)
 - [ ] **Multiple-testing trial count is honest** — includes the prior trials,
   sweeps, or variants that affect the family under review, not just the current
   favorable result
-  - Evidence: pre-reg § 3.5 trial count vs the decision-relevant run set
+  - Evidence: `Analysis Plan` multiple-testing plan vs the
+    decision-relevant run set
     (`results.parquet`, tracker query/export, or another durable record)
 - [ ] **No mid-trial competing E addition**: any new candidate E
   identified during analysis is parked for a future pre-registered
@@ -333,9 +391,10 @@ specifically targeting Hypothesizing After Results are Known)
   analysis depth
   - Evidence: `imrad_draft.md` contains early Section 1-2 scaffolding and
     trial-backed Section 3-4 content
-- [ ] **Methods § 2.5 lists every deviation** from pre-registration
-  (or states "none")
-  - Evidence: cross-reference with `deviation review` outputs
+- [ ] **Methods § 2.5 lists Transparent Changes** from pre-registration
+  (or states "No material changes from the preregistration.")
+  - Evidence: cross-reference with report `Transparent Changes`, trial notes,
+    and `decisions.md`
 
 ## Common process violations
 
@@ -348,9 +407,9 @@ specifically targeting Hypothesizing After Results are Known)
 | TRL skip via single-update transition | TRL advances by > 1 in single state change | R&D § Layer 2 § TRL skip |
 | Integration test ran before upstream matured | Integration consumes capabilities not yet `matured` | R&D § Integration test ordering |
 | Post-hoc pre-registration | Pre-registration was completed after the result it claims to plan | PR § pre-registration before claim-cited execution |
-| Major deviation treated as minor | `deviation review` exit 1 followed by "we'll just document it" | PR § Trial execution § major deviations |
-| HARKing via shopping trip | Data-dependent result presented as if it had been planned before pre-registration readiness | HARKing checklist § pre-registration before claim-cited execution |
-| Multiple-testing under-reporting | Headline selection-adjusted statistic computed with low N when project ran many configurations | HARKing checklist § honest trial count |
+| Material change treated as irrelevant | Transparent Changes says "none" even though the plan, scope, threshold, or result-bearing procedure changed | PR § Trial execution and outcome reporting |
+| Post-hoc rationalization via shopping trip | Data-dependent result presented as if it had been planned before pre-registration readiness | PR § Planning integrity checklist |
+| Multiple-testing under-reporting | Headline selection-adjusted statistic computed with low N when project ran many configurations | PR § Planning integrity checklist |
 | Generic terminal labels in conclusions | "model is good" / "regime suited" / "noise" patterns | Caught in `conclusion_review.md` analysis depth axis |
 
 ## Outcome of process review
@@ -381,6 +440,3 @@ The report includes:
   `references/rd/core_technologies.md`,
   `references/pure_research/pr_workflow.md`,
   `references/pure_research/preregistration.md`
-- HARKing prevention discipline elaborated in
-  `references/pure_research/preregistration.md` § HARKing prevention
-  discipline

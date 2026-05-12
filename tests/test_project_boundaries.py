@@ -174,7 +174,7 @@ class ProjectBoundaryTests(unittest.TestCase):
 
     def test_pure_research_scaffold_creates_first_preregistration_draft(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            subprocess.run(
+            result = subprocess.run(
                 [
                     sys.executable,
                     str(ROOT / "skills/research/scripts/new_project.py"),
@@ -193,11 +193,20 @@ class ProjectBoundaryTests(unittest.TestCase):
 
             project = Path(tmp) / "alpha"
             workstream = project / "workstreams" / "WS001-phenomenon"
-            self.assertTrue((workstream / "prereg/PR_001.md").exists())
+            self.assertTrue((workstream / "prereg/PR_001_initial.md").exists())
             self.assertFalse((project / "prereg/PR_001.md").exists())
             self.assertFalse((project / "explanation_ledger.md").exists())
-            content = (workstream / "prereg/PR_001.md").read_text(encoding="utf-8")
+            content = (workstream / "prereg/PR_001_initial.md").read_text(encoding="utf-8")
             self.assertIn("Pre-Registration", content)
+            self.assertIn("preregistration_type: exploratory", content)
+            self.assertNotIn("preregistration_type: confirmatory | exploratory", content)
+            self.assertIn("## Exploratory body", content)
+            self.assertNotIn("## Confirmatory body", content)
+            self.assertNotIn("Delete the body section", content)
+            self.assertIn("results/reports/RPT_001_initial/", content)
+            self.assertNotIn("RPT_<id>_<slug>", content)
+            self.assertNotIn("--prereg-id PR_001_initial --question-id", result.stdout)
+            self.assertIn("Create a separate confirmatory pre-registration", result.stdout)
 
     def test_mode_shortcut_generated_docs_do_not_reclassify_the_project(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -341,6 +350,89 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertEqual(imrad_result.returncode, 0, imrad_result.stderr)
             self.assertTrue(imrad_output.exists())
             self.assertFalse((phen_project / "imrad_draft.md").exists())
+
+    def test_draft_imrad_copies_report_package_transparent_changes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/new_project.py"),
+                    "phen",
+                    "--mode",
+                    "pure-research",
+                    "--root",
+                    tmp,
+                ],
+                check=True,
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            project = Path(tmp) / "phen"
+            workstream = project / "workstreams" / "WS001-phenomenon"
+            report_dir = project / "results" / "reports" / "RPT_001_initial"
+            report_dir.mkdir(parents=True)
+            (report_dir / "report.md").write_text(
+                "\n".join(
+                    [
+                        "# Outcome Report",
+                        "",
+                        "## Summary",
+                        "Exploratory diagnostic run.",
+                        "",
+                        "## Transparent Changes",
+                        "",
+                        "### Change 1: expanded date window",
+                        "- Description of change: extended the data window by one month.",
+                        "- Rationale: original source snapshot was unavailable.",
+                        "- Effect on study results or conclusions: result has weaker diagnostic value.",
+                        "",
+                        "## Scope / Limitations",
+                        "Local example.",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            other_report_dir = project / "results" / "reports" / "RPT_999_other"
+            other_report_dir.mkdir(parents=True)
+            (other_report_dir / "report.md").write_text(
+                "\n".join(
+                    [
+                        "# Unrelated Outcome Report",
+                        "",
+                        "## Transparent Changes",
+                        "",
+                        "### Change 1: unrelated workstream change",
+                        "- Description of change: this belongs to another preregistration.",
+                        "- Rationale: unrelated.",
+                        "- Effect on study results or conclusions: should not appear.",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            imrad_output = workstream / "imrad_draft.md"
+            imrad_output.unlink()
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "skills/research/scripts/draft_imrad.py"),
+                    "--project-dir",
+                    str(project),
+                ],
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            content = imrad_output.read_text(encoding="utf-8")
+            self.assertIn("expanded date window", content)
+            self.assertIn("Effect on study results or conclusions", content)
+            self.assertNotIn("unrelated workstream change", content)
+            self.assertNotIn("No material changes recorded in decisions.md", content)
 
     def test_research_skill_maps_state_before_workstream_gates(self) -> None:
         skill = read_text("skills/research/SKILL.md")
@@ -585,7 +677,10 @@ class ProjectBoundaryTests(unittest.TestCase):
             (phenomenon / "prereg").mkdir(parents=True)
             (phenomenon / "prfaq.md").write_text("# PR/FAQ\n", encoding="utf-8")
             (phenomenon / "explanation_ledger.md").write_text("# Explanation Ledger\n", encoding="utf-8")
-            (phenomenon / "prereg" / "PR_001.md").write_text("# Pre-Registration\n", encoding="utf-8")
+            (phenomenon / "prereg" / "PR_001_regime_probe.md").write_text(
+                "# Pre-Registration\n",
+                encoding="utf-8",
+            )
 
             result = subprocess.run(
                 [
@@ -598,7 +693,7 @@ class ProjectBoundaryTests(unittest.TestCase):
                     "--slug",
                     "regime_probe",
                     "--prereg-id",
-                    "PR_001",
+                    "PR_001_regime_probe",
                     "--question-id",
                     "Q1",
                 ],
@@ -610,7 +705,7 @@ class ProjectBoundaryTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             content = (project / "purposes/trial_001_regime_probe.py").read_text(encoding="utf-8")
-            self.assertIn("workstreams/WS001-phenomenon/prereg/PR_001.md", content)
+            self.assertIn("workstreams/WS001-phenomenon/prereg/PR_001_regime_probe.md", content)
             self.assertIn("- **Optional ledger target**: Q1", content)
             self.assertNotIn("<REPLACE: optional prereg", content)
 
@@ -1200,12 +1295,12 @@ class ProjectBoundaryTests(unittest.TestCase):
                 "confirmation target",
                 "initial approach",
                 "not the confirmation target itself",
-                "not a major deviation",
+                "not a plan-breaking material change",
                 "new pr is not required",
                 "hypothesis failure",
                 "threshold miss",
                 "result interpretation",
-                "not deviation",
+                "not a plan-breaking material change",
             ]:
                 self.assertIn(phrase, normalized)
 
@@ -1221,14 +1316,15 @@ class ProjectBoundaryTests(unittest.TestCase):
                 "goalpost",
                 "changing thresholds",
                 "after seeing results",
-                "major",
+                "plan-breaking",
             ]:
                 self.assertIn(phrase, normalized)
 
         self.assertIsNone(CJK_RE.search(combined))
 
-    def test_pure_research_separates_exploratory_and_confirmatory_research(self) -> None:
+    def test_preregistration_policy_is_general_planning_discipline(self) -> None:
         skill = read_text("skills/research/SKILL.md")
+        readme = read_text("README.md")
         preregistration = read_text("skills/research/references/pure_research/preregistration.md")
         pr_workflow = read_text("skills/research/references/pure_research/pr_workflow.md")
         process_review = read_text("skills/research/references/review/process_review.md")
@@ -1237,9 +1333,12 @@ class ProjectBoundaryTests(unittest.TestCase):
         prfaq_template = read_text("skills/research/assets/pure_research/prfaq.md.template")
         preregistration_template = read_text("skills/research/assets/pure_research/preregistration.md.template")
         new_project = read_text("skills/research/scripts/new_project.py")
+        outcome_report = read_text("skills/research/references/shared/outcome_reports.md")
+        outcome_report_template = read_text("skills/research/assets/shared/outcome_report.md.template")
         combined = "\n".join(
             [
                 skill,
+                readme,
                 preregistration,
                 pr_workflow,
                 process_review,
@@ -1248,49 +1347,52 @@ class ProjectBoundaryTests(unittest.TestCase):
                 prfaq_template,
                 preregistration_template,
                 new_project,
+                outcome_report,
+                outcome_report_template,
             ]
         )
         normalized = " ".join(combined.split())
 
-        for document in [skill, preregistration, pr_workflow, project_readme_template, prfaq_template]:
+        for document in [skill, readme, preregistration, pr_workflow, project_readme_template, prfaq_template]:
             normalized_document = normalize_for_assertion(document)
             self.assertIn("exploratory research", normalized_document)
             self.assertIn("confirmatory research", normalized_document)
 
-        for document in [skill, preregistration]:
+        for document in [skill, preregistration, preregistration_template]:
             normalized_document = normalize_for_assertion(document)
             for phrase in [
-                "clearly separates exploratory research from confirmatory research",
-                "pre-registration is a confirmatory-research tool",
-                "not exploratory research itself",
-                "higher reliability",
-                "does not have to be followed by confirmatory research",
-                "supported / external claim / high reliability claim",
-                "move to confirmatory research",
+                "general planning and reporting discipline",
+                "preregistration_type: confirmatory | exploratory",
+                "study information",
+                "sampling / data plan",
+                "variables / measures",
+                "transparent changes policy",
             ]:
                 self.assertIn(phrase, normalized_document)
 
         for document, phrases in [
+            (preregistration, ["confirmatory preregistration", "exploratory preregistration"]),
             (
-                skill,
-                ["before execution", "`pr_<id>`", "current state", "comparing the pre-reg"],
-            ),
-            (
-                preregistration,
-                ["before execution", "`pr_<id>`", "current state", "comparing the pre-reg"],
+                preregistration_template,
+                [
+                    "confirmatory body",
+                    "exploratory body",
+                    "hypotheses",
+                    "analysis plan",
+                    "exploratory objective",
+                    "selection or follow-up criteria",
+                    "expected outputs",
+                ],
             ),
             (
                 pr_workflow,
-                ["before execution", "`pr_<id>`", "current state", "comparing the pre-reg"],
+                ["before execution", "`pr_<id>_<slug>.md`", "current state", "transparent changes"],
             ),
             (
                 project_readme_template,
-                ["before each confirmatory execution", "`pr_<id>`", "current state"],
+                ["before claim-bearing confirmatory execution", "`pr_<id>_<slug>.md`", "current state"],
             ),
-            (
-                prfaq_template,
-                ["before execution", "`pr_<id>`", "current state"],
-            ),
+            (prfaq_template, ["before execution", "`pr_<id>_<slug>.md`", "current state"]),
         ]:
             normalized_document = normalize_for_assertion(document)
             for phrase in phrases:
@@ -1298,12 +1400,9 @@ class ProjectBoundaryTests(unittest.TestCase):
 
         self.assertIn("Exploratory Research Loop", combined)
         self.assertIn("Confirmatory Research Loop", combined)
-        self.assertIn(
-            "In confirmatory research, before execution, compare `PR_<id>` against the current state",
-            normalized,
-        )
+        self.assertIn("prereg/PR_<id>_<slug>.md", combined)
         self.assertIn("claim-bearing confirmation trial", combined)
-        self.assertIn("invalidated confirmatory use under the original PR", combined)
+        self.assertIn("affected result has weaker diagnostic value", combined)
         self.assertIn("Every claim-cited, promotion-eligible, externally shared, or", project_readme_template)
         self.assertIn("high-reliability trial has a reviewed pre-registration", project_readme_template)
         self.assertIn("Then choose the next path", prfaq_template)
@@ -1315,11 +1414,227 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertNotIn("same standard to all Pure Research trials", preregistration)
         self.assertNotIn("pre-register first trial", combined)
         self.assertNotIn("no implementation / trial evidence-producing runs on day 1", combined)
+        self.assertNotIn("pre-registration is a confirmatory-research tool", normalize_for_assertion(combined))
+        self.assertNotIn("study type", normalize_for_assertion(combined))
         self.assertIsNone(CJK_RE.search(preregistration))
         self.assertIsNone(CJK_RE.search(pr_workflow))
         self.assertIsNone(CJK_RE.search(project_readme_template))
         self.assertIsNone(CJK_RE.search(prfaq_template))
         self.assertIsNone(CJK_RE.search(preregistration_template))
+
+    def test_process_review_uses_current_preregistration_sections(self) -> None:
+        process_review = read_text("skills/research/references/review/process_review.md")
+        pure_research_review_surfaces = "\n".join(
+            [
+                process_review,
+                read_text("skills/research/references/pure_research/explanation_ledger_schema.md"),
+                read_text("skills/research/references/pure_research/imrad_draft.md"),
+                read_text("skills/research/references/pure_research/pr_workflow.md"),
+            ]
+        )
+        normalized = normalize_for_assertion(process_review)
+        normalized_surfaces = normalize_for_assertion(pure_research_review_surfaces)
+
+        for phrase in [
+            "Confirmatory pre-registration",
+            "Exploratory pre-registration",
+            "Study Information",
+            "Hypotheses",
+            "Design Plan",
+            "Analysis Plan",
+            "Inference / Decision Criteria",
+            "Data Exclusion / Missing Data Handling",
+            "Exploratory Objective",
+            "Exploration Scope",
+            "Allowed Transformations / Procedures",
+            "Expected Outputs",
+            "Transparent Changes",
+        ]:
+            self.assertIn(normalize_for_assertion(phrase), normalized)
+
+        for forbidden in [
+            "preregistration.md` § 2",
+            "pre-reg § 3.5",
+            "`deviation review`",
+            "deviation review exit code",
+            "HARKing prevention discipline",
+        ]:
+            self.assertNotIn(normalize_for_assertion(forbidden), normalized_surfaces)
+
+    def test_imrad_template_uses_current_preregistration_sections(self) -> None:
+        imrad_template = read_text("skills/research/assets/pure_research/imrad_draft.md.template")
+        normalized = normalize_for_assertion(imrad_template)
+
+        for phrase in [
+            "Study Information",
+            "Hypotheses",
+            "Exploratory Objective",
+            "Design Plan",
+            "Exploration Scope",
+            "Analysis Plan",
+            "Allowed Transformations",
+            "Data Exclusion / Missing Data Handling",
+            "Expected Outputs",
+            "Transparent Changes",
+        ]:
+            self.assertIn(normalize_for_assertion(phrase), normalized)
+
+        for forbidden in [
+            "pre-reg § 1",
+            "pre-reg § 2",
+            "pre-reg § 3",
+            "pre-reg § 4",
+            "deviation status",
+        ]:
+            self.assertNotIn(normalize_for_assertion(forbidden), normalized)
+
+    def test_imrad_reference_and_generator_use_current_preregistration_sections(self) -> None:
+        surfaces = [
+            read_text("skills/research/references/pure_research/imrad_draft.md"),
+            read_text("skills/research/assets/pure_research/imrad_draft.md.template"),
+            read_text("skills/research/scripts/draft_imrad.py"),
+        ]
+
+        for document in surfaces:
+            normalized = normalize_for_assertion(document)
+            for phrase in [
+                "Study Information",
+                "Hypotheses",
+                "Exploratory Objective",
+                "Design Plan",
+                "Exploration Scope",
+                "Analysis Plan",
+                "Allowed Transformations",
+                "Data Exclusion / Missing Data Handling",
+                "Expected Outputs",
+                "Transparent Changes",
+            ]:
+                self.assertIn(normalize_for_assertion(phrase), normalized)
+
+        combined = normalize_for_assertion("\n".join(surfaces))
+        for forbidden in [
+            "Deviations from pre-registration",
+            "Competing explanations (≥2 + null)",
+            "1. Question",
+            "2. Competing explanations",
+            "3. Test design",
+            r"1\.\s*Question",
+            r"2\.\s*Competing\s*explanations",
+            r"3\.\s*Test\s*design",
+            "pre-reg §",
+        ]:
+            self.assertNotIn(normalize_for_assertion(forbidden), combined)
+
+    def test_promotion_gate_uses_transparent_changes_for_preregistration_changes(self) -> None:
+        promotion_gate = read_text("skills/research/references/pure_research/pr_promotion_gate.md")
+        normalized = normalize_for_assertion(promotion_gate)
+
+        for phrase in [
+            "Transparent Changes",
+            "No material changes from the preregistration.",
+            "Description of change",
+            "Rationale",
+            "Effect on study results or conclusions",
+        ]:
+            self.assertIn(normalize_for_assertion(phrase), normalized)
+
+        for forbidden in [
+            "Deviation status",
+            "per-deviation `decisions.md` entry",
+            "deviation severity",
+        ]:
+            self.assertNotIn(normalize_for_assertion(forbidden), normalized)
+
+    def test_conclusion_review_uses_current_preregistration_claim_checks(self) -> None:
+        conclusion_review = read_text("skills/research/references/review/conclusion_review.md")
+        normalized = normalize_for_assertion(conclusion_review)
+
+        for phrase in [
+            "Hypotheses",
+            "Inference / Decision Criteria",
+            "Transparent Changes",
+            "claim wording",
+        ]:
+            self.assertIn(normalize_for_assertion(phrase), normalized)
+
+        for forbidden in [
+            "evidence_type",
+            "preregistration.md` § 2",
+            "preregistration.md § 2",
+            "Pre-reg evidence_type",
+        ]:
+            self.assertNotIn(normalize_for_assertion(forbidden), normalized)
+
+    def test_new_trial_replaces_legacy_and_current_prereg_placeholders(self) -> None:
+        new_trial = load_module("skills/research/scripts/new_trial.py")
+        content = "\n".join(
+            [
+                "legacy: <REPLACE: optional prereg/PR_<id>.md>",
+                "current: <REPLACE: optional prereg/PR_<id>_<slug>.md>",
+                "generic: <REPLACE: optional prereg reference>",
+            ]
+        )
+
+        rendered = new_trial.substitute_pr(
+            content,
+            prereg_id="PR_001_initial",
+            question_id=None,
+            discriminating=None,
+            slug="alpha",
+            nnn="001",
+            project_name="project",
+            workstream="WS001-phenomenon",
+        )
+
+        self.assertEqual(
+            rendered.count("workstreams/WS001-phenomenon/prereg/PR_001_initial.md"),
+            3,
+        )
+        self.assertNotIn("<REPLACE: optional prereg/PR_<id>.md>", rendered)
+
+    def test_new_trial_next_steps_match_current_preregistration_reporting(self) -> None:
+        new_trial = read_text("skills/research/scripts/new_trial.py")
+        normalized = normalize_for_assertion(new_trial)
+
+        self.assertIn("pr_001_initial", normalized)
+        self.assertIn("transparent changes", normalized)
+        self.assertNotIn("deviation review note", normalized)
+        self.assertNotIn("drifted from pr_001_initial", normalized)
+
+    def test_preregistered_outcome_reports_use_lightweight_package_shape(self) -> None:
+        skill = read_text("skills/research/SKILL.md")
+        outcome_report = read_text("skills/research/references/shared/outcome_reports.md")
+        outcome_report_template = read_text("skills/research/assets/shared/outcome_report.md.template")
+        new_project = read_text("skills/research/scripts/new_project.py")
+        combined = "\n".join([skill, outcome_report, outcome_report_template, new_project])
+        normalized = normalize_for_assertion(combined)
+
+        for phrase in [
+            "results/reports/",
+            "RPT_<id>_<slug>",
+            "report.md",
+            "report.pdf",
+            "figures/",
+            "tables/",
+            "attachments/",
+            "Plan-to-Result Table",
+            "Transparent Changes",
+            "Scope / Limitations",
+            "planned_item | executed_as_planned | result_summary | evidence | notes",
+        ]:
+            self.assertIn(normalize_for_assertion(phrase), normalized)
+
+        for phrase in [
+            "Description of change",
+            "Rationale",
+            "Effect on study results or conclusions",
+            "No material changes from the preregistration.",
+        ]:
+            self.assertIn(phrase, combined)
+
+        self.assertIn("External tracker run IDs are optional", combined)
+        self.assertIn("External tracker run ID: <omit unless a tracker was actually used>", combined)
+        self.assertNotIn("external tracker run id is required", normalized)
 
     def test_program_metadata_stays_out_of_evidence_artifacts_and_framework_apis(self) -> None:
         combined_templates = "\n".join(

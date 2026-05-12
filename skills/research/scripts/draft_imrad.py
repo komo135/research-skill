@@ -23,6 +23,7 @@ Inputs scanned:
     <project>/workstreams/<workstream>/explanation_ledger.md
     <project>/decisions.md
     <project>/literature/papers.md
+    <project>/results/reports/RPT_*/report.md
     <project>/results/results.parquet (optional, requires polars or pandas)
 
 Exit codes:
@@ -84,13 +85,14 @@ def get_col(row: dict[str, str], *candidates: str) -> str:
 def extract_section(text: str, header_pattern: str) -> str:
     """Extract a section from markdown by matching its header. Returns empty
     string if not found."""
-    pat = re.compile(rf"^##\s*{header_pattern}.*?$", re.MULTILINE | re.IGNORECASE)
+    pat = re.compile(rf"^(#{{2,6}})\s*{header_pattern}.*?$", re.MULTILINE | re.IGNORECASE)
     m = pat.search(text)
     if not m:
         return ""
     start = m.end()
-    # Find next ## header or end of file
-    next_pat = re.compile(r"^##\s+", re.MULTILINE)
+    # Find the next heading at the same or higher level, or end of file.
+    level = len(m.group(1))
+    next_pat = re.compile(rf"^#{{1,{level}}}\s+", re.MULTILINE)
     nxt = next_pat.search(text, start)
     end = nxt.start() if nxt else len(text)
     return text[start:end].strip()
@@ -117,6 +119,7 @@ class ProjectArtifacts:
     ledger_q: list[dict] = None
     ledger_e: list[dict] = None
     ledger_claims: list[dict] = None
+    report_transparent_changes: list[dict[str, str]] = None
     decisions_text: str = ""
     papers_text: str = ""
 
@@ -126,6 +129,7 @@ class ProjectArtifacts:
         self.ledger_q = self.ledger_q or []
         self.ledger_e = self.ledger_e or []
         self.ledger_claims = self.ledger_claims or []
+        self.report_transparent_changes = self.report_transparent_changes or []
 
 
 def relative_to_project(project_dir: Path, path: Path) -> str:
@@ -133,6 +137,13 @@ def relative_to_project(project_dir: Path, path: Path) -> str:
         return path.relative_to(project_dir).as_posix()
     except ValueError:
         return path.as_posix()
+
+
+def report_stem_for_prereg(prereg_stem: str) -> str:
+    """Map PR_001_slug to the matching RPT_001_slug report package."""
+    if prereg_stem.startswith("PR_"):
+        return "RPT_" + prereg_stem[3:]
+    return "RPT_" + prereg_stem
 
 
 def resolve_state_dir(project_dir: Path, workstream: str | None, state_file: str) -> Path:
@@ -201,6 +212,23 @@ def load_artifacts(project_dir: Path, workstream: str | None = None) -> ProjectA
     if papers.exists():
         art.papers_text = papers.read_text(encoding="utf-8")
 
+    reports_dir = project_dir / "results" / "reports"
+    if reports_dir.exists():
+        expected_reports = {
+            report_stem_for_prereg(prereg_stem)
+            for prereg_stem in art.prereg_notes
+        }
+        for report in sorted(reports_dir.glob("RPT_*/report.md")):
+            if report.parent.name not in expected_reports:
+                continue
+            report_text = report.read_text(encoding="utf-8")
+            transparent_changes = extract_section(report_text, r"Transparent\s+Changes")
+            if transparent_changes:
+                art.report_transparent_changes.append({
+                    "path": relative_to_project(project_dir, report),
+                    "text": transparent_changes,
+                })
+
     return art
 
 
@@ -258,17 +286,54 @@ def section_methods(art: ProjectArtifacts, supported_e: str) -> str:
         abs_path = note_info.get("abs_path")
         prereg_path = Path(abs_path) if abs_path else art.state_dir / "prereg" / f"{stem}.md"
         text = prereg_path.read_text(encoding="utf-8") if prereg_path.exists() else ""
-        question = extract_section(text, r"1\.\s*Question") or "<REPLACE>"
-        explanations = extract_section(text, r"2\.\s*Competing\s*explanations") or "<REPLACE>"
-        test_design = extract_section(text, r"3\.\s*Test\s*design") or "<REPLACE>"
+        study_info = extract_section(text, r"Study\s+Information") or "<REPLACE>"
+        hypotheses_or_objective = (
+            extract_section(text, r"Hypotheses")
+            or extract_section(text, r"Exploratory\s+Objective")
+            or "<REPLACE>"
+        )
+        design_or_scope = (
+            extract_section(text, r"Design\s+Plan")
+            or extract_section(text, r"Exploration\s+Scope")
+            or "<REPLACE>"
+        )
+        analysis_or_transformations = (
+            extract_section(text, r"Analysis\s+Plan")
+            or extract_section(text, r"Allowed\s+Transformations(?:\s*/\s*Procedures)?")
+            or "<REPLACE>"
+        )
+        inference_or_selection = (
+            extract_section(text, r"Inference\s*/\s*Decision\s+Criteria")
+            or extract_section(text, r"Selection\s+or\s+Follow-Up\s+Criteria")
+            or "<REPLACE>"
+        )
+        exclusion_or_outputs = (
+            extract_section(text, r"Data\s+Exclusion\s*/\s*Missing\s+Data\s+Handling")
+            or extract_section(text, r"Expected\s+Outputs")
+            or "<REPLACE>"
+        )
+        transparent_changes = (
+            extract_section(text, r"Transparent\s+Changes(?:\s+Policy)?")
+            or "<REPLACE>"
+        )
 
         methods.extend([
-            f"#### Pre-reg `{stem}`",
+            f"#### Pre-registration `{stem}`",
             f"- Source: `{note_info.get('path', f'prereg/{stem}.md')}`",
-            "- Question:",
-            f"  > {question[:300]}{'...' if len(question) > 300 else ''}",
-            "- Competing explanations (≥2 + null):",
-            f"  > {explanations[:500]}{'...' if len(explanations) > 500 else ''}",
+            "- Study Information:",
+            f"  > {study_info[:300]}{'...' if len(study_info) > 300 else ''}",
+            "- Hypotheses / Exploratory Objective:",
+            f"  > {hypotheses_or_objective[:500]}{'...' if len(hypotheses_or_objective) > 500 else ''}",
+            "- Design Plan / Exploration Scope:",
+            f"  > {design_or_scope[:500]}{'...' if len(design_or_scope) > 500 else ''}",
+            "- Analysis Plan / Allowed Transformations:",
+            f"  > {analysis_or_transformations[:500]}{'...' if len(analysis_or_transformations) > 500 else ''}",
+            "- Inference / Decision Criteria / Selection or Follow-Up Criteria:",
+            f"  > {inference_or_selection[:500]}{'...' if len(inference_or_selection) > 500 else ''}",
+            "- Data Exclusion / Missing Data Handling / Expected Outputs:",
+            f"  > {exclusion_or_outputs[:500]}{'...' if len(exclusion_or_outputs) > 500 else ''}",
+            "- Transparent Changes Policy:",
+            f"  > {transparent_changes[:300]}{'...' if len(transparent_changes) > 300 else ''}",
             "",
         ])
 
@@ -281,20 +346,32 @@ def section_methods(art: ProjectArtifacts, supported_e: str) -> str:
         "<REPLACE: split methodology, N per split>",
         "",
         "### 2.4 Test design",
-        "<REPLACE: copy test_design from pre-reg above; primary metric, threshold, multiple-testing correction>",
+        "<REPLACE: copy the relevant Design Plan / Exploration Scope, Analysis Plan / Allowed Transformations, and Inference / Decision Criteria from the pre-registration above; primary metric, threshold, multiple-testing correction, or exploratory selection criteria>",
         "",
-        "### 2.5 Deviations from pre-registration",
+        "### 2.5 Transparent Changes from pre-registration",
     ])
 
-    # Try to find deviation entries in decisions.md
-    devs = re.findall(r"##\s+\d{4}-\d{2}-\d{2}.*?[Dd]eviation.*?(?=\n##\s+|\Z)", art.decisions_text, re.DOTALL)
-    if devs:
-        methods.append(f"From `decisions.md`: {len(devs)} deviation entries detected.")
-        for d in devs[:5]:
-            first_line = d.splitlines()[0] if d.splitlines() else ""
+    for report_info in art.report_transparent_changes:
+        methods.append(f"From `{report_info['path']}`:")
+        methods.append("")
+        methods.append(report_info["text"])
+        methods.append("")
+
+    # Decisions are supplemental. The report package is the primary
+    # Transparent Changes source for preregistered work.
+    changes = re.findall(
+        r"##\s+\d{4}-\d{2}-\d{2}.*?(?:[Tt]ransparent\s+[Cc]hanges|[Mm]aterial\s+[Cc]hange).*?(?=\n##\s+|\Z)",
+        art.decisions_text,
+        re.DOTALL,
+    )
+    if changes:
+        methods.append(f"Supplemental `decisions.md`: {len(changes)} transparent-change entries detected.")
+        for change in changes[:5]:
+            first_line = change.splitlines()[0] if change.splitlines() else ""
             methods.append(f"- {first_line}")
-    else:
-        methods.append("No deviations recorded in decisions.md (or none detected). <REPLACE if any minor deviations exist>")
+
+    if not art.report_transparent_changes and not changes:
+        methods.append("<REPLACE: copy each cited report package's Transparent Changes section, or state \"No material changes from the preregistration.\" only after checking the report package>")
 
     methods.extend([
         "",
@@ -448,7 +525,7 @@ def render_imrad(art: ProjectArtifacts, supported_e: str) -> str:
         f"Planning files:",
         f"- PR/FAQ: `{prfaq_path}`",
         (
-            f"- Pre-reg files: "
+            f"- Pre-registration files: "
             + ", ".join(
                 f"{stem} (`{info.get('path', f'prereg/{stem}.md')}`)"
                 for stem, info in art.prereg_notes.items()

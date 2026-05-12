@@ -131,7 +131,10 @@ The installed Codex skills are exposed as `research` and `quant-research`.
    first workstream, its state object, and its gate.
 3. Write the entry document before expensive claim-bearing work: reviewed
    charter and kill criteria for a capability workstream, or PR/FAQ plus
-   pre-registration when a phenomenon workstream enters confirmatory research.
+   pre-registration for phenomenon workstreams when planning/reporting
+   discipline is useful. Pre-registration may guide exploratory research or
+   confirmatory research; only the latter creates claim-cited confirmation
+   evidence.
 4. Run the smallest evidence-producing artifact that can answer the current
    workstream question.
 5. Analyze the result before adding variants. A result should update a question,
@@ -219,18 +222,19 @@ exploratory go / no-go, park, deprioritize, and reject-for-now decisions.
 ### v1.1.4
 - Clarified that Pure Research has separate exploratory and confirmatory
   workflows.
-- Clarified that pre-registration is a confirmatory-research tool, not a
-  hypothesis freeze or an automatic approach-failure trigger.
+- Clarified that pre-registration is a planning and reporting discipline, not
+  a hypothesis freeze or an automatic approach-failure trigger.
 - Added per-file regression coverage for English-only Pure Research
-  pre-registration docs/templates and `PR_<id>` vs current-state comparison.
+  pre-registration docs/templates and `PR_<id>_<slug>` vs current-state
+  comparison.
 
 ### v1.1.3
 
 - Removed registration-proof mechanisms: no hashes, frozen records, dated note
   references, registration logs, or history/timestamp comparisons for proving
   planning order.
-- Kept the useful parts: reviewed planning documents, material deviation notes,
-  and rerun guidance for promotion-eligible or claim-cited results.
+- Kept the useful parts: reviewed planning documents, material-change
+  disclosure, and rerun guidance for promotion-eligible or claim-cited results.
 - Added regression coverage to block reintroducing proof-artifact language.
 
 ### v1.1.2

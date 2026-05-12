@@ -25,9 +25,9 @@ not ready**. This is not a failure — it is a signal to refine the
 question before investing in trials.
 
 The PR/FAQ is a planning document. Once it has `Status: READY`, do not silently
-rewrite load-bearing claims, mechanisms, scope, alternatives, evidence type, or
-promotion language. Material changes after trial work begins are deviations and
-belong in `decisions.md`.
+rewrite load-bearing claims, mechanisms, scope, alternatives, evidence role, or
+promotion language. Material changes after trial work begins belong in
+`decisions.md` and, where a preregistered report exists, Transparent Changes.
 
 ## Two parts
 
@@ -73,8 +73,8 @@ question categories:
 - **Scope**: Where does this NOT apply? Be explicit.
 - **Practical implication**: If a practitioner used this, what would they
   do differently? At what cost?
-- **HARKing risk**: Was the analysis planned before interpreting the result?
-  State the planned design and any material deviations.
+- **Planning integrity risk**: Was the analysis planned before interpreting
+  the result? State the planned design and any material changes.
 
 10-20 FAQ entries is typical. Each gets a 1-3 sentence answer.
 
@@ -112,7 +112,7 @@ ruled out. This is an ML demo, not a research finding.
 > persist or whether the same effect appears in private datasets.
 
 Why this is good: concrete metric, scope precise, alternative ruled out
-with evidence type, replicated, limits stated explicitly.
+with evidence role, replicated, limits stated explicitly.
 
 ### Bad FAQ
 
@@ -126,7 +126,7 @@ Problem: hand-wave. Reviewer will press; this is a thin defense.
 > **Q: Is this just data mining? How many strategies were tested before
 > selecting this one?**
 > A: This was a single pre-registered hypothesis, not a search. The
-> pre-registration `prereg/PR_001.md` specified the test as "rolling 3-year
+> pre-registration `prereg/PR_001_initial.md` specified the test as "rolling 3-year
 > primary metric with bootstrap CI on measurement reliability returns", with 3
 > competing explanations
 > (annotation drift, task-distribution shift, null). No alternative test designs were
@@ -146,7 +146,7 @@ Without a reviewed PR/FAQ:
 - **The promotion gate has no anchor**. The "discriminating test against
   ≥1 serious alternative passed" requirement is meaningless if the
   alternatives weren't named upfront.
-- **HARKing risk is high**. Without a reviewed PR/FAQ, finding-driven
+- **Planning-integrity risk is high**. Without a reviewed PR/FAQ, finding-driven
   rationalization is undetectable.
 
 If the user pushes to "skip PR/FAQ and just look at the data", the
@@ -192,9 +192,10 @@ After Part 1 and Part 2 are complete and reviewed, change `Status: DRAFT` to
 `Status: READY`.
 
 After review, **do not silently rewrite `prfaq.md` for load-bearing changes**.
-Any change requires a deviation entry in `decisions.md`. Frequent deviations
-to PR/FAQ are a sign the question was not ready — next
-project, spend more time on this step.
+Any load-bearing change requires a decision entry in `decisions.md` and
+Transparent Changes where a preregistered report exists. Frequent material
+changes to PR/FAQ are a sign the question was not ready — next project, spend
+more time on this step.
 
 ## Common failure modes
 
@@ -210,8 +211,8 @@ project, spend more time on this step.
 
 - After PR/FAQ is ready → read `references/shared/literature_review.md`
   for targeted literature search (now scoped by the PR/FAQ).
-- Then `references/pure_research/preregistration.md` for the formal
-  pre-analysis plan (PAP), which formalizes the test design.
+- Then `references/pure_research/preregistration.md` for the planning artifact,
+  which may be exploratory or confirmatory.
 - Then `references/pure_research/explanation_ledger_schema.md` for the
   state object that tracks question / explanation pruning.
 - The PR/FAQ feeds directly into `references/pure_research/imrad_draft.md`

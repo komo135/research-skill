@@ -141,11 +141,16 @@ the claim.
 The promotion claim is phrased no stronger than the evidence, with
 explicit scope.
 
-- [ ] **Claim wording matches evidence type**: causal claims have
-  causal evidence (per pre-reg `evidence_type` field for Pure
-  Research); correlative claims use "associated with" not "causes"
-  - Evidence: claim wording vs `evidence_type` declared in
-    `preregistration.md` § 2 (Pure Research)
+- [ ] **Claim wording matches evidence strength and form**: causal claims have
+  causal evidence; correlative claims use "associated with" not "causes".
+  For Pure Research, compare claim wording to the cited pre-registration's
+  `Hypotheses`, `Inference / Decision Criteria`, and any reported
+  `Transparent Changes`. For exploratory work, compare claim wording to the
+  `Exploratory Objective`, `Selection or Follow-Up Criteria`, and
+  `Transparent Changes`; do not promote exploratory diagnostic output into a
+  stronger causal or confirmatory claim.
+  - Evidence: claim wording vs the cited pre-registration sections and report
+    package Transparent Changes
 - [ ] **Scope is precise**: universe, period, regime, market structure
   preconditions named explicitly
   - Evidence: claim wording vs Methods § 2 (data scope) cross-check
@@ -183,10 +188,10 @@ The analysis reaches A4 minimum (`references/shared/analysis_depth.md`).
   candidate has a discriminating test or evidence that weakens it
   - Evidence: Evidence weighing table per candidate
 - [ ] **Multiple sources of supporting evidence** (≥2 independent
-  observations or evidence types per A4 definition)
+  observations or evidence forms per A4 definition)
   - Evidence: evidence weighing table shows ≥2 entries with type
     `numerical`
-- [ ] **Evidence type per claim**: each supporting evidence labeled
+- [ ] **Evidence form per claim**: each supporting evidence labeled
   numerical / structural-argument / literature-reference /
   null-result-of-X
   - Evidence: § 5.3 / 6.3 columns
@@ -348,7 +353,7 @@ Sign-off: conclusion review clean / fail
 |---|---|---|
 | Sanity check failure ignored | Random-signal benchmark passes (signal evaluator broken), trial result claimed anyway | Axis 1 |
 | Single significant statistic from many trials | Selection correction omitted or computed with under-reported N | Axis 2 |
-| "X causes Y" with correlative evidence | Pre-reg evidence_type field declares correlative; claim wording uses causal language | Axis 3 |
+| "X causes Y" with correlative evidence | Hypotheses and Inference / Decision Criteria do not support causal wording, or Transparent Changes weakened the causal interpretation | Axis 3 |
 | Generic terminal label in success | "the model is good at variance capture" with no mechanism | Axis 4 (no terminal label) |
 | Single-source A4 claim | One numerical evidence cited; A4 needs ≥2 | Axis 4 (multiple sources) |
 | Structural-argument-only claim | "By construction the model must work because ..." with no measured number | Axis 4 (numerical required) |
