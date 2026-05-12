@@ -45,7 +45,7 @@ def normalize_for_assertion(text: str) -> str:
 
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.1.5"
+        expected = "1.1.6"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -479,6 +479,36 @@ class ProjectBoundaryTests(unittest.TestCase):
             ],
             state_options,
         )
+
+    def test_capability_entry_guidance_does_not_overclassify_or_ban_scaffolding(self) -> None:
+        combined = "\n".join(
+            [
+                read_text("skills/research/SKILL.md"),
+                read_text("skills/research/references/rd/rd_workflow.md"),
+                read_text("skills/research/references/review/process_review.md"),
+            ]
+        )
+        normalized = normalize_for_assertion(combined)
+
+        for phrase in [
+            "do not classify the whole project as capability / technology research",
+            "provisional workstream fit",
+            "non-load-bearing scaffold",
+            "interface probe",
+            "smoke test",
+            "promotion-relevant or claim-bearing implementation",
+            "wait until the charter and kill criteria exist",
+        ]:
+            self.assertIn(normalize_for_assertion(phrase), normalized)
+
+        for forbidden in [
+            "Capability / Technology Research first day: no implementation",
+            "Capability / Technology Research first day permits **only**",
+            "Any implementation that runs",
+            "Day 1 implementation",
+            "Code commits before charter",
+        ]:
+            self.assertNotIn(normalize_for_assertion(forbidden), normalized)
 
     def test_new_trial_rejects_mixed_artifacts_inside_one_workstream(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

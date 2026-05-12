@@ -175,14 +175,25 @@ v1.1.0, install `research@research-skill`. The old standalone
 
 ## Status
 
-Version 1.1.5 - makes research projects workstream-aware so mixed research can
-start from project intent and current uncertainty without forcing a project-wide
-Pure Research / R&D choice.
+Version 1.1.6 - keeps research projects workstream-aware and softens entry
+guardrails so non-load-bearing scaffold, smoke tests, and interface probes are
+allowed before promotion-relevant evidence work.
 
 <details>
 <summary>Changelog</summary>
 
-### v1.1.5 (current)
+### v1.1.6 (current)
+
+- Softened Capability / Technology Research entry guardrails: do not classify
+  the whole project as that workstream, and do not ban non-load-bearing
+  scaffold, interface probes, smoke tests, environment setup, or data plumbing.
+- Kept the hard gate where it matters: promotion-relevant or claim-bearing
+  implementation must wait until charter and kill criteria exist.
+- Added regression coverage for the mixed-system pressure scenario that
+  previously pushed agents toward overclassification and blanket
+  implementation bans.
+
+### v1.1.5
 
 - Made the research entry workstream-aware: projects can contain multiple
   workstreams, while R&D and Pure Research remain compatibility labels for

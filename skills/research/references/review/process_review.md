@@ -83,13 +83,16 @@ These checks apply regardless of selected workstream label:
     explanation transition, or PR/FAQ deviation that supports the claim under
     review
   - Evidence: targeted per-category presence check
-- [ ] **Initial-day prohibitions respected**: no claim-bearing confirmation
-  trial before the required plan is ready. Exploratory probes are allowed
-  when they are labeled exploratory / diagnostic and are not used as
-  `supported` or externally reliable evidence.
+- [ ] **Entry guardrails respected**: no claim-bearing confirmation trial or
+  promotion-relevant implementation before the required plan is ready.
+  Exploratory probes, non-load-bearing scaffold, interface probe, and smoke
+  test work are allowed when they are labeled exploratory / diagnostic or
+  enabling work and are not used as `supported`, TRL-advancing, or externally
+  reliable evidence.
   - Evidence: review first 1-2 days' commits and decisions; flag any
     confirmation run that produced claim-bearing metrics before charter /
-    pre-reg was ready, or any exploratory output presented as confirmatory
+    pre-reg was ready, any promotion-relevant implementation cited before
+    charter readiness, or any exploratory output presented as confirmatory
 - [ ] **Reproducibility 3-tuple recorded** on every promotion-eligible or claim-cited
   trial via a local run note, results row, or equivalent external tracker record
   - Evidence: persisted JSON run record in `results.parquet`, the trial
@@ -336,7 +339,7 @@ specifically targeting Hypothesizing After Results are Known)
 | Violation | Symptom | Where caught |
 |---|---|---|
 | State-object mixing without add / split / handoff | Capability workstream has phenomenon artifacts (PR/FAQ, prereg) without `decisions.md` add / split / handoff entry | Common pre-conditions § state-object switch |
-| Implementation on day 1 | Code commits before charter / PR/FAQ readiness | Common pre-conditions § Initial-day prohibitions |
+| Premature evidence-producing implementation | Promotion-relevant code or metrics cited before charter / PR/FAQ readiness | Common pre-conditions § Entry guardrails |
 | Charter rewritten mid-project | Material charter change has no deviation entry | R&D § Charter, no undocumented amendments |
 | Layer 1 incomplete when Layer 2 work started | Capability work is promoted before Layer 1 closure | R&D § Layer 1 |
 | TRL skip via single-update transition | TRL advances by > 1 in single state change | R&D § Layer 2 § TRL skip |

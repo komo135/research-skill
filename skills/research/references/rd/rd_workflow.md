@@ -1,14 +1,14 @@
 # rd_workflow.md
 
 Operating rules for a Capability / Technology Research workstream across
-sessions. This is the R&D-compatible workflow for initial-day prohibitions,
+sessions. This is the R&D-compatible workflow for entry guardrails,
 state-change logging, stop conditions, shared infrastructure governance, and
 handoff to other workstreams.
 
 ## When to read
 
 - First session of a new Capability / Technology Research workstream
-  (initial-day prohibitions)
+  (entry guardrails)
 - End of a session that changed durable research state
 - When deciding whether the workstream should close (stop conditions)
 - Setting up shared code / data pipelines that may serve capability and
@@ -16,9 +16,10 @@ handoff to other workstreams.
 - Adding, splitting, or handing off to a Phenomenon / Mechanism Research
   workstream and deciding what artifacts to carry over
 
-## Initial-day prohibitions
+## Entry guardrails
 
-Capability / Technology Research first day permits **only** the following:
+Before a Capability / Technology Research workstream has a reviewed charter
+and kill criteria, prioritize:
 
 - Charter (`references/rd/rd_charter.md`) — Heilmeier 8 questions
 - Layer 1 closure (`references/rd/core_technologies.md`) — core
@@ -27,20 +28,25 @@ Capability / Technology Research first day permits **only** the following:
   Section 2 rows in TRL-0 status
 - Data infrastructure setup, environment pinning (`uv.lock`), data version
   recording, raw data sourcing, scaffold file creation
+- Non-load-bearing scaffold, interface probe, smoke test, or wiring check
+  when it is labeled as enabling work and is not cited for TRL advancement,
+  promotion, kill, or an external claim
 
-Capability / Technology Research first day **prohibits**:
+Before the charter and kill criteria exist, do not run or cite:
 
-- Any implementation that runs (no model training, no trial run, no trial
-  that produces a metric)
+- Promotion-relevant or claim-bearing implementation
+- Model training, trial runs, or metric-producing checks intended to advance
+  TRL, fire a kill criterion, promote a capability, or support an external
+  claim
 - Any Stage gate (Scoping is part of capability writing in the table; it
   is OK to scope, but no de-risk test)
 - Any analysis whose conclusions enter the ledger
 
 Why: kill criteria are ready at charter close. Code written before kill
 criteria exist accumulates sunk cost that biases later kill decisions.
-A project that writes code on day 1 and discovers the charter is wrong on
-day 5 will resist redefining the charter (sunk cost), or worse, redefine
-the kill criteria to fit the code (goalpost shifting).
+A workstream that treats early exploratory code as evidence before the charter
+is ready will resist redefining the charter (sunk cost), or worse, redefine the
+kill criteria to fit the code (goalpost shifting).
 
 The 1-2 hours of charter writing prevent weeks of effort on a misframed
 target.
@@ -277,7 +283,7 @@ another agent without requiring every exploratory session to enter
 
 | Failure | Symptom | Fix |
 |---|---|---|
-| Day 1 implementation | Code committed before charter readiness | Block; require reviewed charter first |
+| Premature evidence-producing implementation | Promotion-relevant code or metrics cited before charter readiness | Block citation; require reviewed charter first |
 | Durable state change not recorded | Capability promoted or killed with no ledger / decision entry | File the missing transition with evidence |
 | Workstream drifts | Stale `capability_map.md` | Decide Promotion / Kill / Park / Add/Split/Handoff / Resume before new claim-bearing work |
 | Shared infra forked into project | Duplicate copies of data pipeline | Move back to `shared/`, pin from project |
@@ -285,7 +291,7 @@ another agent without requiring every exploratory session to enter
 
 ## Relationship to other references
 
-- Initial-day prohibitions appear in summarized form in
+- Entry guardrails appear in summarized form in
   `SKILL.md` § Guardrails; this file is the elaboration.
 - Stop conditions integrate with `references/rd/rd_promotion_gate.md`
   (Promotion path) and the kill / park / handoff patterns embedded in

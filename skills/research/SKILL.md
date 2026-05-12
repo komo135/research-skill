@@ -43,7 +43,11 @@ A project can contain multiple workstreams. The project itself is not Pure
 Research or R&D, and it must not be locked into an exclusive mode at startup.
 The project owns the final intent, decision context, uncertainty list,
 workstream list, cross-workstream dependencies, and durable decision log. A
-workstream is the unit that selects a state object and gate.
+workstream is the unit that selects a state object and gate. When the final
+intent is to build a system, do not classify the whole project as Capability /
+Technology Research. Say that Capability / Technology Research is a
+provisional workstream fit only when the next blocking uncertainty is whether a
+technical capability can be made to work under stated conditions.
 
 Use these implemented workstream labels to choose the local ledger and
 protocol gate:
@@ -503,13 +507,16 @@ the final report must carry enough intuitive evidence for human judgment.
   deviation, or claim-scope change must reference a specific file:line, reference,
   numeric value, or tool output. Summary verdicts without citation are
   forbidden at those decision points.
-- **Initial-day prohibitions**.
-  - Capability / Technology Research first day: no implementation, charter and capability map (with
-    core technologies) only. *Why*: kill criteria (Heilmeier H6) must be
-    ready before a trial can fire one. Code written before kill criteria
-    exist accumulates sunk cost that biases future kill decisions.
-    Typical time investment: 1-2 hours of charter writing prevents weeks
-    of effort on a misframed target.
+- **Entry guardrails**.
+  - Capability / Technology Research: promotion-relevant or claim-bearing
+    implementation must wait until the charter and kill criteria exist. A
+    non-load-bearing scaffold, interface probe, smoke test, environment setup,
+    data plumbing, or file scaffold is allowed when it is labeled as enabling
+    work and is not used to advance TRL, fire a kill criterion, promote a
+    capability, or support an external claim. *Why*: kill criteria (Heilmeier
+    H6) must be ready before a trial can fire one. Evidence-producing code
+    created before kill criteria exist can accumulate sunk cost that biases
+    future kill decisions.
   - Phenomenon / Mechanism Research first day: do not run a claim-bearing confirmation trial.
     PR/FAQ, targeted literature, exploratory planning, explanation
     candidates, lightweight exploratory probes, scaffold setup, and — when a
