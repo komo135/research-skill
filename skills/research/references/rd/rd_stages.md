@@ -1,10 +1,10 @@
 # rd_stages.md
 
-Cooper-style 5-stage progression for each capability, with Go / Kill /
+Cooper-style 5-stage progression for each capability, with Go / terminal Kill /
 Hold / Recycle decisions between stages. Each gate is an evidence-based
-investment decision: pass to the next stage, terminate with A4+ evidence,
-hold for missing evidence, or recycle / re-scope the work when the design
-is wrong.
+investment decision: pass to the next stage, terminate with A4+ evidence when
+terminal kill is warranted, hold for missing evidence, or recycle / re-scope the
+work when the design is wrong.
 
 ## When to read
 
@@ -265,8 +265,8 @@ In all patterns: demonstrate the K under representative workload.
 - Cost exceeds charter H7 budget at scale
 - A previously un-fired kill criterion now fires under realistic load
 
-Kill requires A4+ evidence that the miss is not a repairable implementation,
-configuration, data, or scope problem.
+Kill requires A4+ evidence only for terminal kill: the miss is not a repairable
+implementation, configuration, data, or scope problem.
 
 ## Gate decision protocol
 
@@ -288,6 +288,11 @@ The asymmetry: **Default to Hold or Recycle under uncertainty**. Kill is a
 terminal decision, not a synonym for doubt. Holding is acceptable but must
 name the specific blocker, not be a soft "let's wait and see"; recycling is
 acceptable when the work should continue under a corrected design.
+
+Candidate drop, reject-for-now, and deprioritize are exploratory pruning
+decisions. Exploratory pruning decisions do not require A4+ evidence; use them
+when A2-A3 evidence is enough to avoid further investment without making the
+capability terminal.
 
 ## Hardest-part-first principle
 

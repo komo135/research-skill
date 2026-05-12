@@ -186,6 +186,9 @@ For Capability / Technology Research workstreams only. Check in this order:
   `references/rd/capability_map_schema.md`)
   - Evidence: per-kill log entry has Observation / Decomposition /
     Evidence weighing / Tier rating / Gap
+  - Scope: kill requires A4+ evidence only for terminal kill. Candidate drop,
+    reject-for-now, and deprioritize are exploratory pruning decisions;
+    exploratory pruning decisions do not require A4+ evidence.
 - [ ] **TRL skip not detected**: no single state-change advanced TRL
   by > 1
   - Evidence: capability map transition review

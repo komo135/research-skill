@@ -1,9 +1,8 @@
 # analysis_depth.md
 
-The A0–A5 analysis depth tier system. **MANDATORY reading before any
-trial interpretation** in either Capability / Technology Research or
-Phenomenon / Mechanism Research workstreams. The tier is the primary
-deliverable axis of this skill (CHARTER C13).
+The A0-A5 analysis depth tier system. Read before claim-bearing interpretation
+in either Capability / Technology Research or Phenomenon / Mechanism Research
+workstreams. The tier is the primary deliverable axis of this skill.
 
 ## When to read
 
@@ -15,8 +14,9 @@ deliverable axis of this skill (CHARTER C13).
 
 ## The principle
 
-**Fact collection is not research. Fact + causal analysis at A4
-(estimation) or A5 (assertion) is research.**
+**Fact collection is not enough for a strong research claim.** A0-A3 can be
+valid exploratory or diagnostic progress. A4 (estimation) and A5 (assertion)
+are reserved for load-bearing claims and promotion-grade decisions.
 
 A `supported` / `matured` promotion requires the analysis to reach
 **A4 minimum**. "It worked" and "it failed" are both A0, not results.
@@ -35,9 +35,11 @@ This applies symmetrically to success and failure.
 
 ### Promotion thresholds
 
-- `A0–A2`: observation stage; not sufficient for any promotion claim
+- `A0-A2`: observation stage; not sufficient for any promotion claim, but
+  enough for many exploratory notes and next-test choices
 - `A3`: **preliminary**; can mark explanation `weakened` or capability
-  Stage 3 (Build) exit, but not promotion
+  Stage 3 (Build) exit, choose provisional go / no-go, park, deprioritize, or
+  reject-for-now, but not promotion
 - `A4`: **estimation level**; minimum for `matured` (R&D) or
   `supported` (Pure Research) promotion
 - `A5`: **assertion level**; ideal for `supported` promotion of
@@ -176,8 +178,8 @@ multi-instrument / multi-period / OOS / external-prediction work.
 ## Push depth before designing new trials
 
 A core principle from `references/pure_research/pr_workflow.md` and
-`references/rd/rd_stages.md`: **before designing a new trial, push the
-current trial's analysis depth as far as it can go**.
+`references/rd/rd_stages.md`: **before a promotion, external claim, or terminal
+decision, push the current trial's analysis depth as far as it can go**.
 
 Often the current data supports A2 → A3 → A4 transitions via:
 - Feature ablation
@@ -186,9 +188,10 @@ Often the current data supports A2 → A3 → A4 transitions via:
 - Alternative metric on the same data
 
 These extensions stay within the current trial (no new pre-registration
-needed for Pure Research). New trials are justified only when the
-current trial has hit its analysis ceiling AND the next discriminating
-question requires a different test design.
+needed for Pure Research). New trials are justified when the current trial has
+hit its analysis ceiling, when the next discriminating question requires a
+different test design, or when the work is still exploratory and A2-A3 evidence
+is enough to choose the next useful probe.
 
 This avoids the failure mode of accumulating shallow trials at A2 when
 each could have reached A3 or A4 with more analysis on existing data.

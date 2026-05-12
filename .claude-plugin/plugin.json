@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "description": "v1.1.6 - Workstream-aware research with softer entry guardrails for non-load-bearing scaffolds.",
-  "version": "1.1.6",
+  "description": "v1.1.7 - Keeps A4 rigor for load-bearing claims while allowing faster exploratory decisions.",
+  "version": "1.1.7",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"

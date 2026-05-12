@@ -45,7 +45,7 @@ def normalize_for_assertion(text: str) -> str:
 
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.1.6"
+        expected = "1.1.7"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -847,6 +847,42 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn("Default to Hold or Recycle under uncertainty", stages)
         self.assertIn("Re-scope", stages)
 
+    def test_a4_rigor_is_reserved_for_claim_bearing_or_promotion_decisions(self) -> None:
+        skill = read_text("skills/research/SKILL.md")
+        normalized = normalize_for_assertion(skill)
+
+        for phrase in [
+            "a4+ is reserved for supported, matured, established, promoted, external claim, or deployment recommendation",
+            "a2-a3 may decide the next experiment, provisional go / no-go, park, deprioritize, or reject-for-now",
+            "exploratory decisions do not create a load-bearing claim or promotion",
+        ]:
+            self.assertIn(phrase, normalized)
+
+    def test_kill_a4_requirement_does_not_cover_exploratory_pruning(self) -> None:
+        combined = "\n".join(
+            [
+                read_text("skills/research/SKILL.md"),
+                read_text("skills/research/references/rd/capability_map_schema.md"),
+                read_text("skills/research/references/rd/rd_stages.md"),
+                read_text("skills/research/references/review/process_review.md"),
+            ]
+        )
+        normalized = normalize_for_assertion(combined)
+
+        self.assertIn("kill requires a4+ evidence only for terminal kill", normalized)
+        self.assertIn(
+            "candidate drop, reject-for-now, and deprioritize are exploratory pruning decisions",
+            normalized,
+        )
+        self.assertIn("exploratory pruning decisions do not require a4+ evidence", normalized)
+
+        for forbidden in [
+            "candidate drop requires a4",
+            "reject-for-now requires a4",
+            "deprioritize requires a4",
+        ]:
+            self.assertNotIn(forbidden, normalized)
+
     def test_reproducibility_contract_is_scoped_and_not_overclaimed(self) -> None:
         skill = read_text("skills/research/SKILL.md")
         reproducibility = read_text("skills/research/references/shared/reproducibility.md")
@@ -1054,6 +1090,15 @@ class ProjectBoundaryTests(unittest.TestCase):
             self.assertIn(phrase, skill)
         self.assertIn("user-facing outcome reports", description)
 
+    def test_evidence_citation_covers_established_core_technology_claims(self) -> None:
+        skill = read_text("skills/research/SKILL.md")
+        normalized = normalize_for_assertion(skill)
+
+        self.assertIn(
+            "supports `supported`, `matured`, `established`, `promoted`, `killed`",
+            normalized,
+        )
+
     def test_quant_research_names_finance_visual_evidence_examples(self) -> None:
         quant = read_text("skills/quant-research/SKILL.md")
         normalized_quant = " ".join(quant.split())
@@ -1073,6 +1118,22 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertIn(
             "must include the applicable finance-specific visuals or tables",
             normalized_quant,
+        )
+
+    def test_quant_adapter_scopes_finance_checks_to_claim_bearing_decisions(self) -> None:
+        quant = read_text("skills/quant-research/SKILL.md")
+        normalized = normalize_for_assertion(quant)
+
+        for phrase in [
+            "finance-specific checks are promotion-relevant or claim-bearing checks",
+            "they are not mandatory gates for exploratory finance work",
+            "exploratory finance work may choose the next experiment, provisional go / no-go, park, deprioritize, or reject-for-now before the full finance check battery",
+        ]:
+            self.assertIn(phrase, normalized)
+
+        self.assertNotIn(
+            "read `references/shared/time_series_validation.md` and `references/shared/sanity_checks.md` before trusting numbers",
+            normalized,
         )
 
     def test_result_loops_route_to_workstream_state_objects(self) -> None:

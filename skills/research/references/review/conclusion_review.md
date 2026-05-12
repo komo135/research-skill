@@ -23,6 +23,8 @@ narrative actually justify the claim being made.
 The split: process review catches "you didn't do the work right";
 conclusion review catches "you did the work but the result doesn't
 support what you're claiming". Both are common; both are necessary.
+For exploratory review, inspect only the relevant subset; do not turn the full
+promotion checklist into a gate for A2-A3 next-step decisions.
 
 ## How to run
 
@@ -71,8 +73,9 @@ them. For promotion-level claims, expect most axes to be in scope.
 ### Axis 1: Implementation correctness
 
 The numbers come from code that does what it claims to do. If this research
-uses a domain adapter with implementation checks, run those adapter checks
-first and cite their output here.
+uses a domain adapter with implementation checks, run the relevant adapter
+checks for promotion, external claim, or other load-bearing conclusions and
+cite their output here.
 
 - [ ] **Generic verification checks pass** for the trial:
   - Metric recomputation from raw or minimally processed artifacts

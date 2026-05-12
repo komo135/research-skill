@@ -108,9 +108,10 @@ See `references/rd/rd_promotion_gate.md` for the full checklist.
 
 ### Kill (failure path)
 
-Charter-level kill criterion (Heilmeier H6) fires with A4-decomposed
-evidence. The capability workstream or target is killed, not just one
-low-level task.
+Charter-level kill criterion (Heilmeier H6) fires with A4-decomposed evidence.
+This is terminal project or workstream kill, not a candidate drop,
+reject-for-now, deprioritize, or low-level task stop. Exploratory pruning can
+use A2-A3 evidence when it does not claim that the workstream is impossible.
 
 The closing entry in `decisions.md`:
 

@@ -175,14 +175,23 @@ v1.1.0, install `research@research-skill`. The old standalone
 
 ## Status
 
-Version 1.1.6 - keeps research projects workstream-aware and softens entry
-guardrails so non-load-bearing scaffold, smoke tests, and interface probes are
-allowed before promotion-relevant evidence work.
+Version 1.1.7 - keeps A4 rigor for load-bearing claims while allowing faster
+exploratory go / no-go, park, deprioritize, and reject-for-now decisions.
 
 <details>
 <summary>Changelog</summary>
 
-### v1.1.6 (current)
+### v1.1.7 (current)
+
+- Reserved A4+ for supported, matured, established, promoted, external-claim,
+  deployment-recommendation, and terminal-kill decisions.
+- Made A2-A3 sufficient for exploratory next-step, provisional go / no-go,
+  park, deprioritize, and reject-for-now decisions that do not create a
+  load-bearing claim.
+- Scoped quant-research finance checks to claim-bearing and promotion-relevant
+  decisions instead of making them blanket gates for exploratory work.
+
+### v1.1.6
 
 - Softened Capability / Technology Research entry guardrails: do not classify
   the whole project as that workstream, and do not ban non-load-bearing
