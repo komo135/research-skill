@@ -16,21 +16,27 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 
 # Research
 
-A protocol skill for agent-driven serious research and R&D. The job is not to
-produce quick answers. The job is to keep research state honest, push analysis
-to estimation or assertion level, and progress by the smallest defensible step.
+A protocol skill for agent-driven serious research and R&D. The job is to keep
+research state honest while preserving research velocity: explore quickly,
+record what was learned, and reserve heavy gates for claims that actually need
+to carry weight.
 
 ## Prime Directive
 
-**Fact collection is not research. Fact + causal analysis at A4 (estimation)
-or A5 (assertion) is research.**
+**Fact collection is not enough for a strong research claim.** Exploration can
+start at A0-A2; promotion, external sharing, and deployment-grade conclusions
+need deeper analysis.
 
-A `supported` claim — for either a capability / technology research result or
-a phenomenon / mechanism research finding — requires the analysis to reach
-**A4 minimum**. "It worked" and "it failed" are both A0, not results. Read
-`references/shared/analysis_depth.md` before any trial interpretation, and
-`references/shared/result_analysis.md` before writing any explanation of
-success or failure.
+A4+ is reserved for supported, matured, established, promoted, external claim,
+or deployment recommendation. A2-A3 may decide the next experiment, provisional
+go / no-go, park, deprioritize, or reject-for-now. Exploratory decisions do not
+create a load-bearing claim or promotion. Terminal kill also requires A4+
+because it closes a workstream or target under the current scope.
+
+"It worked" and "it failed" are both A0 until interpreted. Read
+`references/shared/analysis_depth.md` before any claim-bearing interpretation,
+and `references/shared/result_analysis.md` before writing any explanation of
+success or failure that will guide a durable state change.
 
 ## First Decision: Map the Current Research State
 
@@ -88,7 +94,8 @@ Start with the smallest defensible state map:
    phenomenon workstream that can support a claim needs PR/FAQ, targeted
    literature, and reviewed pre-registration when entering confirmatory
    research. A4+, reproducibility, focused process review, and conclusion
-   review are not relaxed.
+   review are not relaxed for supported, matured, established, promoted,
+   terminal kill, external claim, or deployment recommendation decisions.
 7. Add, split, merge, park, or retire workstreams as evidence reveals new
    uncertainty.
 
@@ -134,18 +141,22 @@ child ledger instead of creating a second state system.
 
 Rigor is sized to the research state being changed. Orientation, literature
 triage, scaffold setup, smoke tests, and non-load-bearing exploration may use
-lighter notes because they do not move durable research state. Any update that
-changes a claim, TRL, support status, scope, kill decision, promotion, or
-cross-workstream or cross-project dependency uses the full protocol required by
-that state transition.
+lighter notes because they do not move durable research state. A2-A3 evidence
+can be enough to choose the next experiment, provisional go / no-go, park,
+deprioritize, reject-for-now, or split the question for exploration. Any update
+that changes a load-bearing claim, TRL promotion, support status, terminal kill,
+external claim, deployment recommendation, or cross-workstream or cross-project
+dependency uses the full protocol required by that state transition.
 
 Right-sized rigor is not a relaxation path. These requirements are
 non-relaxed:
 
 - A4+ for `supported`, `matured`, `established`, or `promoted`.
+  A4+ is reserved for supported, matured, established, promoted, external claim,
+  or deployment recommendation. Terminal kill also requires A4+.
 - Reviewed pre-registration for Pure Research trials that can support a claim.
 - Reviewed charter and kill criteria before R&D evidence-producing work can fire
-  a kill or promotion-relevant decision.
+  a terminal kill or promotion-relevant decision.
 - Reproducibility records for every promotion-eligible or claim-cited trial.
 - Focused process review and conclusion review before promotion or externally
   shared load-bearing claims.
@@ -214,8 +225,9 @@ interchangeable; conflating them invalidates promotion review.
 | **established** | Core technology (Layer 1) | All child capabilities matured, kill criteria un-fired, analysis at A4+ | Core tech ready for upstream consumption |
 | **promoted** | Project (target) | All core techs established, integration test ran AFTER upstream exits, and (if any core tech is `継続改善型`) maintenance plan filed | Project closure or transition to maintenance cadence |
 
-For Phenomenon / Mechanism Research, the equivalent claim-level term is
-**`supported`**, with the same A4+ requirement at the analysis-depth axis.
+For Phenomenon / Mechanism Research, the equivalent external or load-bearing
+claim-level term is **`supported`**, with the same A4+ requirement at the
+analysis-depth axis.
 
 ## Capability / Technology Research (R&D-compatible)
 
@@ -323,8 +335,9 @@ Analysis depth is the primary deliverable, not a side note. Tier scale:
 | A4 | Estimation: mechanism named, alternatives excluded, scope precise, multiple sources of supporting evidence |
 | A5 | Assertion: mechanism causal, alternatives systematically excluded, replicable across conditions and periods, external prediction holds |
 
-`supported` requires A4 minimum. A3 is `preliminary`. Below A3 is observation
-only.
+`supported` is a load-bearing claim status and always requires A4 minimum. A3
+is `preliminary`. Below A3 is observation only for claim status, but it can
+still guide exploration.
 
 The principle applies symmetrically to success and failure. "It worked
 because the model is good" is A1 with a generic terminal label and is
@@ -333,9 +346,10 @@ of noise / context shift / resource constraint / data quality" — see
 `references/shared/result_analysis.md` for decomposition patterns and bad/good
 examples.
 
-Before designing a new trial, push the analysis on the current trial as far
-as it can go. Increasing analysis depth on existing data is research;
-collecting more data without analyzing existing observations is not.
+Before a promotion, external claim, deployment recommendation, or terminal kill,
+push the analysis on the current trial as far as it can go. During exploration,
+A2-A3 may be enough to choose the next useful probe; do not keep collecting
+more data only to avoid interpreting existing observations.
 
 ## Tracking Backend
 
@@ -496,17 +510,20 @@ the final report must carry enough intuitive evidence for human judgment.
 
 ## Guardrails
 
-- **Kill requires A4+ evidence**. A kill criterion firing is a trigger for
-  terminal review, not an automatic terminal state. Mark `killed` only after
-  mechanism-level analysis rules out repairable causes such as config error,
-  data defect, scope error, or dependency immaturity. Promotion still requires
-  every promotion-blocking checklist item to pass.
+- **Kill requires A4+ evidence**. Kill requires A4+ evidence only for terminal
+  kill. A kill criterion firing is a trigger for terminal review, not an
+  automatic terminal state. Mark `killed` only after mechanism-level analysis
+  rules out repairable causes such as config error, data defect, scope error,
+  or dependency immaturity. Candidate drop, reject-for-now, and deprioritize
+  are exploratory pruning decisions; exploratory pruning decisions do not
+  require A4+ evidence. Promotion still requires every promotion-blocking
+  checklist item to pass.
 - **Evidence citation is mandatory for load-bearing claims**. Any claim of
   "passed" / "verified" / "confirmed" that supports `supported`, `matured`,
-  `promoted`, `killed`, external sharing, deployment recommendation, major
-  deviation, or claim-scope change must reference a specific file:line, reference,
-  numeric value, or tool output. Summary verdicts without citation are
-  forbidden at those decision points.
+  `established`, `promoted`, `killed`, external sharing, deployment
+  recommendation, major deviation, or claim-scope change must reference a
+  specific file:line, reference, numeric value, or tool output. Summary verdicts
+  without citation are forbidden at those decision points.
 - **Entry guardrails**.
   - Capability / Technology Research: promotion-relevant or claim-bearing
     implementation must wait until the charter and kill criteria exist. A
@@ -615,7 +632,7 @@ audience.
 
 | Reference | When to read |
 |---|---|
-| `shared/analysis_depth.md` | Before any trial interpretation. MANDATORY. |
+| `shared/analysis_depth.md` | Before claim-bearing interpretation, promotion, external claim, deployment recommendation, or terminal kill. |
 | `shared/result_analysis.md` | Before writing any explanation of success or failure. |
 | `shared/literature_review.md` | Project initialization, before any new hypothesis or capability. |
 | `shared/reproducibility.md` | Setting up data version + git commit + environment pin for promotion-eligible or claim-cited trials. |

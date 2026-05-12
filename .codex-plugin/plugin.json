@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "version": "1.1.6",
-  "description": "v1.1.6 - Workstream-aware research with softer entry guardrails for non-load-bearing scaffolds.",
+  "version": "1.1.7",
+  "description": "v1.1.7 - Keeps A4 rigor for load-bearing claims while allowing faster exploratory decisions.",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "Research",
     "shortDescription": "Research and R&D protocols with quant finance specialization",
-    "longDescription": "v1.1.6 - Workstream-aware serious research and R&D workflows with lightweight tracking, non-load-bearing scaffold allowances, and no registration-proof machinery. The plugin exposes a generic research skill for mixed research projects with local workstream gates, plus a quant-research adapter for financial machine learning, backtests, time-series validation, leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented evidence.",
+    "longDescription": "v1.1.7 - Workstream-aware serious research and R&D workflows with lightweight tracking, non-load-bearing scaffold allowances, scoped A4 rigor for load-bearing claims, and no registration-proof machinery. The plugin exposes a generic research skill for mixed research projects with local workstream gates, plus a quant-research adapter for financial machine learning, backtests, time-series validation, leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented evidence.",
     "developerName": "komoootv",
     "category": "Research",
     "capabilities": [

@@ -26,14 +26,22 @@ method, backtest, PnL validation workflow, or financial time-series workflow.
 
 ## Finance-Specific Checks
 
+Finance-specific checks are promotion-relevant or claim-bearing checks. They
+are not mandatory gates for exploratory finance work. Exploratory finance work
+may choose the next experiment, provisional go / no-go, park, deprioritize, or
+reject-for-now before the full finance check battery. If leakage, cost,
+multiple-testing, or validation checks are not yet run, label the numbers
+`untrusted` / caveated and do not use them as supported evidence.
+
 - Backtest and walk-forward design: read
   `references/shared/time_series_validation.md`. For runnable split helpers,
   use `scripts/walk_forward.py`, `scripts/purged_kfold.py`, and
   `scripts/cpcv.py`.
 - Leakage, whole-period normalization, split hygiene, and PnL contamination:
-  read `references/shared/time_series_validation.md` and
-  `references/shared/sanity_checks.md` before trusting numbers. For runnable
-  checks, use `scripts/leakage_check.py` and `scripts/sanity_checks.py`.
+  before treating numbers as claim-bearing, read
+  `references/shared/time_series_validation.md` and
+  `references/shared/sanity_checks.md`. For runnable checks, use
+  `scripts/leakage_check.py` and `scripts/sanity_checks.py`.
 - Multiple testing, PBO, PSR/DSR, and Sharpe inflation: read
   `references/shared/multiple_testing.md` and
   `references/shared/psr_dsr_formulas.md`. For runnable diagnostics, use
@@ -81,10 +89,10 @@ The visual evidence must make the failure modes visible, not just the headline
 return. Cite the artifact path, run ID, data period, and cost assumptions behind
 each displayed figure or table.
 
-## Promotion Precondition
+## Claim-Bearing Precondition
 
 Before any finance claim is treated as supported, run the finance
-implementation checks above, then invoke `research` for the generic review
-gates: `research/references/review/process_review.md` first, followed by
-`research/references/review/conclusion_review.md`. Finance metrics can feed
-those reviews as evidence, but they do not replace them.
+implementation checks above that bear on the claim, then invoke `research` for
+the generic review gates: `research/references/review/process_review.md` first,
+followed by `research/references/review/conclusion_review.md`. Finance metrics
+can feed those reviews as evidence, but they do not replace them.

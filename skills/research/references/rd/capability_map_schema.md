@@ -9,7 +9,7 @@ tied to a parent core technology (Layer 1).
 - Writing the first capability after Layer 1 (core technologies) is
   closed
 - Adding a new capability mid-project (verify Layer 1 is closed first)
-- Splitting / merging / killing a capability
+- Splitting, merging, pruning, or killing a capability
 - Reviewing a promotion claim for capability-level conditions
 
 ## Position in `capability_map.md`
@@ -53,6 +53,12 @@ core_technologies.md § Layer 1 closure).
 | `parked` | Deferred with a named unblock condition |
 | `killed` | Kill criterion fired with A4+ evidence; this capability is terminal under the current scope |
 
+Candidate drop, reject-for-now, and deprioritize are exploratory pruning
+decisions. Exploratory pruning decisions do not require A4+ evidence; they
+only say the current candidate or branch is not worth further investment under
+the current exploratory evidence. Use `parked`, `stale`, `split`, or a
+decision-log note when the capability should not become terminal.
+
 Allowed transitions:
 
 ```
@@ -87,7 +93,7 @@ TRL claim. Concretely:
   evidence), it may not be a capability — it might be a task (move to
   `decisions.md`) or a sub-task of another capability.
 
-## Kill criteria — must be A4-anchored
+## Kill criteria — terminal only
 
 Every capability row carries a `kill_criteria` field. Two requirements:
 
@@ -100,7 +106,9 @@ Bad: "If it doesn't work."
 Bad: "If we run out of ideas."
 Bad: "If management says so."
 
-### 2. A kill firing requires A4+ evidence to validate
+### 2. A kill firing requires A4+ evidence to validate terminal kill
+
+Kill requires A4+ evidence only for terminal kill.
 
 When a kill criterion fires, the agent does **not** mark the capability
 `killed` immediately. The firing opens terminal review. Instead:
