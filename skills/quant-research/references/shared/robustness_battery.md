@@ -50,7 +50,7 @@ for fee in [0, 0.00002, 0.00005, 0.0001, 0.00015, 0.0002]:
 Pass condition: report the break-even fee. State whether the strategy is viable at retail
 / ECN / futures cost levels.
 
-### 3. Walk-forward Sharpe distribution
+### 3. Rolling-window stability
 
 Compute Sharpe over rolling windows (e.g. 3 months):
 
@@ -64,6 +64,11 @@ worst = sharpe_dist.min()
 ```
 
 Pass condition: mean > 0, pct_positive ≥ 60 %, worst ≥ −2.
+
+This is rolling-window stability, not true walk-forward. It evaluates a
+fixed, already-selected strategy over contiguous periods. A true walk-forward
+validation must refit or reselect the model, thresholds, and sizing rule using
+only information available before each out-of-sample block.
 
 ### 4. Bootstrap CI
 
@@ -114,7 +119,7 @@ In the experiment notebook's "Design" section:
 Robustness gates:
 - 2D threshold surface: ≥ 50 % of cells with Sharpe > 0
 - Fee sensitivity: break-even fee ≥ 0.5 bp/side
-- Walk-forward: mean Sharpe > 0 and pct_positive ≥ 60 %
+- Rolling-window stability: mean Sharpe > 0 and pct_positive ≥ 60 %
 - Bootstrap CI: 95 % lower bound > 0
 - DSR: ≥ 0.95
 - Realistic cost: positive Sharpe under per-bar spread
@@ -123,24 +128,28 @@ Robustness gates:
 
 If any gate fails, the conclusion is **preliminary screening**, not a completed result.
 Passing a subset of these checks is not a supported result. For example,
-positive walk-forward rate plus favorable fee sensitivity is still preliminary
+positive rolling-window rate plus favorable fee sensitivity is still preliminary
 unless all required robustness checks pass and both review layers are clean.
 
 ## When a check fails
 
-Each failure suggests a state update first. It becomes a new hypothesis only if
-it passes `hypothesis_quality.md`'s entry gate; otherwise it is a robustness
-finding, merged variant, rejected direction, stale row, or parked dependency.
+Each failure suggests a state update first. Connect it to the current
+workstream ledger: Capability / Technology Research updates
+`capability_map.md`, while Phenomenon / Mechanism Research updates
+`explanation_ledger.md`. Create the next discriminating test only when
+success and failure would change a specific ledger row; otherwise record a
+robustness finding, merged variant, rejected direction, stale row, or parked
+dependency.
 
 | Failed check | Direction for the next hypothesis |
 |---|---|
 | 2D threshold has only a single peak | Strong parameter dependence — diversify the signal |
 | Break-even fee < 0.3 bp | Not viable at retail; look at futures venue or spread reduction |
-| Walk-forward unstable | Strong regime dependence — re-evaluate per regime |
+| Rolling-window unstable | Strong regime dependence — re-evaluate per regime |
 | Bootstrap CI lower near zero | Sample size or effect size too small; diversify across instruments / strategies |
 | DSR < 0.95 | Too many hyperparameter trials; redesign and reduce trials |
 | Only one regime works | Adopt a conditional strategy |
 
-Log durable state transitions in `decisions.md`. Add a next hypothesis to
-`hypotheses.md` only when success and failure would update a distinct
-`research_state.md` row.
+Log durable state transitions in `decisions.md`. Add or refine the next
+ledger action only when success and failure would update a distinct row in
+`capability_map.md` or `explanation_ledger.md`.

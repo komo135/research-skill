@@ -103,7 +103,7 @@ pur_001_features_pca.py
 ├── Residual returns
 ├── Feature-quality checks (stationarity, IC, quintile)
 ├── Save intermediate parquet
-└── Update hypotheses.md and decisions.md
+└── Record ledger assessment target and decisions.md state transition if load-bearing
 ```
 
 ## Warning signs

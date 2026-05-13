@@ -70,8 +70,10 @@ Format: `[ ] item — required evidence — citation`
   was run
   - Evidence: trial notebook + the alternative E it discriminates
     against (cite both E-IDs)
-- [ ] The alternative E-row is in terminal status (rejected /
-  weakened / merged) by the trial
+- [ ] The alternative E-row is resolved for this promotion: it is
+  `rejected` or `merged` by the trial. weakened is not terminal; a
+  weakened alternative remains live unless further evidence rejects,
+  merges, parks, or otherwise resolves it.
   - Evidence: explanation_ledger row for the alternative + trial that
     moved it
 - [ ] All sibling E-rows under the parent Q are also at terminal

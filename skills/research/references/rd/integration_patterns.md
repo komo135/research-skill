@@ -217,15 +217,14 @@ defined in `references/rd/rd_stages.md`. The pattern affects the
   delta is positive and meets criteria, K is `matured`
 - **No final integration capability** — integration is continuous
 
-### Pattern 2 mapping (current protocol default)
+### Pattern 2 mapping
 
 - **Per-K Stage-Gate**: full 5-stage cycle in isolation; the K's
   Stage 5 (Integrate) is integration with stub upstream/downstream
 - **Final integration capability** (`core_tech_id == integration`)
   runs Stage-Gate after all K's `matured`
-- This is the pattern the current `rd_stages.md` and
-  `rd_promotion_gate.md` § Section D ("Integration test ran AFTER all
-  upstream exits fired") implicitly assume
+- Promotion checks must use the declared integration pattern. Pattern 2
+  requires final integration after all upstream K capabilities mature.
 
 ### Pattern 3 mapping
 
@@ -294,18 +293,17 @@ naming:
 
 ## Anti-patterns
 
-### Anti-pattern A: Implicit Pattern 2 (no decision)
+### Anti-pattern A: Missing integration pattern (no decision)
 
 The project starts capability decomposition without explicitly
-declaring an integration pattern. The default behavior — each K
-matured in isolation, integrate at the end — is Pattern 2. The
-project doesn't realize this is a choice. Symptoms: 4 K's at TRL-3,
-no working end-to-end version, stakeholder asking "what does it
-look like?".
+declaring an integration pattern. This blocks capability decomposition and
+Stage-Gate work because `depends_on`, Stage 5, and promotion ordering cannot
+be interpreted. Symptoms: 4 K's at TRL-3, no working end-to-end version,
+stakeholder asking "what does it look like?".
 
-**Fix**: charter must declare integration pattern (Heilmeier H8).
-Without explicit declaration, the project is implicitly committing
-to Pattern 2 and its weaknesses.
+**Fix**: charter must declare integration pattern (Heilmeier H8). If the
+pattern is missing, stop and amend the charter before writing Layer 2 rows or
+running Stage gates.
 
 ### Anti-pattern B: Pattern 1 with naive baselines that don't compile
 
@@ -408,7 +406,7 @@ Skeleton is replaced piece by piece as K's mature.
 
 | Failure | Symptom | Fix |
 |---|---|---|
-| No pattern declared in charter | Implicit Pattern 2 default; "no working version yet" complaint | Charter H8 must declare pattern + reason |
+| No pattern declared in charter | Missing integration pattern blocks Layer 2 and Stage-Gate interpretation | Charter H8 must declare pattern + reason |
 | Pattern 1 with stub baselines | "v0 runs but does nothing" | Use real (if naive) baseline implementations |
 | Pattern 3 skeleton treated as framework | Skeleton is months old, K's constrained by it | Time-box skeleton; treat as throwaway |
 | Pattern 2 with stakeholder pressure | "Demo wrappers" being built that don't advance K's | Switch to Pattern 1 or 3 |
@@ -422,9 +420,10 @@ Skeleton is replaced piece by piece as K's mature.
   pattern (see § How each pattern maps to Stage-Gate above)
 - `references/rd/capability_map_schema.md` — `depends_on` semantics
   differ per pattern (see § Capability map differences per pattern)
-- `references/rd/rd_promotion_gate.md` § D — "Integration test ran
-  AFTER upstream" assumes Pattern 2; for Pattern 1 / 3, integration
-  is per-K, so the check applies per K replacement
+- `references/rd/rd_promotion_gate.md` § D — promotion is pattern-aware:
+  Pattern 1 checks per-K baseline replacement, Pattern 2 checks final
+  integration after upstream maturity, and Pattern 3 checks skeleton
+  replacement plus any declared final integration capability
 - `references/rd/core_technologies.md` § operational filter — for
   Pattern 3, the filter runs AFTER skeleton phase (you identify K's
   by reviewing the skeleton)

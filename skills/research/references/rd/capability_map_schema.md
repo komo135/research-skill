@@ -34,7 +34,7 @@ core_technologies.md § Layer 1 closure).
 | `depends_on` | list of `Ck` IDs | optional | Other capabilities that must mature first |
 | `dependent_on_research` | `<project>:<min_tier>` \| empty | optional | If this capability requires a Pure Research finding from another project (e.g., `pure_vol_decay:A4`), promotion is blocked until that project's claim reaches the named tier |
 | `current_TRL` | 0–6 | yes | Current maturity (see `references/rd/trl_scale.md`) |
-| `target_TRL` | 0–6 | yes | The TRL this capability needs to reach to be `matured` (typically 6) |
+| `target_TRL` | 0–6 | yes | The TRL this capability needs to reach to be `matured`; `target_TRL` is the per-capability row target |
 | `exit_criteria` | string | yes | Concrete observation that advances current_TRL by exactly 1 |
 | `kill_criteria` | string | yes | Concrete observation that kills this capability — see § Kill criteria below |
 | `blocking_uncertainty` | string \| empty | optional | The single biggest unknown about this capability right now |
@@ -52,6 +52,19 @@ core_technologies.md § Layer 1 closure).
 | `stale` | No longer relevant after scope change |
 | `parked` | Deferred with a named unblock condition |
 | `killed` | Kill criterion fired with A4+ evidence; this capability is terminal under the current scope |
+
+## `target_TRL` vs promotion TRL
+
+target_TRL is the per-capability row target. It may be below 6 only for
+non-critical or helper capabilities such as verification checks or scaffold
+sanity capabilities. target_TRL below 6 is for non-critical or helper
+capabilities.
+
+Critical-path capabilities must reach TRL-6 for workstream promotion.
+target_TRL below 6 does not satisfy critical-path promotion. A critical-path
+row with `target_TRL < 6` is a schema/design error: either raise the row target
+to 6 or mark the row as non-critical and explain which TRL-6 capability consumes
+it.
 
 Candidate drop, reject-for-now, and deprioritize are exploratory pruning
 decisions. Exploratory pruning decisions do not require A4+ evidence; they

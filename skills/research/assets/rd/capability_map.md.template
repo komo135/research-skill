@@ -10,12 +10,13 @@ Pre-condition: charter reviewed. See `charter.md`.
 ## Section 1: Core Technologies (Layer 1)
 
 Schema and operational filter: `references/rd/core_technologies.md`.
-Each row's lifecycle determines project termination semantics (永続型 →
-is established; 継続改善型 → maintenance plan required at promotion).
+Each row's lifecycle determines project termination semantics
+(`establish-once` → established once; `continuous-improvement` →
+maintenance plan required at promotion).
 
-| ID | コア技術 | 研究で確立する問い | target への寄与 | 発展性 | 先行研究 | Status |
+| ID | core_technology | research_question | target_contribution | lifecycle | prior_research | Status |
 |---|---|---|---|---|---|---|
-| K1 | <REPLACE: 1 phrase, no jargon if possible> | <REPLACE: single research question this K needs answered> | <REPLACE: why this is needed for the target capability, cite charter H1> | 永続型 \| 継続改善型 | papers.md §<REPLACE> \| (none, novel) | active |
+| K1 | <REPLACE: 1 phrase, no jargon if possible> | <REPLACE: single research question this K needs answered> | <REPLACE: why this is needed for the target capability, cite charter H1> | establish-once \| continuous-improvement | papers.md §<REPLACE> \| (none, novel) | active |
 | K2 | <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE> | active |
 | ... | ... | ... | ... | ... | ... | ... |
 

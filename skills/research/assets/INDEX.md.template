@@ -5,7 +5,7 @@ new entries automatically.
 
 ## Entries
 
-| trial_id | mode | linked hypothesis | state row updated | notebook status | state update / result summary |
+| trial_id | workstream label | linked claim / capability | state row updated | notebook status | state update / result summary |
 |---|---|---|---|---|---|
 
 ## Notebook-status legend (per notebook)
@@ -17,8 +17,8 @@ new entries automatically.
 - `dropped`: judged not worth pursuing; reason recorded in decisions.md
 
 A notebook is `done` only when it changes the project state. A metric without
-an update to `research_state.md`, `hypotheses.md`, or `decisions.md` is still
-unfinished.
+an update to `capability_map.md`, `explanation_ledger.md`, or `decisions.md`
+is still unfinished.
 
 ## Order
 

@@ -215,7 +215,7 @@ trial structure.
 | Annualized SR in PSR formula | `psr(sr_obs=1.45, T=252, ...)` interpreted as annualized | Use per-period SR; see `scripts/psr_dsr.py` API |
 | Confusing FWER and FDR | Project claims FWER control but uses BH-FDR (less conservative) | Document method and what's controlled |
 | Skipping correction entirely | "p-value 0.04, significant" with no correction | Promotion gate blocks; require correction |
-| Cherry-picking the favorable correction | Try Bonferroni, get rejected; try BH-FDR, get accepted; report BH-FDR | Pre-register the correction method in `preregistration.md` § 3.5 |
+| Cherry-picking the favorable correction | Try Bonferroni, get rejected; try BH-FDR, get accepted; report BH-FDR | Pre-register the correction method in the `Analysis Plan` and bind pass/fail use in `Inference / Decision Criteria` |
 | Pre-reg states 1 hypothesis but trial tests 5 | Major deviation per `pr_workflow.md` | Treat the trial as exploratory; create a new pre-reg with honest count |
 
 ## Implementations bundled in this skill
@@ -228,8 +228,9 @@ trial structure.
 ## Relationship to other references
 
 - `references/shared/psr_dsr_formulas.md` — formula details for PSR/DSR
-- `references/pure_research/preregistration.md` § 3.5 — pre-registers
-  the multiple-testing correction method
+- `references/pure_research/preregistration.md` — the `Analysis Plan`
+  and `Inference / Decision Criteria` sections pre-register the
+  multiple-testing correction method and bind how it will be used
 - `references/pure_research/pr_promotion_gate.md` § D — checks honest
   trial count and correction method applied
 - `references/rd/rd_promotion_gate.md` § C / D — same for R&D

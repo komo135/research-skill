@@ -6,7 +6,8 @@ Time-series-specific data splitting and validation methods.
 
 - Designing the data split for an experiment
 - Setting up cross-validation for ML research
-- Running walk-forward in the robustness phase
+- Checking rolling-window stability in the robustness phase or designing
+  true walk-forward validation
 
 ## Core principle
 
@@ -46,7 +47,7 @@ For ML hyperparameter search and CV inside the train period:
 López de Prado, AFML chapter 7. Combine many purged k-folds to generate multiple OOS paths.
 Used to estimate backtest overfitting probability.
 
-## Walk-forward
+## Rolling-window stability
 
 Before declaring completion, examine time stability with rolling windows:
 
@@ -65,6 +66,12 @@ Acceptance:
 - mean Sharpe > 0
 - pct_positive ≥ 60 %
 - worst window ≥ −2 (no catastrophic loss)
+
+Rolling-window stability is a robustness diagnostic for a fixed,
+already-selected strategy. It is not true walk-forward. True walk-forward
+validation simulates the live update process: each step must refit or reselect
+the model, thresholds, and sizing rule using only prior data, then score the
+next out-of-sample block once.
 
 ## Test-set discipline
 
@@ -110,7 +117,7 @@ In the experiment notebook's "Design" section:
 - Data ranges: train [d1,d2] / val [d2+H,d3] / test [d3+H,d4], embargo H bars
 - Cross-validation: purged 5-fold inside train, embargo H bars
 - Robustness gates:
-  - Walk-forward (3-month) mean Sharpe > 0 and pct_positive ≥ 60 %
+  - Rolling-window stability (3-month) mean Sharpe > 0 and pct_positive ≥ 60 %
   - Bootstrap 95 % CI lower bound > 0
   - Test set touched only once
 ```

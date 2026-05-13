@@ -153,7 +153,8 @@ separate (non-research) project and do not expand this scale.
 ## TRL skip is forbidden
 
 A capability advances **one TRL at a time**. Strong evidence that a
-capability "would obviously" jump from TRL-2 to TRL-5 is a red flag —
+capability "would obviously" jump from TRL-1 to TRL-3 or from TRL-2 to
+TRL-5 is a red flag —
 either:
 
 - The intermediate evidence is being skipped (which means the test was
@@ -165,14 +166,24 @@ either:
 The schema checker catches this: any single
 transition that advances TRL by > 1 in one row update is flagged.
 
+In Stage-Gate terms, De-risk establishes the synthetic proof needed for
+TRL-2. Build starts with the real-data proof that advances TRL-2 to TRL-3,
+then records representative-input evidence for TRL-3 to TRL-4 as a separate
+update if the evidence exists.
+
 ## TRL is per-capability, not per-project
+
+target_TRL is the per-capability row target. It controls when a row may be
+marked `matured`, but it is not the same as the workstream promotion line.
+target_TRL below 6 is for non-critical or helper capabilities.
+target_TRL below 6 does not satisfy critical-path promotion.
 
 The project does not have a single TRL. Promotion of the **target
 capability** (i.e., the project) requires:
 
-- Every critical-path capability at TRL-6 (matured)
-- All upstream exits fired BEFORE the integration test ran (ordering
-  verified)
+- Critical-path capabilities must reach TRL-6 for workstream promotion
+- The declared integration pattern's pattern-aware ordering check passed
+  (Pattern 1, Pattern 2, or Pattern 3)
 
 A "TRL-6 integration test" alone does not promote upstream capabilities
 that are still at TRL-3. A favorable integration test in such a state is
@@ -187,10 +198,12 @@ TRL and analysis depth (`A0`–`A5`) are **independent axes**:
 | **A low** | Toy demo, no understanding | Operational system, no understanding (BAD — hidden risk) |
 | **A high** | Toy demo, deep understanding | Operational system + deep understanding (the goal) |
 
-A capability at TRL-5 with A1 analysis is not promotable to `matured` —
-the TRL-6 exit requires A4 minimum. Conversely, A4 analysis on a TRL-2
-capability does not move it to TRL-3 — TRL requires demonstration
-evidence, not just analysis.
+A critical-path capability at TRL-5 with A1 analysis is not ready for
+workstream promotion: target_TRL is 6 on the critical path, and that exit
+requires A4 minimum. A non-critical/helper capability reaches `matured` at its
+declared target_TRL, still with A4+ analysis and kill criteria un-fired.
+Conversely, A4 analysis on a TRL-2 capability does not move it to TRL-3 — TRL
+requires demonstration evidence, not just analysis.
 
 ## Common failure modes
 
@@ -199,15 +212,18 @@ evidence, not just analysis.
 | TRL inflation | "We ran one real-data test, it's TRL-5" | Re-read TRL definitions; demonstrate one level at a time |
 | Skipping TRL-3 | Going from synthetic toy (TRL-2) directly to multi-instrument (TRL-4) | The single-real-data test (TRL-3) is exactly where leak / sign / alignment bugs surface; do not skip |
 | TRL of project as a whole | "The project is at TRL-4" | TRL is per-capability; a project has a distribution of TRLs |
-| "We ran the integration test" = TRL-6 | One favorable integration result | Integration test result is one piece of TRL-6 evidence per capability; each cap independently needs TRL-6 demonstration |
+| "We ran the integration test" = TRL-6 | One favorable integration result | Integration evidence is one piece of maturity evidence. Critical-path caps independently need TRL-6 demonstration; helper/non-critical caps need their declared target_TRL evidence and cannot satisfy the workstream promotion line. |
 | TRL skip via rhetoric | "Obviously TRL-X follows from this" | Forbidden; every transition needs concrete exit evidence |
 
 ## Relationship to other references
 
 - TRL transitions are the **exit conditions** of the Stages in
-  `references/rd/rd_stages.md` (Scoping → TRL-0/1, De-risk → TRL-2/3,
-  Build → TRL-4, Validate → TRL-5, Integrate → TRL-6).
-- TRL-6 + analysis A4+ + kill un-fired is the per-capability requirement
-  for promotion in `references/rd/rd_promotion_gate.md`.
+  `references/rd/rd_stages.md` (Scoping → TRL-0/1,
+  De-risk → TRL-2, Build / real-data proof → TRL-3, representative
+  Build evidence → TRL-4, Validate → TRL-5, Integrate → TRL-6).
+- For critical-path capabilities, TRL-6 + analysis A4+ + kill un-fired is
+  required by `references/rd/rd_promotion_gate.md`. For non-critical/helper
+  rows, `current_TRL == target_TRL` + analysis A4+ + kill un-fired is enough
+  for row maturity but not for workstream promotion.
 - See `references/shared/analysis_depth.md` for the A-tier orthogonal
   axis.

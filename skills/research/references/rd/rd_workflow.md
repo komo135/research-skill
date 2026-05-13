@@ -19,27 +19,25 @@ handoff to other workstreams.
 ## Entry guardrails
 
 Before a Capability / Technology Research workstream has a reviewed charter
-and kill criteria, prioritize:
+and kill criteria, only these activities are allowed:
 
-- Charter (`references/rd/rd_charter.md`) — Heilmeier 8 questions
-- Layer 1 closure (`references/rd/core_technologies.md`) — core
-  technology decomposition
-- Capability map skeleton (`references/rd/capability_map_schema.md`) —
-  Section 2 rows in TRL-0 status
-- Data infrastructure setup, environment pinning (`uv.lock`), data version
-  recording, raw data sourcing, scaffold file creation
-- Non-load-bearing scaffold, interface probe, smoke test, or wiring check
-  when it is labeled as enabling work and is not cited for TRL advancement,
-  promotion, kill, or an external claim
+- Charter drafting (`references/rd/rd_charter.md`) — Heilmeier 8 questions,
+  including H6 kill criteria and H8 integration pattern
+- Empty scaffold creation — folders, placeholder files, README stubs,
+  `decisions.md` shell, and an empty `capability_map.md` template with no K or
+  C row contents
+- Tracking path setup — choose local notes or tracker location, create empty
+  run-note directories, and record where later evidence will be stored
 
 Before the charter and kill criteria exist, do not run or cite:
 
+- Layer 1 closure, K-row decomposition, or capability row contents
 - Promotion-relevant or claim-bearing implementation
 - Model training, trial runs, or metric-producing checks intended to advance
   TRL, fire a kill criterion, promote a capability, or support an external
   claim
-- Any Stage gate (Scoping is part of capability writing in the table; it
-  is OK to scope, but no de-risk test)
+- Any Stage gate, including Scoping. Scoping writes capability row contents,
+  so it waits until after reviewed charter + kill criteria.
 - Any analysis whose conclusions enter the ledger
 
 Why: kill criteria are ready at charter close. Code written before kill
@@ -49,7 +47,9 @@ is ready will resist redefining the charter (sunk cost), or worse, redefine the
 kill criteria to fit the code (goalpost shifting).
 
 The 1-2 hours of charter writing prevent weeks of effort on a misframed
-target.
+target. After the reviewed charter and kill criteria exist, run Layer 1
+closure first; only then may capability row contents, Stage 1 Scoping, and
+later gates begin.
 
 ## State-change logging
 
@@ -99,10 +99,10 @@ A workstream terminates when one of:
 
 ### Promotion (success path)
 
-All critical-path capabilities are `matured`, all upstream exits fired
-before integration test (ordering verified), all kill criteria un-fired
-with A4 evidence, project meets charter H8 final exam criteria, and
-(if any K is `継続改善型`) the maintenance plan is filed.
+All critical-path capabilities are `matured`, upstream exits are satisfied
+under the declared integration pattern's ordering check, all kill criteria
+are un-fired with A4 evidence, project meets charter H8 final exam criteria,
+and (if any K is `continuous-improvement`) the maintenance plan is filed.
 
 See `references/rd/rd_promotion_gate.md` for the full checklist.
 

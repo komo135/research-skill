@@ -44,11 +44,12 @@ Format: `[ ] item — required evidence — citation`
 ### B. Layer 1 (core technologies) all `established`
 
 - [ ] Every K row in Section 1 has status `established` (not active,
-  blocked, parked, etc.) OR is `merged` / `stale` / `killed` with
-  documented rationale
+  blocked, parked, etc.) OR is `merged` / `stale` / `killed` with documented rationale
   - Evidence: list each K row with its terminal status and rationale
-- [ ] Every `established` K satisfies its definition: all child
-  capabilities matured, kill criteria un-fired, A4+ analysis
+- [ ] Every `established` K satisfies its definition: critical-path child
+  capabilities matured to TRL-6, non-critical/helper child capabilities reached
+  target_TRL or are explicitly non-critical, kill criteria un-fired, A4+
+  analysis
   - Evidence: per-K cross-reference to capabilities and kill log
 
 ### C. Layer 2 (capabilities) — per-capability conditions
@@ -56,8 +57,12 @@ Format: `[ ] item — required evidence — citation`
 For each capability on the critical path (i.e., not killed / merged /
 stale), all of the following:
 
-- [ ] `current_TRL == target_TRL` (typically 6)
-  - Evidence: `capability_map.md` Section 2 row
+- [ ] `current_TRL == 6` and Status is `matured`
+  - Evidence: `capability_map.md` Section 2 row. target_TRL is the
+    per-capability row target, but critical-path capabilities must reach
+    TRL-6 for workstream promotion. target_TRL below 6 is for non-critical
+    or helper capabilities; target_TRL below 6 does not satisfy
+    critical-path promotion.
 - [ ] Status is `matured`
   - Evidence: same row
 - [ ] Stage 5 (Integrate) exit conditions met (operational test on
@@ -80,13 +85,29 @@ stale), all of the following:
   - Evidence: local run note, results row, tracker record, or equivalent
     external tracker record for the trial
 
-### D. Integration test ordering
+### D. Integration check — pattern-aware ordering
 
-- [ ] Integration test (the capability with `core_tech_id == integration`)
-  ran AFTER all upstream capabilities reached `matured`
+The integration gate is pattern-aware and must follow the declared
+integration pattern in charter H8. If no declared integration pattern exists,
+promotion blocks until the charter is amended and reviewed.
+
+- [ ] Declared integration pattern is cited (Pattern 1, Pattern 2, or Pattern 3)
+  - Evidence: charter H8 and any deviation entry if the pattern changed
+- [ ] Pattern 1: every critical K replacement test ran inside the framework
+  after that K's upstream prerequisites were `matured`; no separate final
+  `core_tech_id == integration` row is required
+  - Evidence: per-K replacement notes identify baseline, real implementation,
+    upstream prerequisites, and A/B result
+- [ ] Pattern 2: the final `core_tech_id == integration` capability ran after
+  all upstream critical-path capabilities reached `matured`
   - Evidence: integration notes identify the upstream capabilities consumed
-- [ ] No upstream capability re-opened during integration (no
-  `matured → active` transitions in the integration window)
+- [ ] Pattern 3: each K replacement test ran against the skeleton after that
+  K's prerequisites were `matured`; any declared final integration capability
+  ran after all upstream critical-path capabilities reached `matured`
+  - Evidence: skeleton replacement notes and, if applicable, final integration
+    notes
+- [ ] No upstream capability re-opened during its applicable integration window
+  (no `matured → active` transitions in that window)
   - Evidence: capability map entries and integration notes
 
 ### E. Cross-project dependencies
@@ -103,13 +124,14 @@ stale), all of the following:
 
 ### G. Maintenance plan (conditional)
 
-If any K is `継続改善型`, the closing `decisions.md` entry must include a
-right-sized maintenance plan. If all K's are `永続型`, this section is N/A.
+If any K is `continuous-improvement`, the closing `decisions.md` entry must
+include a right-sized maintenance plan. If all K's are `establish-once`, this
+section is N/A.
 Production, external, or deployment-adjacent claims require all fields below.
 Internal prototypes may record cadence or trigger, owner role, baseline
 snapshot, and next review point.
 
-- [ ] **Per-K plan**: For each `継続改善型` K, a separate maintenance
+- [ ] **Per-K plan**: For each `continuous-improvement` K, a separate maintenance
   plan block
 - [ ] **Cadence**: Re-evaluation frequency (e.g., monthly, quarterly,
   on-demand-with-trigger)
@@ -130,7 +152,7 @@ snapshot, and next review point.
 ```markdown
 ## YYYY-MM-DD project promotion — maintenance plan
 
-For each `継続改善型` core technology:
+For each `continuous-improvement` core technology:
 
 ### K<id>: <core tech name>
 
@@ -174,7 +196,7 @@ For each `継続改善型` core technology:
 When a project promotes, the closing entry uses one of two templates
 depending on lifecycle composition:
 
-### All `永続型` — fully completed
+### All `establish-once` — fully completed
 
 ```markdown
 ## YYYY-MM-DD project promoted (fully completed)
@@ -182,7 +204,7 @@ depending on lifecycle composition:
 Target: <H1 from charter>
 Charter: charter.md
 Final TRL: every critical-path capability at TRL-6 matured
-Lifecycle composition: all <N> core technologies are 永続型
+Lifecycle composition: all <N> core technologies are establish-once
 
 Promotion claim: <H1> has been established as a TRL-6 operational
 prototype, demonstrated under <H8 final exam conditions>, with kill
@@ -192,7 +214,7 @@ Project is complete. No ongoing maintenance. Future use of the
 established capability does not require this project to be active.
 ```
 
-### Any `継続改善型` — v1 + maintenance scheduled
+### Any `continuous-improvement` — v1 + maintenance scheduled
 
 ```markdown
 ## YYYY-MM-DD project promoted v1 (maintenance scheduled)
@@ -200,13 +222,13 @@ established capability does not require this project to be active.
 Target: <H1 from charter>
 Charter: charter.md
 Final TRL: every critical-path capability at TRL-6 matured
-Lifecycle composition: <X> 永続型 + <Y> 継続改善型
+Lifecycle composition: <X> establish-once + <Y> continuous-improvement
 
 Promotion claim: <H1> has been established as a TRL-6 operational
 prototype v1, demonstrated under <H8 final exam conditions>, with kill
 criteria un-fired (evidence cited in promotion review notes).
 
-Maintenance plan filed below for the <Y> 継続改善型 core technologies.
+Maintenance plan filed below for the <Y> continuous-improvement core technologies.
 Project status transitions to "maintenance mode": next scheduled check
 is <date>; trigger conditions documented per K.
 
@@ -222,7 +244,7 @@ Maintenance plan: <inline or link>
 | Promote with A1 or A2 analysis | Section C: A4 minimum |
 | Promote with generic "model is good" explanation | Section C: no terminal labels |
 | Promote without integration test ordering verified | Section D: ordering check |
-| Promote 継続改善型 project without maintenance plan | Section G: required if any 継続改善型 |
+| Promote continuous-improvement project without maintenance plan | Section G: required if any continuous-improvement |
 | Promote with stale Pure Research dependency | Section E: cross-project dep check |
 | Promote with un-reproducible setup | Section H: 3-tuple recorded |
 | Charter rewritten mid-project to fit results | Section A: deviation entry count check |

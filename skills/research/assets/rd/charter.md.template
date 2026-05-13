@@ -65,8 +65,8 @@ training/fine-tuning):
 - Wall-clock: <REPLACE>
 
 **Recurring** (re-tuning cadence, monitoring, ongoing data feed; only
-applicable if any core tech will be `継続改善型` — leave blank if all
-permanent):
+applicable if any core tech will be `continuous-improvement` — leave blank if all
+establish-once):
 - Compute (per cycle): <REPLACE or N/A>
 - Data (per year): <REPLACE or N/A>
 - Wall-clock (per cycle): <REPLACE or N/A>
@@ -84,7 +84,7 @@ representative workload, all core technologies `established`, plus —
 if applicable — maintenance plan filed):
 
 <REPLACE: what specifically demonstrates this. Lifecycle-aware: if any
-core tech is expected to be `継続改善型`, the final exam includes the
+core tech is expected to be `continuous-improvement`, the final exam includes the
 maintenance plan being scheduled, not just the v1 demo.>
 
 **Integration pattern** (REQUIRED, see

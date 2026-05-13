@@ -25,11 +25,11 @@ table.
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `ID` | `K1`, `K2`, ... | yes | Sequential, never reused |
-| `コア技術` | string (1 phrase) | yes | Short name, no jargon if possible |
-| `研究で確立する問い` | string (1 sentence) | yes | The single research question this core tech needs answered |
-| `target への寄与` | string | yes | Why this is needed for the target capability (cite charter H1) |
-| `発展性` | `永続型` \| `継続改善型` | yes | Lifecycle — see § Lifecycle below |
-| `先行研究` | path / link | yes | Section reference into `literature/papers.md` (may be `(none, novel)`) |
+| `core_technology` | string (1 phrase) | yes | Short name, no jargon if possible |
+| `research_question` | string (1 sentence) | yes | The single research question this core tech needs answered |
+| `target_contribution` | string | yes | Why this is needed for the target capability (cite charter H1) |
+| `lifecycle` | `establish-once` \| `continuous-improvement` | yes | Lifecycle — see § Lifecycle below |
+| `prior_research` | path / link | yes | Section reference into `literature/papers.md` (may be `(none, novel)`) |
 | `Status` | enum | yes | See § Status transitions |
 
 The 7-column table sits at the top of `capability_map.md`. See
@@ -127,13 +127,13 @@ If you find yourself with **20+ candidate K's**: the filter is too loose.
 Most are dependencies (failing Condition 1) or capabilities (failing
 "single research question"). Run the filter strictly.
 
-## Lifecycle (発展性)
+## Lifecycle
 
 Each K is classified by **lifecycle type**, which determines what
 "established" means for this K and what the project owes the consumer
 after promotion.
 
-### 永続型 (establish-once)
+### establish-once
 
 The core technology, once established at TRL-6, requires no further
 investment. It can be used as-is indefinitely.
@@ -146,11 +146,11 @@ Examples:
   problem class
 - A point-in-time data alignment library
 
-Test for 永続型: would the technology still be valid 5 years from now
+Test for `establish-once`: would the technology still be valid 5 years from now
 with no re-investment, assuming the surrounding environment doesn't
-change in ways that change the underlying problem? If yes → 永続型.
+change in ways that change the underlying problem? If yes → `establish-once`.
 
-### 継続改善型 (continuous-improvement)
+### continuous-improvement
 
 The core technology, once established at TRL-6, requires periodic
 re-investment to maintain relevance, accuracy, or performance. The
@@ -164,8 +164,8 @@ Examples:
 - A foundation-model adaptation that must track new model releases
 - Any model whose accuracy depends on current market structure
 
-Test for 継続改善型: would the technology degrade in usefulness over
-time without active maintenance? If yes → 継続改善型.
+Test for `continuous-improvement`: would the technology degrade in usefulness
+over time without active maintenance? If yes → `continuous-improvement`.
 
 ### Lifecycle decision tree (when in doubt)
 
@@ -174,45 +174,46 @@ When the binary classification is unclear, walk this tree:
 ```
 Q1: Would the technology degrade in usefulness without active
     maintenance within 1 year?
-    → YES: 継続改善型
+    → YES: continuous-improvement
     → NO: continue to Q2
 
 Q2: Does the technology depend on parameters that drift with market
     conditions, even if the underlying methodology is stable?
-    → YES: 継続改善型 (the parameters are part of the technology;
+    → YES: continuous-improvement (the parameters are part of the technology;
        fitting once and shipping forever is wishful thinking when
        the world changes)
     → NO: continue to Q3
 
 Q3: Look at charter H7. Is the recurring cost > 0 and does it involve
     re-tuning, re-training, re-validation of this specific tech?
-    → YES: 継続改善型 (recurring cost is the operational signature
+    → YES: continuous-improvement (recurring cost is the operational signature
        of continuous improvement)
-    → NO: 永続型
+    → NO: establish-once
 
-Q4 (sanity check): If you assigned 永続型, can you name the external
+Q4 (sanity check): If you assigned `establish-once`, can you name the external
     conditions under which the technology remains valid without scheduled
-    re-investment? If yes, record those assumptions and keep 永続型. If no,
-    use 継続改善型.
+    re-investment? If yes, record those assumptions and keep `establish-once`.
+    If no, use `continuous-improvement`.
 ```
 
 The parameter-vs-methodology distinction matters: an HMM regime
 classifier's *methodology* (Viterbi decoding, EM training) is stable,
 but its *fitted parameters* drift as market structure evolves. The
-parameters are part of the deployed technology, so the K is 継続改善型.
+parameters are part of the deployed technology, so the K is
+`continuous-improvement`.
 
 In contrast, a numerical optimizer for solving a fixed-form mean-variance
-problem has stable methodology AND stable parameters — 永続型.
+problem has stable methodology AND stable parameters — `establish-once`.
 
 ### Project-level implications
 
 The composition of lifecycles in a project's K's determines the project's
 termination semantics:
 
-- **All K's are 永続型** and all `established` → project is **fully
+- **All K's are `establish-once`** and all `established` → project is **fully
   completed**. Final entry in `decisions.md` notes the write down. No
   ongoing obligation.
-- **Any K is 継続改善型** → project completion = **"v1 established + maintenance plan scheduled"**. The closing entry in `decisions.md` must
+- **Any K is `continuous-improvement`** → project completion = **"v1 established + maintenance plan scheduled"**. The closing entry in `decisions.md` must
   include a right-sized maintenance plan. For production or external claims,
   include cadence + trigger condition + owner + baseline metric snapshot (see
   `references/rd/rd_promotion_gate.md`). For internal prototypes, a trigger
@@ -225,12 +226,13 @@ Each K row has one status at a time. Allowed values:
 | Status | Meaning |
 |---|---|
 | `active` | Currently being worked on; child capabilities are in progress |
-| `established` | All child capabilities matured to TRL-6, kill criteria un-fired, analysis at A4+ |
+| `established` | Critical-path child capabilities matured to TRL-6; non-critical/helper child capabilities reached target_TRL or are explicitly non-critical; kill criteria un-fired; analysis at A4+ |
 | `blocked` | Cannot progress until a named dependency changes |
 | `split` | Decomposed into 2+ child K's (record children's IDs); the original row remains for traceability |
 | `merged` | Absorbed into another K (record the absorbing K's ID) |
 | `stale` | No longer relevant after a scope change or upstream decision |
 | `parked` | Deferred with a named unblock condition |
+| `killed` | Charter or K-level kill criterion fired with A4+ mechanism evidence, plus charter/decisions evidence showing terminal scope |
 
 Allowed transitions:
 
@@ -241,13 +243,20 @@ active → split (when too coarse, becomes parent of children)
 active → merged (when duplicate found)
 active → stale (when scope shifts)
 active → parked (when deferred)
+active → killed (when terminal kill is validated with A4+ evidence and recorded in charter/decisions evidence)
 blocked → active (when blocker resolved)
 parked → active (when unblock condition fires)
 parked → stale (when no longer relevant)
 ```
 
-Disallowed: `established → active` (promote-then-demote); use a deviation
-entry + new K instead.
+Disallowed: `established → active` (promote-then-demote); `killed → active`
+also requires a deviation entry plus a new K or explicit re-open rationale.
+
+Core tech terminal kill requires A4+ mechanism-level analysis plus
+charter/decisions evidence: cite the charter H6 or K-level kill criterion,
+the observation that fired it, alternatives ruled out, scope of the kill, and
+the dated `decisions.md` entry. If the failure is repairable, use `blocked`,
+`parked`, `split`, or `merged` instead of `killed`.
 
 ## Layer 1 closure
 
@@ -292,15 +301,15 @@ Naive decomposition (rejected):
 
 Better decomposition (passes filter):
 
-| ID | コア技術 | 研究で確立する問い | target への寄与 | 発展性 | 先行研究 | Status |
+| ID | core_technology | research_question | target_contribution | lifecycle | prior_research | Status |
 |---|---|---|---|---|---|---|
-| K1 | Cross-dataset review transfer | Does the review protocol generalize across text, image, and tabular benchmark families with agreement delta ≥ 0.05? | Decides whether one reusable protocol is viable | 継続改善型 (benchmarks update) | papers.md §A | active |
-| K2 | Scoring calibration protocol | Which calibration protocol maximizes agreement delta under a realistic review budget? | Adaptation strategy | 継続改善型 | papers.md §B | active |
-| K3 | Latency-bounded inference architecture | Can the chosen checks run at < 100ms per item on production hardware? | Operational viability | 永続型 (once chosen, stable) | papers.md §C | active |
-| K4 | Decision-relevant reliability metric | Which metric (ECE / agreement delta / calibrated outcome metric) best predicts downstream review-routing benefit? | Connects review output to the consumer decision | 永続型 | (none, novel) | active |
+| K1 | Cross-dataset review transfer | Does the review protocol generalize across text, image, and tabular benchmark families with agreement delta ≥ 0.05? | Decides whether one reusable protocol is viable | continuous-improvement (benchmarks update) | papers.md §A | active |
+| K2 | Scoring calibration protocol | Which calibration protocol maximizes agreement delta under a realistic review budget? | Adaptation strategy | continuous-improvement | papers.md §B | active |
+| K3 | Latency-bounded inference architecture | Can the chosen checks run at < 100ms per item on production hardware? | Operational viability | establish-once (once chosen, stable) | papers.md §C | active |
+| K4 | Decision-relevant reliability metric | Which metric (ECE / agreement delta / calibrated outcome metric) best predicts downstream review-routing benefit? | Connects review output to the consumer decision | establish-once | (none, novel) | active |
 
 This project will require a maintenance plan at completion (K1 and K2 are
-継続改善型). K3 and K4 become static once established.
+continuous-improvement). K3 and K4 become static once established.
 
 ## Common failure modes
 
@@ -310,7 +319,7 @@ This project will require a maintenance plan at completion (K1 and K2 are
 | Listing capabilities as core techs | "K = 'write the data loader'" | If you can't write a research question, it's a capability or task |
 | Coupled K's | "K1 = reward design, K2 = action design" | Apply Condition 2 isolation test, merge |
 | One huge K | "K1 = 'the entire RL agent'" | Apply the "no count target" guidance: re-decompose |
-| Default lifecycle | "all K's are 永続型" | Each lifecycle assignment must be justified; re-examine |
+| Default lifecycle | "all K's are establish-once" | Each lifecycle assignment must be justified; re-examine |
 | No literature | All K's have "(none, novel)" | Probably wrong; even genuinely novel work has adjacent prior work |
 
 ## Relationship to other references
@@ -320,7 +329,7 @@ This project will require a maintenance plan at completion (K1 and K2 are
   not in `capability_map.md`.
 - Status `established` is the gate that unlocks capability promotion in
   `references/rd/rd_promotion_gate.md`.
-- Lifecycle `継続改善型` triggers the maintenance plan requirement in
+- Lifecycle `continuous-improvement` triggers the maintenance plan requirement in
   `references/rd/rd_promotion_gate.md`.
 - Layer 1 closure unlocks capability writing per
   `references/rd/capability_map_schema.md`.

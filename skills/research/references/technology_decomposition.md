@@ -4,7 +4,7 @@ Replaced by the two-layer decomposition per CHARTER C14 (Amendment-2):
 
 - `references/rd/core_technologies.md` — Layer 1 (intellectual
   decomposition: research questions). 4-condition operational filter.
-  永続型 / 継続改善型 lifecycle classification.
+  `establish-once` / `continuous-improvement` lifecycle classification.
 - `references/rd/capability_map_schema.md` — Layer 2 (operational
   decomposition: testable capabilities). Each capability ties to a parent
   K via `core_tech_id`. Kill criteria A4-anchored.

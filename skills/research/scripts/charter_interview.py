@@ -132,8 +132,8 @@ def _validate_cost_split(s: str) -> str | bool:
     if not has_onetime:
         return "no 'one_time' subsection — H7 requires one-time vs recurring split"
     if not has_recurring:
-        # Allow if user explicitly says "all 永続型, no recurring"
-        if "永続型" not in s and "no recurring" not in s.lower():
+        # Allow if user explicitly says "all establish-once, no recurring"
+        if "establish-once" not in s.lower() and "no recurring" not in s.lower():
             return "no 'recurring' subsection — H7 requires recurring even if 'no recurring' (with justification)"
     return True
 

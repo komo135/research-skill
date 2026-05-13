@@ -85,10 +85,12 @@ These checks apply regardless of selected workstream label:
   - Evidence: targeted per-category presence check
 - [ ] **Entry guardrails respected**: no claim-bearing confirmation trial or
   promotion-relevant implementation before the required plan is ready.
-  Exploratory probes, non-load-bearing scaffold, interface probe, and smoke
-  test work are allowed when they are labeled exploratory / diagnostic or
-  enabling work and are not used as `supported`, TRL-advancing, or externally
-  reliable evidence.
+  For Capability / Technology Research, work before the reviewed charter and
+  kill criteria is limited to charter drafting, empty scaffold creation, and
+  tracking path setup. For Phenomenon / Mechanism Research, exploratory
+  probes are allowed only under PR/FAQ and pre-registration readiness rules,
+  and they cannot be used as `supported`, TRL-advancing, or externally reliable
+  evidence.
   - Evidence: review first 1-2 days' commits and decisions; flag any
     confirmation run that produced claim-bearing metrics before charter /
     pre-reg was ready, any promotion-relevant implementation cited before
@@ -145,8 +147,8 @@ For Capability / Technology Research workstreams only. Check in this order:
     + threshold + condition
 - [ ] **H7 distinguishes one-time vs recurring cost**
   - Evidence: § 7 has both subsections filled (or "N/A — all
-    永続型" justified)
-- [ ] **H8 is lifecycle-aware**: if any K is `継続改善型`, final exam
+    establish-once" justified)
+- [ ] **H8 is lifecycle-aware**: if any K is `continuous-improvement`, final exam
   references the maintenance plan
   - Evidence: § 8 + Layer 1 lifecycle assignments cross-referenced
 
@@ -167,7 +169,7 @@ For Capability / Technology Research workstreams only. Check in this order:
 - [ ] **No coupled K's** (Condition 2 failure — sibling K's that
   cannot be tested independently)
   - Evidence: per-K independence justification
-- [ ] **Lifecycle (永続型 / 継続改善型) explicitly assigned per K**,
+- [ ] **Lifecycle (`establish-once` / `continuous-improvement`) explicitly assigned per K**,
   not defaulted
   - Evidence: each K row has the field filled with rationale
 - [ ] **Operational filter Condition 0 (merge test) applied**: no two
@@ -207,10 +209,12 @@ For Capability / Technology Research workstreams only. Check in this order:
     `depends_on` field, verify no dependency reversal
   - Failure mode: C5 matured AFTER C6 (which depends on C5) — C6
     consumed an unmatured upstream
-- [ ] **Integration test ran AFTER all upstream capabilities reached `matured`**
-  (special case of dependency ordering applied to the integration
+- [ ] **Declared integration pattern's ordering check passed**
+  (Pattern 1 per-K replacement, Pattern 2 final integration capability, or
+  Pattern 3 skeleton replacement plus any declared final integration
   capability)
-  - Evidence: integration notes cite the upstream mature capability rows
+  - Evidence: replacement or integration notes cite the mature upstream
+    capability rows consumed under the declared pattern
 
 ### Cross-project dependencies
 

@@ -45,7 +45,7 @@ def normalize_for_assertion(text: str) -> str:
 
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.1.8"
+        expected = "1.1.9"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -54,6 +54,11 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertEqual(expected, codex_plugin["version"])
         self.assertEqual(expected, claude_plugin["version"])
         self.assertEqual(expected, claude_marketplace["plugins"][0]["version"])
+        self.assertIn(f"v{expected}", codex_plugin["description"])
+        self.assertIn(f"v{expected}", codex_plugin["interface"]["longDescription"])
+        self.assertIn(f"v{expected}", claude_plugin["description"])
+        self.assertIn(f"v{expected}", claude_marketplace["plugins"][0]["description"])
+        self.assertIn(f"Version {expected}", readme)
         self.assertIn(f"### v{expected} (current)", readme)
 
     def test_superpowers_specs_are_not_tracked_plugin_artifacts(self) -> None:
@@ -585,9 +590,8 @@ class ProjectBoundaryTests(unittest.TestCase):
         for phrase in [
             "do not classify the whole project as capability / technology research",
             "provisional workstream fit",
-            "non-load-bearing scaffold",
-            "interface probe",
-            "smoke test",
+            "empty scaffold creation",
+            "tracking path setup",
             "promotion-relevant or claim-bearing implementation",
             "wait until the charter and kill criteria exist",
         ]:
@@ -599,6 +603,9 @@ class ProjectBoundaryTests(unittest.TestCase):
             "Any implementation that runs",
             "Day 1 implementation",
             "Code commits before charter",
+            "interface probe, and smoke test work are allowed",
+            "interface probe",
+            "smoke test work are allowed",
         ]:
             self.assertNotIn(normalize_for_assertion(forbidden), normalized)
 
@@ -886,13 +893,34 @@ class ProjectBoundaryTests(unittest.TestCase):
         ]:
             self.assertNotIn(phrase, combined_docs)
 
+    def test_active_skill_surfaces_do_not_contain_japanese_text(self) -> None:
+        japanese_text = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
+        checked_suffixes = {".md", ".py", ".template", ".json", ".toml", ".txt"}
+        violations: list[str] = []
+
+        for skill_root in [ROOT / "skills/research", ROOT / "skills/quant-research"]:
+            for path in sorted(skill_root.rglob("*")):
+                if not path.is_file() or path.suffix not in checked_suffixes:
+                    continue
+                text = path.read_text(encoding="utf-8")
+                for line_number, line in enumerate(text.splitlines(), start=1):
+                    if japanese_text.search(line):
+                        violations.append(f"{path.relative_to(ROOT)}:{line_number}: {line}")
+
+        self.assertEqual([], violations)
+
     def test_project_helpers_do_not_fall_back_to_retired_templates(self) -> None:
         new_project = read_text("skills/research/scripts/new_project.py")
         new_trial = read_text("skills/research/scripts/new_trial.py")
+        new_purpose = read_text("skills/research/scripts/new_purpose.py")
+        root_index_template = read_text("skills/research/assets/INDEX.md.template")
 
         self.assertNotIn("legacy", new_project.lower())
         self.assertNotIn("legacy", new_trial.lower())
         self.assertNotIn("purpose.py.template", new_trial)
+        for user_facing_surface in [new_purpose, root_index_template]:
+            self.assertNotIn("research_state.md", user_facing_surface)
+            self.assertNotIn("hypotheses.md", user_facing_surface)
 
     def test_process_review_uses_workstream_labels_not_project_modes(self) -> None:
         process_review = read_text("skills/research/references/review/process_review.md")
@@ -1249,6 +1277,204 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertNotIn("R&D returns to capability state", result_analysis)
         self.assertIn("goalpost shifting", rd_stages)
         self.assertIn("prospective re-scope", rd_stages)
+
+    def test_rd_stages_no_longer_skips_derisk_trl_two(self) -> None:
+        rd_stages = read_text("skills/research/references/rd/rd_stages.md")
+        normalized = normalize_for_assertion(rd_stages)
+
+        for forbidden in [
+            "trl advances 1 → 3",
+            "trl 1→3",
+        ]:
+            self.assertFalse(
+                forbidden in normalized,
+                f"Legacy skipped TRL transition remains: {forbidden}",
+            )
+
+    def test_rd_docs_distinguish_target_trl_from_critical_path_trl6(self) -> None:
+        combined = "\n".join(
+            [
+                read_text("skills/research/SKILL.md"),
+                read_text("skills/research/references/rd/core_technologies.md"),
+                read_text("skills/research/references/rd/capability_map_schema.md"),
+                read_text("skills/research/references/rd/rd_promotion_gate.md"),
+                read_text("skills/research/references/rd/rd_stages.md"),
+                read_text("skills/research/references/rd/trl_scale.md"),
+            ]
+        )
+        normalized = normalize_for_assertion(combined)
+
+        for phrase in [
+            "target_trl is the per-capability row target",
+            "critical-path capabilities must reach trl-6 for workstream promotion",
+            "target_trl below 6 is for non-critical or helper capabilities",
+            "target_trl below 6 does not satisfy critical-path promotion",
+            "critical-path child capabilities matured to trl-6",
+        ]:
+            self.assertTrue(phrase in normalized, f"Missing TRL distinction contract: {phrase}")
+
+        for forbidden in [
+            "all child capabilities matured to trl-6",
+            "all child capabilities matured, kill criteria un-fired",
+            "matured requires trl-6 and a4+",
+            "`matured` requires trl-6 and a4+",
+            "not promotable to `matured` — the trl-6 exit requires a4 minimum",
+            "trl-6 + analysis a4+ + kill un-fired is the per-capability requirement",
+            "each cap independently needs trl-6 demonstration",
+        ]:
+            self.assertFalse(
+                forbidden in normalized,
+                f"K maturity wording still treats every child capability as critical-path: {forbidden}",
+            )
+
+    def test_undeclared_integration_pattern_blocks_instead_of_implicit_pattern2(self) -> None:
+        combined = "\n".join(
+            [
+                read_text("skills/research/references/rd/rd_charter.md"),
+                read_text("skills/research/references/rd/integration_patterns.md"),
+                read_text("skills/research/references/rd/rd_stages.md"),
+            ]
+        )
+        normalized = normalize_for_assertion(combined)
+
+        for forbidden in [
+            "without an explicit declaration, the project implicitly defaults to pattern 2",
+            "without explicit declaration, the project is implicitly committing to pattern 2",
+            "implicit pattern 2 default",
+            "pattern 2 mapping (current protocol default)",
+        ]:
+            self.assertFalse(
+                forbidden in normalized,
+                f"Undeclared integration pattern still implies Pattern 2: {forbidden}",
+            )
+        self.assertTrue("missing integration pattern" in normalized, "Missing absent-pattern wording.")
+        self.assertTrue("blocks" in normalized, "Missing blocking consequence for absent integration pattern.")
+
+    def test_rd_promotion_gate_integration_check_is_pattern_aware(self) -> None:
+        combined = "\n".join(
+            [
+                read_text("skills/research/SKILL.md"),
+                read_text("skills/research/references/rd/rd_promotion_gate.md"),
+                read_text("skills/research/references/rd/rd_workflow.md"),
+                read_text("skills/research/references/rd/trl_scale.md"),
+                read_text("skills/research/references/review/process_review.md"),
+            ]
+        )
+        normalized = normalize_for_assertion(combined)
+
+        legacy_pattern2_check = (
+            "integration test (the capability with `core_tech_id == integration`) "
+            "ran after all upstream capabilities reached `matured`"
+        )
+        self.assertFalse(
+            legacy_pattern2_check in normalized,
+            "Integration promotion check is still written as an unconditional Pattern 2 check.",
+        )
+        for phrase in [
+            "declared integration pattern",
+            "pattern-aware",
+            "pattern 1",
+            "pattern 2",
+            "pattern 3",
+        ]:
+            self.assertTrue(phrase in normalized, f"Missing pattern-aware integration gate phrase: {phrase}")
+
+        for forbidden in [
+            "integration test ran after upstream exits",
+            "integration test ran after all upstream capabilities reached `matured`",
+            "all upstream exits fired before the integration test ran",
+            "before integration test",
+        ]:
+            self.assertFalse(
+                forbidden in normalized,
+                f"High-level R&D guidance still assumes one final integration test: {forbidden}",
+            )
+
+    def test_k_row_killed_status_matches_rd_promotion_gate(self) -> None:
+        core_technologies = read_text("skills/research/references/rd/core_technologies.md")
+        promotion_gate = read_text("skills/research/references/rd/rd_promotion_gate.md")
+
+        self.assertTrue("| `killed` |" in core_technologies, "K-row status vocabulary is missing `killed`.")
+        self.assertTrue("active → killed" in core_technologies, "K-row transitions are missing `active → killed`.")
+        self.assertTrue(
+            "`merged` / `stale` / `killed` with documented rationale" in promotion_gate,
+            "R&D promotion gate does not use the same terminal K-row vocabulary.",
+        )
+
+    def test_pr_promotion_gate_does_not_treat_weakened_as_terminal_status(self) -> None:
+        promotion_gate = read_text("skills/research/references/pure_research/pr_promotion_gate.md")
+        normalized = normalize_for_assertion(promotion_gate)
+
+        self.assertFalse(
+            "terminal status (rejected / weakened / merged)" in normalized,
+            "`weakened` is still listed as a terminal alternative status.",
+        )
+        self.assertFalse(
+            "terminal status (rejected / weakened" in normalized,
+            "`weakened` is still listed in a terminal status group.",
+        )
+        self.assertTrue("weakened is not terminal" in normalized, "Missing explicit non-terminal `weakened` contract.")
+
+    def test_quant_robustness_battery_uses_current_research_protocol_docs(self) -> None:
+        quant_current_refs = "\n".join(
+            [
+                read_text("skills/quant-research/references/shared/robustness_battery.md"),
+                read_text("skills/quant-research/references/shared/feature_construction.md"),
+                read_text("skills/quant-research/references/shared/prediction_to_decision.md"),
+            ]
+        )
+        normalized = normalize_for_assertion(quant_current_refs)
+
+        for forbidden in [
+            "hypothesis_quality.md",
+            "hypotheses.md",
+            "research_state.md",
+        ]:
+            self.assertFalse(
+                forbidden in normalized,
+                f"Quant current references still mention retired protocol surface: {forbidden}",
+            )
+
+    def test_rolling_window_stability_is_not_named_true_walk_forward(self) -> None:
+        combined = "\n".join(
+            [
+                read_text("skills/quant-research/references/shared/robustness_battery.md"),
+                read_text("skills/quant-research/references/shared/time_series_validation.md"),
+            ]
+        )
+        normalized = normalize_for_assertion(combined)
+
+        for forbidden in [
+            "walk-forward sharpe distribution",
+            "running walk-forward in the robustness phase",
+            "walk-forward (3-month)",
+            "- walk-forward:",
+            "walk-forward unstable",
+        ]:
+            self.assertFalse(
+                forbidden in normalized,
+                f"Rolling-window stability is still labeled as walk-forward: {forbidden}",
+            )
+        for phrase in [
+            "rolling-window stability",
+            "true walk-forward",
+            "refit",
+        ]:
+            self.assertTrue(phrase in normalized, f"Missing terminology distinction phrase: {phrase}")
+
+    def test_multiple_testing_does_not_reference_retired_preregistration_section(self) -> None:
+        multiple_testing = read_text("skills/quant-research/references/shared/multiple_testing.md")
+        normalized = normalize_for_assertion(multiple_testing)
+
+        for forbidden in [
+            "`preregistration.md` § 3.5",
+            "preregistration.md § 3.5",
+            "pre-register the correction method in `preregistration.md` § 3.5",
+        ]:
+            self.assertFalse(
+                normalize_for_assertion(forbidden) in normalized,
+                f"Multiple-testing doc still references retired preregistration section: {forbidden}",
+            )
 
     def test_quant_adapter_defers_to_research_workstream_state_not_project_discipline(self) -> None:
         quant_skill = read_text("skills/quant-research/SKILL.md")

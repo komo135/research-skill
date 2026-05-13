@@ -45,20 +45,28 @@ minimum analysis depth (see `references/shared/analysis_depth.md`):
 | Stage | TRL transition | Analysis depth required |
 |---|---|---|
 | 1. Scoping | 0 → 1 | A0 (observation only — no test yet) |
-| 2. De-risk | 1 → 3 | **A2 minimum** (≥1 competing explanation) |
-| 3. Build | 3 → 4 | **A3 minimum** (discriminating evidence vs alternative) |
+| 2. De-risk | 1 → 2 | **A2 minimum** (≥1 competing explanation) |
+| 3. Build / real-data proof | 2 → 3, then 3 → 4 as separate row updates | **A3 minimum** (discriminating evidence vs alternative) |
 | 4. Validate | 4 → 5 | **A4 minimum** (mechanism named, alternatives excluded, scope precise) |
 | 5. Integrate | 5 → 6 | **A4 minimum** (A5 strongly preferred for `matured`) |
 
-Both axes (TRL + analysis tier) must be justified by evidence. Promotion to
-`matured` requires TRL-6 AND A4+. A capability at TRL-5 with A2 analysis is
-not ready for the next gate, even if the operational test technically
-succeeded.
+Both axes (TRL + analysis tier) must be justified by evidence. A capability
+row reaches `matured` only when `current_TRL == target_TRL`, kill criteria are
+un-fired, and A4+ analysis is present. Critical-path capabilities must use
+`target_TRL == 6` for workstream promotion; non-critical/helper rows may have a
+lower target_TRL, but they do not satisfy the critical-path promotion line. A
+capability at TRL-5 with A2 analysis is not ready for the next gate, even if
+the operational test technically succeeded.
 
 ```
-Scoping  ──Gate 1──  De-risk  ──Gate 2──  Build  ──Gate 3──  Validate  ──Gate 4──  Integrate  ──Gate 5──  matured
-TRL 0→1, A0           TRL 1→3, A2          TRL 3→4, A3        TRL 4→5, A4              TRL 5→6, A4+
+Scoping  ──Gate 1──  De-risk  ──Gate 2──  Build / real-data proof  ──Gate 3──  Validate  ──Gate 4──  Integrate  ──Gate 5──  matured
+TRL 0→1, A0           TRL 1→2, A2          TRL 2→3, then 3→4         TRL 4→5, A4              TRL 5→6, A4+
 ```
+
+No gate may advance a capability by more than one TRL in a single row
+update. When Build produces both first real-data proof and representative
+real-data evidence, record the TRL-2→3 and TRL-3→4 movements as separate
+evidence-backed updates.
 
 ## Result-to-Capability Loop
 
@@ -133,8 +141,7 @@ question fails**, not to confirm a hypothesis.
 - Design the smallest test that distinguishes "hardest sub-question
   works" from "hardest sub-question fails"
 - Build the minimum implementation to run that test
-- Run the test on synthetic data (TRL-2) and then on a single real-data
-  sample (TRL-3)
+- Run the test on synthetic data (TRL-2)
 - Run verification checks relevant to this test (generic verification or domain-adapter implementation checks)
 - Decompose the result with at least A2 analysis (≥1 competing
   explanation considered)
@@ -144,7 +151,7 @@ question fails**, not to confirm a hypothesis.
 - Verification checks pass
 - Analysis at A2 minimum, A3 for `matured` track
 - Kill criterion not fired
-- TRL advances 1 → 3
+- TRL advances 1 → 2
 
 **Kill at Gate 2 if** (this is the most common kill point):
 - Hardest-sub-question test fails AND the failure is mechanism-level
@@ -162,12 +169,16 @@ sub-question never worked is the failure mode this stage prevents.
 
 ### Stage 3 — Build
 
-**Purpose**: Build out the capability to handle real-data edge cases and
-known failure modes.
+**Purpose**: First prove the critical function on real data, then build out
+the capability to handle representative real-data edge cases and known
+failure modes.
 
-**Entry condition**: Gate 2 passed (hardest sub-question is answered).
+**Entry condition**: Gate 2 passed (hardest sub-question is answered on
+synthetic data).
 
 **Work**:
+- Run the smallest real-data proof that isolates the critical function
+  (TRL-3)
 - Extend implementation to handle multi-instrument or multi-period data
 - Document and handle known failure modes (`references/shared/result_analysis.md`
   decomposition pattern)
@@ -175,12 +186,14 @@ known failure modes.
 - Push analysis to A3 (discriminating evidence vs alternatives)
 
 **Exit (Gate 3)**:
+- Critical function works on at least one real-data sample
 - Capability works on representative real-data inputs
 - Failure modes documented (with mechanism, not generic labels)
 - Verification checks pass
 - Analysis at A3 minimum
 - Kill criterion not fired
-- TRL advances 3 → 4
+- TRL advances 2 → 3 for first real-data proof, then 3 → 4 for
+  representative real-data inputs. These are separate row updates.
 
 **Hold, re-scope, or kill at Gate 3 if**:
 - Real-data edge cases reveal that the technology has a fundamental

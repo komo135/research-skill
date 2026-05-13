@@ -1,8 +1,9 @@
 """new_purpose.py — Create a numbered research trial notebook.
 
 The generated notebook is a small state-updating trial. It may be used for
-R&D capability work or Pure Research, but it is only valid when success and
-failure both update a named row in research_state.md.
+R&D capability work or Phenomenon / Mechanism Research, but it is only valid
+when success and failure update a named row in capability_map.md,
+explanation_ledger.md, or decisions.md.
 
 Usage:
     python new_purpose.py --project <project-name> --slug <trial> --hyp H1
@@ -100,8 +101,8 @@ def main() -> None:
     )
     print(f"created: {out}")
     print("next steps:")
-    print(f"  1. Edit the Markdown cells in {out} (mode, state row, hypothesis, acceptance).")
-    print(f"  2. Update hypotheses.md: mark {args.hyp} as in-progress.")
+    print(f"  1. Edit the Markdown cells in {out} (workstream label, state row, acceptance).")
+    print(f"  2. Update capability_map.md or explanation_ledger.md for {args.hyp}, or record the decision in decisions.md.")
     print(f"  3. Open the notebook with marimo edit {out}.")
 
 

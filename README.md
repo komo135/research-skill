@@ -178,13 +178,22 @@ v1.1.0, install `research@research-skill`. The old standalone
 
 ## Status
 
-Version 1.1.8 - adds general preregistration planning, Transparent Changes,
-and outcome report packages.
+Version 1.1.9 - fixes research protocol contradictions and removes Japanese
+text from active skill surfaces.
 
 <details>
 <summary>Changelog</summary>
 
-### v1.1.8 (current)
+### v1.1.9 (current)
+
+- Fixed R&D protocol contradictions around `target_TRL`, critical-path TRL-6,
+  stage maturity, integration-pattern ordering, and promotion gates.
+- Replaced Japanese lifecycle and Layer 1 schema vocabulary with English-only
+  active skill surface terms.
+- Clarified quant robustness terminology so rolling-window stability is not
+  presented as true walk-forward validation.
+
+### v1.1.8
 
 - Reworked pre-registration as a general planning and reporting discipline
   with explicit `confirmatory` and `exploratory` types.

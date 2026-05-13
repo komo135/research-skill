@@ -91,8 +91,14 @@ each displayed figure or table.
 
 ## Claim-Bearing Precondition
 
-Before any finance claim is treated as supported, run the finance
-implementation checks above that bear on the claim, then invoke `research` for
-the generic review gates: `research/references/review/process_review.md` first,
-followed by `research/references/review/conclusion_review.md`. Finance metrics
-can feed those reviews as evidence, but they do not replace them.
+Before finance evidence is used to support `supported`, `matured`,
+`established`, `promoted`, an external claim, a deployment recommendation, or
+a terminal kill, run the finance implementation checks above that bear on the
+claim, then invoke `research` for the generic review gates:
+`research/references/review/process_review.md` first, followed by
+`research/references/review/conclusion_review.md`. Finance metrics can feed
+those reviews as evidence, but they do not replace them.
+
+This applies whenever finance evidence supports `supported`, `matured`,
+`established`, `promoted`, external claim, deployment recommendation, or
+terminal kill decisions.
