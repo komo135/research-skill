@@ -102,7 +102,7 @@ A workstream terminates when one of:
 All critical-path capabilities are `matured`, upstream exits are satisfied
 under the declared integration pattern's ordering check, all kill criteria
 are un-fired with A4 evidence, project meets charter H8 final exam criteria,
-and (if any K is `継続改善型`) the maintenance plan is filed.
+and (if any K is `continuous-improvement`) the maintenance plan is filed.
 
 See `references/rd/rd_promotion_gate.md` for the full checklist.
 

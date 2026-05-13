@@ -138,7 +138,7 @@ Example:
 
 Define two checkpoints (midterm + final) plus the integration pattern.
 **The "done" definition must be lifecycle-aware**: if any core technology
-is expected to be `継続改善型` (continuous improvement), "done" means
+is expected to be `continuous-improvement`, "done" means
 "v1 + scheduled maintenance plan", not "permanently shipped and walked
 away from".
 
@@ -283,9 +283,9 @@ writing pays for itself within the first week of decomposition.
 
 - After charter is ready → read `references/rd/core_technologies.md` to
   define Layer 1 (intellectual decomposition).
-- The novelty axis (`既存` / `発展的` / `新規`) lives in H3, not on
+- The novelty axis (`existing` / `extension` / `novel`) lives in H3, not on
   individual core technologies.
-- The lifecycle distinction (`永続型` / `継続改善型`) is determined per
+- The lifecycle distinction (`establish-once` / `continuous-improvement`) is determined per
   core technology in core_technologies.md, but the project-level
   composition of lifecycles affects H8 (the "final exam" definition) and
   the project's eventual termination semantics.

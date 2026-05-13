@@ -225,4 +225,4 @@ each could have reached A3 or A4 with more analysis on existing data.
   required for the Discussion section
 - `references/review/conclusion_review.md` — analysis depth is one of
   the 6 axes
-- CHARTER C13 — "分析の深さこそが研究の第一級成果物"
+- CHARTER C13 — "Analysis depth is the first-class research artifact"

@@ -147,8 +147,8 @@ For Capability / Technology Research workstreams only. Check in this order:
     + threshold + condition
 - [ ] **H7 distinguishes one-time vs recurring cost**
   - Evidence: § 7 has both subsections filled (or "N/A — all
-    永続型" justified)
-- [ ] **H8 is lifecycle-aware**: if any K is `継続改善型`, final exam
+    establish-once" justified)
+- [ ] **H8 is lifecycle-aware**: if any K is `continuous-improvement`, final exam
   references the maintenance plan
   - Evidence: § 8 + Layer 1 lifecycle assignments cross-referenced
 
@@ -169,7 +169,7 @@ For Capability / Technology Research workstreams only. Check in this order:
 - [ ] **No coupled K's** (Condition 2 failure — sibling K's that
   cannot be tested independently)
   - Evidence: per-K independence justification
-- [ ] **Lifecycle (永続型 / 継続改善型) explicitly assigned per K**,
+- [ ] **Lifecycle (`establish-once` / `continuous-improvement`) explicitly assigned per K**,
   not defaulted
   - Evidence: each K row has the field filled with rationale
 - [ ] **Operational filter Condition 0 (merge test) applied**: no two

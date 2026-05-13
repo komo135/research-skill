@@ -160,7 +160,7 @@ non-relaxed:
 - Reproducibility records for every promotion-eligible or claim-cited trial.
 - Focused process review and conclusion review before promotion or externally
   shared load-bearing claims.
-- Maintenance plan requirements for any `継続改善型` core technology.
+- Maintenance plan requirements for any `continuous-improvement` core technology.
 
 ## Framework Boundary
 
@@ -223,7 +223,7 @@ interchangeable; conflating them invalidates promotion review.
 |---|---|---|---|
 | **matured** | Capability (Layer 2) | Reached its target TRL (≤ TRL-6 for ship), kill criteria un-fired | End of capability's trial loop |
 | **established** | Core technology (Layer 1) | Critical-path child capabilities matured to TRL-6; non-critical/helper child capabilities reached target_TRL or are explicitly non-critical; kill criteria un-fired; analysis at A4+ | Core tech ready for upstream consumption |
-| **promoted** | Project (target) | All core techs established, declared integration pattern's ordering check passed, and (if any core tech is `継続改善型`) maintenance plan filed | Project closure or transition to maintenance cadence |
+| **promoted** | Project (target) | All core techs established, declared integration pattern's ordering check passed, and (if any core tech is `continuous-improvement`) maintenance plan filed | Project closure or transition to maintenance cadence |
 
 For Phenomenon / Mechanism Research, the equivalent external or load-bearing
 claim-level term is **`supported`**, with the same A4+ requirement at the
@@ -244,7 +244,7 @@ linked reference before executing the step:
    intellectual decomposition. Identify the minimal set of technologies that
    require research investment to establish for this target. Each core
    technology gets a research question, target contribution, lifecycle type
-   (永続型 / 継続改善型), and prior-work link. See § Decomposition Discipline
+   (`establish-once` / `continuous-improvement`), and prior-work link. See § Decomposition Discipline
    below for the operational filter.
 3. **Capability map** (`references/rd/capability_map_schema.md`) —
    operational decomposition. For each core technology, list capabilities
@@ -265,7 +265,7 @@ linked reference before executing the step:
    only when every core technology is `established` (all critical-path child
    capabilities matured to TRL-6 with kill criteria un-fired and analysis at
    A4+), the declared integration pattern's pattern-aware ordering check
-   passes, and — if any core technology is `継続改善型` — a maintenance plan is
+   passes, and — if any core technology is `continuous-improvement` — a maintenance plan is
    on file in `decisions.md`.
 
 ## Phenomenon / Mechanism Research (Pure Research-compatible)
@@ -405,11 +405,11 @@ for this target. Each row in `capability_map.md` Section 1:
 | Field | Meaning |
 |---|---|
 | ID | K1, K2, ... |
-| コア技術 | Name (1 short phrase) |
-| 研究で確立する問い | The single research question this core tech needs answered |
-| target への寄与 | Why this is needed for the target |
-| 発展性 | `永続型` (establish-once) or `継続改善型` (continuous-improvement, requires maintenance plan) |
-| 先行研究 | Link to `literature/papers.md` section |
+| core_technology | Name (1 short phrase) |
+| research_question | The single research question this core tech needs answered |
+| target_contribution | Why this is needed for the target |
+| lifecycle | `establish-once` or `continuous-improvement` (requires maintenance plan) |
+| prior_research | Link to `literature/papers.md` section |
 | Status | active / established / blocked / split / merged / stale / parked |
 
 **Operational filter for "is this a core tech?"** A candidate qualifies only
@@ -442,8 +442,8 @@ parent `core_tech_id` (or `integration` for cross-cutting work). See
 A target's promotion expression and termination semantics depend on the
 lifecycle composition of its core technologies:
 
-- All core techs `永続型` and `established` → "fully completed", project closes.
-- Any core tech `継続改善型` → completion = "v1 established + maintenance plan
+- All core techs `establish-once` and `established` → "fully completed", project closes.
+- Any core tech `continuous-improvement` → completion = "v1 established + maintenance plan
   scheduled". The project's closing entry in `decisions.md` MUST name the
   re-evaluation cadence and the re-investment trigger condition.
 

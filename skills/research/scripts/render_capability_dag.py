@@ -36,7 +36,7 @@ from pathlib import Path
 class KRow:
     id: str
     name: str
-    lifecycle: str  # 永続型 | 継続改善型 | unknown
+    lifecycle: str  # establish-once | continuous-improvement | unknown
     status: str
 
 
@@ -131,9 +131,7 @@ def parse_int(s: str, default: int = -1) -> int:
 
 def parse_capability_map(text: str) -> tuple[list[KRow], list[CRow]]:
     # Layer 1
-    k_rows_raw = parse_md_table(text, ["ID", "発展性"])
-    if not k_rows_raw:
-        k_rows_raw = parse_md_table(text, ["ID", "lifecycle"])
+    k_rows_raw = parse_md_table(text, ["ID", "lifecycle"])
     k_rows: list[KRow] = []
     for r in k_rows_raw:
         kid = get_col(r, "ID")
@@ -141,8 +139,8 @@ def parse_capability_map(text: str) -> tuple[list[KRow], list[CRow]]:
             continue
         k_rows.append(KRow(
             id=kid,
-            name=get_col(r, "コア", "core technology", "name") or kid,
-            lifecycle=get_col(r, "発展性", "lifecycle") or "unknown",
+            name=get_col(r, "core_technology", "core technology", "name") or kid,
+            lifecycle=get_col(r, "lifecycle") or "unknown",
             status=get_col(r, "Status") or "active",
         ))
 
@@ -172,9 +170,10 @@ def parse_capability_map(text: str) -> tuple[list[KRow], list[CRow]]:
 
 def lifecycle_color(lc: str) -> str:
     """Mermaid class for K lifecycle."""
-    if "永続" in lc or "permanent" in lc.lower():
+    # Accept "permanent" as an older English alias for establish-once maps.
+    if "establish" in lc.lower() or "permanent" in lc.lower():
         return "kPermanent"
-    if "継続" in lc or "continuous" in lc.lower():
+    if "continuous" in lc.lower():
         return "kContinuous"
     return "kUnknown"
 

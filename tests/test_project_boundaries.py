@@ -888,6 +888,22 @@ class ProjectBoundaryTests(unittest.TestCase):
         ]:
             self.assertNotIn(phrase, combined_docs)
 
+    def test_active_skill_surfaces_do_not_contain_japanese_text(self) -> None:
+        japanese_text = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
+        checked_suffixes = {".md", ".py", ".template", ".json", ".toml", ".txt"}
+        violations: list[str] = []
+
+        for skill_root in [ROOT / "skills/research", ROOT / "skills/quant-research"]:
+            for path in sorted(skill_root.rglob("*")):
+                if not path.is_file() or path.suffix not in checked_suffixes:
+                    continue
+                text = path.read_text(encoding="utf-8")
+                for line_number, line in enumerate(text.splitlines(), start=1):
+                    if japanese_text.search(line):
+                        violations.append(f"{path.relative_to(ROOT)}:{line_number}: {line}")
+
+        self.assertEqual([], violations)
+
     def test_project_helpers_do_not_fall_back_to_retired_templates(self) -> None:
         new_project = read_text("skills/research/scripts/new_project.py")
         new_trial = read_text("skills/research/scripts/new_trial.py")

@@ -124,13 +124,14 @@ promotion blocks until the charter is amended and reviewed.
 
 ### G. Maintenance plan (conditional)
 
-If any K is `継続改善型`, the closing `decisions.md` entry must include a
-right-sized maintenance plan. If all K's are `永続型`, this section is N/A.
+If any K is `continuous-improvement`, the closing `decisions.md` entry must
+include a right-sized maintenance plan. If all K's are `establish-once`, this
+section is N/A.
 Production, external, or deployment-adjacent claims require all fields below.
 Internal prototypes may record cadence or trigger, owner role, baseline
 snapshot, and next review point.
 
-- [ ] **Per-K plan**: For each `継続改善型` K, a separate maintenance
+- [ ] **Per-K plan**: For each `continuous-improvement` K, a separate maintenance
   plan block
 - [ ] **Cadence**: Re-evaluation frequency (e.g., monthly, quarterly,
   on-demand-with-trigger)
@@ -151,7 +152,7 @@ snapshot, and next review point.
 ```markdown
 ## YYYY-MM-DD project promotion — maintenance plan
 
-For each `継続改善型` core technology:
+For each `continuous-improvement` core technology:
 
 ### K<id>: <core tech name>
 
@@ -195,7 +196,7 @@ For each `継続改善型` core technology:
 When a project promotes, the closing entry uses one of two templates
 depending on lifecycle composition:
 
-### All `永続型` — fully completed
+### All `establish-once` — fully completed
 
 ```markdown
 ## YYYY-MM-DD project promoted (fully completed)
@@ -203,7 +204,7 @@ depending on lifecycle composition:
 Target: <H1 from charter>
 Charter: charter.md
 Final TRL: every critical-path capability at TRL-6 matured
-Lifecycle composition: all <N> core technologies are 永続型
+Lifecycle composition: all <N> core technologies are establish-once
 
 Promotion claim: <H1> has been established as a TRL-6 operational
 prototype, demonstrated under <H8 final exam conditions>, with kill
@@ -213,7 +214,7 @@ Project is complete. No ongoing maintenance. Future use of the
 established capability does not require this project to be active.
 ```
 
-### Any `継続改善型` — v1 + maintenance scheduled
+### Any `continuous-improvement` — v1 + maintenance scheduled
 
 ```markdown
 ## YYYY-MM-DD project promoted v1 (maintenance scheduled)
@@ -221,13 +222,13 @@ established capability does not require this project to be active.
 Target: <H1 from charter>
 Charter: charter.md
 Final TRL: every critical-path capability at TRL-6 matured
-Lifecycle composition: <X> 永続型 + <Y> 継続改善型
+Lifecycle composition: <X> establish-once + <Y> continuous-improvement
 
 Promotion claim: <H1> has been established as a TRL-6 operational
 prototype v1, demonstrated under <H8 final exam conditions>, with kill
 criteria un-fired (evidence cited in promotion review notes).
 
-Maintenance plan filed below for the <Y> 継続改善型 core technologies.
+Maintenance plan filed below for the <Y> continuous-improvement core technologies.
 Project status transitions to "maintenance mode": next scheduled check
 is <date>; trigger conditions documented per K.
 
@@ -243,7 +244,7 @@ Maintenance plan: <inline or link>
 | Promote with A1 or A2 analysis | Section C: A4 minimum |
 | Promote with generic "model is good" explanation | Section C: no terminal labels |
 | Promote without integration test ordering verified | Section D: ordering check |
-| Promote 継続改善型 project without maintenance plan | Section G: required if any 継続改善型 |
+| Promote continuous-improvement project without maintenance plan | Section G: required if any continuous-improvement |
 | Promote with stale Pure Research dependency | Section E: cross-project dep check |
 | Promote with un-reproducible setup | Section H: 3-tuple recorded |
 | Charter rewritten mid-project to fit results | Section A: deviation entry count check |
