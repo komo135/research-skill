@@ -45,7 +45,7 @@ def normalize_for_assertion(text: str) -> str:
 
 class ProjectBoundaryTests(unittest.TestCase):
     def test_plugin_version_metadata_is_consistent(self) -> None:
-        expected = "1.1.8"
+        expected = "1.1.9"
         codex_plugin = json.loads(read_text(".codex-plugin/plugin.json"))
         claude_plugin = json.loads(read_text(".claude-plugin/plugin.json"))
         claude_marketplace = json.loads(read_text(".claude-plugin/marketplace.json"))
@@ -54,6 +54,11 @@ class ProjectBoundaryTests(unittest.TestCase):
         self.assertEqual(expected, codex_plugin["version"])
         self.assertEqual(expected, claude_plugin["version"])
         self.assertEqual(expected, claude_marketplace["plugins"][0]["version"])
+        self.assertIn(f"v{expected}", codex_plugin["description"])
+        self.assertIn(f"v{expected}", codex_plugin["interface"]["longDescription"])
+        self.assertIn(f"v{expected}", claude_plugin["description"])
+        self.assertIn(f"v{expected}", claude_marketplace["plugins"][0]["description"])
+        self.assertIn(f"Version {expected}", readme)
         self.assertIn(f"### v{expected} (current)", readme)
 
     def test_superpowers_specs_are_not_tracked_plugin_artifacts(self) -> None:
