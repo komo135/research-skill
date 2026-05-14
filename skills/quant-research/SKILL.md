@@ -15,10 +15,10 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 # Quant Research
 
 `quant-research` is a finance adapter for the generic `research` skill. Use
-research first for the project workstream and state object: Phenomenon /
-Mechanism Research, Capability / Technology Research, R&D Program,
-Result-to-Question, Result-to-Capability, A0-A5 analysis depth, right-sized
-rigor, promotion, park, kill, and pivot decisions.
+research first for the project workstream and state object: `R&D Workstream`
+with `rd_plan.md`, phenomenon / mechanism workstreams with their selected
+ledger, Result-to-Question, A0-A5 analysis depth, right-sized rigor, report
+packages, park, kill, and pivot decisions.
 
 Use this skill after or alongside `research` when the research object is a
 financial model, trading signal, alpha factor, portfolio process, execution
@@ -26,7 +26,7 @@ method, backtest, PnL validation workflow, or financial time-series workflow.
 
 ## Finance-Specific Checks
 
-Finance-specific checks are promotion-relevant or claim-bearing checks. They
+Finance-specific checks are claim-bearing checks. They
 are not mandatory gates for exploratory finance work. Exploratory finance work
 may choose the next experiment, provisional go / no-go, park, deprioritize, or
 reject-for-now before the full finance check battery. If leakage, cost,
@@ -91,14 +91,13 @@ each displayed figure or table.
 
 ## Claim-Bearing Precondition
 
-Before finance evidence is used to support `supported`, `matured`,
-`established`, `promoted`, an external claim, a deployment recommendation, or
-a terminal kill, run the finance implementation checks above that bear on the
+Before finance evidence is used to support a durable state transition,
+report-package conclusion, external claim, deployment recommendation, or
+terminal kill, run the finance implementation checks above that bear on the
 claim, then invoke `research` for the generic review gates:
 `research/references/review/process_review.md` first, followed by
 `research/references/review/conclusion_review.md`. Finance metrics can feed
 those reviews as evidence, but they do not replace them.
 
-This applies whenever finance evidence supports `supported`, `matured`,
-`established`, `promoted`, external claim, deployment recommendation, or
-terminal kill decisions.
+This applies whenever finance evidence supports a claim-bearing report package,
+external claim, deployment recommendation, or terminal kill decision.

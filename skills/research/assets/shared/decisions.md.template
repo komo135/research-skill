@@ -12,7 +12,7 @@ note, tracker run, notebook note, or results row.
 
 - **Decision layer**: [project-level / workstream-level]
 - **Workstream**: [project-level / workstreams/<name>]
-- **Workstream label**: [N/A / Capability / Technology Research / Phenomenon / Mechanism Research]
+- **Workstream label**: [N/A / R&D Workstream / Phenomenon / Mechanism Research]
 - **Trigger**: [what observation, dependency, or user decision forced this entry]
 - **State transition**:
   - [Q1/E2/C3/H4]: [active -> rejected / active -> merged / planned -> stale / ...]
@@ -21,44 +21,44 @@ note, tracker run, notebook note, or results row.
 - **Next discriminating step**: [smallest next step, or "none; line closed"]
 ```
 
-## Tracking backend entry
+## Report provenance note
 
-Record this during project initialization or before the first load-bearing
-claim, whichever comes first. Existing projects can add this before the next
-load-bearing claim and note where prior run notes or tracker records live.
+Use this only when a report package or external claim needs to tell a reviewer
+how to resolve presented evidence. It is not a requirement for ordinary
+research sessions or experiments.
 
 ```markdown
-## YYYY-MM-DD — tracking backend selected
+## YYYY-MM-DD — report provenance note
 
 - **Decision layer**: [project-level / workstream-level]
 - **Workstream**: [project-level / workstreams/<name>]
-- **Workstream label**: [N/A / Capability / Technology Research / Phenomenon / Mechanism Research]
-- **Backend**: [local notes/parquet / MLflow / W&B / Neptune / Trackio / TensorBoard / Sacred / DVC / organizational tracker]
-- **Storage**: [local path, tracking URI, remote project, registry, or export path]
+- **Workstream label**: [N/A / R&D Workstream / Phenomenon / Mechanism Research]
+- **Report package**: [results/reports/RPT_<id>_<slug>/]
+- **Presented evidence**: [figures, tables, artifact paths, tracker records, or rows]
+- **Storage**: [local path, tracking URI, remote project, registry, or report provenance folder]
 - **Lightweight run record**: [run note / tracker run / notebook note / results row pattern for ordinary exploration]
-- **Decision-relevant run set**: [path or tracker query for runs needed for selection correction, multiple-testing, promotion, or external claims]
-- **Review retrieval**: [how a reviewer resolves trial_id -> run record]
-- **Minimum persisted fields for promotion-eligible or claim-cited results**: trial_id, run_id or artifact_uri, data version, git commit, environment pin, seed if relevant, params, headline metrics, rerun guidance
-- **Reason**: [why this backend fits the research and collaboration model]
+- **Presented evidence set**: [path or tracker query for cited evidence and selection/failed/sweep runs that affect this report claim]
+- **Review retrieval**: [how a reviewer resolves evidence IDs to source artifacts]
+- **Minimum provenance fields**: evidence ID, run ID or artifact URI, data version, git commit, environment pin, seed if relevant, params, headline metrics, rerun guidance
+- **Reason**: [why this provenance path fits the report and collaboration model]
 ```
 
 ## Rules
 
 - Record decisions that change what the project or workstream will or will not do.
-- Record the tracking backend selection because it changes the review path for
-  load-bearing claims.
+- Record report provenance only when it changes how a reviewer resolves
+  presented evidence.
 - Record hypothesis deletion, merging, stale marking, and parking.
-- Record Capability / Technology Research promotion to `promoted` and
-  Phenomenon / Mechanism Research promotion to `supported` only after the
-  relevant workstream gate.
+- Record R&D Workstream terminal decisions and Phenomenon / Mechanism Research
+  promotion to `supported` only after the relevant workstream review path.
 - Avoid vague decisions such as "try more models" or "need more data" unless
   they name the exact unblock condition.
 - A decision entry is invalid if its only transition is `planned -> planned`,
   `none -> planned`, or "try / test / run X". Planning or narrating an ordinary
   experiment belongs in the run note, tracker run, trial notebook, results row,
-  and the relevant workstream state object (`capability_map.md` or
+  and the relevant workstream state object (`rd_plan.md` or
   `explanation_ledger.md`); `decisions.md` records pruning, merging, rejection,
-  parking, promotion, scope change, or durable commitment.
+  parking, support review, scope change, or durable commitment.
 - User requests are not durable triggers by themselves. The trigger must name
   the evidence, dependency, contradiction, scope change, or state-compression
   reason that forced the decision.

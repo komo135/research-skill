@@ -18,11 +18,11 @@ adversarial cold-eye, receives a different minimum bundle.
 | Item | Purpose |
 |---|---|
 | Notebook path under review | The primary artifact |
-| Project root path | To find the research state ledger, design artifacts, `literature/`, `capability_map.md`, or `explanation_ledger.md` |
+| Project root path | To find the research state object, design artifacts, `literature/`, `rd_plan.md`, or `explanation_ledger.md` |
 | Design-cell content (extracted) | The pre-registered question, hypothesis, thresholds |
 | Abstract-cell content (extracted) | The claim being evaluated |
 | Conclusion / "Cannot conclude" section content (extracted) | Generality claims to triangulate |
-| Cycle history (`capability_map.md` or `explanation_ledger.md` summary, where applicable) | For research-design cycle-honesty checks |
+| Cycle history (`rd_plan.md` or `explanation_ledger.md` summary, where applicable) | For research-design cycle-honesty checks |
 | Upstream feature-experiment paths, if any | For research-design feature-hygiene checks |
 | Relevant domain adapter implementation-check entry, if present | So evidence-sufficiency knows whether prerequisite implementation checks have been satisfied |
 
@@ -40,10 +40,10 @@ before dispatch. Anchor missing means the reviewer flags
 
 | # | Reviewer | Required scope (extract) | Required shared | NOT-receive |
 |---|---|---|---|---|
-| 1 | research-design | `experiment_review_dimensions.md` §1 (anchor `## 1. research-design`, question / scope / method) | `experiment_review_severity_rubric.md`, notebook .py, design-cell extract, research state ledger, design artifact, `capability_map.md` or `explanation_ledger.md`, upstream feature notebook .py if named in design cell | `experiment_review_dimensions.md` outside §1, `literature/`, narrative refs, domain adapter implementation-check details, other reviewers' findings |
+| 1 | research-design | `experiment_review_dimensions.md` §1 (anchor `## 1. research-design`, question / scope / method) | `experiment_review_severity_rubric.md`, notebook .py, design-cell extract, research state object, design artifact, `rd_plan.md` or `explanation_ledger.md`, upstream feature notebook .py if named in design cell | `experiment_review_dimensions.md` outside §1, `literature/`, narrative refs, domain adapter implementation-check details, other reviewers' findings |
 | 2 | evidence-sufficiency | `experiment_review_dimensions.md` §2 (anchor `## 2. evidence-sufficiency`, validation / claim) | `experiment_review_severity_rubric.md`, notebook .py, design-cell extract, abstract-cell extract, conclusion / "Cannot conclude" extract, relevant domain adapter checks if present | `experiment_review_dimensions.md` outside §2, `literature/`, narrative refs, design artifact whole, domain adapter implementation-check details beyond the prerequisite signal, other reviewers' findings |
 | 3 | context-communication | `experiment_review_dimensions.md` §3 (anchor `## 3. context-communication`, literature / narrative) | `experiment_review_severity_rubric.md`, notebook .py, `literature/papers.md`, `literature/differentiation.md`, optional local notebook style guide if present | `experiment_review_dimensions.md` outside §3, design artifact, research state ledger, domain adapter implementation-check details, other reviewers' findings |
-| 4 | adversarial (cold-eye) | `experiment_review_dimensions.md` §4 (anchor `## 4. adversarial`) — verbatim instruction only | notebook .py, `experiment_review_severity_rubric.md` (for output schema; not bias-inducing) | `experiment_review_dimensions.md` outside §4, design artifact, research state ledger, `capability_map.md`, `explanation_ledger.md`, `literature/`, narrative refs, the three specialist findings, upstream feature notebooks, chat context |
+| 4 | adversarial (cold-eye) | `experiment_review_dimensions.md` §4 (anchor `## 4. adversarial`) — verbatim instruction only | notebook .py, `experiment_review_severity_rubric.md` (for output schema; not bias-inducing) | `experiment_review_dimensions.md` outside §4, design artifact, research state object, `rd_plan.md`, `explanation_ledger.md`, `literature/`, narrative refs, the three specialist findings, upstream feature notebooks, chat context |
 
 **Section anchor as source of truth**: extraction reads the section by heading,
 not by line range. A renamed or removed anchor surfaces a graceful-degradation
@@ -185,7 +185,7 @@ but with a different bundle and prompt.
 - `experiment_review_dimensions.md` §4 only, pre-extracted by section anchor
 
 NOT in the bundle: the three specialist findings, `literature/`,
-design artifact, research state ledger, `capability_map.md`, `explanation_ledger.md`, upstream feature
+design artifact, research state object, `rd_plan.md`, `explanation_ledger.md`, upstream feature
 notebooks, chat context, prior-cycle discussion, or the parent assistant's
 scratchpad.
 

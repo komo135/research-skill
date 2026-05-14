@@ -2,9 +2,9 @@
 
 `explanation_ledger.md` — the single state object for a Phenomenon /
 Mechanism Research workstream. Tracks research questions and the explanations
-that compete to answer them. Claim-cited or promotion-relevant results update
-explanation rows; ordinary exploratory runs may remain as lightweight run
-notes until they become load-bearing.
+that compete to answer them. Claim-bearing report packages and supported
+findings cite explanation rows; ordinary exploratory runs may remain as
+lightweight run notes until they become load-bearing.
 
 ## When to read
 
@@ -16,7 +16,7 @@ notes until they become load-bearing.
 ## Position in the project
 
 `explanation_ledger.md` is the Phenomenon / Mechanism Research state object,
-paired with the Capability / Technology Research `capability_map.md`. It sits
+paired with `rd_plan.md` when a project also has an R&D Workstream. It sits
 in the selected workstream and is that workstream's primary state surface.
 Trials feed into it; the IMRAD draft is generated from it; the promotion gate
 reads it.
@@ -125,7 +125,7 @@ fresh pre-registration that explicitly addresses the contradiction.
 
 ## Workstream label
 Phenomenon / Mechanism Research. <One-sentence reason this workstream updates
-an explanation question rather than a capability claim.>
+an explanation question rather than an implementation objective.>
 
 ## Active questions
 | ID | parent_Q | question | why_it_matters | current_best_answer | Status | next_discriminating_step |
@@ -146,8 +146,8 @@ an explanation question rather than a capability claim.>
 
 ## State update discipline
 
-Every claim-cited or promotion-relevant interpreted result should update at
-least one row in the ledger when it changes support, scope, status, or the next
+Every claim-bearing interpreted result should update or cite at least one row
+in the ledger when it changes support, scope, status, or the next
 discriminating step. The update is one of:
 
 1. An explanation's `current_evidence_summary` updates (new evidence
@@ -178,7 +178,7 @@ An explanation reaches `supported` only when **all** of:
   `references/shared/analysis_depth.md`)
 - A complete IMRAD draft is producible from the ledger + decisions +
   results (see `references/pure_research/imrad_draft.md`)
-- Reproducibility 3-tuple recorded for the trial
+- Report provenance recorded for presented evidence
 - The promotion review (`references/pure_research/pr_promotion_gate.md`)
   passes
 

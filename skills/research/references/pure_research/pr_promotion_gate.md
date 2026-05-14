@@ -2,7 +2,7 @@
 
 The Phenomenon / Mechanism Research promotion checklist. Run this before
 declaring an explanation `supported` (i.e., the workstream claim has passed).
-Like the Capability / Technology Research promotion gate, this is the highest
+Like the R&D Workstream external-claim review path, this is a high
 bar: every load-bearing item must pass with concrete evidence cited.
 
 ## When to read
@@ -123,15 +123,15 @@ Format: `[ ] item — required evidence — citation`
   (Section A check)
   - Evidence: file citation in § 2.1
 
-### G. Reproducibility (per cited trial + decision-relevant run set)
+### G. Reproducibility (presented evidence set)
 
-- [ ] Data version, git commit, environment pin, and seed recorded for every
-  cited trial in local run notes or in the tracker export
+- [ ] Data version, git commit, environment pin, and seed recorded for
+  presented evidence in local run notes, report provenance, or tracker export
 - [ ] All shared infrastructure pins recorded in
   `reproducibility/shared_pins.txt` or the tracker export
-- [ ] Reproducibility 3-tuple recorded for each cited trial via local note,
-  results row, or equivalent external tracker record
-- [ ] Decision-relevant run set covers the cited trials, failed attempts, and
+- [ ] Report provenance recorded for each cited evidence item via local note,
+  results row, report provenance file, or equivalent external tracker record
+- [ ] Presented evidence set covers the cited results, failed attempts, and
   parameter-sweep/model-selection runs used for trial-count and
   multiple-testing correction. Exploratory runs outside the claim family are
   not required.
@@ -204,7 +204,7 @@ Analysis tier: A<4 or 5>
 Cold-eye check: <pass / specific reservations>
 
 IMRAD draft: <path>
-Reproducibility 3-tuple: data version <...>, git commit <...>, environment pin <...>
+Report provenance: data version <...>, git commit <...>, environment pin <...>
 
 Future work: <derived sub-questions or sibling project candidates>
 ```

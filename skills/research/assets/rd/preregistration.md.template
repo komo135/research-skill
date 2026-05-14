@@ -1,0 +1,79 @@
+# Pre-Registration: PR_<REPLACE: id, e.g., 001>_<REPLACE: slug, e.g., initial>
+
+Complete these fields for both confirmatory and exploratory preregistrations.
+Delete the body section that does not match `preregistration_type`.
+
+## Study Information
+
+- preregistration_id: PR_<REPLACE: id, e.g., 001>
+- preregistration_slug: <REPLACE: slug>
+- preregistration_type: confirmatory | exploratory
+- related_report_package: results/reports/RPT_<REPLACE: id, e.g., 001>_<REPLACE: slug>/
+- workstream_label: R&D Workstream
+- R&D category: <REPLACE: basic research | applied research | experimental development>
+- state_object: rd_plan.md
+- question / objective: <REPLACE>
+- scope: <REPLACE>
+- non-claim-bearing condition: <REPLACE: what would keep this work exploratory only>
+
+Plan -> execute -> compare -> report.
+
+- Plan: write or select the pre-registration before work starts.
+- Execute: run the work against the written plan.
+- Compare: compare actual execution and results against the pre-registration.
+- Report: publish the plan-to-result table, transparent changes, evidence, and limitations.
+
+Pre-registration is a plan, not a prison. A midstream pre-registration governs
+future work or explicit reruns only; prior work is prior or exploratory
+evidence.
+
+Report contracts apply to report packages and presented evidence, not to
+research or experiments. Claim-to-artifact checks are a reporting-side
+requirement, not a continuous research tracking contract.
+
+## Shared fields
+
+- data / input plan: <REPLACE>
+- variables / measures or inspection targets: <REPLACE>
+- planned procedure: <REPLACE>
+- expected outputs: <REPLACE>
+- decision / follow-up criteria: <REPLACE>
+- what would prevent outputs from being used as claim-bearing evidence: <REPLACE>
+- future preregistered rerun or narrower report claim: <REPLACE>
+
+## Confirmatory body
+
+Use this section only when the work is intended to support a claim.
+
+- primary claim: <REPLACE>
+- alternatives or null explanation: <REPLACE>
+- inference / decision criteria: <REPLACE>
+- planned analysis: <REPLACE>
+- robustness / sensitivity checks: <REPLACE>
+- exclusion or stopping rules: <REPLACE>
+
+## Exploratory body
+
+Use this section when the work maps the current state, probes feasibility,
+searches for candidate explanations, or informs the next plan without claiming
+support.
+
+- objective: <REPLACE>
+- allowed transformations / procedures: <REPLACE>
+- selection or follow-up criteria: <REPLACE>
+- expected outputs: <REPLACE>
+- exploratory-only boundaries: <REPLACE>
+
+## Report comparison stub
+
+Fill this after execution or copy it into the report package.
+
+| planned_item | executed_as_planned | result_summary | evidence | notes |
+|---|---|---|---|---|
+| <REPLACE> | <REPLACE: yes | no | partial> | <REPLACE> | <REPLACE> | <REPLACE> |
+
+## Transparent Changes
+
+| Description of change | Rationale | Effect on study results or conclusions |
+|---|---|---|
+| No material changes from the preregistration. | N/A | N/A |

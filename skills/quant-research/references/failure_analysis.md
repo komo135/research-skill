@@ -2,9 +2,9 @@
 
 Replaced by `references/shared/result_analysis.md` (renamed + extended to
 cover BOTH failure-side and success-side decomposition symmetrically per
-CHARTER C13).
+the analysis-depth rules).
 
-Per CHARTER Amendment-1 (D-11): the discipline of decomposing generic
+The discipline of decomposing generic
 labels (noise / regime / cost / model is good / data was clean) applies
 symmetrically to failure AND success. The new file covers both with the
 same rigor.

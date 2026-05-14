@@ -1,14 +1,14 @@
 # analysis_depth.md
 
 The A0-A5 analysis depth tier system. Read before claim-bearing interpretation
-in either Capability / Technology Research or Phenomenon / Mechanism Research
-workstreams. The tier is the primary deliverable axis of this skill.
+in either an `R&D Workstream` or a phenomenon / mechanism research workstream.
+The tier is the primary deliverable axis of this skill.
 
 ## When to read
 
 - Before writing any Analysis section in a trial notebook
-- Before promoting an R&D capability to `matured` or a Pure Research
-  claim to `supported`
+- Before using an R&D report package or research claim as load-bearing
+  evidence for a durable state transition
 - Before reviewing another agent's promotion claim
 - When stuck on whether the current analysis is "deep enough"
 
@@ -18,9 +18,10 @@ workstreams. The tier is the primary deliverable axis of this skill.
 valid exploratory or diagnostic progress. A4 (estimation) and A5 (assertion)
 are reserved for load-bearing claims and promotion-grade decisions.
 
-A `supported` / `matured` promotion requires the analysis to reach
-**A4 minimum**. "It worked" and "it failed" are both A0, not results.
-This applies symmetrically to success and failure.
+Claim-bearing report packages and externally shared conclusions require the
+analysis to reach **A4 minimum** unless the claim is explicitly narrowed to
+exploratory or diagnostic status. "It worked" and "it failed" are both A0, not
+results. This applies symmetrically to success and failure.
 
 ## The tier scale
 
@@ -37,14 +38,13 @@ This applies symmetrically to success and failure.
 
 - `A0-A2`: observation stage; not sufficient for any promotion claim, but
   enough for many exploratory notes and next-test choices
-- `A3`: **preliminary**; can mark explanation `weakened` or capability
-  Stage 3 (Build) exit, choose provisional go / no-go, park, deprioritize, or
-  reject-for-now, but not promotion
-- `A4`: **estimation level**; minimum for `matured` (R&D) or
-  `supported` (Pure Research) promotion
-- `A5`: **assertion level**; ideal for `supported` promotion of
-  high-stakes findings (deployment, paper publication, line-closing
-  decisions)
+- `A3`: **preliminary**; can mark an explanation weakened, choose provisional
+  go / no-go, park, deprioritize, or reject-for-now, but not support a
+  load-bearing external claim
+- `A4`: **estimation level**; minimum for claim-bearing report packages and
+  externally shared conclusions
+- `A5`: **assertion level**; ideal for high-stakes findings such as
+  deployment, paper publication, or line-closing decisions
 
 ## Symmetric application: success AND failure
 
@@ -135,7 +135,7 @@ the candidates.
 
 Every trial notebook (R&D and Pure Research) has an Analysis section
 with these 5 sub-fields. See `assets/rd/rd_trial.py.template` § 5 and
-`assets/pure_research/pr_trial.py.template` § 6.
+`assets/pure_research/pr_trial.py.template` § 5.
 
 ### 5.1 Observation
 
@@ -177,9 +177,9 @@ multi-instrument / multi-period / OOS / external-prediction work.
 
 ## Push depth before designing new trials
 
-A core principle from `references/pure_research/pr_workflow.md` and
-`references/rd/rd_stages.md`: **before a promotion, external claim, or terminal
-decision, push the current trial's analysis depth as far as it can go**.
+A core principle of the research workflow: **before a report package, external
+claim, or terminal decision, push the current trial's analysis depth as far as
+it can go**.
 
 Often the current data supports A2 → A3 → A4 transitions via:
 - Feature ablation
@@ -206,7 +206,7 @@ each could have reached A3 or A4 with more analysis on existing data.
 | Confuse A4 with A5 | Strong A4 case for one universe is claimed as A5 | A5 needs replication across instruments/periods AND external prediction held |
 | Generic terminal labels | "noise / regime / cost / model is good" | Per `references/shared/result_analysis.md`, decompose into mechanism-level claims |
 | Skip evidence type | Evidence weighing without categorizing each as numerical / structural / literature / null | Force the type column; structural-only cannot support A4 |
-| Promote with A2 | Promotion claim made when analysis is still A2 | Promotion gate (`rd_promotion_gate.md` / `pr_promotion_gate.md`) requires A4 minimum |
+| Claim with A2 | Load-bearing claim made when analysis is still A2 | Narrow the claim to exploratory/diagnostic or add evidence until A4 minimum is reached |
 
 ## Relationship to other references
 
@@ -214,9 +214,8 @@ each could have reached A3 or A4 with more analysis on existing data.
   by the Phase 4 review files
 - `references/shared/result_analysis.md` — decomposition patterns for
   failure AND success, generic terminal label prohibition
-- `references/rd/rd_stages.md` — per-stage analysis depth requirements
-  (Scoping=A0, De-risk=A2, Build=A3, Validate=A4, Integrate=A4+)
-- `references/rd/rd_promotion_gate.md` § Section C — A4+ for `matured`
+- `references/review/process_review.md` — process discipline before
+  claim-bearing report packages
 - `references/pure_research/pr_workflow.md` § Push analysis depth
   before designing a new trial
 - `references/pure_research/pr_promotion_gate.md` § Section E — A4+
@@ -225,4 +224,4 @@ each could have reached A3 or A4 with more analysis on existing data.
   required for the Discussion section
 - `references/review/conclusion_review.md` — analysis depth is one of
   the 6 axes
-- CHARTER C13 — "Analysis depth is the first-class research artifact"
+- Analysis depth is the first-class research artifact for claim-bearing work.

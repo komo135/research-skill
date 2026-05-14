@@ -1,8 +1,8 @@
 """new_project.py - Initialize a research project folder, workstream-aware.
 
-Per CHARTER C1 / C2 / C3 / D-2 (`.rebuild/CHARTER.md`): projects start as mixed
-containers. Workstreams select one implemented state object and protocol gate.
-Passing --mode creates the mixed container plus a first compatible workstream.
+Projects start as mixed containers. Workstreams select one implemented state
+object and review path. Passing --mode creates the mixed container plus a first
+compatible workstream.
 
 Usage:
     python new_project.py <name>
@@ -33,9 +33,9 @@ What gets created:
     Workstream shortcut (--mode) also creates the first workstream under
     workstreams/ and:
 
-    Capability / Technology Research shortcut adds:
-        workstreams/WS001-capability/charter.md
-        workstreams/WS001-capability/capability_map.md
+    R&D shortcut adds:
+        workstreams/WS001-rd/rd_plan.md
+        workstreams/WS001-rd/prereg/PR_001_initial.md
 
     Phenomenon / Mechanism Research shortcut adds:
         workstreams/WS001-phenomenon/prfaq.md
@@ -73,8 +73,8 @@ MIXED_FILES = [
 ]
 
 RD_FILES = [
-    ("charter.md.template", "charter.md"),
-    ("capability_map.md.template", "capability_map.md"),
+    ("rd_plan.md.template", "rd_plan.md"),
+    ("preregistration.md.template", "prereg/PR_001_initial.md"),
     ("README.md.template", "README.md"),
 ]
 
@@ -88,10 +88,10 @@ PR_FILES = [
 
 MODE_WORKSTREAMS = {
     "rd": {
-        "directory": "WS001-capability",
-        "label": "Capability / Technology Research",
-        "state_object": "capability_map.md",
-        "next_decision": "review charter and kill criteria",
+        "directory": "WS001-rd",
+        "label": "R&D Workstream",
+        "state_object": "rd_plan.md",
+        "next_decision": "review R&D plan and pre-registration",
     },
     "pure-research": {
         "directory": "WS001-phenomenon",
@@ -119,7 +119,10 @@ def keep_only_exploratory_body(content: str) -> str:
     confirmatory_marker = "## Confirmatory body"
     exploratory_marker = "## Exploratory body"
     if confirmatory_marker not in content or exploratory_marker not in content:
-        return content
+        raise ValueError(
+            "pre-registration template is missing required body markers: "
+            f"{confirmatory_marker!r} and {exploratory_marker!r}"
+        )
 
     prefix, after_confirmatory = content.split(confirmatory_marker, 1)
     _, exploratory = after_confirmatory.split(exploratory_marker, 1)
@@ -231,8 +234,8 @@ def write_initial_workstream_state(project_dir: Path, workstream: dict[str, str]
     project_state = project_dir / "project_state.md"
     content = project_state.read_text(encoding="utf-8")
     placeholder = (
-        "| <REPLACE: workstream name> | <REPLACE: Capability / Technology Research; "
-        "Phenomenon / Mechanism Research> | <REPLACE: workstreams/<name>/capability_map.md "
+        "| <REPLACE: workstream name> | <REPLACE: R&D Workstream; "
+        "Phenomenon / Mechanism Research> | <REPLACE: workstreams/<name>/rd_plan.md "
         "or workstreams/<name>/explanation_ledger.md> | <REPLACE> | <REPLACE> |"
     )
     state_path = f"workstreams/{workstream['directory']}/{workstream['state_object']}"
@@ -270,10 +273,10 @@ def print_next_steps(project_dir: Path, mode: str | None) -> None:
         print(f"  1. Map the current research state in {project_dir}/project_state.md")
         print(f"  2. Create the first workstream under {project_dir}/workstreams/<name>/")
         print("  3. Put the workstream state object in that folder:")
-        print("     - Capability / Technology Research: charter.md and capability_map.md")
+        print("     - R&D Workstream: rd_plan.md and optional prereg/PR_<id>_<slug>.md")
         print("     - Phenomenon / Mechanism Research: prfaq.md and explanation_ledger.md")
-        print(f"  4. Choose a lightweight tracking path before the first load-bearing claim")
-        print(f"     Record the review path and decision note in {project_dir}/decisions.md")
+        print("  4. For report packages, note how presented evidence will be resolved")
+        print(f"     Record durable state decisions in {project_dir}/decisions.md")
         print("  5. Create trial evidence with:")
         print(f"     python scripts/new_trial.py --project-dir {project_dir} --workstream <name> --slug <trial_slug>")
         print()
@@ -287,28 +290,26 @@ def print_next_steps(project_dir: Path, mode: str | None) -> None:
     print()
     print("Next steps:")
     if mode == "rd":
-        print(f"  1. Edit {workstream_dir}/charter.md — answer Heilmeier 8 questions")
-        print(f"     OR run: python scripts/charter_interview.py --output {workstream_dir}/charter.md")
-        print(f"  2. When the charter is ready, change its status to READY")
-        print(f"  3. Choose a lightweight tracking path before the first load-bearing claim")
-        print(f"     Record the review path and decision note in {project_dir}/decisions.md")
-        print(f"  4. Edit {workstream_dir}/capability_map.md — Layer 1 (Core Technologies)")
-        print(f"     Apply operational filter per references/rd/core_technologies.md")
-        print(f"  5. Verify Layer 1 closure in review, then add Layer 2 capabilities")
+        print(f"  1. Review the R&D plan in {workstream_dir}/rd_plan.md")
+        print(f"  2. Edit {workstream_dir}/prereg/PR_001_initial.md before claim-bearing work")
+        print("  3. For report packages, note how presented evidence will be resolved")
+        print(f"     Record durable state decisions in {project_dir}/decisions.md")
+        print("  4. Execute the planned work and update rd_plan.md with evidence links")
+        print("  5. Compare execution and results against the pre-registration")
     else:
         print(f"  1. Edit {workstream_dir}/prfaq.md — write the press release + ≥10 FAQ entries")
         print(f"  2. When PR/FAQ is ready, change its status to READY")
         print(f"  3. Run targeted literature: python scripts/lit_fetch.py --project-dir {project_dir} --query '<your query>'")
-        print(f"  4. Choose a lightweight tracking path before the first load-bearing claim")
-        print(f"     Record the review path and decision note in {project_dir}/decisions.md")
+        print("  4. For report packages, note how presented evidence will be resolved")
+        print(f"     Record durable state decisions in {project_dir}/decisions.md")
         print(f"  5. Choose path: exploratory research first, use PR_001_initial for a scoped exploratory pass. Create a separate confirmatory pre-registration if a confirmation target is ready")
         print(f"  6. Before any run, compare its matching pre-registration with current state before execution")
         print(f"  7. Edit {workstream_dir}/explanation_ledger.md — add Q1 + ≥2 competing E + null candidates")
         print(f"  8. Optional confirmatory run: create a confirmatory PR, then run python scripts/new_trial.py --project-dir {project_dir} --workstream {workstream['directory']} --slug <trial_slug> --prereg-id <confirmatory_pr_id> --question-id Q1 --discriminating 'E1 vs E2'")
     print()
-    print("Reminder: per SKILL.md § Initial-day prohibitions, no claim-bearing")
-    print("confirmation trial runs before the required plan is ready. Exploratory")
-    print("work must be labeled exploratory / diagnostic.")
+    print("Reminder: no claim-bearing confirmation run should be reported before")
+    print("the relevant plan is ready. Exploratory work must be labeled")
+    print("exploratory / diagnostic.")
 
 
 def main() -> None:
@@ -325,6 +326,9 @@ def main() -> None:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
     except FileNotFoundError as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        sys.exit(2)
+    except ValueError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(2)
 

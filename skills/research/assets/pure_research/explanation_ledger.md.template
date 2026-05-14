@@ -1,15 +1,16 @@
 # Explanation Ledger — <REPLACE: project name>
 
 The single state object for this Phenomenon / Mechanism Research workstream. Schema:
-`references/pure_research/explanation_ledger_schema.md`. Claim-cited or
-promotion-relevant results update rows; exploratory runs may stay in run notes,
-tracker runs, notebook notes, or results rows until they become load-bearing.
+`references/pure_research/explanation_ledger_schema.md`. Claim-bearing report
+packages and supported findings cite rows; exploratory runs may stay in run
+notes, tracker runs, notebook notes, or results rows until they become
+load-bearing.
 
 ## Workstream label
 
 Phenomenon / Mechanism Research. <REPLACE: one-sentence reason this workstream
-updates an explanation question rather than a capability claim. E.g., "The
-deliverable is understanding of phenomenon X, not a deployable capability.">
+updates an explanation question rather than an implementation objective. E.g.,
+"The deliverable is understanding of phenomenon X, not a deployable system.">
 
 ---
 
@@ -62,6 +63,6 @@ for traceability.)
 - Negative claims (rejected E's) are first-class research findings
   and belong in the Claims section with the same A4+ rigor as
   positive claims.
-- Claim-cited or promotion-relevant results update at least one row when they
+- Claim-bearing report packages and supported findings cite at least one row when they
   change support, scope, status, or the next discriminating step. Ordinary
   exploratory runs do not need ledger movement.

@@ -124,8 +124,7 @@ pur_007_sizing.py             (Layer 3)
 Changing the Layer 1 model invalidates Layers 2 and 3. Make upstream dependencies explicit
 in each notebook and re-run downstream when upstream changes.
 
-Record upstream and downstream dependencies in the selected workstream ledger:
-use `capability_map.md` for Capability / Technology Research capability rows,
-or `explanation_ledger.md` for Phenomenon / Mechanism Research explanation
-rows. Use `decisions.md` only for durable state transitions, not as a duplicate
-model notebook index.
+Record upstream and downstream dependencies in the selected workstream state
+object: use `rd_plan.md` for an `R&D Workstream`, or `explanation_ledger.md`
+for a phenomenon / mechanism workstream. Use `decisions.md` only for durable
+state transitions, not as a duplicate model notebook index.

@@ -210,7 +210,7 @@ when:
 - [ ] Negative claims (if any) are documented with mechanism and
   evidence
 - [ ] Limitations section is honest (not "no significant limitations")
-- [ ] Reproducibility 3-tuple recorded
+- [ ] Report provenance recorded for presented evidence
 
 The promotion gate (`references/pure_research/pr_promotion_gate.md`)
 checks each of these as part of the conclusion review.

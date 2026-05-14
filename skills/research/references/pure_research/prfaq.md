@@ -10,8 +10,8 @@ questions.
 - The very first step of any Phenomenon / Mechanism Research workstream, before literature
   search, pre-registration, or trial design
 - When a Phenomenon / Mechanism Research workstream's question feels unfocused
-- Before handing off from a Capability / Technology Research workstream to a
-  Phenomenon / Mechanism Research workstream
+- Before handing off from an R&D Workstream to a Phenomenon / Mechanism
+  Research workstream
 
 ## Purpose
 

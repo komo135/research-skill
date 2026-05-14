@@ -27,7 +27,7 @@ the project decision log, and reviewed pre-registrations define the scoped
 question, competing explanations, planning commitments, evidence status, and
 durable state transitions. Exploratory notes may inform candidates; they do not
 become claim-cited evidence until rerun or confirmed under the appropriate
-promotion-eligible protocol.
+claim-bearing plan.
 
 **Project-instance artifacts**: `../../configs/`, `../../src/`,
 `../../tests/`, `../../purposes/`, and `../../results/` contain concrete
@@ -86,10 +86,15 @@ configs, trial reports, or decision entries.
 │   ├── reports/
 │   │   └── RPT_<id>_<slug>/    # example package, created when report is produced
 │   │       ├── report.md
-│   │       ├── report.pdf
+│   │       ├── report.html
 │   │       ├── figures/
 │   │       ├── tables/
-│   │       └── attachments/
+│   │       ├── attachments/
+│   │       ├── report.pdf      # optional snapshot/export
+│   │       ├── provenance/     # optional for claim-bearing or L2/L3 reports
+│   │       │   ├── manifest.json
+│   │       │   ├── integrity_checks.md
+│   │       │   └── rerun.md
 │   ├── figures/
 │   └── intermediate/
 ├── tracking/                   # optional tracker exports / lightweight run notes
@@ -108,7 +113,7 @@ point:
 - [ ] `prfaq.md` is reviewed and status is READY
 - [ ] Exploratory research and confirmatory research are labeled separately in
   run notes, tracker rows, notebooks, or result rows
-- [ ] Every claim-cited, promotion-eligible, externally shared, or
+- [ ] Every claim-bearing, externally shared, or terminal-decision
   high-reliability trial has a reviewed pre-registration (`prereg/PR_<id>_<slug>.md`
   status is READY before confirmatory execution)
 - [ ] Before claim-bearing confirmatory execution, `PR_<id>_<slug>.md` was
@@ -116,21 +121,32 @@ point:
   exploratory result, data availability, assumptions, implementation
   constraints, and current question still match the PR
 - [ ] Preregistered outcome reports, when produced, use
-  `../../results/reports/RPT_<id>_<slug>/` with `report.md`, `report.pdf`,
-  `figures/`, `tables/`, and `attachments/`
+  `../../results/reports/RPT_<id>_<slug>/`. Required core files:
+  `report.md`, `report.html`, `figures/`, `tables/`, and `attachments/`.
+  Required core directories may be empty. Optional / situation-specific files:
+  `report.pdf` and `provenance/` with `manifest.json`,
+  `integrity_checks.md`, and `rerun.md`. `report.html` is the primary
+  readable artifact for L2/L3 reports; `report.md` is editable source;
+  `report.pdf` is optional snapshot/export. Use provenance/ for
+  claim-bearing or L2/L3 reports. L2/L3 reports means claim-bearing reports
+  and state-promotion or terminal-decision report packages; it is report
+  package level, not analysis tier. In plain terms, report.html is the primary
+  readable artifact for L2/L3 reports; report.md is editable source;
+  report.pdf is optional snapshot/export.
 - [ ] `explanation_ledger.md` has at least 2 competing explanations
   per active question (≥1 should be a null / artifact explanation)
 - [ ] Every trial in `purposes/` has a complete Analysis section (5
   sub-fields, A0-A5 tier explicit), and preregistered outcome reports include
   Transparent Changes
-- [ ] `decisions.md` records durable state transitions and promotion-relevant
+- [ ] `decisions.md` records durable state transitions and claim-bearing
   material changes; ordinary run notes may stay with the tracker or trial artifact
-- [ ] Tracking backend or run-note convention is clear before the first
-  load-bearing claim
+- [ ] Report provenance or run-note convention is clear for each
+  claim-bearing report package
 - [ ] Selection, sweep, and failed-run records exist when they affect a
-  multiple-testing or promotion judgment
-- [ ] Reproducibility 3-tuple recorded for every promotion-eligible
-  trial via a local run note, results row, or equivalent tracker record
+  multiple-testing or support judgment
+- [ ] Report provenance records enough rerun guidance for presented evidence
+  via a local run note, results row, report provenance file, or equivalent
+  tracker record
 - [ ] No material change from any pre-registration is unaddressed; claim-cited
   use is narrowed or rerun when the original plan no longer answers the
   intended question

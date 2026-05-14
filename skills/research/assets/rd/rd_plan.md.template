@@ -1,0 +1,48 @@
+# R&D Plan
+
+## Workstream identity
+
+- Workstream label: R&D Workstream
+- R&D category: <REPLACE: basic research | applied research | experimental development>
+- Status: <REPLACE: drafting | active | completed | killed | parked | split | handed off>
+- Owner / agent: <REPLACE>
+- Created: <REPLACE: YYYY-MM-DD>
+
+## Current-state assessment
+
+<REPLACE: summarize the present system, prior work, constraints, unknowns, and
+why this work is R&D. Current-state assessment is orientation, not an R&D
+category.>
+
+## Objective / question
+
+<REPLACE: the knowledge, practical objective, or development objective this
+workstream will reduce uncertainty about.>
+
+## Evidence plan
+
+| planned_item | purpose | expected_output | pre-registration | decision_or_follow_up |
+|---|---|---|---|---|
+| <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE: prereg/PR_001_initial.md or N/A> | <REPLACE> |
+
+## Execution status and results
+
+| item | executed_as_planned | result_summary | evidence | notes |
+|---|---|---|---|---|
+| <REPLACE> | <REPLACE: yes | no | partial> | <REPLACE> | <REPLACE: artifact path, run ID, table, or report> | <REPLACE> |
+
+## Transparent changes
+
+| date | planned_item | change | rationale | effect_on_claim_or_report |
+|---|---|---|---|---|
+| <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE> |
+
+## Report packages
+
+| report_id | path | decision | claim_boundary | evidence_status |
+|---|---|---|---|---|
+| <REPLACE> | <REPLACE: results/reports/RPT_<id>_<slug>/> | <REPLACE> | <REPLACE> | <REPLACE> |
+
+## Next decision
+
+<REPLACE: continue | report | rerun | split | park | terminal review | handoff, with reason>

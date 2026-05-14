@@ -1,446 +1,294 @@
 # process_review.md
 
-Process review — was the discipline followed? This is the first of two
-review axes (the other is `conclusion_review.md` for claim warrant).
-Both are lightweight, targeted reviews before any Capability / Technology
-Research transition to `matured`, `established`, or `promoted`, before any
-Phenomenon / Mechanism Research promotion to `supported`, or before an
-externally shared load-bearing claim.
+Process review asks whether the discipline needed for a named report package,
+state transition, or externally shared load-bearing claim was followed. This is
+the first of two review axes; `conclusion_review.md` asks whether the claim is
+warranted by the presented evidence.
+
+Process review is targeted. It checks only the process commitments that could
+invalidate the specific claim, report package, or transition under review. It is
+not a complete audit of every exploratory run.
 
 ## When to read
 
-- Before running the promotion gate
-  (`rd_promotion_gate.md` / `pr_promotion_gate.md`)
-- Reviewing another agent's promotion claim
-- Reviewing a project mid-stream when "something feels off" about the
-  process
+- Before a report package is used to support a durable state transition
+- Before an externally shared load-bearing claim
+- Reviewing another agent's claim-bearing report package
+- Reviewing a project mid-stream when a process gap may affect the next
+  decision
 
 ## Purpose
 
-Process review checks only the parts of the protocol that could invalidate the
-claim or state transition under review. It does not check the conclusion —
-that's `conclusion_review.md`. The split is deliberate: a buggy implementation
-can produce numbers that look correct (caught by conclusion review), but a
-load-bearing process violation (skipped pre-registration for a claim-cited
-trial, mid-trial goalpost shift) can corrupt downstream checks (caught here).
+Process review separates blocking violations from logged gaps. A load-bearing
+process violation blocks the named claim or transition. A non-load-bearing
+record gap is logged, may narrow the claim, and may require cleanup, but does
+not by itself invalidate unrelated exploratory work.
 
-**Process review separates blocking violations from logged gaps**. A
-load-bearing process violation blocks promotion; a non-load-bearing record gap
-is logged and may narrow the claim or require cleanup, but does not by itself
-kill promotion eligibility.
+The report package requirements in this file are reporting-side requirements.
+They apply when a package is presented as evidence for a claim or decision; they
+are not continuous tracking contracts for all research activity.
 
 ## How to run
 
-This is a targeted checklist menu. The agent (or reviewer) first names the
-promotion, external claim, or claim-cited trial under review, then reads only
-the sections that could affect it. Do not perform a complete project inventory
-unless selection correction, multiple testing, or promotion judgment depends on
-that inventory.
+Name the claim, report package, or state transition under review, then read only
+the sections that can affect it. Do not perform a full project inventory unless
+selection correction, reproducibility, or the claim itself depends on that
+inventory.
 
 For in-scope items, write:
 
+```markdown
+- [x] item -- evidence: <file:line, reference, or specific observation>
+- [ ] item -- FAIL: <what is missing or violated>
+- [ ] item -- N/A (justify why)
 ```
-- [x] item — evidence: <file:line, reference, or specific observation>
-- [ ] item — FAIL: <what's missing or violated>
-- [ ] item — N/A (justify why)
-```
 
-"Looks good" / "obvious from context" / "I think this is OK" are forbidden at
-promotion and external-claim decision points. Load-bearing passes require a
-specific citation. Lightweight process checks may use a concise summary when
-they are not used to support promotion. Out-of-scope items should be marked
-`N/A — not load-bearing for this review`.
+"Looks good" and "obvious from context" are not valid at claim-bearing decision
+points. Load-bearing passes require a citation. Out-of-scope items should be
+marked `N/A -- not load-bearing for this review`.
 
-## Common pre-conditions (all workstreams)
+## Common pre-conditions
 
-These checks apply regardless of selected workstream label:
+These checks apply to every selected workstream label:
 
 - [ ] **Workstream label is explicitly declared** in `project_state.md` and
-  matches the selected workstream state object
-  - Evidence: `project_state.md` workstream row + selected workstream
-    `README.md` + relevant `decisions.md` entry
-- [ ] **No silent state-object switch**: a workstream has not mixed
-  `capability_map.md` and `explanation_ledger.md`, or silently changed from
-  Capability / Technology Research to Phenomenon / Mechanism Research
-  mid-stream
-  - Evidence: `decisions.md` reviewed for add / split / handoff entries per
-    `SKILL.md` § First Decision
-- [ ] **Durable state changes are logged where they matter**: claims, gates,
-  promotion evidence, kill decisions, pivots, and scope changes have ledger or
-  decision-log entries. Ordinary exploratory runs may be represented only by a
-  run note, tracker run, notebook note, or results row.
-  - Evidence: inspect the decisions and ledgers touched by this review; do not
-    require chronological coverage for sessions that did not change durable
-    state
-- [ ] **Decision-log covers the state transition under review**:
-  `decisions.md` has the entries needed to explain this promotion, kill, pivot,
-  or external claim. It does not need to narrate every experiment.
-  - For a Capability / Technology Research workstream: check only the relevant
-    Layer 1 closure, Stage gate, fired kill criterion, charter deviation, or
-    integration-test clearance that supports the transition under review
-  - For a Phenomenon / Mechanism Research workstream: check only the relevant
-    PR/FAQ readiness, pre-registration readiness, Transparent Changes report
-    status, explanation transition, or PR/FAQ change that supports the claim
-    under review
-  - Evidence: targeted per-category presence check
+  matches the selected state object
+  - Evidence: `project_state.md` workstream row, selected workstream
+    `README.md`, and relevant `decisions.md` entry
+- [ ] **No silent state-object switch**: the project did not change between
+  `rd_plan.md`, `explanation_ledger.md`, or another declared state object
+  without a decision-log entry explaining add / split / handoff / scope change
+  - Evidence: targeted `decisions.md` review
+- [ ] **Durable state changes are logged where they matter**: claim adoption,
+  report-package acceptance, kill decisions, pivots, scope changes, and
+  externally shared conclusions have ledger or decision-log entries
+  - Evidence: inspect only the decisions and ledgers touched by this review
+- [ ] **Decision-log covers the decision under review**: `decisions.md` has the
+  entries needed to explain this transition, kill, pivot, or external claim; it
+  does not need to narrate every experiment
+  - Evidence: targeted per-decision presence check
 - [ ] **Entry guardrails respected**: no claim-bearing confirmation trial or
-  promotion-relevant implementation before the required plan is ready.
-  For Capability / Technology Research, work before the reviewed charter and
-  kill criteria is limited to charter drafting, empty scaffold creation, and
-  tracking path setup. For Phenomenon / Mechanism Research, exploratory
-  probes are allowed only under PR/FAQ and pre-registration readiness rules,
-  and they cannot be used as `supported`, TRL-advancing, or externally reliable
-  evidence.
-  - Evidence: review first 1-2 days' commits and decisions; flag any
-    confirmation run that produced claim-bearing metrics before charter /
-    pre-reg was ready, any promotion-relevant implementation cited before
-    charter readiness, or any exploratory output presented as confirmatory
-- [ ] **Reproducibility 3-tuple recorded** on every promotion-eligible or claim-cited
-  trial via a local run note, results row, or equivalent external tracker record
-  - Evidence: persisted JSON run record in `results.parquet`, the trial
-    analysis section, or another durable run log showing data version + git
-    commit + environment pin
-- [ ] **Tracking backend was selected by project initialization or before the
-  first load-bearing claim** and recorded in `decisions.md`
-  - Evidence: backend decision names tool, storage location, review retrieval
-    path, and minimum persisted fields. Acceptable backends include local
-    notes/parquet, MLflow, W&B, Neptune, Trackio, TensorBoard, Sacred,
-    DVC, or an organizational tracker.
-  - Compatibility: for projects that already had valid local
-    local run notes before this requirement,
-    missing early backend selection is a logged gap, not a promotion blocker.
-    Treat local notes/parquet as the implicit backend and require an explicit
-    backend decision before the next load-bearing claim.
-- [ ] **External tracker records, if used, satisfy the same review anchors**
-  as the local notes protocol
-  - Evidence: for each load-bearing or promotion-eligible `trial_id`, reviewer
-    can resolve tracker run ID, artifact URI, data version, git commit,
-    environment pin, seed, params, and headline metrics
-- [ ] **Decision-relevant run set exists** for multiple-testing, selection
-  correction, and promotion judgment when those issues apply
-  - Evidence: `results/results.parquet`, tracker query/export, or durable
-    `tracking/` file covering the runs that informed the selection or claim:
-    cited winners, relevant failed attempts, parameter-sweep combinations,
-    model-selection attempts, and robustness variants. A complete export of
-    every exploratory run is not required unless the correction depends on it.
-- [ ] **Planning artifacts were not silently rewritten**: charter, PR/FAQ,
-  and pre-registration changes that affect claims have explicit change entries
+  report-package conclusion was executed before the relevant plan was ready
+  enough to define the question, scope, method, and decision criteria
+  - Evidence: first claim-cited run, plan status, and report package chronology
+- [ ] **Presented evidence can be resolved** for the named claim or report
+  package
+  - Scope: the report package and presented evidence only.
+  - Evidence: data version, git commit, environment pin, seed when relevant,
+    and stable artifact path or tracker ID when those anchors are needed to
+    challenge or rerun the reported result
+  - The anchor can be a local run note, tracker record, results row, or report
+    provenance entry.
+- [ ] **Presented evidence set exists** when multiple-testing, selection
+  correction, or support judgment depends on it
+  - Evidence: `results/results.parquet`, tracker query/export, durable
+    `tracking/` file, or report provenance file covering cited winners,
+    relevant failed attempts, parameter sweeps, model-selection attempts, and
+    robustness variants
+- [ ] **Planning artifacts were not silently rewritten**: material plan changes
+  that affect claims have explicit change entries and are reflected in the
+  report package's `Transparent Changes` section when a package exists
   - Evidence: relevant `decisions.md` entries, current planning files, and
-    report `Transparent Changes` sections where reports exist
+    report package
 
-## Capability / Technology Research workstream process review
+## R&D Workstream process review
 
-For Capability / Technology Research workstreams only. Check in this order:
+Use this section for workstreams labeled `R&D Workstream`. The state object is
+`rd_plan.md`.
 
-### Charter (per `references/rd/rd_charter.md`)
+### R&D identity
 
-- [ ] **Charter exists** at workstream root (`charter.md`)
+- [ ] **The work is correctly framed as R&D**
+  - Evidence: `rd_plan.md` shows why the work is novel, creative, uncertain,
+    systematic, and transferable or reproducible
+- [ ] **R&D category is declared**
+  - Evidence: `rd_plan.md` labels the work as `basic research`,
+    `applied research`, or `experimental development`, with a one-paragraph
+    rationale
+- [ ] **The category fits the claim**
+  - Evidence: report package and plan do not claim a product-ready development
+    outcome from a basic-research evidence base, or a general knowledge claim
+    from a narrow development validation
+
+### Plan readiness
+
+- [ ] **`rd_plan.md` exists at the workstream root**
   - Evidence: file path + size > 0
-- [ ] **Charter is reviewed and ready**
-  - Evidence: `charter.md` status is `READY`
-- [ ] **All 8 Heilmeier questions answered** with concrete content
-  (no `<REPLACE: ...>` markers, no `TBD`)
-  - Evidence: regex scan against `<REPLACE` and `TBD`/`TODO`/`???`
-- [ ] **H6 kill criteria are concrete and observable** (numeric or
-  behavioral threshold, not "if it doesn't work")
-  - Evidence: read each H6 entry; verify it names a specific metric
-    + threshold + condition
-- [ ] **H7 distinguishes one-time vs recurring cost**
-  - Evidence: § 7 has both subsections filled (or "N/A — all
-    establish-once" justified)
-- [ ] **H8 is lifecycle-aware**: if any K is `continuous-improvement`, final exam
-  references the maintenance plan
-  - Evidence: § 8 + Layer 1 lifecycle assignments cross-referenced
+- [ ] **Plan status is ready for the reviewed claim-bearing work**
+  - Evidence: `rd_plan.md` status and approval/review note before the cited run
+- [ ] **Question, objective, and decision criteria are concrete**
+  - Evidence: the plan states what uncertainty is being reduced, what evidence
+    would count, and what decisions the evidence can support
+- [ ] **Scope boundaries are explicit**
+  - Evidence: in-scope and out-of-scope populations, systems, periods,
+    datasets, operating conditions, or implementation contexts are named
+- [ ] **Kill / stop / pivot criteria are observable**
+  - Evidence: criteria use numeric or behaviorally observable thresholds where
+    possible, not "if it does not work"
+- [ ] **Costs and constraints are described at the right level**
+  - Evidence: the plan distinguishes one-time work, recurring maintenance,
+    operational constraints, and known external dependencies where relevant
 
-### Layer 1 (Core Technologies)
+### Execution discipline
 
-- [ ] **Layer 1 closed-for-work before any capability was written**
-  per `references/rd/core_technologies.md` § Layer 1 closure
-  - Evidence: `decisions.md` shows Layer 1 closure before capability work is
-    treated as promotion-relevant
-- [ ] **Operational filter applied per K**: each K's
-  `decisions.md`-recorded justification names which Conditions 0-3
-  it passes
-  - Evidence: per-K justification in `decisions.md` or
-    `capability_map.md` Section 1
-- [ ] **No K is a dependency masquerading as core tech** (Condition 1
-  failure)
-  - Evidence: each K has a research question, not just "use X library"
-- [ ] **No coupled K's** (Condition 2 failure — sibling K's that
-  cannot be tested independently)
-  - Evidence: per-K independence justification
-- [ ] **Lifecycle (`establish-once` / `continuous-improvement`) explicitly assigned per K**,
-  not defaulted
-  - Evidence: each K row has the field filled with rationale
-- [ ] **Operational filter Condition 0 (merge test) applied**: no two
-  K's with > 50% conceptual overlap in research question
-  - Evidence: cross-K question comparison
+- [ ] **Plan-before-execute discipline was followed for claim-cited work**
+  - Evidence: plan timestamp/status precedes execution of the run cited by the
+    report package
+- [ ] **Material deviations are visible**
+  - Evidence: report package `Transparent Changes` lists material differences
+    from `rd_plan.md`, explains why they occurred, and states whether they
+    narrow or invalidate the original decision criteria
+- [ ] **Exploratory findings are labeled honestly**
+  - Evidence: exploratory or diagnostic outputs are not presented as planned
+    confirmatory evidence unless rerun or reported with the appropriate
+    caveat
+- [ ] **Implementation and validation work are separable enough to review**
+  - Evidence: the package identifies what was built, what was measured, which
+    artifacts are evidence, and which checks are prerequisites for trusting the
+    measurement
+- [ ] **Dependencies and downstream invalidation are recorded where relevant**
+  - Evidence: the report package or `decisions.md` names upstream artifacts and
+    states what must be rerun if they change
 
-### Layer 2 (Capabilities)
+### Evidence package
 
-- [ ] **Every capability has `core_tech_id` set** (or `integration`)
-  - Evidence: capability map review
-- [ ] **Capability granularity rule respected**: each capability
-  sized for one test → one TRL transition
-  - Evidence: per-capability `exit_criteria` is a single concrete
-    observable
-- [ ] **Kill criteria A4-anchored**: every fired kill has an A4
-  decomposition in `decisions.md` (per
-  `references/rd/capability_map_schema.md`)
-  - Evidence: per-kill log entry has Observation / Decomposition /
-    Evidence weighing / Tier rating / Gap
-  - Scope: kill requires A4+ evidence only for terminal kill. Candidate drop,
-    reject-for-now, and deprioritize are exploratory pruning decisions;
-    exploratory pruning decisions do not require A4+ evidence.
-- [ ] **TRL skip not detected**: no single state-change advanced TRL
-  by > 1
-  - Evidence: capability map transition review
-- [ ] **Stage gates ran in order**: Scoping → De-risk → Build →
-  Validate → Integrate; no Stage gate ran while Layer 1 was
-  incomplete
-  - Evidence: Stage gate entries are ordered after Layer 1 closure
-
-### Capability maturity dependency ordering
-
-- [ ] **For every capability C_i with `depends_on` upstream
-  capabilities, C_i reaches `matured` only after every upstream capability
-  reaches `matured`**
-  - Evidence: for each dependency edge in `capability_map.md` Section 2
-    `depends_on` field, verify no dependency reversal
-  - Failure mode: C5 matured AFTER C6 (which depends on C5) — C6
-    consumed an unmatured upstream
-- [ ] **Declared integration pattern's ordering check passed**
-  (Pattern 1 per-K replacement, Pattern 2 final integration capability, or
-  Pattern 3 skeleton replacement plus any declared final integration
-  capability)
-  - Evidence: replacement or integration notes cite the mature upstream
-    capability rows consumed under the declared pattern
-
-### Cross-project dependencies
-
-- [ ] **Every `dependent_on_research` capability has the named Phenomenon /
-  Mechanism Research workstream at the required tier**
-  - Evidence: cross-reference to the source workstream's
-    `explanation_ledger.md` Claims section
+- [ ] **Presented evidence maps to each decision criterion**
+  - Evidence: report package traceability table or equivalent narrative mapping
+- [ ] **Negative and ambiguous results are included when they affect the claim**
+  - Evidence: decision-relevant failures, abandoned variants, and robustness
+    checks are visible in the package or presented evidence set
+- [ ] **Transferability or reproducibility is addressed**
+  - Evidence: package includes replication, independent rerun, environment
+    pinning, design rationale, or other evidence appropriate to the R&D
+    category and claim strength
+- [ ] **No overclaim from category mismatch**
+  - Evidence: basic research, applied research, and experimental development
+    outputs are described at the level actually tested
 
 ## Phenomenon / Mechanism Research workstream process review
 
-For Phenomenon / Mechanism Research workstreams only. Check in this order:
+Use this section for phenomenon- or mechanism-oriented research workstreams
+that use `explanation_ledger.md` and the pre-registration templates.
 
-### PR/FAQ (per `references/pure_research/prfaq.md`)
+### PR/FAQ
 
 - [ ] **PR/FAQ exists** at workstream root (`prfaq.md`)
 - [ ] **PR/FAQ is reviewed and ready**
   - Evidence: `prfaq.md` status is `READY`
-- [ ] **Part 1 (Press Release) is concrete**: states the finding,
-  mechanism, scope, alternatives ruled out, and evidence form
-  - Evidence: read Part 1; verify all 5 elements present
-- [ ] **Part 2 (FAQ) has ≥10 entries** covering statistical sufficiency,
+- [ ] **Part 1 is concrete**: states the finding, mechanism, scope,
+  alternatives ruled out, and evidence form
+- [ ] **Part 2 has enough FAQ coverage** for statistical sufficiency,
   robustness, mechanism, alternatives, replication, scope, practical
   implication, and post-hoc rationalization risk
-  - Evidence: count Q's; verify topic coverage
 
 ### Targeted literature
 
-- [ ] **Targeted literature search happened AFTER PR/FAQ readiness**
-  (PR/FAQ scopes the search; reverse order risks unfocused search)
-  - Evidence: literature notes are scoped to the ready PR/FAQ question
-- [ ] **Literature is genuinely targeted**: papers cited in
-  `literature/papers.md` relate to the PR/FAQ question, not generic
-  topic browsing
-  - Evidence: per-paper `relation to this research` field is
-    specific (not "background")
+- [ ] **Targeted literature search happened after the question was scoped**
+  - Evidence: literature notes are scoped to the ready question
+- [ ] **Literature is genuinely targeted**
+  - Evidence: per-paper `relation to this research` field is specific, not
+    generic background
 
-### Pre-registration
+### Pre-registration as general discipline
 
-Use `references/pure_research/preregistration.md`. The current template has
-shared fields plus separate confirmatory and exploratory bodies.
+Pre-registration is plan -> execute -> compare -> report discipline. It fixes
+the planned question, method, evidence, and decision criteria before a run is
+used as claim-cited evidence. Exploratory pre-registration bounds a search and
+does not make a result confirmatory by itself.
 
 #### Confirmatory pre-registration
 
-Use this subsection for claim-cited, promotion-eligible, externally shared, or
-high-reliability confirmatory trials.
-
-- [ ] **Confirmatory pre-registration exists** for every cited trial
-  (`prereg/PR_<id>_<slug>.md`)
+- [ ] **Confirmatory pre-registration exists** for every cited confirmatory
+  trial (`prereg/PR_<id>_<slug>.md`)
 - [ ] **Confirmatory pre-registration was reviewed before claim-cited
   execution**
-  - Evidence: `prereg/PR_<id>_<slug>.md` status is `READY` before the trial is cited
-- [ ] **Study Information and shared fields are complete**
-  - Evidence: `Study Information`, `Sampling / Data Plan`, and
-    `Variables / Measures` have concrete entries or justified `N/A`
-- [ ] **Hypotheses are stated before execution**
-  - Evidence: `Hypotheses` names the hypotheses or competing explanations,
-    including null / artifact candidates where applicable
-- [ ] **Design Plan is concrete enough to identify what was run**
-  - Evidence: `Design Plan` names the design, comparison groups,
-    randomization / blinding if any, and execution order
-- [ ] **Analysis Plan is specific enough to execute and audit**
-  - Evidence: `Analysis Plan` names estimator/model/test, primary and
-    secondary analyses, robustness checks, and multiple-testing plan when
-    applicable
-- [ ] **Inference / Decision Criteria are fixed before seeing results**
-  - Evidence: `Inference / Decision Criteria` states support, weaken/reject,
-    and ambiguous-result rules
-- [ ] **Data Exclusion / Missing Data Handling is specified**
-  - Evidence: exclusions, missingness treatment, imputation, and checks for
-    whether exclusions changed the answer are present
+- [ ] **Study information and shared fields are complete**
+- [ ] **Hypotheses or competing explanations are stated before execution**
+- [ ] **Design plan is concrete enough to identify what was run**
+- [ ] **Analysis plan is specific enough to execute and audit**
+- [ ] **Inference / decision criteria are fixed before seeing results**
+- [ ] **Data exclusion / missing data handling is specified**
 
 #### Exploratory pre-registration
 
-Use this subsection when an exploratory preregistration is used as planning and
-reporting discipline for exploratory research. It does not make the result
-confirmatory by itself.
-
-- [ ] **Exploratory pre-registration was reviewed before execution if it is
-  cited as a planned exploratory run**
-  - Evidence: `prereg/PR_<id>_<slug>.md` status is `READY` before the
-    exploratory artifact was run
-- [ ] **Study Information and shared fields are complete**
-  - Evidence: `Study Information`, `Sampling / Data Plan`, and
-    `Variables / Measures` have concrete entries or justified `N/A`
-- [ ] **Exploratory Objective states the uncertainty being reduced**
-  - Evidence: `Exploratory Objective` is concrete and scoped
-- [ ] **Exploration Scope bounds the search area**
-  - Evidence: `Exploration Scope` names in-scope data, variables, procedures,
-    candidate explanations, and boundaries
-- [ ] **Allowed Transformations / Procedures bound researcher degrees of
+- [ ] **Exploratory pre-registration was reviewed before execution if cited as
+  a planned exploratory run**
+- [ ] **Exploratory objective states the uncertainty being reduced**
+- [ ] **Exploration scope bounds the search area**
+- [ ] **Allowed transformations / procedures bound researcher degrees of
   freedom**
-  - Evidence: diagnostics, plots, model families, feature engineering,
-    ranking, clustering, ablations, or other procedures are listed before
-    execution
 - [ ] **Selection or follow-up criteria are stated before execution**
-  - Evidence: criteria for selecting patterns, explanations, failures,
-    variables, or next questions are present
-- [ ] **Expected Outputs state the intended artifact kind**
-  - Evidence: `Expected Outputs` names a diagnostic map, candidate
-    explanations, ranked patterns, failure analysis, narrowed question, or
-    future confirmatory plan
+- [ ] **Expected outputs state the intended artifact kind**
 
 ### Trial execution and outcome reporting
 
 - [ ] **Transparent Changes exists for every preregistered outcome report**
-  - Evidence: report package includes `Transparent Changes` with either
-    "No material changes from the preregistration." or per-change
-    description, rationale, and effect on study results or conclusions
-- [ ] **Material changes were handled without overclaiming**: if a change means
-  the original plan no longer answers the intended question, the result is
-  narrowed, marked exploratory, or rerun under a suitable pre-registration
-  before being used as claim-cited evidence
-  - Evidence: report `Transparent Changes`, trial notes, and `decisions.md`
-    explain the handling
-- [ ] **Verification checks ran before main test** in trial notebooks
-  - Evidence: trial notebook § Verification checks cell + pass status
-- [ ] **No post-hoc explanation addition**: any post-trial candidate
-  E's are clearly flagged as not-pre-registered and parked for
-  future trials (per `pr_workflow.md`)
-  - Evidence: trial notebook § 6.2 Decomposition flags
-
-### Planning integrity checklist
-
-This is a focused subset of pre-registration discipline checks targeting
-post-hoc rationalization, goalpost shifting, and selective reporting.
-
-- [ ] **Pre-registration was ready before the claim-cited run** for the trial
-  (no shopping trip)
-  - Evidence: the trial plan was reviewed before the claim-cited run
-- [ ] **No "alternative pre-registration" patterns**: multiple draft designs
-  are not selectively re-labeled after seeing a result
-  - Evidence: draft alternatives are not used to justify the completed trial
-- [ ] **Trial design follows pre-reg**: trial notebook § Trial design matches
-  the confirmatory `Analysis Plan` or exploratory `Allowed Transformations /
-  Procedures` on load-bearing choices
-  - Evidence: any material difference appears in `Transparent Changes`
-- [ ] **Threshold not changed after seeing data** (goalpost shifting)
-  - Evidence: `Inference / Decision Criteria` and report
-    `Transparent Changes` show no outcome-dependent threshold change
-- [ ] **All pre-registered secondary tests reported**, not just
-  favorable ones
-  - Evidence: trial notebook § 4 Observation lists every secondary
-    test in pre-reg, with status (pass / fail / N/A with reason)
-- [ ] **Multiple-testing trial count is honest** — includes the prior trials,
-  sweeps, or variants that affect the family under review, not just the current
-  favorable result
-  - Evidence: `Analysis Plan` multiple-testing plan vs the
-    decision-relevant run set
-    (`results.parquet`, tracker query/export, or another durable record)
-- [ ] **No mid-trial competing E addition**: any new candidate E
-  identified during analysis is parked for a future pre-registered
-  trial, not added to the current trial's discrimination
-  - Evidence: trial notebook § 6.2 marks post-hoc E's clearly
+  - Evidence: report package includes either "No material changes from the
+    preregistration." or per-change description, rationale, and effect on
+    results or conclusions
+- [ ] **Material changes were handled without overclaiming**
+  - Evidence: report package, trial notes, and `decisions.md` explain whether
+    the result is narrowed, marked exploratory, or rerun under a suitable plan
+- [ ] **Verification checks ran before the main test where applicable**
+  - Evidence: trial notebook verification section + pass status
+- [ ] **No post-hoc explanation addition into the current claim**
+  - Evidence: post-trial candidate explanations are flagged and parked for
+    future planned work
 
 ### Explanation ledger update
 
 - [ ] **Claim-cited evidence updates the explanation ledger where it changes
   support status, scope, or competing explanations**
-  - Evidence: the relevant `explanation_ledger.md` row cites the trial,
-    results row, tracker run, or notebook note. A separate `decisions.md`
-    entry is needed only when the change is a durable promotion, rejection,
-    merge, park, pivot, scope change, or other state commitment.
-- [ ] **No `weakened`/`rejected` E was re-opened to `active` without
-  a new pre-registration** (per
-  `references/pure_research/explanation_ledger_schema.md` allowed
-  transitions)
-  - Evidence: the ledger entry explains the re-open and points to a new trial
-    plan
+  - Evidence: relevant `explanation_ledger.md` row cites the trial, results
+    row, tracker run, or notebook note
+- [ ] **Rejected or weakened explanations are not reopened without a new plan**
+  - Evidence: ledger entry explains the reopen and points to the new planned
+    trial
 
 ### IMRAD draft
 
-- [ ] **IMRAD draft started after PR/FAQ readiness** (not deferred to
-  promotion review)
-  - Evidence: `imrad_draft.md` has early Section 1 scaffolding, not a
-    single end-of-project write-up
-- [ ] **Sections 1-2 (scaffolding) updated as pre-reg / literature
-  evolved**; Sections 3-4 only filled after trials with required
-  analysis depth
-  - Evidence: `imrad_draft.md` contains early Section 1-2 scaffolding and
-    trial-backed Section 3-4 content
-- [ ] **Methods § 2.5 lists Transparent Changes** from pre-registration
-  (or states "No material changes from the preregistration.")
-  - Evidence: cross-reference with report `Transparent Changes`, trial notes,
-    and `decisions.md`
+- [ ] **IMRAD draft started after question readiness**
+- [ ] **Sections 1-2 evolved with literature and plans; Sections 3-4 are
+  trial-backed**
+- [ ] **Methods lists Transparent Changes** from pre-registration or states
+  that there were no material changes
 
 ## Common process violations
 
 | Violation | Symptom | Where caught |
 |---|---|---|
-| State-object mixing without add / split / handoff | Capability workstream has phenomenon artifacts (PR/FAQ, prereg) without `decisions.md` add / split / handoff entry | Common pre-conditions § state-object switch |
-| Premature evidence-producing implementation | Promotion-relevant code or metrics cited before charter / PR/FAQ readiness | Common pre-conditions § Entry guardrails |
-| Charter rewritten mid-project | Material charter change has no deviation entry | R&D § Charter, no undocumented amendments |
-| Layer 1 incomplete when Layer 2 work started | Capability work is promoted before Layer 1 closure | R&D § Layer 1 |
-| TRL skip via single-update transition | TRL advances by > 1 in single state change | R&D § Layer 2 § TRL skip |
-| Integration test ran before upstream matured | Integration consumes capabilities not yet `matured` | R&D § Integration test ordering |
-| Post-hoc pre-registration | Pre-registration was completed after the result it claims to plan | PR § pre-registration before claim-cited execution |
-| Material change treated as irrelevant | Transparent Changes says "none" even though the plan, scope, threshold, or result-bearing procedure changed | PR § Trial execution and outcome reporting |
-| Post-hoc rationalization via shopping trip | Data-dependent result presented as if it had been planned before pre-registration readiness | PR § Planning integrity checklist |
-| Multiple-testing under-reporting | Headline selection-adjusted statistic computed with low N when project ran many configurations | PR § Planning integrity checklist |
-| Generic terminal labels in conclusions | "model is good" / "regime suited" / "noise" patterns | Caught in `conclusion_review.md` analysis depth axis |
+| Silent state-object switch | Workstream changes state object without a decision entry | Common pre-conditions |
+| Premature claim-bearing execution | Metrics are cited before the relevant plan was ready | Entry guardrails |
+| Plan rewritten after results | Material plan change has no decision entry or Transparent Changes note | Planning artifacts |
+| Category mismatch | Evidence from one R&D category is used to claim a stronger category outcome | R&D identity |
+| Exploratory output overclaimed | Diagnostic search result is presented as confirmatory evidence | Execution discipline |
+| Missing presented evidence set | Selection correction ignores failed or abandoned variants | Common pre-conditions |
+| Post-hoc pre-registration | Pre-registration was completed after the result it claims to plan | Pre-registration |
+| Material change treated as irrelevant | Transparent Changes says "none" despite a changed plan, scope, threshold, or result-bearing procedure | Outcome reporting |
+| Generic terminal labels in conclusions | "model is good" / "regime suited" / "noise" patterns | `conclusion_review.md` analysis depth axis |
 
 ## Outcome of process review
 
-- **All in-scope load-bearing checks pass with citations** → process review
-  CLEAN for the named transition; proceed to `conclusion_review.md`
-- **Any in-scope load-bearing check fails or N/A without justification** →
-  process review FAILED; cannot proceed to promotion until fixed or the claim
-  is narrowed so it no longer depends on the failure
-- **Process review report** written into `decisions.md` under section
-  `## YYYY-MM-DD Process review for promotion of <X>`
+- **All in-scope load-bearing checks pass with citations** -> process review
+  CLEAN for the named claim or transition; proceed to `conclusion_review.md`
+- **Any in-scope load-bearing check fails or N/A without justification** ->
+  process review FAILED; the claim must be fixed, narrowed, or decoupled from
+  the failed process commitment
+- **Process review report** may be written into `decisions.md` when a durable
+  record is needed
 
 The report includes:
-- Date and reviewer (agent / user)
-- Scope of review and each in-scope check + status (pass / fail / N/A) +
-  evidence citation
-- Failed items + remediation plan or rejection of promotion
+
+- Date and reviewer
+- Scope of review and each in-scope check + status + evidence citation
+- Failed items + remediation plan or claim narrowing
 - Sign-off: process review clean / fail
 
 ## Relationship to other references
 
-- Pre-condition for `references/review/conclusion_review.md` (must
-  run before)
-- Required by `references/rd/rd_promotion_gate.md` § Pre-conditions
-  and `references/pure_research/pr_promotion_gate.md` § Pre-conditions
-- Process discipline defined in
-  `references/rd/rd_workflow.md`, `references/rd/rd_stages.md`,
-  `references/rd/core_technologies.md`,
-  `references/pure_research/pr_workflow.md`,
-  `references/pure_research/preregistration.md`
+- Pre-condition for `references/review/conclusion_review.md`
+- Complements workstream planning files such as `rd_plan.md`,
+  `prfaq.md`, pre-registration files, and report packages
+- Uses `references/shared/reproducibility.md`,
+  `references/shared/results_db_schema.md`, and
+  `references/shared/analysis_depth.md` when those surfaces bear on the claim

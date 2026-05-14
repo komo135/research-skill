@@ -1,8 +1,8 @@
 # Trial INDEX
 
 List of numbered evidence artifacts. `scripts/new_trial.py` adds new
-entries automatically. Ledger files may later cite these artifacts during
-claim, capability, or explanation assessment.
+entries automatically. State files may later cite these artifacts during
+claim, R&D objective, or explanation assessment.
 
 ## Entries
 
@@ -18,8 +18,8 @@ claim, capability, or explanation assessment.
 - `dropped`: judged not worth pursuing; reason recorded in decisions.md
 
 An artifact can be complete without moving research state. The ledger
-assessment column records whether `capability_map.md`,
-`explanation_ledger.md`, or `decisions.md` later cites it.
+assessment column records whether `rd_plan.md`, `explanation_ledger.md`, or
+`decisions.md` later cites it.
 For mixed projects, the optional protocol link is the workstream directory name
 selected with `scripts/new_trial.py --workstream <name>`.
 

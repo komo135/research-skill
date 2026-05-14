@@ -13,7 +13,7 @@ Usage:
 
 Output:
     Pretty-printed summary listing each entry from the window, classified by
-    type (state transition / deviation / no-progress / planning update / promotion).
+    type (state transition / deviation / no-progress / planning update / support review).
 
 Exit codes:
     0: summary printed successfully
@@ -34,12 +34,11 @@ from pathlib import Path
 ENTRY_PATTERNS = [
     (re.compile(r"deviation", re.IGNORECASE), "deviation"),
     (re.compile(r"no progress", re.IGNORECASE), "no-progress"),
-    (re.compile(r"promot", re.IGNORECASE), "promotion"),
+    (re.compile(r"support review|external claim|terminal decision", re.IGNORECASE), "support review"),
     (re.compile(r"kill", re.IGNORECASE), "kill"),
-    (re.compile(r"matured|established|supported|rejected|merged|stale|parked|active", re.IGNORECASE),
+    (re.compile(r"supported|rejected|merged|stale|parked|active", re.IGNORECASE),
      "state transition"),
-    (re.compile(r"layer 1 closure", re.IGNORECASE), "layer 1 closure"),
-    (re.compile(r"stage gate", re.IGNORECASE), "stage gate"),
+    (re.compile(r"plan-to-result|pre-registration", re.IGNORECASE), "planning update"),
     (re.compile(r"trial complete|trial run", re.IGNORECASE), "trial"),
 ]
 
@@ -139,8 +138,8 @@ def main() -> None:
 
     # Print summary by kind
     print("Summary by kind:")
-    for kind in ("promotion", "planning update", "state transition", "stage gate", "trial",
-                 "layer 1 closure", "kill", "deviation", "no-progress", "other"):
+    for kind in ("support review", "planning update", "state transition", "trial",
+                 "kill", "deviation", "no-progress", "other"):
         if kind in by_kind:
             print(f"  {kind}: {len(by_kind[kind])}")
     print()
@@ -166,8 +165,8 @@ def main() -> None:
         print(f"  • {len(by_kind['deviation'])} deviation(s) — verify whether downstream artifacts need re-evaluation")
     if "kill" in by_kind:
         print(f"  • {len(by_kind['kill'])} kill event(s) — confirm A4 decomposition is on file")
-    if "promotion" in by_kind:
-        print(f"  • {len(by_kind['promotion'])} promotion(s) — ensure post-promotion artifacts (IMRAD draft, maintenance plan) are stable")
+    if "support review" in by_kind:
+        print(f"  • {len(by_kind['support review'])} support review(s) — ensure report artifacts and evidence links are stable")
 
 
 if __name__ == "__main__":

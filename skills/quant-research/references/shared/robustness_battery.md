@@ -20,7 +20,8 @@ contamination uniformly and produces credible-looking false confidence.
 
 ## Required checks
 
-Run all seven. Their results also become triggers for the next derived hypothesis.
+Run all seven when the claim depends on strategy robustness. Their results also
+become inputs to the next planned question or narrowing decision.
 
 ### 1. Threshold sensitivity (2D grid)
 
@@ -134,12 +135,11 @@ unless all required robustness checks pass and both review layers are clean.
 ## When a check fails
 
 Each failure suggests a state update first. Connect it to the current
-workstream ledger: Capability / Technology Research updates
-`capability_map.md`, while Phenomenon / Mechanism Research updates
-`explanation_ledger.md`. Create the next discriminating test only when
-success and failure would change a specific ledger row; otherwise record a
-robustness finding, merged variant, rejected direction, stale row, or parked
-dependency.
+workstream state object: an `R&D Workstream` uses `rd_plan.md`, while a
+phenomenon / mechanism workstream updates `explanation_ledger.md`. Create the
+next discriminating test only when success and failure would change a specific
+state entry; otherwise record a robustness finding, merged variant, rejected
+direction, stale row, or parked dependency.
 
 | Failed check | Direction for the next hypothesis |
 |---|---|
@@ -150,6 +150,6 @@ dependency.
 | DSR < 0.95 | Too many hyperparameter trials; redesign and reduce trials |
 | Only one regime works | Adopt a conditional strategy |
 
-Log durable state transitions in `decisions.md`. Add or refine the next
-ledger action only when success and failure would update a distinct row in
-`capability_map.md` or `explanation_ledger.md`.
+Log durable state transitions in `decisions.md`. Add or refine the next state
+action only when success and failure would update a distinct entry in
+`rd_plan.md`, `explanation_ledger.md`, or another declared state object.

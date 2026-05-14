@@ -30,6 +30,20 @@ prereg/PR_<id>_<slug>.md
 
 ## Purpose
 
+Plan -> execute -> compare -> report:
+
+- Plan: write or select the pre-registration before work starts.
+- Execute: run the work against the written plan.
+- Compare: compare actual execution and results against the pre-registration.
+- Report: publish the plan-to-result table, transparent changes, evidence, and limitations.
+
+Pre-registration is a plan, not a prison. Changes are allowed when they are
+disclosed and interpreted honestly. A midstream pre-registration governs future
+work or explicit reruns only; prior work is prior or exploratory evidence.
+Report contracts apply to report packages and presented evidence, not to
+research or experiments. A claim-to-artifact check is a reporting-side
+requirement, not a continuous research tracking contract.
+
 Pre-registration states the planned question, scope, data, variables, analysis
 or exploration procedure, and interpretation boundary before execution. Before
 execution, compare `PR_<id>_<slug>.md` against the current state: prior work,
@@ -52,6 +66,22 @@ rationalize.
 ## Shared required content
 
 Both confirmatory and exploratory preregistrations contain these sections:
+
+- Question / objective
+- Scope
+- Data / input plan
+- Variables / measures or inspection targets
+- Planned procedure
+- Expected outputs
+- Decision / follow-up criteria
+- Non-claim-bearing condition
+
+The Non-claim-bearing condition states what would prevent outputs from being
+used as claim-bearing evidence without a future preregistered rerun or
+narrower report claim. Examples include data exposure before the plan was
+ready, a plan-breaking scope change, a threshold or interpretation change
+after seeing results, missing required evidence, or a procedure that no longer
+answers the intended question.
 
 ### Study Information
 
@@ -217,38 +247,58 @@ answers the intended question, the report says so plainly.
 
 ## Outcome report package
 
-All preregistered work that produces a report uses the same package shape:
+All preregistered or claim-bearing work that produces a formal report package
+uses the same package shape. Required core files and directories:
 
 ```text
 results/reports/
   RPT_<id>_<slug>/
     report.md
-    report.pdf
+    report.html
     figures/
     tables/
     attachments/
 ```
 
-`report.md` is the editable source. `report.pdf` is the provided report
-artifact. Figures and tables in the PDF should have source files under
-`figures/` or `tables/`. Large source data and intermediate artifacts should
-not be copied unless they are small and necessary. Local paths may appear in
-`report.md` or a provenance appendix, but should not dominate the report.
-External tracker run IDs are optional and appear only if a tracker was actually
-used.
+Required core directories may be empty when the report has no figures, tables,
+or attachments.
+
+Optional / situation-specific files:
+
+```text
+results/reports/
+  RPT_<id>_<slug>/
+    report.pdf
+    provenance/
+      manifest.json
+      integrity_checks.md
+      rerun.md
+```
+
+`report.html` is the primary readable artifact for L2/L3 reports. `report.md`
+is editable source. `report.pdf` is optional snapshot/export. Use
+provenance/ for claim-bearing or L2/L3 reports. L2/L3 reports means
+claim-bearing reports and state-promotion or terminal-decision report
+packages; it is report package level, not analysis tier. In provenance/,
+include `manifest.json`, `integrity_checks.md`, and `rerun.md`. Figures and
+tables in the readable report should have source files under `figures/` or
+`tables/`. Large source data and intermediate artifacts should not be copied
+unless they are small and necessary. Local paths may appear in `report.md` or
+a provenance appendix, but should not dominate the report. External tracker
+run IDs are optional and appear only if a tracker was actually used.
 
 Required report sections:
 
-1. Preregistration Reference
-2. Summary
-3. Plan-to-Result Table
-4. Key Figures / Tables
-5. Transparent Changes
-6. Scope / Limitations
-
-Optional section:
-
-- Follow-up or next decision
+1. Executive Decision
+2. Research Stage and Claim Boundary
+3. Preregistration Reference
+4. Plan-to-Result Table
+5. Key Evidence
+6. Evidence Integrity Checks
+7. Transparent Changes
+8. Reproducibility Capsule
+9. Scope / Limitations / Alternative Explanations
+10. Next Action
 
 Confirmatory reports emphasize hypotheses, decision criteria, and completion
 of the planned analysis. Exploratory reports emphasize scope, patterns,
