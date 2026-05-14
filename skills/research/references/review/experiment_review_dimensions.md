@@ -34,7 +34,7 @@ dataset / context range (that is `scope`) or method choice (that is `method`).
 - The notebook's *Research design* cell
 - The relevant design artifact
 - The research state ledger
-- `capability_map.md` or `explanation_ledger.md` (the cycle history, where applicable)
+- `rd_plan.md` or `explanation_ledger.md` (the cycle history, where applicable)
 
 ### Checks
 
@@ -229,7 +229,7 @@ systematically blind to their own overstatement.
 | Effect size in the abstract matches the test-set effect size, not the in-sample | Quoting an in-sample number in the abstract | high |
 | Verdict matches the *honest* selection-adjusted statistic | `verdict = "supported"` when the multiple-testing correction fails after trial-count review | high |
 | Conclusion does not rebrand a fail as a "novel insight" | "We could not predict the outcome; this contributes to the literature on null effects" without a counter-evidence design | medium |
-| Conclusion does not rebrand a *local replication* (Weak-tier achievement) as a *novel finding* | Abstract says "this work shows that method M improves outcome Y on cohort C during period P" framed as a contribution, when the claim's pathway-forecasted tier was Medium and the achieved differentiation against established prior work is only a period or parameter extension — the work confirmed an established result; the abstract must say so | high |
+| Conclusion does not rebrand a *local replication* (Weak-tier achievement) as a *novel finding* | Abstract says "this work shows that method M improves outcome Y on cohort C during period P" framed as a contribution, when the claim's pathway-forecasted tier was Medium and the achieved differentiation against prior work is only a period or parameter extension -- the work confirmed a known result; the abstract must say so | high |
 | Forward-looking claims separated from backward-looking findings | Mixing "the model achieved effect size X" with "we expect effect size X going forward" | medium |
 
 ### Notes
@@ -338,7 +338,7 @@ context, but do not require files that are absent from the project tree.
 | Headline figures use plotly / altair (or the project's specified equivalent), full width, height ≥ 450 px | Static matplotlib at default size hides detail and removes interactivity | medium |
 | At least one `mo.ui` widget exists for evidence drill-down (and the widget does NOT select numbers that flow into `results.parquet`) | No drill-down; OR worse, an interactive widget feeds into the persisted result, breaking reproducibility | medium (no widget) / high (widget feeds results) |
 | A "Cannot conclude" section exists and enumerates untested dimensions | Generality is asserted by silence | high |
-| Update-reminders cell at the bottom is present and corresponding artifacts (research state ledger, `capability_map.md` or `explanation_ledger.md`, and any design artifact) are actually updated | The notebook says "remember to update X" but X is not updated — the review trail is broken at the boundary | medium |
+| Update-reminders cell at the bottom is present and corresponding artifacts (research state object, `rd_plan.md` or `explanation_ledger.md`, and any design artifact) are actually updated | The notebook says "remember to update X" but X is not updated -- the review trail is broken at the boundary | medium |
 | Standalone-readability test: a reader who opens *only* the `.py` file (no marimo runtime, no chat context, no slides) can answer: what was investigated, why, how, and what was concluded | The `.py` file alone is insufficient — the notebook depends on out-of-file context to be understood | high |
 | Cell granularity follows the project's notebook convention, or the domain adapter's cell-granularity guide if one exists: one fit / one evaluation per cell | A single cell loops over models × features × targets, hiding which configuration produced which number | medium |
 | No unfilled `{{PLACEHOLDER}}` markers, no untouched copy-paste residue from the experiment template | Visible template artifacts indicate the notebook was generated but not curated | medium |
@@ -410,7 +410,7 @@ etc.) against the research template and any optional domain adapter guide. The a
 
 - The three specialist reviewers' findings
 - `literature/papers.md`, `literature/differentiation.md`
-- Research state ledger, design artifact, `capability_map.md` or `explanation_ledger.md`
+- Research state object, design artifact, `rd_plan.md` or `explanation_ledger.md`
 - Upstream feature notebook `.py` files (even if the design cell names them — the
   reviewer is meant to feel the pain that an external reader feels when handed a
   single-file artifact)

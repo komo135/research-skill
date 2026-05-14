@@ -9,8 +9,8 @@ on the testing scenario.
 
 - Designing a pre-registration that involves > 1 hypothesis or
   parameter combination
-- Reviewing whether a `supported` / `matured` claim has honest
-  multiple-testing correction
+- Reviewing whether a claim-bearing report package has honest multiple-testing
+  correction
 - Computing DSR or PSR (`scripts/psr_dsr.py`)
 - Running `references/review/conclusion_review.md` Section "Statistical
   sufficiency"
@@ -41,9 +41,8 @@ Both are valid; the choice depends on the cost of false positives.
   configurations, > 2.
 
 The takeaway: in this field, **single-test significance is a starting
-point, not a finding**. The skill enforces multiple-testing correction
-as a hard requirement for promotion in `pr_promotion_gate.md` and
-`rd_promotion_gate.md`.
+point, not a finding**. The skill treats multiple-testing correction as a hard
+requirement for claim-bearing finance report packages.
 
 ## Honest trial count
 
@@ -204,8 +203,8 @@ nulls. Less conservative than FWER methods.
 
 Most projects need **at least two** of these (e.g., DSR for hyperparameter
 sweep + Romano-Wolf for cross-strategy comparison + PSR for the final
-Sharpe claim). The promotion gate enumerates each based on the project's
-trial structure.
+Sharpe claim). The report package should enumerate each method based on the
+project's trial structure.
 
 ## Common failure modes
 
@@ -214,7 +213,7 @@ trial structure.
 | Under-reporting trial count | Headline DSR computed with N=5 when actually 50 configurations were tried | Force honest N; recompute |
 | Annualized SR in PSR formula | `psr(sr_obs=1.45, T=252, ...)` interpreted as annualized | Use per-period SR; see `scripts/psr_dsr.py` API |
 | Confusing FWER and FDR | Project claims FWER control but uses BH-FDR (less conservative) | Document method and what's controlled |
-| Skipping correction entirely | "p-value 0.04, significant" with no correction | Promotion gate blocks; require correction |
+| Skipping correction entirely | "p-value 0.04, significant" with no correction | Claim-bearing review blocks; require correction |
 | Cherry-picking the favorable correction | Try Bonferroni, get rejected; try BH-FDR, get accepted; report BH-FDR | Pre-register the correction method in the `Analysis Plan` and bind pass/fail use in `Inference / Decision Criteria` |
 | Pre-reg states 1 hypothesis but trial tests 5 | Major deviation per `pr_workflow.md` | Treat the trial as exploratory; create a new pre-reg with honest count |
 
@@ -231,9 +230,6 @@ trial structure.
 - `references/pure_research/preregistration.md` — the `Analysis Plan`
   and `Inference / Decision Criteria` sections pre-register the
   multiple-testing correction method and bind how it will be used
-- `references/pure_research/pr_promotion_gate.md` § D — checks honest
-  trial count and correction method applied
-- `references/rd/rd_promotion_gate.md` § C / D — same for R&D
 - `references/review/conclusion_review.md` — statistical sufficiency
   axis verifies correction
 - `references/shared/analysis_depth.md` — A4 requires alternatives

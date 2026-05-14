@@ -9,8 +9,8 @@ gate.
 
 Workstreams choose the local state object and gate:
 
-- Capability / Technology Research: `workstreams/<name>/charter.md` and
-  `workstreams/<name>/capability_map.md`
+- R&D Workstream: `workstreams/<name>/rd_plan.md` and optional
+  `workstreams/<name>/prereg/PR_<id>_<slug>.md`
 - Phenomenon / Mechanism Research: `workstreams/<name>/prfaq.md` and
   `workstreams/<name>/explanation_ledger.md`
 

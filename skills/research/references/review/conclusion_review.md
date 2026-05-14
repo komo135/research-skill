@@ -2,16 +2,14 @@
 
 Conclusion review — are the conclusions warranted? This is the second
 of two review axes (the first is `process_review.md` for discipline
-review). Both are targeted promotion reviews before any R&D transition to
-`matured`, `established`, or `promoted`, before any Pure Research promotion to
-`supported`, or before an externally shared load-bearing claim.
+review). Both are targeted reviews before any claim-bearing report package,
+durable state transition, or externally shared load-bearing claim.
 
 ## When to read
 
 - After the relevant process-review scope is clean
-- Before running the promotion gate
-  (`rd_promotion_gate.md` / `pr_promotion_gate.md`)
-- Reviewing another agent's promotion claim
+- Before accepting a claim-bearing report package
+- Reviewing another agent's load-bearing claim
 
 ## Purpose
 
@@ -24,14 +22,15 @@ The split: process review catches "you didn't do the work right";
 conclusion review catches "you did the work but the result doesn't
 support what you're claiming". Both are common; both are necessary.
 For exploratory review, inspect only the relevant subset; do not turn the full
-promotion checklist into a gate for A2-A3 next-step decisions.
+claim-bearing checklist into a gate for A2-A3 next-step decisions.
 
 ## How to run
 
-Use the same targeted discipline as `process_review.md`. Name the claim,
-promotion, or claim-cited trial under review, then inspect only the axes that
-could bear on it. Load-bearing checks require concrete evidence cited. "Looks
-good" is forbidden at promotion and external-claim decision points.
+Use the same targeted discipline as `process_review.md`. Name the claim, report
+package, durable transition, or presented evidence under review, then inspect
+only the axes that could bear on it. Load-bearing checks require concrete
+evidence cited. "Looks good" is forbidden at report-package and external-claim
+decision points.
 
 ```
 - [x] item — evidence: <file:line, reference, numeric value, or specific tool output>
@@ -43,7 +42,7 @@ good" is forbidden at promotion and external-claim decision points.
 
 Before walking the 6 axes, scan the cited trial's metrics against the
 following thresholds. A flagged metric does **not** by itself block
-promotion — but it directs **extra scrutiny** to Axis 2 (Statistical
+the claim -- but it directs **extra scrutiny** to Axis 2 (Statistical
 sufficiency) and Axis 4 (Analysis depth) for that specific metric.
 
 | Flag | Threshold | Action if flagged |
@@ -68,13 +67,13 @@ artifact than a real edge.
 Each axis is a separate possible review pass. Only the load-bearing axes for
 the named claim must clear. Mark unrelated axes `N/A — not load-bearing for
 this review`; do not require all six axes when the claim does not depend on
-them. For promotion-level claims, expect most axes to be in scope.
+them. For claim-bearing report packages, expect most axes to be in scope.
 
 ### Axis 1: Implementation correctness
 
 The numbers come from code that does what it claims to do. If this research
 uses a domain adapter with implementation checks, run the relevant adapter
-checks for promotion, external claim, or other load-bearing conclusions and
+checks for report packages, external claims, or other load-bearing conclusions and
 cite their output here.
 
 - [ ] **Generic verification checks pass** for the trial:
@@ -138,7 +137,7 @@ the claim.
 
 ### Axis 3: Claim discipline
 
-The promotion claim is phrased no stronger than the evidence, with
+The claim is phrased no stronger than the evidence, with
 explicit scope.
 
 - [ ] **Claim wording matches evidence strength and form**: causal claims have
@@ -170,20 +169,20 @@ explicit scope.
   the binarization is in Methods
   - Evidence: Methods § 2.3 / 2.4 cross-check
 
-### Axis 4: Analysis depth (per CHARTER C13, the primary axis)
+### Axis 4: Analysis depth (primary axis)
 
 The analysis reaches A4 minimum (`references/shared/analysis_depth.md`).
 
 - [ ] **Trial Analysis section all 5 sub-fields filled** (Observation
   / Decomposition / Evidence weighing / Tier rating / Gap to next
   tier)
-  - Evidence: trial notebook § 5 (R&D) or § 6 (Pure Research)
+  - Evidence: trial notebook § 5 (R&D and Pure Research)
 - [ ] **Tier rating is A4 or higher** with justification
   - Evidence: § Tier rating + "why this tier and not the next"
     explanation
 - [ ] **Mechanism is named** (specific causal chain, not generic
   "the model captures the signal")
-  - Evidence: Discussion § 4.1 (PR) or capability A4 analysis (R&D)
+  - Evidence: Discussion § 4.1 or R&D report package analysis
 - [ ] **Alternatives systematically excluded**: each non-primary
   candidate has a discriminating test or evidence that weakens it
   - Evidence: Evidence weighing table per candidate
@@ -194,7 +193,7 @@ The analysis reaches A4 minimum (`references/shared/analysis_depth.md`).
 - [ ] **Evidence form per claim**: each supporting evidence labeled
   numerical / structural-argument / literature-reference /
   null-result-of-X
-  - Evidence: § 5.3 / 6.3 columns
+  - Evidence: § 5.3 columns
 - [ ] **Structural-argument alone does not support A4**: at least one
   numerical evidence is cited per supporting candidate
   - Evidence: count of numerical evidence ≥ 1 per supported candidate
@@ -208,13 +207,12 @@ The analysis reaches A4 minimum (`references/shared/analysis_depth.md`).
 
 ### Axis 5: Reproducibility
 
-The trial can be re-run.
+The presented evidence can be challenged or rerun when the claim requires it.
 
-- [ ] **3-tuple recorded** for promotion-eligible or claim-cited trial(s) per
+- [ ] **Report provenance recorded** for presented evidence per
   `references/shared/reproducibility.md`:
-  - Data version, git commit, and environment pin in local run notes
-    (`reproducibility/data_versions.txt`, `results.parquet`,
-    `reproducibility/env_lock_ref.txt`) OR tracker record / exported
+  - Data version, git commit, and environment pin in local run notes,
+    report provenance files, `results.parquet`, OR tracker record / exported
     run record
   - Evidence: file existence + content, or stable tracker run ID + artifact URI
     resolving to those anchors
@@ -238,12 +236,11 @@ Read the artifact alone, with author narrative withheld, and try to
 falsify the claim.
 
 This is the **only** axis that uses material withheld from the rest of
-the review. The agent reading the IMRAD draft (Pure Research) or the
-capability promotion writeup (R&D) does so without `decisions.md`,
-without `explanation_ledger.md` / `capability_map.md`, without prior
-session context. The agent reads the artifact alone — same model, but
-deliberately deprived of the priors that would anchor on the author's
-framing.
+the review. The agent reading the IMRAD draft, R&D report package, or
+claim-bearing writeup does so without `decisions.md`, without
+`explanation_ledger.md` / `rd_plan.md`, and without prior session context.
+The agent reads the artifact alone -- same model, but deliberately deprived
+of the priors that would anchor on the author's framing.
 
 The mechanism is from Cross-Context Review (Song, arxiv 2603.12123):
 fresh-session review with minimum context outperforms same-session
@@ -253,13 +250,12 @@ review on code review (+4.7 F1). The asymmetry is the value.
 
 Before attempting cold-eye reading, verify:
 
-- [ ] **Artifact file exists**: the IMRAD draft (`imrad_draft.md`)
-  for Pure Research, OR the capability promotion writeup in
-  `decisions.md` plus the cited trial notebooks for R&D
+- [ ] **Artifact file exists**: the IMRAD draft (`imrad_draft.md`) or the R&D
+  report package plus the cited trial notebooks
   - Evidence: file path + content size > 0
 - [ ] **Artifact is self-contained**: a cold reader can understand
   the claim, the evidence, and the mechanism without consulting
-  `explanation_ledger.md` / `capability_map.md` / `decisions.md`
+  `explanation_ledger.md` / `rd_plan.md` / `decisions.md`
   cross-references for basic understanding
   - Evidence: read first 2 sections; if cold reader needs to "go
     look up what C5 is" or "go check explanation_ledger to see what
@@ -272,10 +268,9 @@ Before attempting cold-eye reading, verify:
 
 Procedure (after artifact-completeness verified):
 
-1. **Read the artifact alone**: the IMRAD draft (Pure Research) OR
-   the capability promotion writeup section of `decisions.md` + the
-   relevant trial notebooks (R&D). Do NOT read other files in the
-   project.
+1. **Read the artifact alone**: the IMRAD draft, R&D report package, or
+   claim-bearing writeup plus the cited trial notebooks. Do NOT read other
+   files in the project.
 2. **Adopt the working hypothesis**: "this claim is wrong; what
    evidence in the artifact, if reinterpreted, could support an
    alternative?"
@@ -284,7 +279,7 @@ Procedure (after artifact-completeness verified):
 4. **Test the falsifying interpretation**: is it ruled out by other
    evidence in the artifact? If not, the claim is "supported within
    project narrative" but not "supported as defensible externally"
-   — promotion is blocked
+   -- the claim is blocked
 
 Cold-eye check items:
 
@@ -298,23 +293,21 @@ Cold-eye check items:
 - [ ] **Falsifying interpretation rebutted by artifact-internal
   evidence**: not by author narrative, not by additional context
   - Evidence: cited artifact passage that rebuts the alternative
-- [ ] **If no internal rebuttal exists**: promotion blocked; the
-  claim is artifact-incomplete (the IMRAD draft or capability
-  writeup must be revised to include the rebuttal, OR the claim
+- [ ] **If no internal rebuttal exists**: the claim is blocked; the
+  claim is artifact-incomplete (the IMRAD draft, R&D report package, or
+  claim-bearing writeup must be revised to include the rebuttal, OR the claim
   must be weakened to acknowledge the unresolved alternative)
 
 ## Outcome of conclusion review
 
-- **All in-scope load-bearing axes pass with citations** → conclusion review
-  CLEAN for the named claim; proceed to the promotion gate
-  (`rd_promotion_gate.md` / `pr_promotion_gate.md`)
-- **Any in-scope axis fails** → conclusion review FAILED; cannot proceed to
-  promotion unless the claim is fixed or narrowed so that axis no longer bears
-  on it
+- **All in-scope load-bearing axes pass with citations** -> conclusion review
+  CLEAN for the named claim or report package
+- **Any in-scope axis fails** -> conclusion review FAILED; the claim must be
+  fixed, narrowed, or decoupled from the failed axis before it is used
 - **Conclusion review report** written into `decisions.md`:
 
 ```markdown
-## YYYY-MM-DD Conclusion review for promotion of <X>
+## YYYY-MM-DD Conclusion review for <claim or report package>
 
 Date: <YYYY-MM-DD HH:MM>
 Reviewer: <agent / user>
@@ -359,14 +352,14 @@ Sign-off: conclusion review clean / fail
 | Structural-argument-only claim | "By construction the model must work because ..." with no measured number | Axis 4 (numerical required) |
 | Stale environment pin | uv.lock from a prior project state, not the current trial | Axis 5 |
 | No falsifying interpretation attempted | Cold-eye check skipped or "looks good" | Axis 6 |
-| Falsifying interpretation cannot be rebutted | Cold-eye check identifies an alternative; artifact has no internal rebuttal | Axis 6 — promotion blocked |
+| Falsifying interpretation cannot be rebutted | Cold-eye check identifies an alternative; artifact has no internal rebuttal | Axis 6 -- claim blocked |
 
 ## Why both reviews are used
 
 Process review (`process_review.md`) catches **process violations**:
-the agent skipped pre-registration, the charter was rewritten
-mid-project, the integration test ran before upstream caps were
-matured. These violations corrupt every downstream check; a clean
+the agent skipped plan-before-execute discipline, the plan was rewritten
+mid-project without disclosure, or the report package omitted material
+deviations. These violations corrupt every downstream check; a clean
 conclusion review on a corrupted process is a confidence in
 contaminated evidence.
 
@@ -377,7 +370,7 @@ surfaces an unresolved alternative. These violations mean the result
 doesn't support what's being claimed even when the process was
 followed.
 
-For promotion and external load-bearing claims, both relevant reviews must be
+For report packages and external load-bearing claims, both relevant reviews must be
 clean for the axes that carry the claim. This is not a requirement to complete
 every checklist item in both files for every ordinary experiment.
 
@@ -385,8 +378,6 @@ every checklist item in both files for every ordinary experiment.
 
 - Pre-condition: `references/review/process_review.md` (must run
   first and be clean)
-- Required by `references/rd/rd_promotion_gate.md` § Pre-conditions
-  and `references/pure_research/pr_promotion_gate.md` § Pre-conditions
 - Generic verification: trial notebook, verification report, or domain-adapter
   implementation-check output
 - Multiple testing / selection correction: project-specific statistical plan

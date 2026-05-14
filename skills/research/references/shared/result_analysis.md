@@ -7,8 +7,8 @@ mechanism-level explanations to count as research.
 
 ## When to read
 
-- Writing the Analysis section of a trial notebook for Capability /
-  Technology Research or Phenomenon / Mechanism Research
+- Writing the Analysis section of a trial notebook for an `R&D Workstream` or
+  a Phenomenon / Mechanism Research workstream
 - Interpreting a failed or ambiguous trial
 - Interpreting a positive / "successful" trial — the same rigor applies
 - About to write "the result was X because Y" in any deliverable
@@ -27,10 +27,9 @@ this symmetry because agents (and humans) systematically apply rigor
 to failure but skim past success.
 
 After decomposition, route the result back to the selected workstream state
-object: Phenomenon / Mechanism Research updates Q/E state in
-`explanation_ledger.md`; Capability / Technology Research updates capability
-state in `capability_map.md`. Result writeups are evidence artifacts, not
-state owners.
+object: an `R&D Workstream` uses `rd_plan.md`; a Phenomenon / Mechanism
+Research workstream updates Q/E state in `explanation_ledger.md`. Result
+writeups are evidence artifacts, not state owners.
 
 ## Generic terminal labels — forbidden as final explanations
 
@@ -262,14 +261,14 @@ Allowed ending shapes:
 
 - `references/shared/analysis_depth.md` — A0-A5 tier system; this file
   describes the decomposition that advances from A0 to A4
-- `references/rd/rd_promotion_gate.md` § C — generic terminal label
-  prohibition for `matured` capabilities
+- `references/review/conclusion_review.md` — generic terminal label checks
+  for claim-bearing report packages
 - `references/pure_research/pr_promotion_gate.md` § E — same for
   `supported` claims
 - `references/review/conclusion_review.md` — checks for generic labels
   on both sides as part of conclusion review
 - `assets/rd/rd_trial.py.template` § 5 and
-  `assets/pure_research/pr_trial.py.template` § 6 — Analysis section
+  `assets/pure_research/pr_trial.py.template` § 5 — Analysis section
   templates that operationalize this decomposition
 
 ## Migration note

@@ -12,10 +12,38 @@ Pre-registration is a general planning and reporting discipline: write the
 plan before work starts, execute against it, disclose important changes, and
 produce a readable outcome report.
 
+Plan -> execute -> compare -> report:
+
+- Plan: write or select the pre-registration before work starts.
+- Execute: run the work against the written plan.
+- Compare: compare actual execution and results against the pre-registration.
+- Report: publish the plan-to-result table, transparent changes, evidence, and limitations.
+
+Pre-registration is a plan, not a prison. A midstream pre-registration governs
+future work or explicit reruns only; prior work is prior or exploratory
+evidence. Report contracts apply to report packages and presented evidence,
+not to research or experiments. Evidence integrity checks are a reporting-side
+requirement, not a continuous research tracking contract.
+
 ## Shared fields
 
 Complete these fields for both confirmatory and exploratory preregistrations.
 Delete the body section that does not match `preregistration_type`.
+
+- Question / objective
+- Scope
+- Data / input plan
+- Variables / measures or inspection targets
+- Planned procedure
+- Expected outputs
+- Decision / follow-up criteria
+- Non-claim-bearing condition
+
+The Non-claim-bearing condition states what would prevent outputs from being
+used as claim-bearing evidence without a future preregistered rerun or
+narrower report claim. Name any exposure, scope, threshold, interpretation,
+missing-evidence, or procedure condition that would make the output only
+exploratory or diagnostic.
 
 ## Study Information
 
@@ -151,7 +179,7 @@ plan. This is not a reporting plan.>
 
 ## Transparent Changes Policy
 
-Every report package must include `Transparent Changes`.
+Every preregistered report package must include `Transparent Changes`.
 
 If no material changes occurred:
 

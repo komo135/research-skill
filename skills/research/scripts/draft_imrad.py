@@ -15,6 +15,7 @@ Usage:
     python scripts/draft_imrad.py --project-dir <path>
     python scripts/draft_imrad.py --project-dir <path> --workstream WS001-phenomenon
     python scripts/draft_imrad.py --project-dir <path> --output imrad_draft.md
+    python scripts/draft_imrad.py --project-dir <path> --force
     python scripts/draft_imrad.py --project-dir <path> --supported-e E2
 
 Inputs scanned:
@@ -29,6 +30,7 @@ Inputs scanned:
 Exit codes:
     0: draft written
     1: required input missing (e.g., prfaq.md or explanation_ledger.md)
+    2: output already exists and --force was not passed
 """
 
 from __future__ import annotations
@@ -421,7 +423,7 @@ def section_results(art: ProjectArtifacts, supported_e: str) -> str:
 
 
 def section_discussion(art: ProjectArtifacts, supported_e: str) -> str:
-    """Section 4: Discussion. Requires A4+ analysis per CHARTER C13."""
+    """Section 4: Discussion. Requires A4+ analysis per analysis_depth.md."""
     supported_e_row = next((e for e in art.ledger_e if get_col(e, "ID") == supported_e), {})
     rejected_es = [e for e in art.ledger_e if "rejected" in get_col(e, "Status").lower()]
     weakened_es = [e for e in art.ledger_e if "weakened" in get_col(e, "Status").lower()]
@@ -559,6 +561,8 @@ def main() -> None:
                    help="ID of the explanation being promoted to supported (e.g., E2)")
     p.add_argument("--output", type=Path, default=None,
                    help="output path (default: selected workstream's imrad_draft.md)")
+    p.add_argument("--force", action="store_true",
+                   help="overwrite an existing output file")
     args = p.parse_args()
 
     try:
@@ -574,6 +578,9 @@ def main() -> None:
 
     draft = render_imrad(art, args.supported_e)
     out = args.output or (art.state_dir / "imrad_draft.md")
+    if out.exists() and not args.force:
+        print(f"ERROR: output already exists: {out}. Pass --force to overwrite.", file=sys.stderr)
+        sys.exit(2)
     out.write_text(draft, encoding="utf-8")
     print(f"Wrote {len(draft.splitlines())} lines to {out}")
     n_replace = draft.count("<REPLACE")

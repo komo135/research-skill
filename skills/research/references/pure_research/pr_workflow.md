@@ -4,7 +4,7 @@ Operating rules for a Phenomenon / Mechanism Research workstream across
 sessions. This is the Pure Research-compatible workflow for exploratory
 research loop, confirmatory research loop, pre-registration comparison,
 Transparent Changes, state-change logging, stop conditions, shared
-infrastructure governance, and handoff to capability workstreams.
+infrastructure governance, and handoff to R&D Workstreams.
 
 ## When to read
 
@@ -13,10 +13,10 @@ infrastructure governance, and handoff to capability workstreams.
   or run the next trial
 - When a material change from pre-registration is being considered
 - Setting up shared infrastructure
-- Adding, splitting, or handing off to a Capability / Technology Research
+- Adding, splitting, or handing off to an R&D Workstream
   workstream
 
-## Initial-day prohibitions
+## Entry guardrails
 
 Phenomenon / Mechanism Research first day permits **only** the following:
 
@@ -31,6 +31,19 @@ Phenomenon / Mechanism Research first day permits **only** the following:
 - Empty `explanation_ledger.md` skeleton with workstream ID and label declared
 - Data infrastructure setup, environment pinning (`uv.lock`), data version
   recording, raw data sourcing, scaffold file creation
+
+The preregistered flow is plan -> execute -> compare -> report:
+
+- Plan: write or select the pre-registration before work starts.
+- Execute: run the work against the written plan.
+- Compare: compare actual execution and results against the pre-registration.
+- Report: publish the plan-to-result table, transparent changes, evidence, and limitations.
+
+Pre-registration is a plan, not a prison. A midstream pre-registration governs
+future work or explicit reruns only; prior work is prior or exploratory
+evidence. Report contracts apply to report packages and presented evidence,
+not to research or experiments. Evidence integrity checks are a reporting-side
+requirement, not a continuous research tracking contract.
 
 Phenomenon / Mechanism Research first day **prohibits**:
 
@@ -59,7 +72,7 @@ approach. Exploratory work may inspect data and iterate. Its outputs are
    failure modes, and obvious sanity checks.
 3. Generate or refine Q/E candidates in `explanation_ledger.md` only as
    candidates; keep statuses `active` unless evidence is already
-   promotion-relevant.
+   claim-bearing.
 4. Try the smallest useful analyses, plots, probes, or model checks.
 5. Record observations, assumptions tested, and approach changes in run notes,
    tracker rows, notebook notes, result rows, or a preregistered report package.
@@ -97,7 +110,7 @@ where a confirmatory pre-registration belongs.
 7. Transparent Changes review against the pre-registration
 8. Analysis section: observation, decomposition, evidence weighing,
    tier rating, gap to next tier (per pr_trial.py.template § 5)
-9. If the result is claim-cited or changes support, scope, or status, update
+9. If the result is cited in a claim or changes support, scope, or status, update
    explanation_ledger row(s): which E weakened / strengthened / rejected /
    unchanged
 10. Record durable state transitions in decisions.md when the result changes a
@@ -112,7 +125,7 @@ The loop runs until a stop condition (below) or a question is
 
 ## Result-to-Question Loop
 
-After every claim-cited or promotion-relevant interpreted result, the
+After every claim-bearing interpreted result, the
 workstream returns to Q/E state in `explanation_ledger.md`. The result may
 strengthen, weaken, reject, split, merge, park, or leave unchanged one or more
 explanation rows. Ordinary exploratory observations may stay in run notes,
@@ -137,8 +150,8 @@ the source of truth for questions and explanations.
 ## Push analysis depth before designing a new trial
 
 Before designing a new discriminating trial, the agent must push the
-**current trial's analysis depth as far as it can go**. This is the
-core principle from CHARTER C13.
+**current trial's analysis depth as far as it can go**. This follows the
+analysis-depth rules in `references/shared/analysis_depth.md`.
 
 Concretely: if the most recent trial reached A2 (one alternative
 identified), the next move is **not** "design a new trial" — it is
@@ -287,11 +300,11 @@ when the unblock fires.
 
 ### Add / split / handoff
 
-Evidence shows that a capability uncertainty must be handled separately. Add a
+Evidence shows that an R&D uncertainty must be handled separately. Add a
 dependent workstream, split the current workstream, or hand off a supported
-finding to a Capability / Technology Research workstream. Treat design,
+finding to an R&D Workstream. Treat design,
 evaluation, and engineering-support work as activities inside the selected
-phenomenon or capability workstream unless they expose a separate
+phenomenon workstream or R&D Workstream unless they expose a separate
 research-state claim. Record the trigger, affected workstream IDs, ledger rows,
 reused evidence scope, parent / child relationship, and next gate in
 `decisions.md`.
@@ -307,7 +320,7 @@ handoff, or resume; do not create review entries for the inactive period.
 
 ## Shared infrastructure governance
 
-Same as Capability / Technology Research's rule (see
+Same as the R&D Workstream rule (see
 `references/rd/rd_workflow.md` § Shared infrastructure governance).
 Phenomenon / Mechanism Research workstreams use the same
 `shared/` folder and record the specific commits used in
@@ -315,16 +328,16 @@ Phenomenon / Mechanism Research workstreams use the same
 
 A Phenomenon / Mechanism Research finding may itself become a `shared/`
 artifact (e.g., a regime classifier proven in a phenomenon workstream that is
-now used by multiple capability workstreams). The transition is a deliberate
+now used by multiple R&D Workstreams). The transition is a deliberate
 move, not a copy: the artifact moves to `shared/` with documentation of its
 origin workstream, and downstream consumers record the commit they used.
 
 ## Code reuse on workstream handoff
 
-Same principle as Capability / Technology Research: reuse the bricks (data
+Same principle as the R&D Workstream: reuse the bricks (data
 pipeline, helpers, verification-check scripts), not the house (problem
-framing, decision logs, ledgers / charters). A new workstream gets its own
-ledger and cites the source via parent / child workstream IDs.
+framing, decision logs, state documents). A new workstream gets its own state
+document and cites the source via parent / child workstream IDs.
 
 What can be reused from a phenomenon workstream:
 - Data pipeline code, feature library, validation harness
@@ -332,21 +345,21 @@ What can be reused from a phenomenon workstream:
 - Specific computational helpers
 
 What cannot be reused as-is:
-- The PR/FAQ as a capability charter
-- Pre-registrations as capability kill criteria
-- The explanation_ledger as a capability_map
-- Trial notebooks as capability evidence without explicit role
+- The PR/FAQ as a R&D plan
+- Pre-registrations as R&D decision criteria
+- The explanation_ledger as an rd_plan
+- Trial notebooks as R&D evidence without explicit role
   re-declaration
 
-When the handoff direction is phenomenon -> capability: an
+When the handoff direction is phenomenon -> R&D: an
 `explanation_ledger` finding may be cited as a literature reference in the
-capability charter (H3 novelty justification). The phenomenon workstream's
+R&D plan. The phenomenon workstream's
 `decisions.md` link is preserved as a parent workstream reference.
 
-For a Research-to-Technology Handoff, the capability workstream may consume
+For a Research-to-Technology Handoff, the R&D Workstream may consume
 the phenomenon finding as an assumption, requirement, dependency, scope
 condition, benchmark, or maintenance trigger. It must not copy the supported
-claim into the capability ledger as though capability research re-proved it;
+claim into the R&D plan as though R&D work re-proved it;
 cite the phenomenon `explanation_ledger.md` row and support decision instead.
 
 ## Communication conventions during a session
@@ -364,7 +377,7 @@ Agent should:
 | Failure | Symptom | Fix |
 |---|---|---|
 | Day 1 confirmation run | Code computed claim-bearing metrics before pre-registration was ready | Block confirmatory use; label the work exploratory / diagnostic and pre-register a confirmation if the claim still matters |
-| Skipping Transparent Changes | Trial completes, no comparison to the written pre-registration | Block promotion-eligibility until changes are disclosed |
+| Skipping Transparent Changes | Trial completes, no comparison to the written pre-registration | Block claim-bearing report use until changes are disclosed |
 | Treating a plan-breaking change as harmless | "Period shift, but the methodology is the same" | Apply the matrix strictly; period shift > 1y is plan-breaking |
 | New trial before pushing depth | Run a 2nd trial when 1st is at A2 | Force depth push first |
 | Adding E mid-confirmation | Discovered alternative not in pre-reg and uses it to reinterpret the confirmatory result | Label as exploratory; pre-register a future confirmation if it becomes load-bearing |
@@ -373,8 +386,8 @@ Agent should:
 
 ## Relationship to other references
 
-- Initial-day prohibitions appear in summarized form in
-  `SKILL.md` § Guardrails; this file is the elaboration
+- Entry guardrails appear in summarized form in `SKILL.md` § Guardrails; this
+  file is the elaboration
 - PR/FAQ entry: `references/pure_research/prfaq.md`
 - Pre-registration: `references/pure_research/preregistration.md`
   (the material-change matrix in this file informs Transparent Changes handling for
@@ -384,5 +397,5 @@ Agent should:
 - Promotion gate: `references/pure_research/pr_promotion_gate.md`
 - Multiple testing discipline: project-specific multiple-testing plan
 - Analysis depth: `references/shared/analysis_depth.md`
-- Capability / Technology Research side rules for shared infra and handoff:
+- R&D Workstream side rules for shared infra and handoff:
   `references/rd/rd_workflow.md`

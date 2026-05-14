@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "version": "1.1.9",
-  "description": "v1.1.9 - Fixes research protocol contradictions and removes Japanese text from active skill surfaces.",
+  "version": "1.1.10",
+  "description": "v1.1.10 - Hardens R&D/preregistration report workflows and cache-safe plugin surfaces.",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "Research",
     "shortDescription": "Research and R&D protocols with quant finance specialization",
-    "longDescription": "v1.1.9 - Workstream-aware serious research and R&D workflows with clarified TRL, integration-pattern, lifecycle, and promotion semantics; active skill surfaces use English-only protocol vocabulary. The plugin exposes a generic research skill for mixed research projects with local workstream gates, plus a quant-research adapter for financial machine learning, backtests, time-series validation, leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented evidence.",
+    "longDescription": "v1.1.10 - Workstream-aware serious research and R&D workflows aligned to general R&D categories, pre-registration, plan-to-result comparison, report provenance, and cache-safe active skill surfaces. The plugin exposes a generic research skill for mixed research projects with local workstream gates, plus a quant-research adapter for financial machine learning, backtests, time-series validation, leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented evidence.",
     "developerName": "komoootv",
     "category": "Research",
     "capabilities": [

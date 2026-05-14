@@ -6,7 +6,7 @@ Common required fields (both modes):
     project, trial_id, mode, run_timestamp, primary_metric,
     verdict, notebook_path, analysis_tier (A0-A5)
 
-Reproducibility notes (both modes, recommended for promotion-eligible):
+Reproducibility notes (both modes, recommended for claim-bearing reports):
     data_version_note, git_commit, env_lock_ref
 
 Usage in Python:

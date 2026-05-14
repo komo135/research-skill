@@ -8,8 +8,8 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v1.1.9 - Fixes research protocol contradictions and removes Japanese text from active skill surfaces.",
-      "version": "1.1.9"
+      "description": "v1.1.10 - Hardens R&D/preregistration report workflows and cache-safe plugin surfaces.",
+      "version": "1.1.10"
     }
   ]
 }

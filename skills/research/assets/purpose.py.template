@@ -1,9 +1,8 @@
 """purpose.py.template (RETIRED)
 
-Replaced by workstream-targeted trial notebook templates per CHARTER C1:
+Replaced by workstream-targeted trial notebook templates:
 
-- Capability / Technology Research: `assets/rd/rd_trial.py.template`
-  (evidence artifact)
+- R&D Workstream: `assets/rd/rd_trial.py.template` (evidence artifact)
 - Phenomenon / Mechanism Research: `assets/pure_research/pr_trial.py.template`
   (evidence artifact)
 

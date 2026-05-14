@@ -8,28 +8,28 @@ TensorBoard, Sacred, DVC, or an organizational experiment store.
 ## When to read
 
 - A trial artifact should be queryable across notebooks.
-- A claim is being considered for promotion and needs an review trail.
+- A claim-bearing report package needs a compact evidence index.
 - Prior evidence is being compared by mode, method, context, metric, or
   failure mode.
 
 Do not append rows just because a notebook ran. Append when an artifact has an
 observation and enough interpretation to be useful later. The row does not
-move research state by itself; a ledger assessment in `capability_map.md`,
+move research state by itself; a ledger assessment in `rd_plan.md`,
 `explanation_ledger.md`, or `decisions.md` decides whether the evidence
 supports a transition.
 
-If the project uses an external tracker, read this file as the minimum
+If a report package cites an external tracker, read this file as the minimum
 interchange schema reviewers need. The tracker may store richer params,
-metrics, artifacts, and lineage; the project still needs a durable way to map
-claim-cited `trial_id` values to tracker records and to enumerate the
-decision-relevant run set for multiple-testing review.
+metrics, artifacts, and lineage; the report still needs a durable way to map
+cited evidence IDs to tracker records and to enumerate the presented evidence
+set for multiple-testing review when that affects the claim.
 
 ## Principle
 
 One row is one interpreted evidence artifact. It points back to the notebook,
 run output, tracker record, and optional metrics. It does not replace the
-project ledger and does not encode capability maturity, explanation status,
-promotion, kill, park, or pivot decisions.
+project ledger and does not encode workstream state, explanation status,
+report-package acceptance, kill, park, or pivot decisions.
 
 ## Required fields
 
@@ -37,7 +37,7 @@ promotion, kill, park, or pivot decisions.
 {
     "project": str,
     "trial_id": str,          # e.g. trial_005_signal_flip
-    "mode": str,              # rd | pure-research
+    "mode": str,              # rd | pure-research | other
     "run_timestamp": datetime,
     "verdict": str,           # observed / ambiguous / supported_candidate / rejected / partial / parked
     "notebook_path": str,
@@ -74,14 +74,14 @@ Projects may add optional evidence fields such as:
 }
 ```
 
-These fields are optional only for exploratory rows and for local rows where
-the information is stored in the local run notes. They become required under
-the conditions below.
+These fields are optional for exploratory rows and for local rows where the
+information is stored in local run notes or report provenance. They become
+required only for rows cited by a claim-bearing report package under the
+conditions below.
 
 ## Conditional required fields
 
-When an external tracker is the canonical run store, every load-bearing,
-promotion-eligible, or claim-cited row must include:
+When a report package cites an external tracker, each cited row should include:
 
 ```python
 {
@@ -96,16 +96,17 @@ promotion-eligible, or claim-cited row must include:
 }
 ```
 
-When local notes/parquet is the canonical run store, the same anchors may live
-in `reproducibility/data_versions.txt`, `results/results.parquet`,
-`reproducibility/env_lock_ref.txt`, and `reproducibility/seed.txt`, but the
-row or ledger citation must tell reviewers where to find them.
+When local notes/parquet is the canonical evidence source, the same anchors may
+live in `reproducibility/data_versions.txt`, `results/results.parquet`,
+`reproducibility/env_lock_ref.txt`, `reproducibility/seed.txt`, or the report
+package `provenance/` folder, but the row or report citation must tell
+reviewers where to find them.
 
-## Decision-relevant run set / export
+## Presented evidence set / export
 
-For promotion review and multiple-testing correction, the project needs the
-run set that informed the claim, not a complete archive of every exploratory
-run. The record may be:
+For multiple-testing correction or selection-dependent claims, the report
+package needs the presented evidence set that informed the claim, not a
+complete archive of every exploratory run. The record may be:
 
 - `results/results.parquet` when it is the canonical decision record.
 - An exported tracker table from MLflow, W&B, Neptune, Trackio, TensorBoard,
@@ -118,27 +119,26 @@ model-selection attempts, and robustness variants whenever they informed the
 research decision or count toward trial-count / selection-adjusted statistic /
 Bonferroni / Romano-Wolf correction. A compact local index may point to
 external artifacts, but it must not hide uncited or failed attempts that bear
-on the promoted claim.
+on the claim-bearing report package.
 
 Workstream protocol identifiers, if needed, belong in the ledger assessment
 that cites the row. They are not required columns in the evidence record.
 
-## Tracking backend selection
+## Report provenance note
 
-Choose the backend with the user during project initialization or before the
-first load-bearing claim, whichever comes first. Record the choice in
-`decisions.md` when it affects review or collaboration:
+When a report package cites runs, tracker records, or generated artifacts,
+record how a reviewer resolves the presented evidence:
 
 ```markdown
-## YYYY-MM-DD tracking backend selected
+## YYYY-MM-DD report provenance note
 
-Backend: <MLflow / W&B / Neptune / Trackio / DVC / local parquet / other>
-Storage: <local path, tracking URI, remote project, or registry>
-Reason: <why this fits this research and collaboration model>
-Review retrieval: <how a reviewer resolves trial_id -> run record>
-Minimum persisted fields: trial_id, run_id, artifact_uri, data version,
-git commit, environment pin, seed, params, headline metrics
-Decision-relevant run set/export: <path or tracker query covering cited runs
+Report package: <results/reports/RPT_<id>_<slug>/>
+Presented evidence: <figures, tables, artifact paths, tracker records, or rows>
+Storage: <local path, tracking URI, remote project, registry, or report provenance folder>
+Review retrieval: <how a reviewer resolves evidence IDs to source artifacts>
+Minimum provenance fields: evidence ID, artifact URI or local path, data version,
+git commit, environment pin, seed if relevant, params, headline metrics
+Presented evidence set/export: <path or tracker query covering cited evidence
 and failed/sweep/model-selection attempts that affect this claim>
 ```
 
@@ -228,8 +228,8 @@ db.filter(pl.col("verdict") == "supported_candidate").select(
 - Add project-specific metrics with the prefix `extra_<name>`.
 - Do not change the type or meaning of common-schema columns.
 - Older rows may leave new optional columns null.
-- Keep state transitions in the relevant ledger; this table only indexes
-  evidence.
+- Keep state transitions in the relevant state object or decision log; this
+  table only indexes evidence.
 - If an external tracker is canonical, keep enough local index information for
   offline review: tracker name, run ID, artifact URI, and exported metrics
   needed by promotion review.

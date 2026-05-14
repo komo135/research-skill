@@ -2,32 +2,33 @@
 
 This file maps the current research state before a workstream chooses a state
 object and gate. The project container can contain multiple workstreams; the
-workstream is the unit that selects a local protocol such as Capability /
-Technology Research or Phenomenon / Mechanism Research.
+workstream is the unit that selects a local protocol such as R&D Workstream or
+Phenomenon / Mechanism Research.
 
 ## Current state map
 
 | workstream | label | state object | status | next decision |
 |---|---|---|---|---|
-| <REPLACE: workstream name> | <REPLACE: Capability / Technology Research; Phenomenon / Mechanism Research> | <REPLACE: workstreams/<name>/capability_map.md or workstreams/<name>/explanation_ledger.md> | <REPLACE> | <REPLACE> |
+| <REPLACE: workstream name> | <REPLACE: R&D Workstream; Phenomenon / Mechanism Research> | <REPLACE: workstreams/<name>/rd_plan.md or workstreams/<name>/explanation_ledger.md> | <REPLACE> | <REPLACE> |
 
 Evaluation, design, exploration, and engineering support are activities or
 artifacts inside a selected workstream, not labels. If such work becomes
-load-bearing, state whether it updates an explanation question or a capability
-claim, then use the matching state object and gate.
+load-bearing, state whether it updates an explanation question or an R&D
+objective, then use the matching state object and gate.
 
 ## Project-level decisions
 
 Use project-level decisions for scope, ownership, shared infrastructure,
-tracking backend selection, or cross-workstream coordination. Do not use this
-file to re-score TRL, support status, or analysis tier; those transitions live
-in the selected workstream state object and durable entries in `decisions.md`.
+report provenance choices, or cross-workstream coordination. Do not use this
+file to override support status, report conclusions, or analysis tier; those
+decisions live in the selected workstream state object and durable entries in
+`decisions.md`.
 
 ## Workstream creation checklist
 
 - [ ] Name the workstream directory under `workstreams/`.
-- [ ] Choose Capability / Technology Research or Phenomenon / Mechanism Research and the matching protocol gate.
+- [ ] Choose R&D Workstream or Phenomenon / Mechanism Research and the matching protocol gate.
 - [ ] Add the entry document and primary state object:
-  - Capability / Technology Research: `charter.md` and `capability_map.md`
+  - R&D Workstream: `rd_plan.md` and optional `prereg/PR_<id>_<slug>.md`
   - Phenomenon / Mechanism Research: `prfaq.md` and `explanation_ledger.md`
 - [ ] Record any durable project-level decision in `decisions.md`.

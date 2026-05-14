@@ -2,8 +2,7 @@
 
 Replaced by workstream-local primary state objects:
 
-- Capability / Technology Research: use `assets/rd/capability_map.md.template`
-  (Layer 1 + Layer 2)
+- R&D Workstream: use `assets/rd/rd_plan.md.template`
 - Phenomenon / Mechanism Research: use
   `assets/pure_research/explanation_ledger.md.template`
 

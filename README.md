@@ -4,11 +4,9 @@ A Claude Code and Codex plugin for agent-driven serious research and R&D.
 It ships two public skills in one plugin:
 
 - `research` - the generic base skill for disciplined, workstream-aware
-  research across Capability / Technology Research (R&D-compatible) and
-  Phenomenon / Mechanism Research (Pure Research-compatible), stage gates,
-  result analysis, lightweight experiment tracking,
-  reproducibility for claim-cited results, process review, and conclusion
-  review.
+  research across R&D Workstreams and Phenomenon / Mechanism Research,
+  result analysis, experiment notes, report provenance for presented evidence,
+  process review, and conclusion review.
 - `quant-research` - a quantitative-finance adapter layered on top of
   `research` for financial machine learning, backtests, time-series validation,
   leakage checks, Sharpe/DSR review, transaction costs, and portfolio-oriented
@@ -23,9 +21,9 @@ evidence that survives the relevant gate should change project state.
 Use this plugin when the work is more than ordinary fact lookup or ordinary
 implementation:
 
-- Capability / Technology Research work that establishes or improves a
-  technical capability while explaining success conditions, failure
-  conditions, and design alternatives.
+- R&D work that fits basic research, applied research, or experimental
+  development and needs transparent planning, execution, comparison, and
+  reporting.
 - Phenomenon / Mechanism Research work that resolves a phenomenon,
   explanation, boundary condition, or claim.
 - Quantitative-finance research where conclusions must survive replication,
@@ -35,8 +33,8 @@ It is not a backtest engine, experiment tracker, or notebook framework. It is a
 protocol layer that helps an agent decide what evidence is needed, what state
 can change, and when a result is still only exploratory. Ordinary exploration
 can be tracked with a short run note, tracker run, notebook note, or results
-row; promotion-eligible, externally shared, or claim-cited results need
-evidence citations and rerun guidance.
+row; externally shared or claim-bearing report packages need evidence
+citations, report provenance, and rerun guidance for presented evidence.
 
 ## Research Structure
 
@@ -50,16 +48,14 @@ The generic `research` skill separates the work into durable layers:
 - Project instance layer: concrete data, candidates, parameters, code, trial
   notebooks, generated reports, and local implementation decisions.
 - Evidence artifacts: notebooks, result rows, tracker runs, lightweight run
-  notes, figures, and claim-cited result records.
-- State ledgers: capability maps, explanation ledgers, decision logs, and
-  promotion records that cite evidence artifacts.
+  notes, figures, and presented evidence records.
+- State documents: R&D plans, explanation ledgers, decision logs, and report
+  packages that cite evidence artifacts.
 
 A project can contain multiple workstreams. The project itself is not Pure
 Research or R&D; those names remain compatibility labels for workstream types.
-Project decision gates cite child workstream gate results and do not re-score
-TRL, support status, or A-tier. Optional R&D Program files coordinate multiple
-projects or major workstreams but do not own truth, TRL, promotion, or claim
-status.
+Project decision gates cite child workstream results and do not override child
+claims, report conclusions, or analysis tier.
 
 ## Repository Layout
 
@@ -130,15 +126,14 @@ The installed Codex skills are exposed as `research` and `quant-research`.
 2. Map the current research state: project intent, current uncertainties, the
    first workstream, its state object, and its gate.
 3. Write the entry document before expensive claim-bearing work: reviewed
-   charter and kill criteria for a capability workstream, or PR/FAQ plus
+   R&D plan and pre-registration for R&D work, or PR/FAQ plus
    pre-registration for phenomenon workstreams when planning/reporting
-   discipline is useful. Pre-registration may guide exploratory research or
-   confirmatory research; only the latter creates claim-cited confirmation
-   evidence.
+   discipline is useful. Pre-registration may guide exploratory research,
+   applied investigation, experimental development, or confirmatory research.
 4. Run the smallest evidence-producing artifact that can answer the current
    workstream question.
 5. Analyze the result before adding variants. A result should update a question,
-   split an explanation, recycle a capability, add a dependent workstream, or
+   split an explanation, revise an R&D objective, add a dependent workstream, or
    justify a gate decision.
 6. Promote only when the relevant process review and conclusion review axes
    pass for the load-bearing claim. Claim-bearing notebooks use the folded
@@ -178,18 +173,29 @@ v1.1.0, install `research@research-skill`. The old standalone
 
 ## Status
 
-Version 1.1.9 - fixes research protocol contradictions and removes Japanese
-text from active skill surfaces.
+Version 1.1.10 - hardens R&D/preregistration report workflows and cache-safe
+plugin surfaces.
 
 <details>
 <summary>Changelog</summary>
 
-### v1.1.9 (current)
+### v1.1.10 (current)
 
-- Fixed R&D protocol contradictions around `target_TRL`, critical-path TRL-6,
-  stage maturity, integration-pattern ordering, and promotion gates.
-- Replaced Japanese lifecycle and Layer 1 schema vocabulary with English-only
-  active skill surface terms.
+- Added packaged-surface guards so retired R&D protocol terms cannot re-enter
+  the research or quant adapter skills.
+- Retired `new_purpose.py` as a fail-fast command and protected
+  `draft_imrad.py` from overwriting edited drafts unless `--force` is passed.
+- Recreated missing trial indexes in `new_trial.py` and tightened
+  pre-registration placeholder compatibility tests.
+- Fixed stale Pure Research Analysis section references and plugin metadata.
+
+### v1.1.9
+
+- Replaced the former technology-maturation R&D flow with general R&D
+  categories: basic research, applied research, and experimental development.
+- Changed the R&D scaffold to `WS001-rd/rd_plan.md` plus
+  `prereg/PR_001_initial.md`.
+- Removed Japanese lifecycle vocabulary from active skill surfaces.
 - Clarified quant robustness terminology so rolling-window stability is not
   presented as true walk-forward validation.
 
@@ -197,28 +203,29 @@ text from active skill surfaces.
 
 - Reworked pre-registration as a general planning and reporting discipline
   with explicit `confirmatory` and `exploratory` types.
-- Added outcome report package guidance with `report.md`, `report.pdf`,
-  figures, tables, attachments, Plan-to-Result tables, and Transparent Changes.
+- Added outcome report package guidance with `report.md`, primary
+  `report.html`, optional `report.pdf` snapshot/export, figures, tables,
+  attachments, Plan-to-Result tables, and Transparent Changes.
 - Updated scaffolds and IMRAD generation for `PR_<id>_<slug>` /
   `RPT_<id>_<slug>` naming and report-package Transparent Changes extraction.
 
 ### v1.1.7
 
-- Reserved A4+ for supported, matured, established, promoted, external-claim,
-  deployment-recommendation, and terminal-kill decisions.
+- Reserved A4+ for supported, external-claim, deployment-recommendation, and
+  terminal-decision outcomes.
 - Made A2-A3 sufficient for exploratory next-step, provisional go / no-go,
   park, deprioritize, and reject-for-now decisions that do not create a
   load-bearing claim.
-- Scoped quant-research finance checks to claim-bearing and promotion-relevant
+- Scoped quant-research finance checks to claim-bearing
   decisions instead of making them blanket gates for exploratory work.
 
 ### v1.1.6
 
-- Softened Capability / Technology Research entry guardrails: do not classify
+- Softened former R&D entry guardrails: do not classify
   the whole project as that workstream, and do not ban non-load-bearing
   scaffold, interface probes, smoke tests, environment setup, or data plumbing.
-- Kept the hard gate where it matters: promotion-relevant or claim-bearing
-  implementation must wait until charter and kill criteria exist.
+- Kept the hard gate where it matters: claim-bearing conclusions must wait
+  until the relevant plan, criteria, and evidence are ready.
 - Added regression coverage for the mixed-system pressure scenario that
   previously pushed agents toward overclassification and blanket
   implementation bans.
@@ -231,9 +238,9 @@ text from active skill surfaces.
 - Added mixed project scaffolding and workstream-targeted trial generation;
   `--mode` now creates an initial workstream inside the mixed container rather
   than classifying the whole project.
-- Limited implemented workstream labels to Capability / Technology Research
-  and Phenomenon / Mechanism Research; evaluation, design, exploration, and
-  engineering support remain activities inside a selected workstream.
+- Limited implemented workstream labels to R&D Workstream and Phenomenon /
+  Mechanism Research; evaluation, design, exploration, and engineering support
+  remain activities inside a selected workstream.
 - Added regression coverage so ignored `docs/superpowers/specs` files are not
   packaged as plugin artifacts.
 
@@ -252,15 +259,15 @@ text from active skill surfaces.
   references, registration logs, or history/timestamp comparisons for proving
   planning order.
 - Kept the useful parts: reviewed planning documents, material-change
-  disclosure, and rerun guidance for promotion-eligible or claim-cited results.
+  disclosure, and report provenance for claim-bearing report packages.
 - Added regression coverage to block reintroducing proof-artifact language.
 
 ### v1.1.2
 
 - Relaxed tracking requirements: ordinary exploration may use
   lightweight run notes, tracker runs, notebook notes, or results rows.
-- Limited strong evidence citations, rerun guidance, and decision-relevant run
-  sets to promotion-eligible, externally shared, or claim-cited results.
+- Limited strong evidence citations, rerun guidance, and presented evidence
+  sets to externally shared or claim-bearing report packages.
 - Changed process and conclusion review from full mandatory inventories to
   targeted lightweight review of load-bearing axes.
 
@@ -284,22 +291,20 @@ text from active skill surfaces.
 
 ### v1.0.7
 
-- Added an optional R&D Program coordination layer for portfolios that combine
-  R&D capability establishment with Pure Research child projects.
-- Added shared Result-to-Question and Result-to-Capability loops.
-- Added right-sized rigor guidance and Program Map boundaries.
+- Added shared Result-to-Question and R&D plan feedback loops.
+- Added right-sized rigor guidance and project/workstream boundaries.
 
 ### v1.0.6
 
-- Added selectable tracking backends.
+- Added optional tracker compatibility for report evidence provenance.
 - Required complete run inventory/export for external trackers.
-  Superseded in v1.1.2 by decision-relevant run sets instead of complete
+  Superseded in v1.1.2 by presented evidence sets instead of complete
   inventory for every project.
 - Kept local notes/parquet compatibility for existing projects.
 
 ### v1.0.5
 
-- Decoupled evidence artifacts from research contracts.
+- Decoupled evidence artifacts from state decisions and report-package contracts.
 - Standardized queryable evidence records across R&D and Pure Research.
 - Removed capability or pre-registration requirements from neutral trial
   artifact creation.

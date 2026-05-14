@@ -1,15 +1,14 @@
 # hypotheses.md.template (RETIRED)
 
-The "hypothesis" abstraction has been removed from current workstream state
-per CHARTER C2 / C3. Current units:
+The "hypothesis" abstraction has been removed from current workstream state.
+Current units:
 
-- Capability / Technology Research: capability (next test = next TRL
-  transition for one capability)
+- R&D Workstream: objective or question in `rd_plan.md`
 - Phenomenon / Mechanism Research: explanation discrimination (next test =
   next discriminating trial under reviewed pre-registration)
 
 Use the workstream-targeted trial templates instead:
-- Capability / Technology Research: `assets/rd/rd_trial.py.template`
+- R&D Workstream: `assets/rd/rd_trial.py.template`
 - Phenomenon / Mechanism Research: `assets/pure_research/pr_trial.py.template`
 
 Do not use this template for new projects.

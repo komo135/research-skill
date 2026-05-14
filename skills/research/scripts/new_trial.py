@@ -4,7 +4,6 @@ Replaces the older `new_purpose.py`. Chooses the correct template based on the
 selected workstream state object, or on project-root compatibility state
 objects.
 
-Per CHARTER C1 and the templates:
 - R&D: assets/rd/rd_trial.py.template (protocol-agnostic evidence artifact)
 - Pure Research: assets/pure_research/pr_trial.py.template
   (protocol-agnostic evidence artifact)
@@ -13,9 +12,9 @@ Trial files are named `trial_NNN_<slug>.py` in `<project>/purposes/`.
 
 Usage:
     # Mixed project workstream
-    python scripts/new_trial.py --project-dir <path> --workstream WS002-capability --slug latency_benchmark
+    python scripts/new_trial.py --project-dir <path> --workstream WS002-rd --slug latency_benchmark
 
-    # Project-root compatibility R&D
+    # Project-root R&D
     python scripts/new_trial.py --project-dir <path> --slug latency_benchmark
 
     # Project-root compatibility Pure Research
@@ -37,8 +36,16 @@ from pathlib import Path
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 
-RD_STATE_FILES = {"charter.md", "capability_map.md"}
+RD_STATE_FILES = {"rd_plan.md"}
 PR_STATE_FILES = {"prfaq.md", "explanation_ledger.md", "imrad_draft.md"}
+PREREG_PLACEHOLDER = "<REPLACE: optional prereg reference>"
+COMPAT_PREREG_ID_PLACEHOLDER = "<REPLACE: optional prereg/PR_<id>.md>"
+COMPAT_PREREG_SLUG_PLACEHOLDER = "<REPLACE: optional prereg/PR_<id>_<slug>.md>"
+PREREG_PLACEHOLDERS = (
+    PREREG_PLACEHOLDER,
+    COMPAT_PREREG_ID_PLACEHOLDER,
+    COMPAT_PREREG_SLUG_PLACEHOLDER,
+)
 
 
 def detect_mode_from_state_dir(state_dir: Path, label: str) -> str:
@@ -52,34 +59,24 @@ def detect_mode_from_state_dir(state_dir: Path, label: str) -> str:
             "workstreams or remove the unrelated state files."
         )
 
-    has_capability_map = (state_dir / "capability_map.md").exists()
+    has_rd_plan = (state_dir / "rd_plan.md").exists()
     has_explanation_ledger = (state_dir / "explanation_ledger.md").exists()
-    if has_capability_map and has_explanation_ledger:
+    if has_rd_plan and has_explanation_ledger:
         raise ValueError(
-            f"{label} contains both capability_map.md and explanation_ledger.md; "
+            f"{label} contains both rd_plan.md and explanation_ledger.md; "
             "select one primary state object for the trial."
         )
-    if has_capability_map:
+    if has_rd_plan:
         return "rd"
     if has_explanation_ledger:
         return "pure-research"
 
-    # Compatibility with older or hand-built projects that only have entry
-    # documents available when the first trial is created.
-    has_charter = (state_dir / "charter.md").exists()
     has_prfaq = (state_dir / "prfaq.md").exists()
-    if has_charter and has_prfaq:
-        raise ValueError(
-            f"{label} contains both charter.md and prfaq.md; add the primary "
-            "state object or pass a more specific --workstream."
-        )
-    if has_charter:
-        return "rd"
     if has_prfaq:
         return "pure-research"
 
     raise FileNotFoundError(
-        f"No state object found in {label}; expected capability_map.md or "
+        f"No state object found in {label}; expected rd_plan.md or "
         "explanation_ledger.md."
     )
 
@@ -141,7 +138,7 @@ def detect_mode_and_workstream(
 
 
 def detect_mode(project_dir: Path, workstream: str | None = None) -> str:
-    """Detect trial mode from a workstream or project-root compatibility state object."""
+    """Detect trial mode from a workstream or project-root state object."""
     mode, _ = detect_mode_and_workstream(project_dir, workstream)
     return mode
 
@@ -161,6 +158,33 @@ def next_trial_number(purposes_dir: Path) -> int:
     return max(existing, default=0) + 1
 
 
+def ensure_index_file(purposes_dir: Path) -> Path:
+    """Create purposes/INDEX.md from the shared template if it is missing."""
+    index_path = purposes_dir / "INDEX.md"
+    if index_path.exists():
+        return index_path
+
+    template = ASSETS_DIR / "shared" / "INDEX.md.template"
+    if template.exists():
+        content = template.read_text(encoding="utf-8")
+    else:
+        content = "\n".join(
+            [
+                "# Trial INDEX",
+                "",
+                "## Entries",
+                "",
+                "| trial_id | mode | evidence artifact | optional protocol link | artifact status | ledger assessment |",
+                "|---|---|---|---|---|---|",
+                "",
+                "## Artifact-status legend",
+                "",
+            ]
+        )
+    index_path.write_text(content, encoding="utf-8")
+    return index_path
+
+
 def find_template(mode: str) -> Path:
     if mode == "rd":
         candidates = [
@@ -176,14 +200,37 @@ def find_template(mode: str) -> Path:
     raise FileNotFoundError(f"trial template not found in any of: {candidates}")
 
 
-def substitute_rd(content: str, slug: str, nnn: str, project_name: str) -> str:
+def prereg_reference(prereg_id: str, workstream: str | None) -> str:
+    return (
+        f"workstreams/{workstream}/prereg/{prereg_id}.md"
+        if workstream else f"prereg/{prereg_id}.md"
+    )
+
+
+def rd_plan_reference(workstream: str | None) -> str:
+    return f"workstreams/{workstream}/rd_plan.md" if workstream else "rd_plan.md"
+
+
+def substitute_rd(
+    content: str,
+    prereg_id: str | None,
+    slug: str,
+    nnn: str,
+    project_name: str,
+    workstream: str | None,
+) -> str:
     """Replace <REPLACE: ...> markers in R&D trial template that we can fill from args."""
+    plan_or_prereg = (
+        prereg_reference(prereg_id, workstream)
+        if prereg_id else rd_plan_reference(workstream)
+    )
     return (
         content
         .replace("<REPLACE: NNN>", nnn)
         .replace("<REPLACE: short title>", slug.replace("_", " "))
         .replace("<REPLACE: artifact path>", f"purposes/trial_{nnn}_{slug}.py")
         .replace("<REPLACE: project name>", project_name)
+        .replace("<REPLACE: rd_plan.md section / relevant preregistration>", plan_or_prereg)
     )
 
 
@@ -201,14 +248,9 @@ def substitute_pr(content: str, prereg_id: str | None, question_id: str | None,
     if question_id:
         content = content.replace("<REPLACE: optional ledger row / claim>", question_id)
     if prereg_id:
-        prereg_path = (
-            f"workstreams/{workstream}/prereg/{prereg_id}.md"
-            if workstream else f"prereg/{prereg_id}.md"
-        )
-        compat_prereg_placeholder = "<REPLACE: optional " + "prereg/PR_<" + "id>.md>"
-        content = content.replace("<REPLACE: optional prereg reference>", prereg_path)
-        content = content.replace(compat_prereg_placeholder, prereg_path)
-        content = content.replace("<REPLACE: optional prereg/PR_<id>_<slug>.md>", prereg_path)
+        prereg_path = prereg_reference(prereg_id, workstream)
+        for placeholder in PREREG_PLACEHOLDERS:
+            content = content.replace(placeholder, prereg_path)
     if discriminating:
         content = content.replace("<REPLACE: optional discriminating contrast>", discriminating)
     return content
@@ -234,7 +276,7 @@ def create_trial(args: argparse.Namespace) -> Path:
 
     if mode == "rd":
         content = substitute_rd(
-            content, slug, nnn, project_dir.name,
+            content, args.prereg_id, slug, nnn, project_dir.name, selected_workstream,
         )
     else:
         content = substitute_pr(
@@ -245,25 +287,24 @@ def create_trial(args: argparse.Namespace) -> Path:
     out_path.write_text(content, encoding="utf-8")
 
     # Append to INDEX.md
-    index_path = purposes_dir / "INDEX.md"
-    if index_path.exists():
-        index = index_path.read_text(encoding="utf-8")
-        protocol_link = selected_workstream or "none"
-        if mode == "rd":
-            new_row = (
-                f"| trial_{nnn} | rd | purposes/trial_{nnn}_{slug}.py | {protocol_link} | in-progress | pending |\n"
-            )
-        else:
-            new_row = (
-                f"| trial_{nnn} | pure-research | purposes/trial_{nnn}_{slug}.py | "
-                f"{protocol_link} | in-progress | pending |\n"
-            )
-        marker = "\n## Artifact-status legend"
-        if marker in index:
-            before, after = index.split(marker, 1)
-            index_path.write_text(before.rstrip() + "\n" + new_row + marker + after, encoding="utf-8")
-        else:
-            index_path.write_text(index.rstrip() + "\n" + new_row, encoding="utf-8")
+    index_path = ensure_index_file(purposes_dir)
+    index = index_path.read_text(encoding="utf-8")
+    protocol_link = selected_workstream or "none"
+    if mode == "rd":
+        new_row = (
+            f"| trial_{nnn} | rd | purposes/trial_{nnn}_{slug}.py | {protocol_link} | in-progress | pending |\n"
+        )
+    else:
+        new_row = (
+            f"| trial_{nnn} | pure-research | purposes/trial_{nnn}_{slug}.py | "
+            f"{protocol_link} | in-progress | pending |\n"
+        )
+    marker = "\n## Artifact-status legend"
+    if marker in index:
+        before, after = index.split(marker, 1)
+        index_path.write_text(before.rstrip() + "\n" + new_row + marker + after, encoding="utf-8")
+    else:
+        index_path.write_text(index.rstrip() + "\n" + new_row, encoding="utf-8")
 
     return out_path
 
@@ -275,8 +316,8 @@ def main() -> None:
     p.add_argument("--project-dir", required=True, type=Path)
     p.add_argument("--workstream", help="workstream directory name under <project>/workstreams/")
     p.add_argument("--slug", required=True, help="trial slug (letters, numbers, and _)")
-    # R&D trials are protocol-agnostic evidence artifacts; ledger files link
-    # them to capability claims during assessment.
+    # R&D trials are protocol-agnostic evidence artifacts; state files link
+    # them to claims during assessment.
     # Optional protocol links. Evidence artifacts do not require them.
     p.add_argument("--prereg-id", help="(optional) pre-registration ID, e.g. PR_001_initial")
     p.add_argument("--question-id", help="(optional) question ID, e.g. Q1")

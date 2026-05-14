@@ -1,11 +1,11 @@
 # Trial INDEX
 
-List of numbered research notebooks / trials. `scripts/new_purpose.py` adds
-new entries automatically.
+Retired trial index template. Use `assets/shared/INDEX.md.template` and
+`scripts/new_trial.py` for new projects.
 
 ## Entries
 
-| trial_id | workstream label | linked claim / capability | state row updated | notebook status | state update / result summary |
+| trial_id | workstream label | linked claim / objective | state row updated | notebook status | state update / result summary |
 |---|---|---|---|---|---|
 
 ## Notebook-status legend (per notebook)
@@ -16,9 +16,9 @@ new entries automatically.
 - `parked`: blocked on upstream dependency
 - `dropped`: judged not worth pursuing; reason recorded in decisions.md
 
-A notebook is `done` only when it changes the project state. A metric without
-an update to `capability_map.md`, `explanation_ledger.md`, or `decisions.md`
-is still unfinished.
+A notebook is `done` only when it has been interpreted and the relevant state
+document, report package, or decision log has cited it. A metric without
+interpretation is still unfinished.
 
 ## Order
 

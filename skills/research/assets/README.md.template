@@ -3,9 +3,8 @@
 Replaced by workstream-aware project scaffolds and compatibility README
 templates:
 
-- default mixed project: `assets/shared/project_state.md.template`
-- Capability / Technology Research compatibility scaffold:
-  `assets/rd/README.md.template`
+- default mixed project: `assets/shared/README.md.template`
+- R&D Workstream compatibility scaffold: `assets/rd/README.md.template`
 - Phenomenon / Mechanism Research compatibility scaffold:
   `assets/pure_research/README.md.template`
 

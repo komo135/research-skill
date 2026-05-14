@@ -1,18 +1,53 @@
 # Report — RPT_<REPLACE: id, e.g., 001>_<REPLACE: slug>
 
 Editable source for:
+`results/reports/RPT_<REPLACE: id>_<REPLACE: slug>/report.md`
+
+Primary readable artifact for L2/L3 reports:
+`results/reports/RPT_<REPLACE: id>_<REPLACE: slug>/report.html`
+
+Optional snapshot/export:
 `results/reports/RPT_<REPLACE: id>_<REPLACE: slug>/report.pdf`
+
+Required core files: `report.md`, `report.html`, `figures/`, `tables/`, and
+`attachments/`. Here, `figures/`, `tables/`, and `attachments/` are
+directories, and required core directories may be empty when the report has no
+figures, tables, or attachments. Optional / situation-specific files:
+`report.pdf` and `provenance/` with `manifest.json`, `integrity_checks.md`,
+and `rerun.md`. Use provenance/ for claim-bearing or L2/L3 reports. L2/L3
+reports means claim-bearing reports and state-promotion or terminal-decision
+report packages; it is report package level, not analysis tier. In plain
+terms, report.html is the primary readable artifact for L2/L3 reports;
+report.md is editable source; report.pdf is optional snapshot/export.
+
+Report quality contract: a reader can identify the decision, evidence, plan
+comparison, limitations, and next action without opening notebooks or ledgers.
+Report contracts apply to report packages and presented evidence, not to
+research or experiments. Evidence integrity checks are a reporting-side
+requirement, not a continuous research tracking contract.
+
+Decision label: <REPLACE: supported | not supported | inconclusive | decision deferred | exploratory only | blocked>
+
+## Executive Decision
+
+<REPLACE: plain-language decision and next action. Failed, missing, or not run
+cannot be treated as supported.>
+
+## Research Stage and Claim Boundary
+
+<REPLACE: stage, claim boundary, and whether this is confirmatory,
+exploratory, non-claim-bearing, or blocked.>
 
 ## Preregistration Reference
 
 - **Preregistration**: `prereg/PR_<REPLACE: id>_<REPLACE: slug>.md`
 - **Preregistration type**: <REPLACE: confirmatory or exploratory>
 - **Report package**: `results/reports/RPT_<REPLACE: id>_<REPLACE: slug>/`
-
-## Summary
-
-<REPLACE: plain-language outcome, decision status, and what changed or did not
-change.>
+- **Required core files**: `report.md`, `report.html`, `figures/`, `tables/`,
+  `attachments/`
+- **Optional / situation-specific files**: `report.pdf`,
+  `provenance/manifest.json`, `provenance/integrity_checks.md`,
+  `provenance/rerun.md`
 
 ## Plan-to-Result Table
 
@@ -20,11 +55,34 @@ change.>
 |---|---|---|---|---|
 | <REPLACE> | <yes / no / partial> | <REPLACE> | <figure/table/appendix/local artifact/citation> | <REPLACE> |
 
-## Key Figures / Tables
+Plan -> execute -> compare -> report:
+
+- Plan: write or select the pre-registration before work starts.
+- Execute: run the work against the written plan.
+- Compare: compare actual execution and results against the pre-registration.
+- Report: publish the plan-to-result table, transparent changes, evidence, and limitations.
+
+Pre-registration is a plan, not a prison. A midstream pre-registration governs
+future work or explicit reruns only; prior work is prior or exploratory
+evidence.
+
+## Key Evidence
 
 - Figure/table source files should live under `figures/` or `tables/`.
 - Refer to local source artifacts only when they help a reviewer resolve the
   evidence.
+- Cover each key numeric, boolean, categorical, and count claim used in the
+  decision.
+
+## Evidence Integrity Checks
+
+Add a claim-to-artifact check row for each key reported claim:
+
+| claim_id | reported_value | cited_artifact_path | commit_or_hash | extraction_method | observed_source_value | comparison_status | generating_command_or_entrypoint |
+|---|---|---|---|---|---|---|---|
+| <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE> | <REPLACE> | <match / mismatch / failed / missing / not run> | <REPLACE> |
+
+Failed, missing, or not run cannot be treated as supported.
 
 ## Transparent Changes
 
@@ -43,12 +101,17 @@ If a change was made with knowledge of its effect on the outcome, say that the
 affected result has weaker diagnostic value. If the original plan no longer
 answers the intended question, say so plainly.
 
-## Scope / Limitations
+## Reproducibility Capsule
+
+<REPLACE: commit, environment, data/input versions, seed, and rerun command or
+why rerun is blocked.>
+
+## Scope / Limitations / Alternative Explanations
 
 <REPLACE: scope covered, known limitations, plausible alternatives, and what
 evidence would change the decision.>
 
-## Follow-up or next decision
+## Next Action
 
 <REPLACE or N/A>
 
