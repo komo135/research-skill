@@ -42,9 +42,9 @@ Categories are not a one-way pipeline ([Kline & Rosenberg 1986](https://fenix.is
 ### Plan-Execute-Analyze-Compare-Report cycle
 
 ```
-1. new_plan.py creates plans/<id>_<slug>.md (mode-specific template)
+1. new_plan.py creates plans/{id}_{slug}.md (mode-specific template)
 2. Write Plan section. git commit. (Plan is time-anchored.)
-3. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/.
+3. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/.
 4. ANALYZE — apply the discipline in references/analysis.md.
 5. Write Actual section + Planned-vs-Actual comparison.
 6. Record load-bearing claims using the Toulmin-derived structure.
@@ -55,10 +55,10 @@ Categories are not a one-way pipeline ([Kline & Rosenberg 1986](https://fenix.is
 ### Claim structure (Toulmin-derived, no numeric ladder)
 
 ```yaml
-- claim: <specific assertion with metric, magnitude, conditions>
-  evidence: <file:line / value / artifact / citation>
+- claim: (specific assertion with metric, magnitude, conditions)
+  evidence: (file:line / value / artifact / citation)
   alternatives_not_excluded: [...]    # empty list claims exhaustion
-  conditions_tested: <ranges, datasets, parameters>
+  conditions_tested: (ranges, datasets, parameters)
   conditions_not_tested: [...]        # empty list claims full coverage
 ```
 
@@ -141,21 +141,21 @@ enabled = true
 When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ```
-<project-root>/
+{project-root}/
 ├── README.md, project_state.md, decisions.md
-├── plans/<id>_<slug>.md            # research narrative (plan + actual + claims + decision)
+├── plans/{id}_{slug}.md            # research narrative (plan + actual + claims + decision)
 ├── literature/{papers.md,differentiation.md}
 ├── lib/                             # shared curated code (tests required)
-├── experiments/<plan>/              # per-plan isolation
+├── experiments/{plan}/              # per-plan isolation
 │   ├── code/ configs/ notebooks/
-│   └── runs/<plan>__<n>__seed<N>/   # raw artifacts (no required schema)
+│   └── runs/{plan}__{n}__seed{N}/   # raw artifacts (no required schema)
 ├── data/{raw,processed}/
-└── reports/<id>_<slug>/             # human-facing snapshots
+└── reports/{id}_{slug}/             # human-facing snapshots
     ├── report.md
     ├── figures/ tables/
 ```
 
-`lib/` is curated and shared; `experiments/<plan>/code/` is the plan's free zone. Cross-plan imports are forbidden — promote to `lib/` with a `decisions.md` entry first.
+`lib/` is curated and shared; `experiments/{plan}/code/` is the plan's free zone. Cross-plan imports are forbidden — promote to `lib/` with a `decisions.md` entry first.
 
 ## Bundled scripts
 
@@ -203,7 +203,7 @@ Complete redesign. No backward compatibility with v1.x.
 - Lightweight Amendment pattern: `REFINE` appends an Amendment rather than rewriting the Plan
 - Plan-canonical Methods: report's Methods section summarizes and cites the plan rather than duplicating
 - `scripts/check_report.py` verifying figure references resolve and required sections exist
-- `lib/` vs `experiments/<plan>/code/` separation with explicit promotion contract
+- `lib/` vs `experiments/{plan}/code/` separation with explicit promotion contract
 - Quant-research repositioned as time-series/statistical-rigor extension over `research`, applicable beyond finance
 
 **Removed**
@@ -211,7 +211,7 @@ Complete redesign. No backward compatibility with v1.x.
 - Pure Research workstream (PR/FAQ, IMRAD, explanation_ledger) — Amazon-style business artifact not aligned with Frascati basic-research practice
 - A0-A5 analysis depth ladder — homemade, not standard, conflated dimensions
 - L2/L3 report classification — non-standard vocabulary
-- Separate `prereg/` directory — preregistration internalized into `plans/<id>.md` with git as time-anchor
+- Separate `prereg/` directory — preregistration internalized into `plans/{id}.md` with git as time-anchor
 - Heavy `review/` pipeline — replaced by `check_claims.py` + `check_report.py` plus the iteration_loop FSA
 - Finance-specific quant-research surface (Sharpe-derivative scripts, portfolio construction, trading-specific references)
 - Experiment-level replicability requirements (env locks, commit pinning, seed databases) — explicitly the agent's discretion, not skill-enforced
