@@ -15,6 +15,37 @@ last_updated: YYYY-MM-DD
 
 <One paragraph stating what artifact will be built and what it is for.>
 
+## Divergence checkpoint
+
+### Approach portfolio
+
+- Primary route: <the system/design route selected for this milestone>
+- Alternative A: <meaningfully different route; not just a small implementation variant>
+- Alternative B: <meaningfully different route; not just a larger version; if a hard constraint permits only one route, state that constraint and downgrade later claims>
+
+### Anchoring audit
+
+- Prior result / approach / dataset being imported: <what this plan may be anchored on>
+- Risk if the anchor is wrong: <what behavior or performance assumption would break>
+- Revalidation or control: <acceptance test / benchmark / condition change>
+
+### Novelty / differentiation thesis
+
+- Contribution type: <question / mechanism / data / metric / evaluation protocol / method / system / replication / baseline strengthening>
+- Closest prior approach: <literature/papers.md entry, or unknown-not-yet-reviewed if no novelty claim is made>
+- Differentiation status: <literature/differentiation.md entry / no novelty claim>
+
+### Disconfirming evidence
+
+- Stop, narrow, or pivot if: <observation that would force a narrower question, a different route, a pause, or closure>
+- Branch if observed: <REFINE / ADJACENT / PARK / CLOSE>
+
+### Commitment decision
+
+- Chosen route and reason: <why commit to this route now>
+- Skipped divergence: <what alternatives are not explored because of time/budget; None if none>
+- Effect on later claims: <how this limits later claims>
+
 ## Plan
 
 ### Functional milestones

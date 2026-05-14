@@ -81,15 +81,16 @@ Boundaries that matter:
 
 ```
 1. scripts/new_plan.py creates plans/<id>_<slug>.md from a mode-specific template
-2. Write the Plan section. git commit. (Plan is now time-anchored by git.)
-3. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/.
-4. ANALYZE — apply the EDA / result-analysis discipline (references/analysis.md).
+2. Write the Question / Objective and the Divergence checkpoint.
+3. Write the Plan section. git commit. (Plan is now time-anchored by git.)
+4. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/.
+5. ANALYZE — apply the EDA / result-analysis discipline (references/analysis.md).
    Observations live in plans/<id>.md Observations and in experiments/<plan>/notebooks/.
-5. Write Actual section in plans/<id>.md. Compare planned vs actual.
-6. Record load-bearing claims using the structure in references/claim_structure.md.
+6. Write Actual section in plans/<id>.md. Compare planned vs actual.
+7. Record load-bearing claims using the structure in references/claim_structure.md.
    Observation → Interpretation → Claim is a staged progression — do not skip stages.
-7. Pick exactly one of the 5 iteration branches and record in decisions.md.
-8. If the result is human-facing, draft a report with scripts/draft_report.py.
+8. Pick exactly one of the 5 iteration branches and record in decisions.md.
+9. If the result is human-facing, draft a report with scripts/draft_report.py.
 ```
 
 Git is the time-anchor for the plan. There is no separate preregistration directory. The plan section of `plans/<id>.md` IS the preregistration; the initial commit IS the time-stamping mechanism. Subsequent commits show the evolution. This avoids the redundancy of maintaining a separate prereg artifact whose only job is "plan existed before result" — git already proves that.
@@ -115,6 +116,20 @@ Agents must use these labels exactly. They are how other agents, downstream scri
 **R&D categories**: `basic_research`, `applied_research`, `experimental_development`.
 
 Informal substitutes ("diagnostic detour," "let me keep exploring," "exploratory mechanism research") break interoperability. Use the exact labels.
+
+## Divergence checkpoint
+
+Every plan completes this checkpoint before execution. Its purpose is to prevent the research from prematurely converging on the user's preferred approach, the previous best result, or the most convenient available dataset.
+
+The checkpoint is lightweight, but it is not optional:
+
+1. **Approach portfolio** — list the candidate approach and normally at least two meaningfully different alternatives. Hyperparameter tweaks, extra seeds, or a larger version of the same model do not count as different alternatives. If a hard constraint truly permits only one route, record that constraint and downgrade later claims accordingly.
+2. **Anchoring audit** — identify assumptions imported from prior approaches, prior data, or prior results. State what revalidation, control, holdout, placebo, or condition change prevents those assumptions from becoming untested premises.
+3. **Novelty / differentiation thesis** — classify the contribution as one or more of: question, mechanism, data, metric, evaluation protocol, method, system, replication, or baseline strengthening. If the plan claims novelty with words such as novel, new method, publishable, or to our knowledge, update or cite `literature/differentiation.md` before execution. Otherwise state explicitly that no novelty claim is being made.
+4. **Disconfirming evidence** — state what observation would force a narrower question, a different route, a pause, or closure, and whether that would trigger `REFINE`, `ADJACENT`, `PARK`, or `CLOSE`.
+5. **Commitment decision** — explain why this plan commits to the chosen approach now instead of one of the alternatives. If time or budget prevents broader exploration, record the skipped divergence as a limitation on later claims.
+
+This checkpoint does not require a comprehensive literature review. A brief pass is enough unless the work will make an external novelty claim. The agent may still choose the user's requested approach, but only after making the alternatives and anchor risks explicit.
 
 ## Claims
 
@@ -164,6 +179,7 @@ Reports do not need env locks, commit hashes, or seed lists in the prose. One li
 |---|---|---|
 | Pick a category | `references/categories/<category>.md` | First action when starting a plan |
 | Plan schema | `references/rd_plan.md` | Writing or reviewing `plans/<id>.md` |
+| Divergence checkpoint | `references/rd_plan.md` | Before execution, after Question / Objective and before committing the Plan |
 | Analysis discipline | `references/analysis.md` | Before or during analysis (EDA / post-experiment), and before promoting an observation to a load-bearing claim |
 | Iteration branches | `references/iteration_loop.md` | After every interpreted result |
 | Claim schema | `references/claim_structure.md` | Writing or reviewing any load-bearing claim |
@@ -176,6 +192,7 @@ These are not formatting preferences. They are what makes other agents and human
 
 - **One declared category per plan.** Don't dodge the choice. If you can't pick, read `references/categories/*.md`.
 - **One declared mode per plan.** `exploratory`, `confirmatory`, or `milestone`. Hidden hypotheses inside exploratory plans are forbidden.
+- **Divergence checkpoint exists before execution.** A plan may still commit to one route, but it must first expose alternatives, anchor risks, novelty basis, and disconfirming evidence. User pressure to "just use the previous approach" is recorded as a constraint, not silently obeyed.
 - **No placeholder figures in reports.** Generate the figure or remove the reference. `scripts/check_report.py` verifies figure references resolve.
 - **Plan content exists before execution.** The Plan section must be filled in and committed before any execution begins. `created_commit` in the front matter is meaningful only if the Plan section is non-empty at that commit. After-the-fact plan rewriting is detectable in git diff.
 - **Decisions are labeled.** "Diagnostic detour," "let me keep going" are not decision labels. Pick from the 5.

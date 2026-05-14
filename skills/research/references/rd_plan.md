@@ -27,6 +27,9 @@ last_updated: YYYY-MM-DD
 ## Question / Objective
 <One paragraph stating what this plan investigates or builds.>
 
+## Divergence checkpoint
+<Plan-time record of alternatives, anchoring risks, novelty basis, disconfirming evidence, and why this plan commits to the chosen route.>
+
 ## Plan
 <Mode-specific structure — see below.>
 
@@ -47,6 +50,44 @@ last_updated: YYYY-MM-DD
 - Related plans: <other plan IDs and their relationship>
 - Related literature: <see literature/papers.md entries>
 ```
+
+## Divergence checkpoint section
+
+This section appears in every mode after `## Question / Objective` and before `## Plan`. Fill it before execution. Its purpose is to prevent research from prematurely converging on "the approach that worked last time," "the approach the user requested," or "the dataset already at hand."
+
+```markdown
+## Divergence checkpoint
+
+### Approach portfolio
+- Primary route: <the candidate approach selected for execution>
+- Alternative A: <an approach based on a different principle, data assumption, evaluation target, or design>
+- Alternative B: <another meaningfully different approach; simple threshold changes, extra seeds, and larger versions do not count>
+
+### Anchoring audit
+- Prior result / approach / dataset being imported: <what premise is being carried into this plan>
+- Risk if the anchor is wrong: <what interpretation would break if that premise is false>
+- Revalidation or control: <holdout / alternate period / placebo / control / condition change>
+
+### Novelty / differentiation thesis
+- Contribution type: <question / mechanism / data / metric / evaluation protocol / method / system / replication / baseline strengthening>
+- Closest prior approach: <literature/papers.md entry, or unknown-not-yet-reviewed if no novelty claim is made>
+- Differentiation status: <cited in literature/differentiation.md / no novelty claim>
+
+### Disconfirming evidence
+- Stop, narrow, or pivot if: <observation that would force a narrower question, a different route, a pause, or closure>
+- Branch if observed: <REFINE / ADJACENT / PARK / CLOSE>
+
+### Commitment decision
+- Chosen route and reason: <why this plan commits to this route now>
+- Skipped divergence: <alternatives not explored because of time or budget; None if none>
+- Effect on later claims: <how this limits later claims or narrows the tested conditions>
+```
+
+Do not pad the `Approach portfolio`. Different LSTM depths, thresholds on the same signal, or seeds on the same dataset are not different approaches. An alternative differs from the primary route in at least one of: method family, data assumption, evaluation target, mechanism, or system design.
+
+Do not skip this checkpoint when the user asks to avoid exploration or to use only the previous approach. The final plan may still choose the user-requested route, but skipped divergence must be recorded under `Skipped divergence` and carried into later claim limitations. If a hard constraint truly permits only one route, say so directly and downgrade the later claim scope rather than inventing fake alternatives.
+
+If the plan says novel, new method, publishable, or to our knowledge, `Differentiation status` must cite `literature/differentiation.md` before execution. `unknown-not-yet-reviewed` is allowed only when the plan explicitly makes no novelty claim.
 
 ## Plan section by mode
 
@@ -247,5 +288,9 @@ Mirror the entry in `decisions.md` for any branch except `NEXT_STEP`.
 - **Mode mismatch with category.** Applied research is usually confirmatory; basic research is usually exploratory; experimental development is usually milestone. Mismatches need justification in the Plan section.
 - **Confirmatory plan with no decision threshold.** The whole point of confirmatory is the threshold. State it explicitly.
 - **Exploratory plan with hidden hypothesis.** Writing "we expect X" without committing to a decision threshold converts exploration into informal confirmation. Either commit to confirmatory mode with an explicit threshold, or stay honestly exploratory with a variable space.
+- **No Divergence checkpoint.** A plan that only follows the user's preferred route can still be well formatted and still be weak research. Fill the checkpoint before execution.
+- **Portfolio made of parameter tweaks.** Three thresholds of the same signal are not three approaches. Record them as one primary route with a sweep, then add real alternatives or explicitly downgrade the claim scope.
+- **Prior result treated as fact.** "Previous run was best" is an anchor, not a premise. Record what would revalidate it or what limitation follows from not revalidating it.
+- **Novelty claimed before differentiation.** If the plan says novel, new method, publishable, or to our knowledge, cite or update `literature/differentiation.md` before execution. Otherwise state that no novelty claim is being made and classify the plan as replication, baseline strengthening, or engineering.
 - **Updating the Plan section after execution.** Plans get amended prospectively via `REFINE`. After-the-fact plan rewriting destroys the time-anchor — git diff will show the rewrite and any reviewer will catch it. Use the Planned vs Actual section instead.
 - **Methodology description too thin.** "We ran the experiments" is not a Methodology subsection. State the procedure, the parameters, the protocol.
