@@ -28,6 +28,15 @@ def test_benjamini_hochberg_rejects_adjusted_pvalue_equal_to_alpha():
     np.testing.assert_array_equal(rejected, np.array([True, False]))
 
 
+def test_benjamini_hochberg_adjusted_pvalues_are_monotone_step_up_values():
+    pvalues = np.array([0.03, 0.02, 0.8])
+
+    rejected, adjusted = multiple_testing.benjamini_hochberg(pvalues, alpha=0.05)
+
+    np.testing.assert_allclose(adjusted, np.array([0.045, 0.045, 0.8]))
+    np.testing.assert_array_equal(rejected, np.array([True, True, False]))
+
+
 def test_holm_adjusted_pvalues_are_monotone_step_down_values():
     pvalues = np.array([0.01, 0.03, 0.04])
 
