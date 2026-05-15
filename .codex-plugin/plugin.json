@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "version": "2.0.1",
-  "description": "v2.0.1 - Agent-driven R&D protocol with divergence checkpoint, PASS/REWORK/INVALID research review gate, Frascati categories, and claim discipline. Breaking change from v1.x.",
+  "version": "2.0.2",
+  "description": "v2.0.2 - Agent-driven R&D protocol with clarified Frascati category boundaries, divergence checkpoint, PASS/REWORK/INVALID research review gate, and claim discipline. Breaking change from v1.x.",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "Research",
     "shortDescription": "Agent-driven R&D protocol for basic/applied/development research with claim and analysis discipline",
-    "longDescription": "v2.0.1 - A protocol skill for agent-driven R&D across the three Frascati categories: basic research (understanding phenomena, building baselines), applied research (achieving measurable objectives), and experimental development (building working systems). Enforces shared vocabulary, Divergence checkpoint before execution, PASS/REWORK/INVALID research-review gate before claims/decisions/reports, Toulmin-derived claim structure with explicit alternatives and conditions, analysis discipline (EDA + result analysis + depth stop conditions), and human-readable reports with required figures. Includes a quant-research extension for time-series and statistically rigorous quantitative R&D (purged CV, multiple testing, leakage detection). Methods reproducibility is enforced; experiment-level replicability (env locks, commit pins) is the agent's discretion. Breaking change from v1.x.",
+    "longDescription": "v2.0.2 - A protocol skill for agent-driven R&D across the three Frascati categories: basic research (understanding phenomena, building baselines), applied research (achieving measurable objectives), and experimental development (building working systems). Clarifies that categories are chosen by plan purpose, intended use, output, and uncertainty type, not by origin or later innovation claims. Enforces shared vocabulary, Divergence checkpoint before execution, PASS/REWORK/INVALID research-review gate before claims/decisions/reports, Toulmin-derived claim structure with explicit alternatives and conditions, analysis discipline (EDA + result analysis + depth stop conditions), and human-readable reports with required figures. Includes a quant-research extension for time-series and statistically rigorous quantitative R&D (purged CV, multiple testing, leakage detection). Methods reproducibility is enforced; experiment-level replicability (env locks, commit pins) is the agent's discretion. Breaking change from v1.x.",
     "developerName": "komoootv",
     "category": "Research",
     "capabilities": [

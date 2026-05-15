@@ -25,7 +25,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.0.1)
+## Core design (v2.0.2)
 
 ### R&D categories (Frascati 2015)
 
@@ -207,12 +207,23 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.0.1** — strengthens research planning and review gates on top of the v2 redesign. Not backward compatible with v1.x.
+**Version 2.0.2** — clarifies R&D category boundaries on top of the v2 research protocol. Not backward compatible with v1.x.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.0.1 (current) — divergence and review gate hardening
+### v2.0.2 (current) — category boundary clarification
+
+Clarifies how agents choose Frascati R&D categories without changing plugin identity.
+
+**Changed**
+
+- R&D categories are chosen by a plan's primary purpose, intended use, expected output, and uncertainty type, not by source or origin alone.
+- `Innovation` is not treated as a primary R&D category label; publication-time contribution is separated from later adoption, diffusion, or social value.
+- Project/program category mixing remains valid, while each plan still declares exactly one category and one mode.
+- Experimental-development guidance now directs load-bearing methods claims to an `ADJACENT` applied-research plan with `confirmatory` mode.
+
+### v2.0.1 — divergence and review gate hardening
 
 Strengthens v2 research discipline without changing plugin identity.
 

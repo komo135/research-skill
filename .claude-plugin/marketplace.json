@@ -8,8 +8,8 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v2.0.1 - Agent-driven R&D protocol with divergence checkpoint, PASS/REWORK/INVALID research review gate, Frascati categories, and claim discipline. Breaking change from v1.x.",
-      "version": "2.0.1"
+      "description": "v2.0.2 - Agent-driven R&D protocol with clarified Frascati category boundaries, divergence checkpoint, PASS/REWORK/INVALID research review gate, and claim discipline. Breaking change from v1.x.",
+      "version": "2.0.2"
     }
   ]
 }
