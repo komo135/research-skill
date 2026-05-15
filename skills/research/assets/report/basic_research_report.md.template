@@ -37,6 +37,10 @@
 
 <What quantities or observations were recorded, with how.>
 
+### Material conditions
+
+<When applicable, conditions that could change interpretation: data identity, collection date, evaluation protocol, major model/tool versions, hardware class, external API/model version, and seed variability. These are material conditions, not environment locks.>
+
 ## Observations
 
 <What the data showed, with actual generated figures. Placeholder figures are not acceptable.>

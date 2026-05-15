@@ -49,7 +49,7 @@ Choose based on the structure of the hypothesis.
 |---|---|
 | Overfit on small samples (financial data is often small) | Dropout, early stopping, careful augmentation |
 | Selection bias from hyperparameter search | Record number of trials → Deflated Sharpe Ratio |
-| Reproducibility (seed, RNG) | Fix seed, report mean over multiple seeds |
+| Seed variability / RNG sensitivity | Fix seed for auditability, report distribution over multiple seeds |
 | Cost-vs-performance trade-off | Plot the cost / performance frontier |
 | Lack of interpretability | SHAP, attention maps, integrated gradients |
 

@@ -50,6 +50,8 @@ For non-ML quantitative research, the same principle adapts:
 - "Ablation" → component-wise contribution analysis
 - "Variance" → seed / replication / repetition variability
 
+For stochastic systems, do not treat a single fixed seed as reproducibility. Report seed count, dispersion, and failed seeds when those affect the claim. A fixed seed is useful for debugging and audit, but the claim is supported by the distribution of outcomes.
+
 ## Analysis depth — when is it enough?
 
 Three orthogonal stop criteria from the methodology literature:

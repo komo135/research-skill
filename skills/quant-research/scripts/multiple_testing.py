@@ -40,7 +40,7 @@ def bonferroni(pvalues: np.ndarray, alpha: float = 0.05) -> tuple[np.ndarray, np
     pvalues = np.asarray(pvalues, dtype=float)
     n = len(pvalues)
     adj = np.minimum(pvalues * n, 1.0)
-    rejected = adj < alpha
+    rejected = adj <= alpha
     return rejected, adj
 
 
@@ -54,10 +54,11 @@ def holm(pvalues: np.ndarray, alpha: float = 0.05) -> tuple[np.ndarray, np.ndarr
     n = len(pvalues)
     order = np.argsort(pvalues)
     sorted_p = pvalues[order]
-    adj_sorted = np.minimum.accumulate(np.minimum(sorted_p * (n - np.arange(n)), 1.0))
+    raw_adjusted = np.minimum(sorted_p * (n - np.arange(n)), 1.0)
+    adj_sorted = np.maximum.accumulate(raw_adjusted)
     adj = np.empty(n)
     adj[order] = adj_sorted
-    rejected = adj < alpha
+    rejected = adj <= alpha
     return rejected, adj
 
 
@@ -78,7 +79,7 @@ def benjamini_hochberg(pvalues: np.ndarray, alpha: float = 0.05) -> tuple[np.nda
     bh_sorted = np.minimum(bh_sorted, 1.0)
     adj = np.empty(n)
     adj[order] = bh_sorted
-    rejected = adj < alpha
+    rejected = adj <= alpha
     return rejected, adj
 
 

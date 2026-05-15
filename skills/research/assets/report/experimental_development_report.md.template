@@ -34,6 +34,10 @@
 
 <What the system depends on, conceptually. Frameworks, classes of data. NOT env-lock specifics.>
 
+### Material conditions
+
+<When applicable, conditions that could change interpretation: input data identity, workload shape, evaluation protocol, hardware class, major model/tool versions, external API/model version, collection date, and seed variability. These are material conditions, not environment locks.>
+
 ## Performance
 
 <Measured behavior under stated conditions, with figures.>

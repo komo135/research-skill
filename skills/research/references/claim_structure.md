@@ -42,7 +42,7 @@ Specific = states *what* improved, *by how much*, *under what conditions*, *with
 
 ### evidence
 
-A pointer to the specific basis for the claim. Acceptable forms:
+A pointer to the specific basis for the claim. This is an evidence-integrity anchor, not by itself a reproducibility guarantee: it lets a reviewer check that the reported value is connected to a concrete artifact, value, or citation, while the method and tested conditions still carry the reproducibility burden. Acceptable forms:
 
 - **file:line** — `experiments/01_phase_transition/runs/01__003__seed42/metrics.json:L8`
 - **Numeric value with provenance** — `mean BLEU 28.4 (SE 0.3) across 5 seeds, see Table 2 of reports/R02/report.md`

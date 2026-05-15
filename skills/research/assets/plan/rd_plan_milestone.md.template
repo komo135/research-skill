@@ -78,7 +78,7 @@ last_updated: YYYY-MM-DD
 
 ### System description (what was built)
 
-<Architecture, key design decisions, interfaces. NOT env locks.>
+<Architecture, key design decisions, interfaces, and material conditions that affect interpretation. Env locks and commit hashes are provenance pointers, not methodology.>
 
 ### Test results
 

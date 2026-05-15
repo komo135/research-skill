@@ -87,7 +87,7 @@ last_updated: YYYY-MM-DD
 
 ### Methodology used
 
-<Substantive description — architecture, training procedure, evaluation protocol, hyperparameters. Enough for re-implementation.>
+<Substantive description — architecture, training procedure, evaluation protocol, hyperparameters, and material conditions that affect interpretation. Enough for re-implementation; env locks and commit hashes are provenance pointers, not methodology.>
 
 ### Observations
 

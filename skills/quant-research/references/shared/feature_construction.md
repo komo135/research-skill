@@ -89,7 +89,7 @@ results/intermediate/
 ```
 
 Downstream notebooks read parquet files. Do not pass Python objects between notebooks —
-that breaks reproducibility.
+that breaks artifact provenance and downstream auditability.
 
 ## Typical feature-notebook structure
 

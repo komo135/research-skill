@@ -14,14 +14,17 @@ A protocol skill for agent-driven R&D. The job: keep research state honest while
 - The narrative of what was done, what was found, and what decision follows: `plans/<id>.md`, `decisions.md`, `reports/<id>/report.md`
 - Research-level reproducibility — methods description, data identification, statistical setup. Enough that another researcher can re-implement the work based on the prose.
 - Claim structure — explicit alternatives and conditions, not buried in prose.
+- Material execution conditions — only the conditions that can affect interpretation, such as data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date.
 
-**Not covered (agent's discretion):**
+**Not covered (agent's discretion, not audited as reproducibility evidence by this skill):**
 
 - Experiment-level replicability infrastructure: env locks, commit pinning, seed databases, container files.
 - The exact layout of `experiments/<plan>/runs/<run_id>/`.
 - Code style, build systems, dependency management.
 
 This separation matters. If the skill audited experiment-level artifacts, agents would spend their effort producing perfect env.lock files instead of doing good research. Replicability of the *scripts* is a personal-tooling concern; reproducibility of the *research* — what someone else can reproduce from your description — is what this skill enforces.
+
+Provenance is still useful, but it is an audit pointer, not the source of reproducibility. A commit hash, run directory, or environment lock can help locate what happened in this project; it does not replace a clear method, data description, evaluation protocol, and statistical setup. Likewise, claim-to-artifact consistency is an integrity check: reported values must match the cited artifacts, but that check verifies evidence honesty rather than making the method reproducible by itself.
 
 This distinction follows Drummond (2009) and Goodman et al. (2016): methods reproducibility is not the same as computational replicability. We enforce the former.
 
@@ -103,7 +106,7 @@ Boundaries that matter:
 10. If the result is human-facing, draft a report with scripts/draft_report.py.
 ```
 
-Git is the time-anchor for the plan. There is no separate preregistration directory. The plan section of `plans/<id>.md` IS the preregistration; the initial commit IS the time-stamping mechanism. Subsequent commits show the evolution. This avoids the redundancy of maintaining a separate prereg artifact whose only job is "plan existed before result" — git already proves that.
+Git is the time-anchor for the plan. There is no separate preregistration directory. The plan section of `plans/<id>.md` IS the preregistration; the initial commit IS the time-stamping mechanism. Subsequent commits show the evolution. This avoids the redundancy of maintaining a separate prereg artifact whose only job is "plan existed before result" — git already proves that. This is provenance and auditability for plan timing, not a substitute for the methodology description.
 
 ## Vocabulary the skill enforces
 
@@ -185,7 +188,7 @@ Required sections (category-specific shapes in `references/report_format.md`):
 5. **Limitations** — what alternatives remain plausible, what conditions were not tested.
 6. **Next action** — one of the 5 iteration decisions, or a specific request to the human reader.
 
-Reports do not need env locks, commit hashes, or seed lists in the prose. One line pointing to `experiments/<plan>/runs/` is enough if a reader wants to dig into raw artifacts.
+Reports do not need env locks, commit hashes, or seed lists in the prose. Include material execution conditions when they affect interpretation, and treat seed information as a variability disclosure: stochastic claims should report variance, failures, and the number of seeds rather than relying on one fixed seed. One line pointing to `experiments/<plan>/runs/` is enough if a reader wants to dig into raw artifacts.
 
 ## When you are unsure
 

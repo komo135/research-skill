@@ -4,7 +4,7 @@
 
 `plans/<plan_id>_<slug>.md` is the agent's working state for one R&D investigation. It contains the plan, the actual execution narrative, the comparison, the claims, and the decision. It is the durable record across sessions.
 
-This is **not** a write-once preregistration document. It is a live narrative. Git history is the time-anchor — the initial plan commit is the "preregistration" moment; subsequent commits show the evolution and are themselves auditable.
+This is **not** a write-once preregistration document. It is a live narrative. Git history is the time-anchor — the initial plan commit is the "preregistration" moment; subsequent commits show the evolution and are themselves auditable. Git history is an audit trail, not a substitute for methodology; the plan still has to describe the method, data, evaluation protocol, and material conditions well enough for re-implementation.
 
 Why one file instead of separate prereg + plan: separate files would impose redundant maintenance with no additional discipline. Git already proves the plan existed before the result. The agent's job is to keep the document honest, not to keep two synchronized documents.
 
@@ -179,7 +179,7 @@ Updated after work runs:
 - <run_id>: ...
 
 ### Methodology used
-<Substantive description of what was done. Methods reproducibility — enough for someone else to re-implement based on this text. NOT env locks or commit hashes — those live in the run artifacts.>
+<Substantive description of what was done. Methods reproducibility — enough for someone else to re-implement based on this text. Include material conditions that affect interpretation: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, collection date, and stochastic variability. These are material conditions, not env locks or commit hashes — run artifacts may carry audit pointers when useful.>
 
 ### Observations
 <What was seen. Reference figures/tables in reports/<id>/figures/ if reports have been started.>
@@ -200,7 +200,7 @@ If anything deviated from the plan, record it here. Deviations are not failures 
 
 If no deviation: `No material deviation from plan.`
 
-Material vs immaterial deviation: a change that could affect the interpretation of results is material. Fixing a typo in a script is not. Changing the evaluation metric is. Changing the random seed is usually not material; changing it after seeing a result that depends on the seed is material.
+Material vs immaterial deviation: a change that could affect the interpretation of results is material. Fixing a typo in a script is not. Changing the evaluation metric is. Changing a seed value before seeing outcomes is usually not material. Changing the seed policy, seed count, train/test split seed, or any seed after seeing a result that depends on it is material.
 
 ## Research review section
 

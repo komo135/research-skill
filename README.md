@@ -5,7 +5,7 @@ A Claude Code and Codex plugin providing two skills for **agent-driven R&D**:
 - **`research`** — protocol skill for R&D work across the three Frascati categories: basic research (understanding phenomena, building baselines), applied research (achieving measurable objectives), and experimental development (building working systems). Enforces vocabulary, plan/claim structure, iteration discipline, analysis methodology, and human-readable reports.
 - **`quant-research`** — domain extension layered on `research` for time-series and statistically rigorous quantitative R&D. Adds methodology for time-series cross-validation, multiple-testing corrections, leakage detection, and statistical robustness.
 
-The core rule: **research-level reproducibility (someone can re-implement from your description) is enforced; experiment-level replicability (someone can rerun your exact code) is the agent's discretion.** This separation, following [Drummond (2009)](https://cogprints.org/7691/7/icmle09.pdf) and [Goodman et al. (2016)](https://www.science.org/doi/10.1126/scitranslmed.aaf5027), keeps agents focused on doing good research rather than on producing perfect env.lock files.
+The core rule: **research-level reproducibility (someone can re-implement from your description) is enforced; experiment-level replicability (someone can rerun your exact code) is the agent's discretion.** This separation, following [Drummond (2009)](https://cogprints.org/7691/7/icmle09.pdf) and [Goodman et al. (2016)](https://www.science.org/doi/10.1126/scitranslmed.aaf5027), keeps agents focused on doing good research rather than on producing perfect env.lock files. Reports record material conditions, not environment locks: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date only when those conditions affect interpretation.
 
 ## Who this is for
 
@@ -96,6 +96,8 @@ Strength is read off the contents of `alternatives_not_excluded` and `conditions
 - Depth stop conditions (Tukey's compromise, depth-to-defend-claim, disclosure floor)
 - Observation → Interpretation → Claim staging with [Pearl's Ladder of Causation](https://causalai.net/r60.pdf)
 - HARKing prevention via [Gelman-Loken Garden of Forking Paths](https://sites.stat.columbia.edu/gelman/research/unpublished/p_hacking.pdf)
+
+For stochastic work, seed variability matters more than a single fixed seed. The skill asks agents to report seed count, dispersion, and failures when a claim depends on stochastic execution. Claim-to-artifact consistency checks are evidence-integrity checks: reported values must match the cited artifacts, but that is an audit of evidence honesty rather than a replacement for methods reproducibility.
 
 ### Reports for humans
 
@@ -263,7 +265,7 @@ Complete redesign. No backward compatibility with v1.x.
 - Separate `prereg/` directory — preregistration internalized into `plans/{id}.md` with git as time-anchor
 - Heavy `review/` pipeline — replaced by `check_claims.py` + `check_report.py` plus the iteration_loop FSA
 - Finance-specific quant-research surface (Sharpe-derivative scripts, portfolio construction, trading-specific references)
-- Experiment-level replicability requirements (env locks, commit pinning, seed databases) — explicitly the agent's discretion, not skill-enforced
+- Experiment-level replicability infrastructure (env locks, commit pinning, seed databases) — explicitly the agent's discretion, not skill-enforced. When present, these are provenance or variability logs, not substitutes for methods reproducibility.
 
 **Design rationale**
 

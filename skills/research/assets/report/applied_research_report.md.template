@@ -50,6 +50,10 @@
 
 <Hardware and training duration for context. Not env locks.>
 
+### Material conditions
+
+<When applicable, conditions that could change interpretation: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, collection date, and seed variability. These are material conditions, not environment locks.>
+
 ## Results
 
 <Quantitative comparison with figures and tables. Include variance across seeds.>

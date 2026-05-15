@@ -10,7 +10,7 @@ A report is a snapshot. Once written, it does not get retroactively rewritten wh
 
 The skill does not require paper-level formality (full Related Work survey, formal citations, LaTeX). Reports are summaries a non-author can act on. Two design consequences follow:
 
-- **No env locks, commit hashes, or seed lists in the prose.** A one-line pointer to `experiments/<plan>/runs/` is enough if a reader wants to dig into the raw artifacts. This is methods reproducibility, not computational replicability.
+- **No environment locks or commit hashes in the prose.** Reports should describe material conditions, not environment locks: data identity, evaluation protocol, major tool/model versions, hardware class, external API/model version, or collection date only when those conditions could change the interpretation. A one-line pointer to `experiments/<plan>/runs/` is enough if a reader wants to dig into raw artifacts. This is methods reproducibility, not computational replicability.
 - **No exhaustive citation lists.** Cite the directly relevant prior work (baselines, methods built on) — typically a handful, not dozens.
 
 ## Required structure
@@ -59,13 +59,13 @@ The `plans/<id>.md` Methodology subsection holds the full re-implementation-leve
 
 Duplicating content between plan and report has no audit value — it just creates two places that can drift out of sync. The plan is the source of truth; the report is the human-facing communication.
 
-Do NOT include env locks, commit hashes, or seed lists in this section's prose. A pointer at the end of the report ("Source artifacts: `experiments/01/runs/`") is sufficient for readers who want raw provenance.
+Do NOT include environment locks or commit hashes in this section's prose. Include material conditions that affect interpretation, such as data split dates, evaluation protocol, hardware class, or external model/API version. Seed information is a variability disclosure, not a substitute for reporting variance; for stochastic results, report seed count, dispersion, and failures rather than relying on one fixed seed. A pointer at the end of the report ("Source artifacts: `experiments/01/runs/`") is sufficient for readers who want raw provenance.
 
 ### Results / Observations
 
 What was observed, with at least one actual generated figure or table. **Placeholder figures are not acceptable.** If no figure makes sense, include a table; if no table makes sense, explain why and present numbers compactly in prose.
 
-Numbers in this section should be reproducible from the cited artifacts. Mention sample size, variance, and any statistical setup that bears on interpretation.
+Numbers in this section should be traceable and verifiable against the cited artifacts. Mention sample size, variance, and any statistical setup that bears on interpretation.
 
 For applied research: include a comparison table with baselines and the proposed method, variance across seeds, and ablation results.
 
@@ -111,7 +111,7 @@ A basic-research report often ends with a refined question, not a yes/no answer.
 - Proposed method — architecture, algorithm, training procedure, hyperparameters
 - Baselines — what was compared against, with sources/versions
 - Evaluation protocol — datasets, splits, metric computation
-- Compute setup — hardware and training duration for context (not env locks)
+- Compute setup — hardware class and training duration when they are material conditions; env locks belong in raw provenance if needed
 
 **Results** includes:
 
@@ -156,7 +156,9 @@ If the report's load-bearing numbers should be auditable to specific runs:
 Source artifacts: experiments/01_phase_transition/runs/, plan: plans/01_phase_transition.md
 ```
 
-This is a pointer, not a reproducibility section. It tells the reader where to look if they want to dig into the underlying artifacts. No commit hashes, no env locks, no seed lists — those live in the artifact directories themselves if at all.
+This is a pointer, not a reproducibility section. It tells the reader where to look if they want to dig into the underlying artifacts. Reproducibility comes from the methods and conditions being clear enough to re-implement; provenance points help audit what the agent actually ran.
+
+Claim-to-artifact consistency is an evidence-integrity check, not a separate reproducibility theory. If a report states a numeric, boolean, categorical, or count result, the cited artifact should contain the value or enough information to recompute it. A failed artifact check means the report value is not usable evidence until corrected, even if the method description is otherwise reproducible.
 
 ## Common failures
 
