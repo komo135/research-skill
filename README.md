@@ -25,7 +25,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.0.2)
+## Core design (v2.0.3)
 
 ### R&D categories (Frascati 2015)
 
@@ -209,12 +209,27 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.0.2** — clarifies R&D category boundaries on top of the v2 research protocol. Not backward compatible with v1.x.
+**Version 2.0.3** — clarifies methods reproducibility vs provenance/evidence-integrity and fixes multiple-testing correction behavior. Not backward compatible with v1.x.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.0.2 (current) — category boundary clarification
+### v2.0.3 (current) — reproducibility vocabulary and multiple-testing fixes
+
+Separates methods reproducibility from audit provenance and evidence-integrity checks, and fixes multiple-testing correction behavior in the quant-research extension.
+
+**Changed**
+
+- Reports and plans now describe material conditions that affect interpretation, not environment locks or commit hashes in prose.
+- Provenance pointers and claim-to-artifact checks are framed as audit/evidence-integrity controls rather than sources of methods reproducibility.
+- Fixed seeds are treated as debugging/audit aids; stochastic claims should report seed count, dispersion, and failed seeds when material.
+
+**Fixed**
+
+- Holm adjusted p-values are now monotone step-down values.
+- Bonferroni, Holm, and Benjamini-Hochberg reject adjusted p-values equal to `alpha`.
+
+### v2.0.2 — category boundary clarification
 
 Clarifies how agents choose Frascati R&D categories without changing plugin identity.
 
