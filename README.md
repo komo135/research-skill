@@ -25,7 +25,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.1.0)
+## Core design (v2.2.0)
 
 ### R&D categories (Frascati 2015)
 
@@ -227,12 +227,25 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.1.0** — adds the research ideation protocol: de-anchored Idea portfolio before prior-work grounding, sanitized brief + fresh de-anchoring subagent when anchors are already visible, and mandatory prior-work grounding before execution. Not backward compatible with v1.x.
+**Version 2.2.0** — aligns R&D category definitions with OECD Frascati Manual 2015 and adds the research lifecycle: observation discovery, hypothesis synthesis, intervention idea, prior-work grounding, plan, execution, analysis, claim, and decision.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.1.0 (current) — research ideation protocol
+### v2.2.0 (current) — Frascati definitions and research lifecycle
+
+Clarifies R&D category definitions and makes hypothesis generation explicit.
+
+**Added / changed**
+
+- R&D category definitions now follow OECD Frascati Manual 2015 wording while remaining scoped to agent research work, not corporate activity.
+- Added a research lifecycle from `Observation discovery` through `Decision`.
+- Added `Observation discovery pass` before hypothesis synthesis, with observation sources including empirical, literature, failure-mode, tension, baseline, and user/problem observations.
+- Split prior work into two roles: references can supply observations, then later ground candidates after raw candidates and hypothesis rationales exist.
+- Added a hypothesis synthesis chain: source observation, mechanism conjecture, proposed intervention, predicted effect, counter-hypothesis, and minimal disconfirming test.
+- Added approach transition criteria for staying with the current approach, `REFINE`, `ADJACENT`, `PARK`, and `CLOSE`.
+
+### v2.1.0 — research ideation protocol
 
 Adds a research ideation protocol that separates candidate generation from grounding and execution.
 

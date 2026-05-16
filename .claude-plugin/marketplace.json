@@ -8,8 +8,8 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v2.1.0 - Adds research ideation protocol: de-anchored Idea portfolio before prior-work grounding, sanitized brief + fresh de-anchoring subagent when anchors are already visible, and mandatory prior-work grounding before execution. Breaking change from v1.x.",
-      "version": "2.1.0"
+      "description": "v2.2.0 - Aligns R&D categories with OECD Frascati Manual 2015 and adds the research lifecycle: observation discovery, hypothesis synthesis, prior-work grounding, and approach transition criteria.",
+      "version": "2.2.0"
     }
   ]
 }
