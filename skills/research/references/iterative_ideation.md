@@ -57,15 +57,15 @@ For each candidate, invoke the executable signature through a real shell / comma
 
 If script execution fails (no data, missing args, runtime error, etc.), mark the candidate `killed` with the actual failure reason recorded. Do not fabricate a fallback fitness.
 
-#### Step 2 — Fitness analysis (separate-context analysis agent)
+#### Step 2 — Fitness analysis
 
-Dispatch a separate-context analysis agent with input = REAL fitness numbers from run artifacts, plus the `run_manifest.json`, relevant `logs/stdout.log` excerpts for debugging context, and the candidates' mechanism signatures. The analysis agent has NO prior expectations from the main agent. Console output may point to files, but the durable artifact is the evidence.
+Analyze REAL fitness numbers from run artifacts, plus the `run_manifest.json`, relevant `logs/stdout.log` excerpts for debugging context, and the candidates' mechanism signatures. Keep the predeclared fitness vector separate from candidate prose so the analysis does not become a self-justifying narrative. Console output may point to files, but the durable artifact is the evidence.
 
-The analysis agent returns:
+The analysis records:
 - Top-2 candidates by fitness vector dominance (primary metric, then variance, then turnover-adjusted variant)
 - Mechanism signature of each top candidate (which data assumption / metric / evaluation protocol / horizon / gate axis values the candidate uses)
 
-The separate-context analysis is what severs the rubric-leakage loop. If the main agent does this analysis itself, the protocol degenerates to v2-style hard gate (failed earlier in TDD).
+The predeclared fitness vector and durable artifacts are what reduce rubric leakage. Do not revise the rubric after seeing candidate identities or scores.
 
 #### Step 3 — Mutation
 
@@ -114,7 +114,7 @@ Record in `plans/<id>.md`:
 | Failure mode | F v2 design counter |
 |---|---|
 | **AlphaEvolve trap** (protocol silently selects for evaluator-rich problems across the project) | Scope restriction in this file: only applies when executable evaluator already exists. For domains without, use assumption_audit + ADJACENT-plan for evaluator construction. |
-| **Rubric leakage** (gate criteria leak into ideation prompt) | Fitness is computed by command execution, persisted as a durable artifact, and parsed by a separate-context analysis agent (Step 2). Main agent prompt has no PASS criteria. |
+| **Rubric leakage** (gate criteria leak into ideation prompt) | Fitness is computed by command execution, persisted as a durable artifact, and parsed against a predeclared fitness vector (Step 2). Main agent prompt has no PASS criteria. |
 | **Self-simulation** (agent estimates fitness from prior) | Cycle N Step 1 explicitly forbids simulation. Candidate-level `killed` classification is mandatory if execution fails. TDD GREEN-run agent rejected 3 named rationalization paths under this clause. |
 | **Back-leak via durable state** | Intermediate fitness artifacts stay in run directories; only final promoted candidate's fitness goes to durable plan record. |
 | **Friction overflow** | Hard cap: 2-3 cycles × 6 candidates × 1 evaluator call <= 18 command-line executions per plan. |
@@ -128,7 +128,7 @@ Record in `plans/<id>.md`:
 - **Print-only evaluator scripts**: a command that only prints metrics has not produced valid feedback. Use `scripts/check_run_artifacts.py`; if no durable artifact exists, mark the candidate blocked or killed rather than ranking it from stdout.
 - **Re-defining "executable signature" loosely**: e.g., counting `python script.py` (no args, exits silently) as evaluation. The signature must produce a parseable fitness output.
 - **Mutation-as-parameter-tweak**: agent produces variants that change a threshold from 2.0 to 2.5. This is sensitivity_grid territory, not mutation.
-- **Skipping Step 2 separate-context analysis**: main agent reads fitness numbers and runs the analysis itself. This re-introduces rubric leakage. The separate context is what severs the loop.
+- **Changing Step 2 after seeing scores**: revising the fitness vector after candidate identities or scores are known re-introduces rubric leakage. Predeclare the vector, persist artifacts, and then parse.
 - **Crossover as stapling**: "candidate uses both signal A and signal B" is not a mechanism-coherent crossover. The crossover must define a single coherent mechanism.
 
 ## Relationship to other reference files

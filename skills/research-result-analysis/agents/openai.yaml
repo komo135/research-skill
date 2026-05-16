@@ -1,4 +1,0 @@
-interface:
-  display_name: "Research Result Analysis"
-  short_description: "Analyze plan results from evidence"
-  default_prompt: "Use $research-result-analysis to analyze a completed research plan from its plan path."

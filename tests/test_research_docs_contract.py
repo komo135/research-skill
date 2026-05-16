@@ -305,9 +305,8 @@ def test_research_skill_routes_research_idea_generation_to_ideation_reference():
         "hypothesis candidate",
         "what should we try next",
         "references/ideation.md",
-        "fresh de-anchoring subagent",
-        "sanitized brief",
-        "must not generate raw candidates itself",
+        "anchor-stripped seed brief",
+        "excluded anchors",
         "before Prior-work grounding",
     )
     assert_ordered_fragments(
@@ -399,7 +398,6 @@ def test_ideation_reference_defines_observation_discovery_before_hypothesis_synt
         ideation,
         "De-anchoring pass",
         "Raw candidate generation",
-        "Main-agent handoff",
         "Transformation pass",
         "Observation discovery pass",
         "Observation is not yet a hypothesis",
@@ -445,7 +443,7 @@ def test_research_skill_orders_lifecycle_from_observation_to_decision():
     )
 
 
-def test_research_skill_requires_fresh_result_analysis_subagent_before_review():
+def test_research_lifecycle_uses_only_plan_review_and_result_analysis_subagents():
     skill = read("skills/research/SKILL.md")
     rd_plan = read("skills/research/references/rd_plan.md")
     readme = read("README.md")
@@ -453,15 +451,17 @@ def test_research_skill_requires_fresh_result_analysis_subagent_before_review():
     for text in [skill, rd_plan, readme]:
         assert_ordered_fragments(
             text,
+            "Plan",
+            "Plan review",
             "Execution",
             "Result analysis",
-            "Research review",
             "Claim",
+            "Decision",
         )
-        assert_mentions(
+        assert_mentions(text, "research-plan-review", "research-result-analysis")
+        assert_absent(
             text,
-            "research-result-analysis",
-            "fresh separate-context result-analysis subagent",
+            "research-review subagent",
             "main research agent must not perform result analysis itself",
         )
 
@@ -488,109 +488,69 @@ def test_result_analysis_subagent_prompt_uses_plan_as_only_starting_context():
         "tables",
         "figures",
         "context_missing",
-        "Do not write final claims, decisions, or human-facing reports.",
+        "why the result happened",
     )
 
 
-def test_result_analysis_skill_exists_and_stages_outputs_without_claim_authority():
-    skill = read("skills/research-result-analysis/SKILL.md")
+def test_plan_review_and_result_analysis_skill_boundaries_are_documented():
+    plan_review = read("skills/research-plan-review/SKILL.md")
+    result_analysis = read("skills/research-result-analysis/SKILL.md")
 
     assert_mentions(
-        skill,
+        plan_review,
+        "research-plan-review",
+        "plan path",
+        "research design",
+        "before execution",
+        "mechanism hypothesis",
+        "prediction",
+        "discriminating test",
+    )
+    assert_mentions(
+        plan_review,
+        "Do not execute",
+        "Do not analyze results",
+        "Do not write final claims",
+    )
+    assert_mentions(
+        result_analysis,
         "research-result-analysis",
         "plan path",
         "only starting context",
-        "Observation",
-        "Interpretation",
-        "claim-readiness",
+        "why the result happened",
+        "What happened",
+        "Candidate explanations",
+        "Evidence for / against",
+        "Procedure / artifact explanations",
+        "Discriminating next analyses",
         "context_missing",
-    )
-    assert_ordered_fragments(
-        skill,
-        "Read the plan",
-        "Reconstruct evidence",
-        "Analyze",
-        "Return",
+        "artifact contract",
+        "stdout is not evidence",
     )
     assert_mentions(
-        skill,
+        result_analysis,
         "Do not write final claims",
         "Do not choose iteration decisions",
         "Do not rely on parent-agent summaries",
     )
-
-
-def test_result_analysis_skill_requires_analysis_reference_and_artifact_contract():
-    skill = read("skills/research-result-analysis/SKILL.md")
-
-    assert_mentions(
-        skill,
-        "skills/research/references/analysis.md",
-        "artifact contract",
-        "stdout is not evidence",
-        "manifest-listed non-log durable artifact",
-        "disclosure floor",
-        "analysis depth",
-        "Observation → Interpretation → Claim",
-        "Pearl",
-    )
-
-
-def test_result_analysis_skill_defines_claim_readiness_verdicts():
-    skill = read("skills/research-result-analysis/SKILL.md")
-
-    assert_ordered_fragments(
-        skill,
+    assert_absent(
+        result_analysis,
         "Claim-readiness verdicts",
+        "Claim-readiness assessment",
         "`ready`",
         "`not_ready`",
         "`invalid_evidence`",
-    )
-    assert_mentions(
-        skill,
-        "applicable disclosure floor is met",
-        "repairable",
-        "script bug",
-        "data defect",
-        "leakage",
-        "invalid procedure",
-        "broken comparator",
-    )
-
-
-def test_result_analysis_skill_defines_quality_and_depth_gate():
-    skill = read("skills/research-result-analysis/SKILL.md")
-
-    assert_ordered_fragments(
-        skill,
-        "Analysis quality gate",
-        "artifact-faithful",
-        "arithmetically checked",
-        "claim-fit checked",
-        "depth-calibrated",
-        "reviewable",
-    )
-    assert_mentions(
-        skill,
-        "Do not score depth by length",
-        "claim strength",
-        "forbidden conclusion",
-        "required observation",
-        "required missing context",
-        "over-analysis",
         "GO/NO-GO",
-        "claim-readiness is not a release decision",
     )
 
 
-def test_result_analysis_prompt_preserves_subagent_output_before_review():
+def test_result_analysis_prompt_preserves_subagent_output_before_claims():
     prompt = read("skills/research/references/result_analysis_subagent_prompt.md")
-    analysis = read("skills/research/references/analysis.md")
 
     assert_ordered_fragments(
         prompt,
         "records the returned `## Result analysis` section",
-        "before dispatching the research-review subagent",
+        "before writing claims, decisions, or reports",
     )
     assert_mentions(
         prompt,
@@ -598,34 +558,28 @@ def test_result_analysis_prompt_preserves_subagent_output_before_review():
         "rewrite",
         "collapse the subagent's findings",
     )
-    assert_ordered_fragments(
-        analysis,
-        "An interpretation becomes a claim only when:",
-        "research-result-analysis",
-        "Exactly one fresh research-review subagent",
-    )
 
 
-def test_plan_templates_record_result_analysis_before_research_review():
+def test_plan_templates_record_plan_review_and_result_analysis_without_research_review():
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     for template in template_dir.glob("*.template"):
         text = template.read_text(encoding="utf-8")
         assert_ordered_fragments(
             text,
+            "## Plan",
+            "## Plan review",
             "## Actual execution",
             "## Planned vs Actual",
             "## Result analysis",
-            "## Research review",
             "## Claims",
         )
-        assert_mentions(
+        assert_mentions(text, "research-plan-review", "research-result-analysis")
+        assert_absent(
             text,
-            "fresh separate-context result-analysis subagent",
-            "research-result-analysis",
-            "only starting context",
-            "context_missing",
-            "claim-readiness",
+            "## Research review",
+            "research-review subagent",
+            "Claim-readiness assessment",
         )
 
 
@@ -707,23 +661,23 @@ def test_research_skill_docs_are_english_only():
     assert not offenders, f"Japanese/CJK text found in skill docs: {offenders}"
 
 
-def test_ideation_uses_fresh_subagent_for_deanchored_raw_candidates():
+def test_ideation_uses_anchor_stripped_seed_brief_for_deanchored_raw_candidates():
     ideation = read("skills/research/references/ideation.md")
 
     assert_ordered_fragments(
         ideation,
-        "Sanitized brief",
-        "Fresh de-anchoring subagent",
+        "Anchor-stripped seed brief",
+        "Excluded-anchor ledger",
         "Raw candidate generation",
         "Grounded pruning pass",
     )
     assert_mentions(
         ideation,
-        "The main agent must not generate raw candidates itself after seeing anchors.",
+        "do not let them define the raw seed space",
         "prior work names",
         "SOTA",
         "previous best approaches",
-        "user-preferred method",
+        "user's preferred method",
         "convenient dataset details",
     )
 
@@ -748,8 +702,8 @@ def test_plan_templates_include_idea_portfolio_before_prior_work_grounding():
             "hypothesis candidates",
             "what should we try next",
             "references/ideation.md",
-            "sanitized brief",
-            "fresh de-anchoring subagent",
+            "anchor-stripped brief",
+            "Excluded-anchor ledger",
         )
 
 
@@ -772,7 +726,8 @@ def test_idea_portfolio_records_pre_execution_divergence_review():
 
     assert_ordered_fragments(
         rd_plan,
-        "fresh de-anchoring subagent",
+        "anchor-stripped seed brief",
+        "excluded-anchor ledger",
         "### Pre-execution divergence review",
         "parameter sweep",
         "literature-first",

@@ -6,11 +6,11 @@ This protocol governs divergent work for research ideas, research directions, hy
 
 Do not read prior work first when the user is asking for research idea generation. Do not summarize prior work first either. Prior work is applied after raw candidates exist.
 
-Raw subagent output is seed material, not an accepted idea. A candidate is accepted into the portfolio only after it cites substrate ids, names the generation operator, states the changed premise, and survives the anti-vacuity gate. This is the difference between real ideation and post-hoc prose.
+Raw seed output is not an accepted idea. A candidate is accepted into the portfolio only after it cites substrate ids, names the generation operator, states the changed premise, and survives the anti-vacuity gate. This is the difference between real ideation and post-hoc prose.
 
 Prior-work grounding remains mandatory before execution. This file does not replace grounding. It creates an idea portfolio first, then uses grounding to prune, merge, park, or kill candidates before anything is promoted to a plan.
 
-If the main agent has already seen anchors such as prior work names, SOTA methods, previous best approaches, the user's preferred method, or convenient dataset details, the main agent must not generate raw candidates itself. The main agent must not generate raw candidates itself after seeing anchors. It must prepare a sanitized brief and dispatch a fresh de-anchoring subagent to generate seed material only.
+If anchors such as prior work names, SOTA methods, previous best approaches, the user's preferred method, or convenient dataset details are already visible, do not let them define the raw seed space. First prepare an anchor-stripped seed brief, record excluded anchors separately, and generate seed material only from substrate ids, constraints, and allowed generation operators.
 
 ## Protocol
 
@@ -30,15 +30,15 @@ Allowed substrate sources:
 - **Literature observation** — a pattern abstracted from references, prior work, or historical exemplars without importing the named method as the default solution.
 - **User/problem observation** — a durable fact about the user's problem, use context, constraints, or desired effect.
 
-References can supply observations at this stage. The agent may read or use references to extract abstract observations, tensions, failure modes, baseline limits, or problem facts. This does not license literature-first anchoring: keep paper titles, SOTA systems, leaderboard winners, and named methods out of sanitized briefs and raw seed generation, and do not narrow the raw seed pool around them before seeds exist.
+References can supply observations at this stage. The agent may read or use references to extract abstract observations, tensions, failure modes, baseline limits, or problem facts. This does not license literature-first anchoring: keep paper titles, SOTA systems, leaderboard winners, and named methods out of seed briefs and raw seed generation, and do not narrow the raw seed pool around them before seeds exist.
 
 ### De-anchoring pass
 
-The de-anchoring pass separates sanitized brief preparation, fresh subagent dispatch, and raw seed generation from the later operator and grounding work.
+The de-anchoring pass separates anchor stripping and raw seed generation from the later operator and grounding work.
 
-### Sanitized brief preparation
+### Anchor-stripped seed brief
 
-The main agent prepares a brief for the de-anchoring subagent that includes only:
+Prepare a seed brief that includes only:
 
 - the problem or phenomenon to investigate
 - the substrate ids and sanitized substrate descriptions
@@ -47,7 +47,7 @@ The main agent prepares a brief for the de-anchoring subagent that includes only
 - hard cost, time, compute, data-access, ethical, or safety constraints
 - any required output shape, such as number of seeds or scoring format
 
-The sanitized brief must exclude:
+The seed brief must exclude:
 
 - prior work names, paper titles, author names, and lab names
 - SOTA systems, leaderboard winners, and previous best approaches
@@ -58,21 +58,25 @@ The sanitized brief must exclude:
 
 If an excluded detail is also a genuine hard constraint, rewrite it at the constraint level rather than naming the anchor. For example, describe the data modality, scale, access limit, or evaluation requirement instead of naming a benchmark or dataset.
 
-### Fresh de-anchoring subagent pass
+### Excluded-anchor ledger
 
-Dispatch a fresh de-anchoring subagent with only the sanitized brief. The subagent must not receive the main agent's prior-work notes, SOTA summary, previous favorite approach, user-preferred method, convenient dataset names, or earlier candidate list.
+Record the anchors intentionally excluded from raw seed generation:
 
-The subagent returns raw seeds, not accepted candidates. Each raw seed may be one sentence. At this stage, do not reject seeds for reviewability, overlap with known work, ease of implementation, or fit with available datasets.
+- prior-work names, paper titles, author names, lab names
+- SOTA systems, leaderboard winners, and previous best approaches
+- the user's preferred method, favored mechanism, or pet hypothesis
+- convenient dataset names, benchmark names, or easy local artifacts unless they are unavoidable hard constraints
+- implementation sketches that imply a known approach
+
+The ledger is not input to raw seed generation. It exists so later grounded pruning can check whether the portfolio collapsed back toward anchors.
 
 ### Raw candidate generation
 
-Raw candidate generation is now raw seed generation. It is owned by the fresh de-anchoring subagent, not by a main agent that has already seen anchors. The output is an unpruned seed set that preserves breadth before operator conversion, anti-vacuity, and grounded pruning.
+Raw candidate generation is raw seed generation. The output is an unpruned seed set that preserves breadth before operator conversion, anti-vacuity, and grounded pruning.
 
-### Main-agent handoff
+Each raw seed may be one sentence. At this stage, do not reject seeds for reviewability, overlap with known work, ease of implementation, or fit with available datasets.
 
-After raw seeds exist, the main agent resumes responsibility for the portfolio. The main agent may add clarifying labels, group similar seeds, and prepare them for operator conversion, but it must preserve the raw seed set before pruning.
-
-The main agent applies grounded pruning only after this handoff, generation operator conversion, anti-vacuity, and evaluator feedback. If the main agent needs additional raw seeds after seeing anchors, it must repeat the sanitized-brief and fresh-subagent process rather than generating the seeds directly.
+Apply grounded pruning only after raw seed generation, generation operator conversion, anti-vacuity, and evaluator feedback. If additional raw seeds are needed after anchors are visible, repeat the anchor-stripped seed brief and excluded-anchor ledger before generating them.
 
 ### Transformation pass
 
@@ -160,7 +164,7 @@ Only candidates that survive the anti-vacuity gate become hypotheses. Transform 
 - Counter-hypothesis: <a plausible alternative explanation under which the intervention should not produce the predicted effect>
 - Minimal disconfirming test: <the smallest test, ablation, comparison, derivation check, or observation that would force rejection, narrowing, or parking of the candidate>
 
-Keep paper titles, author names, and named methods out of sanitized briefs and raw seed generation. After raw seeds exist, grounded and synthesis phases may use landmark papers and historical exemplars to abstract research patterns, not to narrow the raw portfolio in advance. Use names such as `Attention Is All You Need`, `ResNet`, `DQN`, and `Generative Pre-Training` only as compact examples of patterns: recasting an architecture around a different dependency mechanism, stabilizing deeper optimization through a structural path, converting sequential decision learning into a target/control problem, or testing whether generative pretraining supplies reusable representations.
+Keep paper titles, author names, and named methods out of seed briefs and raw seed generation. After raw seeds exist, grounded and synthesis phases may use landmark papers and historical exemplars to abstract research patterns, not to narrow the raw portfolio in advance. Use names such as `Attention Is All You Need`, `ResNet`, `DQN`, and `Generative Pre-Training` only as compact examples of patterns: recasting an architecture around a different dependency mechanism, stabilizing deeper optimization through a structural path, converting sequential decision learning into a target/control problem, or testing whether generative pretraining supplies reusable representations.
 
 ### Quality-diversity pass
 
@@ -232,9 +236,9 @@ Failed idea is not a claim. Non-promoted ideas are not claims. Failed ideas, par
 
 - **Six thin ideas.** "Generate six ideas" is not the goal. Seeds that cannot cite substrate ids, an operator, and a changed premise are not candidates.
 - **Post-hoc synthesis.** Writing a mechanism after the fact to rescue a weak seed violates the anti-vacuity gate. Kill it and regenerate from substrate.
-- **Literature-first ideation.** "The literature is large, so summarize it first" strengthens anchors. Generate raw seeds first through the sanitized-brief subagent path.
-- **Main-agent anchor leakage.** If the main agent has seen anchors, it must not create the raw seed list itself. It prepares the sanitized brief, dispatches the fresh de-anchoring subagent, and waits for raw seeds.
-- **Dataset convenience bias.** Naming an easy dataset too early can make the portfolio collapse into benchmark-shaped ideas. Include only true data constraints in the sanitized brief.
+- **Literature-first ideation.** "The literature is large, so summarize it first" strengthens anchors. Generate raw seeds first through an anchor-stripped seed brief.
+- **Anchor leakage.** If anchors are already visible, keep them out of the seed brief and raw seeds. Record them in the excluded-anchor ledger and check later whether grounded pruning pulled the portfolio back toward them.
+- **Dataset convenience bias.** Naming an easy dataset too early can make the portfolio collapse into benchmark-shaped ideas. Include only true data constraints in the seed brief.
 - **Safe-review bias.** Introducing "what would pass review" too early leaves only baseline strengthening. Reviewability belongs after the anti-vacuity gate.
 - **Winning-approach gravity.** If the portfolio clusters around the previous best approach, use generation operators to force different changed premises.
 - **Parameter-sweep laundering.** Lookbacks, thresholds, seeds, model size, and filter swaps are sensitivity checks, not ideas.
