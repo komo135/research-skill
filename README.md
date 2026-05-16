@@ -25,7 +25,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.0.4)
+## Core design (v2.1.0)
 
 ### R&D categories (Frascati 2015)
 
@@ -225,12 +225,23 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.0.4** — reframes literature review around mandatory prior-work grounding and `literature/positioning.md`. Not backward compatible with v1.x.
+**Version 2.1.0** — adds the research ideation protocol: de-anchored Idea portfolio before prior-work grounding, sanitized brief + fresh de-anchoring subagent when anchors are already visible, and mandatory prior-work grounding before execution. Not backward compatible with v1.x.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.0.4 (current) — prior-work grounding and positioning
+### v2.1.0 (current) — research ideation protocol
+
+Adds a research ideation protocol that separates candidate generation from grounding and execution.
+
+**Added / changed**
+
+- Research ideation now starts with a de-anchored Idea portfolio before prior-work grounding.
+- When anchors are already visible to the main agent, it must prepare a sanitized brief and dispatch a fresh de-anchoring subagent for raw candidate generation.
+- Prior-work grounding remains mandatory before execution; ideation produces candidates, not execution-ready plans.
+- Only one candidate is promoted into a plan after grounding and information-gain scoring; non-promoted ideas are recorded as `parked / killed / merged` and are not claims.
+
+### v2.0.4 — prior-work grounding and positioning
 
 Reframes literature review from novelty/differentiation toward prior-work grounding for every plan.
 
