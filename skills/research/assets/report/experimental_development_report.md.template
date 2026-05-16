@@ -7,16 +7,27 @@
 
 ## Summary
 
-<One or two paragraphs:>
-<- what was built>
-<- what it does, with the headline performance number>
-<- known limits and next action>
+<One or two paragraphs: what was built, what it does with headline performance or acceptance evidence, known limits, and next action.>
 
 ## Background
 
 <What this artifact is for. What existed before. Why this iteration.>
 
+## Related Work
+
+<Prior systems, methods, or design patterns this artifact stands on, extends, contradicts, or replaces. State what is inherited and what is changed.>
+
+Not applicable: <state why there is no substantive prior-work comparison beyond the Background grounding, if true.>
+
+## Theory / Formulation
+
+<Algorithmic formulation, protocol definition, or design invariant needed to interpret the system behavior.>
+
+Not applicable: <state why the development claim does not rest on a derivation or formal protocol, if true.>
+
 ## System description
+
+<System-level description sufficient for a non-author to understand and re-implement the design. See plans/<plan-id>_<slug>.md Methodology for full re-implementation detail.>
 
 ### Architecture
 
@@ -40,22 +51,29 @@
 
 ## Performance
 
-<Measured behavior under stated conditions, with figures.>
+<Measured behavior under stated conditions. Include functional acceptance, performance characterization, and operational behavior. Numeric results must report sample size, variance/dispersion, confidence interval, effect size, significance, or another stated reason the statistical reporting minimum does not apply.>
 
-| Metric | Value | Conditions |
-|---|---|---|
+| Metric | Value | Conditions | Source |
+|---|---|---|---|
 
-![<Figure caption>](figures/<filename>.png)
+![<Self-standing figure caption with claim, axes/units/sample size/variance when measured, and source artifact pointer>](figures/<filename>.png)
 
-## Operational limits
+## Ablation / Sensitivity
 
-<- Known failure modes>
-<- Edge cases observed>
-<- Resource boundaries>
+<Controlled variation, stress test, workload sensitivity, or component replacement that tests whether the claimed system behavior depends on a component, setting, or condition.>
+
+Not applicable: <state why no component-causality or robustness claim is made.>
+
+## Discussion
+
+<Interpretation of measured behavior, surprises, design tradeoffs, and implications for deployment or next iteration.>
 
 ## Limitations
 
 <- Conditions not tested>
+<- Known failure modes>
+<- Edge cases observed>
+<- Resource boundaries>
 <- Future-iteration items>
 
 ## Next action

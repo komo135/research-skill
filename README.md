@@ -5,7 +5,7 @@ A Claude Code and Codex plugin providing two skills for **agent-driven R&D**:
 - **`research`** — protocol skill for R&D work across the three Frascati categories: basic research (new knowledge about underlying foundations without a particular application in view), applied research (new knowledge directed toward a specific practical aim or objective), and experimental development (new or improved products/processes plus additional knowledge). Enforces vocabulary, plan/claim structure, iteration discipline, analysis methodology, and human-readable reports.
 - **`quant-research`** — domain extension layered on `research` for time-series and statistically rigorous quantitative R&D. Adds methodology for time-series cross-validation, multiple-testing corrections, leakage detection, and statistical robustness.
 
-The core rule: **research-level reproducibility (someone can re-implement from your description) is enforced; experiment-level replicability (someone can rerun your exact code) is the agent's discretion.** This separation, following [Drummond (2009)](https://cogprints.org/7691/7/icmle09.pdf) and [Goodman et al. (2016)](https://www.science.org/doi/10.1126/scitranslmed.aaf5027), keeps agents focused on doing good research rather than on producing perfect env.lock files. Reports record material conditions, not environment locks: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date only when those conditions affect interpretation.
+The core rule: **research-level reproducibility (someone can re-implement from your description) is enforced; experiment-level replicability (someone can rerun your exact code) is the agent's discretion.** This separation, following [Drummond (2009)](https://cogprints.org/7691/7/icmle09.pdf) and [Goodman et al. (2016)](https://www.science.org/doi/10.1126/scitranslmed.aaf5027), keeps agents focused on doing good research rather than on producing perfect env.lock files. Reports record material conditions, not environment locks: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date only when those conditions affect interpretation. Research scripts still need evidence: stdout is not evidence, so completed runs keep a manifest with `status: completed`, logs, and at least one manifest-listed durable artifact.
 
 ## Who this is for
 
@@ -25,7 +25,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.2.0)
+## Core design (v2.4.0)
 
 ### R&D categories (Frascati 2015)
 
@@ -41,20 +41,23 @@ Agent-side R&D eligibility is a lightweight research-recording check. Work shoul
 
 Categories are not a one-way pipeline ([Kline & Rosenberg 1986](https://fenix.iseg.ulisboa.pt/downloadFile/1407508027548318/Kline%20and%20Rosenberg%20(1986)%20An%20overview%20of%20innovation.pdf); [Stokes 1997](https://www.brookings.edu/books/pasteurs-quadrant/)). Cycling between them is normal.
 
+Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Theoretical mode is for derivational work where axioms, definitions, and limiting-case checks carry the evidence burden; it is a plan/report mode, not a fourth R&D category.
+
 ### Plan-Execute-Analyze-Compare-Report cycle
 
 ```
 1. new_plan.py creates plans/{id}_{slug}.md (mode-specific template)
 2. Write Question / Objective. If ideating, write the Research ideation Idea portfolio before prior-work grounding.
-3. Write Prior-work grounding and the Divergence checkpoint.
-4. Write Plan section. git commit. (Plan is time-anchored.)
-5. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/.
-6. ANALYZE — apply the discipline in references/analysis.md.
-7. Write Actual section + Planned-vs-Actual comparison.
-8. Dispatch exactly one research-review subagent to evaluate analysis sufficiency and result reliability.
-9. Record load-bearing claims using the Toulmin-derived structure.
-10. Pick one of 5 iteration branches: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE.
-11. If human-facing, draft a report.
+3. For ideation work, run assumption audit before hypothesis synthesis; use iterative ideation only when its executable-evaluator preconditions hold.
+4. Write Prior-work grounding and the Divergence checkpoint.
+5. Write Plan section. git commit. (Plan is time-anchored.)
+6. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact.
+7. ANALYZE — apply the discipline in references/analysis.md; print-only results do not support observations or claims.
+8. Write Actual section + Planned-vs-Actual comparison.
+9. Dispatch exactly one research-review subagent (a fresh separate-context analysis agent, not a host-specific Task tool) to evaluate analysis sufficiency and result reliability.
+10. Record load-bearing claims using the Toulmin-derived structure.
+11. Pick one of 5 iteration branches: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE.
+12. If human-facing, draft a report.
 ```
 
 ### Prior-work grounding
@@ -67,9 +70,17 @@ Comprehensive literature survey is required for strong external novelty, publica
 
 ### Research ideation
 
-When a user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," the `research` skill now uses `references/ideation.md` to create an **Idea portfolio** before prior-work grounding. If the main agent has already seen anchors, it prepares a sanitized brief and dispatches a fresh de-anchoring subagent for raw candidate generation. The portfolio starts with those de-anchored raw candidates, records which axis each candidate changes, then applies grounding and information-gain scoring.
+When a user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," the `research` skill now uses `references/ideation.md` to create an **Idea portfolio** before prior-work grounding. If the main agent has already seen anchors, it prepares a sanitized brief and dispatches a fresh de-anchoring subagent for raw seed generation; this means any host-provided separate-context agent, not a specific Task tool. Raw seeds are not accepted ideas. The portfolio must record substrate ids, generation operators, changed premises, assumption audit, anti-vacuity gate results, blind-spot catalog entries tied to surviving candidates, evaluator feedback, grounded pruning, and information-gain scoring before one candidate can be promoted.
 
 Only one candidate is promoted into a plan. Non-promoted ideas are recorded as `parked / killed / merged` and are not claims.
+
+### Assumption audit and iterative ideation
+
+v2.3.0 adds `references/assumption_audit.md` between observation discovery and hypothesis synthesis. It surfaces background assumptions of the reference model being challenged, separate from the Divergence checkpoint's anchoring audit on imported prior work. The audit records load-bearing assumptions, downstream checks, blind-spot catalog entries tied to candidate mechanisms and claim scope, reference-class forecasts, and named constraints for hypotheses that cannot currently be evaluated.
+
+v2.4.0 adds `references/iterative_ideation.md` for applied and experimental-development plans with an existing executable evaluator. It uses real shell / command-line execution for candidate scoring, explicitly forbids self-simulated fitness, and updates candidates with mutation, crossover, and wildcard variants before grounded pruning.
+
+Executable feedback must persist to run artifacts. A command that only prints a fitness number is not valid evaluator feedback until the run directory contains `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and a durable artifact such as `outputs/fitness.json`, `tables/fitness.csv`, or an `intermediate/` diagnostic.
 
 ### Divergence checkpoint
 
@@ -118,7 +129,7 @@ For stochastic work, seed variability matters more than a single fixed seed. The
 
 ### Reports for humans
 
-Z39.18-derived, lightweight structure with required sections (Summary / Background / Methods & Conditions / Results / Limitations / Next action). Figures must actually exist — `scripts/check_report.py` verifies references resolve. Reports cite the plan for full re-implementation detail rather than duplicating Methods content.
+Z39.18-derived, paper-grade report structure with required Summary, Background, Related Work, Methods & Conditions or System description, Results/Observations/Performance, Ablation / Sensitivity, Discussion, Limitations, Next action, and References sections. Sections that do not apply still appear with a short `Not applicable:` rationale. v2.4.0 adds Figure-as-argument guidance and a Statistical reporting minimum for numeric evidence. Figures must actually exist — `scripts/check_report.py` verifies references resolve and rejects numeric outcome sections that omit sample size, variance/dispersion, CI, effect size, significance, or an explicit non-applicability reason. Reports cite the plan for full re-implementation detail rather than duplicating Methods content.
 
 ## Repository Layout
 
@@ -140,7 +151,7 @@ research-skill/
 │   │   │   ├── report_format.md
 │   │   │   └── literature_review.md
 │   │   ├── assets/{project,plan,report}/*.template
-│   │   └── scripts/{new_project,new_plan,new_run,check_claims,check_report,draft_report}.py
+│   │   └── scripts/{new_project,new_plan,new_run,check_run_artifacts,check_claims,check_report,draft_report}.py
 │   └── quant-research/
 │       ├── SKILL.md
 │       ├── references/shared/
@@ -191,7 +202,7 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 ├── lib/                             # shared curated code (tests required)
 ├── experiments/{plan}/              # per-plan isolation
 │   ├── code/ configs/ notebooks/
-│   └── runs/{plan}__{n}__seed{N}/   # raw artifacts (no required schema)
+│   └── runs/{plan}__{n}__seed{N}/   # run_manifest, logs, and durable artifacts
 ├── data/{raw,processed}/
 └── reports/{id}_{slug}/             # human-facing snapshots
     ├── report.md
@@ -208,7 +219,9 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 |---|---|
 | `new_project.py` | Initialize project directory with canonical layout |
 | `new_plan.py` | Create a plan from mode-specific template, capture git SHA |
-| `new_run.py` | Create a run directory with consistent naming |
+| `new_run.py` | Create a run directory with manifest, logs, and artifact folders |
+| `check_run_artifacts.py` | Reject print-only runs and verify manifest/logs/non-log artifacts |
+| `check_idea_portfolio.py` | Verify Idea portfolio substrate/operator/anti-vacuity/blind-spot/evaluator-feedback contract |
 | `check_claims.py` | Verify claim record structure (5 required fields, vagueness heuristics) |
 | `check_report.py` | Verify report contract (figures resolve, required sections, non-placeholder) |
 | `draft_report.py` | Initialize a report directory from a plan |
@@ -227,12 +240,36 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.2.0** — aligns R&D category definitions with OECD Frascati Manual 2015 and adds the research lifecycle: observation discovery, hypothesis synthesis, intervention idea, prior-work grounding, plan, execution, analysis, claim, and decision.
+**Version 2.4.0** — keeps prior-work grounding as a first-class contract while adding assumption audit, theoretical plan/report support, iterative ideation for executable-evaluator settings, paper-grade report sections, and statistical reporting minimums.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.2.0 (current) — Frascati definitions and research lifecycle
+### v2.4.0 (current) — theoretical, iterative, report, and claim additions
+
+Extends the v2 research protocol without adding new R&D categories.
+
+**Added / changed**
+
+- Added `theoretical` plan mode for derivational work using axioms, definitions, and limiting-case checks.
+- Replaced raw one-line ideation with a substrate-driven generation contract: substrate ids, generation operators, changed premises, blind-spot entries, anti-vacuity gate, evaluator feedback, and `check_idea_portfolio.py`.
+- Added iterative ideation for applied and experimental-development plans with executable evaluators: real shell / command-line execution is mandatory and self-simulated fitness is forbidden.
+- Expanded report format with paper-grade Theory / Formulation, Related Work, Ablation / Sensitivity, Discussion, and References sections.
+- Added Figure-as-argument guidance and a Statistical reporting minimum for numeric evidence.
+- Clarified that theoretical support is a mode/report shape under the existing `basic_research`, `applied_research`, and `experimental_development` categories.
+
+### v2.3.0 — assumption audit for challenged reference models
+
+Adds a pre-synthesis audit for assumptions behind the reference model being challenged.
+
+**Added / changed**
+
+- Added `references/assumption_audit.md` between observation discovery and hypothesis synthesis.
+- Distinguished background assumption audit from the Divergence checkpoint's anchoring audit on imported prior work.
+- Added load-bearing assumption selection with downstream-check discipline.
+- Added blind-spot catalog entries, manual reference-class forecasting, and constraint-naming for hypotheses with no current evaluator.
+
+### v2.2.0 — Frascati definitions and research lifecycle
 
 Clarifies R&D category definitions and makes hypothesis generation explicit.
 
@@ -252,7 +289,7 @@ Adds a research ideation protocol that separates candidate generation from groun
 **Added / changed**
 
 - Research ideation now starts with a de-anchored Idea portfolio before prior-work grounding.
-- When anchors are already visible to the main agent, it must prepare a sanitized brief and dispatch a fresh de-anchoring subagent for raw candidate generation.
+- When anchors are already visible to the main agent, it must prepare a sanitized brief and dispatch a fresh de-anchoring subagent for raw seed generation; later versions require substrate/operator/anti-vacuity checks before a seed is accepted as a candidate.
 - Prior-work grounding remains mandatory before execution; ideation produces candidates, not execution-ready plans.
 - Only one candidate is promoted into a plan after grounding and information-gain scoring; non-promoted ideas are recorded as `parked / killed / merged` and are not claims.
 
@@ -314,7 +351,7 @@ Complete redesign. No backward compatibility with v1.x.
 **Added**
 
 - 3 Frascati categories first-class: `basic_research`, `applied_research`, `experimental_development`
-- Plan modes: `exploratory`, `confirmatory`, `milestone`
+- Plan modes initially: `exploratory`, `confirmatory`, `milestone`; v2.4.0 adds `theoretical`
 - Iteration FSA with 5 explicit branches: `NEXT_STEP` / `REFINE` / `ADJACENT` / `PARK` / `CLOSE`
 - Divergence checkpoint before execution to expose alternatives, anchoring risk, research positioning, and disconfirming evidence before committing to a plan
 - Single research-review subagent before claim/decision/report promotion, covering analysis sufficiency and result reliability

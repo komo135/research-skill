@@ -7,18 +7,27 @@
 
 ## Summary
 
-<One or two paragraphs:>
-<- what was proposed and tried>
-<- what was found, with the headline evidence>
-<- what the recommended next action is>
+<One or two paragraphs: what was proposed and tried, what was found with headline evidence, and what next action is recommended.>
 
 ## Background
 
 <What prior work this builds on. A handful of directly relevant citations from literature/papers.md. Why this approach was tried.>
 
-## Method / Procedure
+## Related Work
 
-<Substantive description — enough for re-implementation:>
+<How this method/procedure stands on, extends, contradicts, or replicates the prior approaches recorded in literature/positioning.md. State what is inherited and what is changed.>
+
+Not applicable: <state why there is no substantive prior-work comparison beyond the Background grounding, if true.>
+
+## Theory / Formulation
+
+<Definitions, assumptions, algorithmic formulation, or mathematical derivation needed to interpret the method or result.>
+
+Not applicable: <state why the applied claim does not rest on a derivation, if true.>
+
+## Methods & Conditions
+
+<Substantive description, enough for re-implementation. See plans/<plan-id>_<slug>.md Methodology for full re-implementation detail.>
 
 ### Proposed approach
 
@@ -31,8 +40,6 @@
 ### Parameters / settings
 
 <Concrete values that affect interpretation. List or table.>
-
-## Evaluation
 
 ### Data / materials / conditions
 
@@ -56,28 +63,30 @@
 
 ## Results
 
-<Evidence tied to the stated practical objective. Include quantitative comparison when the claim is comparative and variance/replication when stochastic variation affects interpretation.>
+<Evidence tied to the stated practical objective. Include quantitative comparison when the claim is comparative and variance/replication when stochastic variation affects interpretation. Numeric results must report sample size, variance/dispersion, confidence interval, effect size, significance, or another stated reason the statistical reporting minimum does not apply.>
 
 | Evidence item | Result / observation | Interpretation | Source |
 |---|---|---|---|
 | <procedure output, measurement, test result, or observation> | <value or finding> | <what it says about the objective> | <artifact or citation> |
 
-![<Figure caption>](figures/<filename>.png)
+![<Self-standing figure caption with claim, axes/units/sample size/variance when measured, and source artifact pointer>](figures/<filename>.png)
 
 <When the claim is comparative, add a comparison table with the relevant control/comparator and variance/replication if stochastic variation affects interpretation.>
 
-## Component / mechanism checks
+## Ablation / Sensitivity
 
-<Required when the claim attributes an effect to a component. Use ablation or controlled-intervention evidence. If no component-causality claim is made, state that this section is not applicable.>
+<Required when the claim attributes an effect to a component or claims robustness. Include each controlled intervention, the evidence measure, and the change from the full method/procedure.>
 
-Not applicable: <state why no component-causality claim is made, or replace this line with the evidence table below.>
+Not applicable: <state why no component-causality or robustness claim is made.>
 
-For component-causality claims, add a compact table or figure showing each controlled intervention, the evidence measure, and the change from the full method/procedure.
+## Discussion
+
+<Mechanism interpretation, surprises, contradicted expectations, implications for the next plan or decision, and Pearl's-ladder honesty for any causal language.>
 
 ## Limitations
 
 <- Conditions not tested>
-<- Possible confounds (hyperparameter asymmetry, single dataset, etc.)>
+<- Possible confounds, such as hyperparameter asymmetry, single dataset, or comparator weakness>
 <- Failure modes observed>
 
 ## Next action

@@ -3,13 +3,15 @@
 
 Naming: <plan_id>__<n>__seed<N>, where n is auto-incremented.
 
-This is a convenience for consistent naming only. The agent is free to write
-whatever helps inside the run directory — there is no required schema.
+The scaffold is intentionally small but not schema-free: every research run
+needs a manifest, captured logs, and durable artifact locations so print-only
+execution does not become unreviewable evidence.
 
 Usage:
     python new_run.py <project_root> --plan <id> --slug <slug> [--seed <N>]
 """
 import argparse
+import json
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -45,21 +47,49 @@ def main():
         print(f"Error: run directory already exists: {run_dir}", file=sys.stderr)
         sys.exit(1)
     run_dir.mkdir()
-    (run_dir / "outputs").mkdir()
+    for directory in ["logs", "intermediate", "outputs", "tables", "figures"]:
+        (run_dir / directory).mkdir()
 
-    # README with conventions (not enforcement).
+    (run_dir / "logs" / "stdout.log").write_text("", encoding="utf-8")
+    (run_dir / "logs" / "stderr.log").write_text("", encoding="utf-8")
+
+    created_at = datetime.now().isoformat(timespec="seconds")
+    manifest = {
+        "run_id": run_name,
+        "plan": plan_name,
+        "seed": args.seed,
+        "created_at": created_at,
+        "status": "initialized",
+        "command": None,
+        "artifacts": [],
+        "notes": (
+            "Fill command, status, and artifacts after executing research scripts. "
+            "stdout is not evidence; every completed run needs at least one durable artifact."
+        ),
+    }
+    (run_dir / "run_manifest.json").write_text(
+        json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    checker = Path(__file__).resolve().parent / "check_run_artifacts.py"
+
     (run_dir / "README.md").write_text(
         f"# Run {run_name}\n\n"
-        f"Created: {datetime.now().isoformat(timespec='seconds')}\n"
+        f"Created: {created_at}\n"
         f"Plan: {plan_name}\n"
         f"Seed: {args.seed}\n\n"
-        f"This directory is the agent's freedom zone — no required schema.\n"
-        f"Common files (use what helps):\n"
-        f"- config.yaml — settings used for this run\n"
-        f"- metrics.json — numeric outputs\n"
-        f"- stdout.log, stderr.log — captured output\n"
-        f"- outputs/ — generated artifacts (csv, npz, ckpt, etc.)\n"
-        f"- notes.md — observations specific to this run\n",
+        f"Print-only execution is not a completed research run: stdout is not evidence.\n"
+        f"Use stdout for progress display, then persist the values, tables, figures, diagnostics, or intermediate data that support later analysis.\n\n"
+        f"Required scaffold:\n"
+        f"- run_manifest.json — update command, status, and artifacts after execution\n"
+        f"- logs/stdout.log and logs/stderr.log — captured console output\n"
+        f"- intermediate/ — intermediate outputs needed to audit EDA or result analysis\n"
+        f"- outputs/ — metrics, predictions, serialized results, diagnostics, or other durable artifact files\n"
+        f"- tables/ and figures/ — report-ready evidence snapshots when applicable\n\n"
+        f"Before promoting observations, run:\n\n"
+        f"```bash\n"
+        f"python {checker} {run_dir}\n"
+        f"```\n",
         encoding="utf-8",
     )
 

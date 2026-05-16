@@ -7,6 +7,12 @@ description: Use when conducting R&D work that needs claim discipline, planning 
 
 A protocol skill for agent-driven R&D. The job: keep research state honest while preserving research velocity. Use shared vocabulary so multiple sessions and tools can interoperate. Produce human-readable reports that someone outside the session can act on.
 
+## Skill role: substrate-driven generator
+
+This skill does not guarantee paradigm-shift ideas. It does, however, regulate and drive agent ideation by forcing candidates to be generated from named observations, constraints, explicit generation operators, and external or executable feedback. A one-line brainstorm is seed material, not an idea.
+
+The load-bearing boundary is now: the skill can generate bounded research candidates only when it has an idea substrate. If the agent lacks observations, failure traces, constraints, prior-work tensions, or an evaluator path, the honest output is to gather substrate, build an evaluator, or park the candidate. It must not hide absence of substrate behind six plausible-sounding hypotheses.
+
 ## What this skill covers and what it does not
 
 **Covered (audited by this skill):**
@@ -15,16 +21,19 @@ A protocol skill for agent-driven R&D. The job: keep research state honest while
 - Research-level reproducibility — methods description, data identification, statistical setup. Enough that another researcher can re-implement the work based on the prose.
 - Claim structure — explicit alternatives and conditions, not buried in prose.
 - Material execution conditions — only the conditions that can affect interpretation, such as data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date.
+- Minimal run evidence — completed research scripts must leave a `run_manifest.json` with `status: completed` and manifest-listed artifacts, `logs/stdout.log`, `logs/stderr.log`, and at least one non-log durable artifact such as metrics, tables, figures, diagnostics, or intermediate outputs.
 
 **Not covered (agent's discretion, not audited as reproducibility evidence by this skill):**
 
 - Experiment-level replicability infrastructure: env locks, commit pinning, seed databases, container files.
-- The exact layout of `experiments/<plan>/runs/<run_id>/`.
+- The exact experiment tracker schema beyond the minimal evidence scaffold in `experiments/<plan>/runs/<run_id>/`.
 - Code style, build systems, dependency management.
 
 This separation matters. If the skill audited experiment-level artifacts, agents would spend their effort producing perfect env.lock files instead of doing good research. Replicability of the *scripts* is a personal-tooling concern; reproducibility of the *research* — what someone else can reproduce from your description — is what this skill enforces.
 
 Provenance is still useful, but it is an audit pointer, not the source of reproducibility. A commit hash, run directory, or environment lock can help locate what happened in this project; it does not replace a clear method, data description, evaluation protocol, and statistical setup. Likewise, claim-to-artifact consistency is an integrity check: reported values must match the cited artifacts, but that check verifies evidence honesty rather than making the method reproducible by itself.
+
+For research scripts, stdout is not evidence. A print-only run is not analyzable after the session disappears: every EDA, evaluator, or result-analysis script must persist a `run_manifest.json` with `status: completed` and manifest-listed artifact paths, captured `logs/stdout.log` / `logs/stderr.log`, and at least one durable artifact under `outputs/`, `tables/`, `figures/`, or `intermediate/`. The artifact schema is flexible, but the evidence cannot exist only in terminal text.
 
 This distinction follows Drummond (2009) and Goodman et al. (2016): methods reproducibility is not the same as computational replicability. We enforce the former.
 
@@ -70,6 +79,8 @@ An observation is not yet a hypothesis. Observations name phenomena, failures, t
 
 Prior work has two roles. First, it can be material for observations: references may expose empirical patterns, baseline limits, historical failures, theoretical tensions, or problem facts that feed observation discovery. Second, it provides grounding after candidates exist: prior work checks whether candidates duplicate known work, inherit assumptions, require controls or comparators, need different evaluation, or should be advanced, merged, parked, or killed. The second role must not collapse the candidate space before raw candidates exist.
 
+When this skill says "subagent", it means a fresh agent analysis in a separate context. It is an agent-protocol role, not a dependency on any host's specific Task tool.
+
 ## Project Structure
 
 ```
@@ -90,7 +101,7 @@ Prior work has two roles. First, it can be material for observations: references
 │   └── <plan_id>_<slug>/
 │       ├── code/                      # plan-specific scripts (agent's freedom)
 │       ├── configs/
-│       ├── runs/                      # execution artifacts (agent's freedom)
+│       ├── runs/                      # execution artifacts with minimal evidence scaffold
 │       │   └── <plan_id>__<n>__seed<N>/
 │       └── notebooks/
 │
@@ -106,25 +117,26 @@ Boundaries that matter:
 
 - `lib/` is shared. Tests required. Promotion from `experiments/<plan>/code/` requires a `decisions.md` entry, a test, and a docstring. This prevents experiment-specific code from quietly becoming load-bearing infrastructure.
 - `experiments/<plan>/` is owned by one plan. Other plans must not import from it. To share, promote to `lib/` first. This prevents cross-plan zombie dependencies.
-- `runs/` artifacts have no required schema. Put what helps you. The skill does not audit them.
+- `runs/` artifacts have a minimal audit scaffold: `run_manifest.json` with `status: completed` and manifest-listed artifacts, `logs/stdout.log`, `logs/stderr.log`, and at least one non-log durable artifact. Beyond that scaffold, put what helps the investigation.
 
 ## The Plan → Execute → Analyze → Compare → Report cycle
 
 ```
 1. scripts/new_plan.py creates plans/<id>_<slug>.md from a mode-specific template
-2. Write the Question / Objective. If the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," write an Idea portfolio using `references/ideation.md` before Prior-work grounding. If the main agent has already seen anchors, it must prepare a sanitized brief and dispatch a fresh de-anchoring subagent; it must not generate raw candidates itself.
-3. Write the Prior-work grounding and Divergence checkpoint.
-4. Write the Plan section. git commit. (Plan is now time-anchored by git.)
-5. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/.
-6. ANALYZE — apply the EDA / result-analysis discipline (references/analysis.md).
+2. Write the Question / Objective. If the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," write an Idea portfolio using `references/ideation.md` before Prior-work grounding. If the main agent has already seen anchors, it must prepare a sanitized brief and dispatch a fresh de-anchoring subagent for seed material; it must not accept raw candidates directly.
+3. For ideation work, run substrate/operator generation, assumption audit, anti-vacuity gate, blind-spot catalog, evaluator feedback, and `scripts/check_idea_portfolio.py` before promoting any candidate.
+4. Write the Prior-work grounding and Divergence checkpoint.
+5. Write the Plan section. git commit. (Plan is now time-anchored by git.)
+6. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/. A print-only script run is incomplete: stdout is not evidence, and `scripts/check_run_artifacts.py` should pass before observations are promoted.
+7. ANALYZE — apply the EDA / result-analysis discipline (references/analysis.md), using durable artifact files rather than terminal-only output.
    Observations live in plans/<id>.md Observations and in experiments/<plan>/notebooks/.
-7. Write Actual section in plans/<id>.md. Compare planned vs actual.
-8. Dispatch exactly one research-review subagent before any load-bearing claim, state-changing decision, or human-facing report.
+8. Write Actual section in plans/<id>.md. Compare planned vs actual.
+9. Dispatch exactly one research-review subagent before any load-bearing claim, state-changing decision, or human-facing report.
    The review assesses analysis sufficiency and result reliability; record it in the Research review section.
-9. Record load-bearing claims using the structure in references/claim_structure.md.
+10. Record load-bearing claims using the structure in references/claim_structure.md.
    Observation → Interpretation → Claim is a staged progression — do not skip stages.
-10. Pick exactly one of the 5 iteration branches and record in decisions.md.
-11. If the result is human-facing, draft a report with scripts/draft_report.py.
+11. Pick exactly one of the 5 iteration branches and record in decisions.md.
+12. If the result is human-facing, draft a report with scripts/draft_report.py.
 ```
 
 Git is the time-anchor for the plan. There is no separate preregistration directory. The plan section of `plans/<id>.md` IS the preregistration; the initial commit IS the time-stamping mechanism. Subsequent commits show the evolution. This avoids the redundancy of maintaining a separate prereg artifact whose only job is "plan existed before result" — git already proves that. This is provenance and auditability for plan timing, not a substitute for the methodology description.
@@ -138,6 +150,7 @@ Agents must use these labels exactly. They are how other agents, downstream scri
 - `exploratory` — variable space + decision rules fixed; specific predictions not required
 - `confirmatory` — hypothesis/objective + primary evidence measure + decision threshold fixed; comparator or ablation fields are included when the claim requires them
 - `milestone` — working/not-working criteria + performance target
+- `theoretical` — derivation question + axioms/definitions used + predicted form + limiting-case checks (controls/comparators analog); empirical evaluator is secondary if it exists at all
 
 **Iteration decisions** (in `decisions.md` entries):
 
@@ -163,7 +176,7 @@ If prior work is genuinely unknown, record the named constraint in the plan and 
 
 When the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," read `references/ideation.md` before Prior-work grounding. The first output is an Idea portfolio, not a Plan and not a claim.
 
-The order matters: generate raw candidates before applying prior-work grounding. Prior work is still mandatory before execution, but literature-first ideation tends to anchor the portfolio to safe extensions of prior approaches. If the main agent has already seen prior work names, SOTA methods, previous best approaches, user-preferred methods, or convenient dataset details, the main agent must not generate raw candidates itself after seeing anchors. It prepares a sanitized brief and dispatches a fresh de-anchoring subagent to generate the raw candidate set. The Idea portfolio records those de-anchored candidates, transformation axes, grounded pruning, information-gain scoring, and which single candidate is promoted into a plan.
+The order matters: generate seed material before applying prior-work grounding, but do not confuse seeds with ideas. Prior work is still mandatory before execution, but literature-first ideation tends to anchor the portfolio to safe extensions of prior approaches. If the main agent has already seen prior work names, SOTA methods, previous best approaches, user-preferred methods, or convenient dataset details, the main agent must not generate raw candidates itself after seeing anchors; in v2.4 this means it must not generate raw seeds itself either. It prepares a sanitized brief and dispatches a fresh de-anchoring subagent to generate seed material. The main agent then accepts candidates only through the substrate → generation operator → assumption audit → anti-vacuity gate → blind-spot catalog → evaluator feedback path, and verifies the completed portfolio with `scripts/check_idea_portfolio.py`.
 
 ## Divergence checkpoint
 
@@ -214,14 +227,21 @@ The schema derives from Toulmin's argument model (1958) but is adapted for machi
 
 Reports are for humans. They live under `reports/<id>_<slug>/`. Each report is a snapshot — figures and tables ship inside the report directory so the report is self-contained.
 
-Required sections (category-specific shapes in `references/report_format.md`):
+Reports are paper-grade evidence artifacts, not lightweight status notes. Required sections are defined in `references/report_format.md`; sections that do not apply still appear with a short `Not applicable:` rationale. The common required sections are:
 
 1. **Summary** — 1–2 paragraphs. A reader who reads only this should understand what was done, what was found, and what is next.
 2. **Background** — what was known before, what motivated the work.
-3. **Methods & Conditions** — substantive enough for re-implementation. Methods reproducibility lives here.
-4. **Results** — actual generated figures or tables. Placeholders are not acceptable.
-5. **Limitations** — what alternatives remain plausible, what conditions were not tested.
-6. **Next action** — one of the 5 iteration decisions, or a specific request to the human reader.
+3. **Related Work** — how the work stands on directly relevant prior work, or `Not applicable:` with a reason.
+4. **Theory / Formulation** — derivation/formulation when load-bearing, or `Not applicable:` with a reason.
+5. **Methods & Conditions** / **System description** / **Derivation context** as applicable to category and mode — substantive enough for re-implementation or derivation review. Methods reproducibility lives here.
+6. **Results** / **Observations** / **Performance** as applicable — actual evidence, figures, tables, or derivational observations. Placeholders are not acceptable.
+7. **Ablation / Sensitivity** — component, robustness, limiting-case, or controlled-variation evidence, or `Not applicable:` with a reason.
+8. **Discussion** — interpretation distinct from Limitations.
+9. **Limitations** — what alternatives remain plausible, what conditions were not tested.
+10. **Next action** — one of the 5 iteration decisions, or a specific request to the human reader.
+11. **References** — source plan, artifacts, and one entry per cited work.
+
+`scripts/check_report.py` enforces the paper-grade section contract, figure integrity, and the statistical reporting minimum for numeric outcome sections.
 
 Reports do not need env locks, commit hashes, or seed lists in the prose. Include material execution conditions when they affect interpretation, and treat seed information as a variability disclosure: stochastic claims should report variance, failures, and the number of seeds rather than relying on one fixed seed. One line pointing to `experiments/<plan>/runs/` is enough if a reader wants to dig into raw artifacts.
 
@@ -242,7 +262,9 @@ Reports do not need env locks, commit hashes, or seed lists in the prose. Includ
 |---|---|---|
 | Pick a category | `references/categories/<category>.md` | First action when starting a plan |
 | Plan schema | `references/rd_plan.md` | Writing or reviewing `plans/<id>.md` |
-| Research ideation | `references/ideation.md` | When asked for research ideas, research directions, hypothesis candidates, or "what should we try next" before Prior-work grounding; use a sanitized brief and fresh de-anchoring subagent if anchors are already visible |
+| Research ideation | `references/ideation.md` | When asked for research ideas, research directions, hypothesis candidates, or "what should we try next" before Prior-work grounding; use substrate ids, generation operators, anti-vacuity gate, evaluator feedback, and a sanitized brief/fresh de-anchoring subagent if anchors are already visible |
+| Assumption audit | `references/assumption_audit.md` | Between Observation discovery pass and Hypothesis synthesis pass — surfaces load-bearing background assumptions of the reference model being challenged (distinct from anchor audit at Divergence checkpoint). Includes constraint-naming protocol for un-evaluable hypotheses. |
+| Iterative ideation | `references/iterative_ideation.md` | Between Quality-diversity pass and Grounded pruning pass — ONLY when plan is applied/development AND a minimal executable evaluator exists. Real shell / command-line execution is mandatory; self-simulation is explicitly forbidden. |
 | Divergence checkpoint | `references/rd_plan.md` | Before execution, after Question / Objective and before committing the Plan |
 | Analysis discipline | `references/analysis.md` | Before or during analysis (EDA / post-experiment), and before promoting an observation to a load-bearing claim |
 | Research review | `references/rd_plan.md` and `references/analysis.md` | After result analysis, before Claims, state-changing Decision, or report |
@@ -256,11 +278,12 @@ Reports do not need env locks, commit hashes, or seed lists in the prose. Includ
 These are not formatting preferences. They are what makes other agents and humans able to reuse the work.
 
 - **One declared category per plan.** Don't dodge the choice. If you can't pick, read `references/categories/*.md`.
-- **One declared mode per plan.** `exploratory`, `confirmatory`, or `milestone`. Hidden hypotheses inside exploratory plans are forbidden.
-- **Idea portfolio before prior-work anchoring when ideating.** If the task is research idea generation, hypothesis candidate generation, or "what should we try next," write de-anchored candidates using `references/ideation.md` before Prior-work grounding. If the main agent has seen anchors, use a sanitized brief and fresh de-anchoring subagent for raw candidates. Non-promoted ideas are parked, killed, or merged; they are not claims.
+- **One declared mode per plan.** `exploratory`, `confirmatory`, `milestone`, or `theoretical`. Hidden hypotheses inside exploratory plans are forbidden. Use `theoretical` for plans whose primary contribution is a derivation rather than an empirical result.
+- **Substrate-driven Idea portfolio before prior-work anchoring when ideating.** If the task is research idea generation, hypothesis candidate generation, or "what should we try next," write substrate ids, generation operators, assumption audit, anti-vacuity gate, blind-spot catalog, evaluator feedback, and de-anchored seed material using `references/ideation.md` before Prior-work grounding. If the main agent has seen anchors, use a sanitized brief and fresh de-anchoring subagent for seed material. Non-promoted ideas are parked, killed, or merged; they are not claims.
 - **Prior-work grounding and Divergence checkpoint exist before execution.** A plan may still commit to one route, but it must first ground the plan in prior work and expose alternatives, anchor risks, research positioning, and disconfirming evidence. User pressure to "just use the previous approach" is recorded as a constraint, not silently obeyed.
 - **No placeholder figures in reports.** Generate the figure or remove the reference. `scripts/check_report.py` verifies figure references resolve.
 - **Plan content exists before execution.** The Plan section must be filled in and committed before any execution begins. `created_commit` in the front matter is meaningful only if the Plan section is non-empty at that commit. After-the-fact plan rewriting is detectable in git diff.
+- **Research scripts leave durable artifacts.** Print-only EDA or evaluator output is not evidence. Completed runs must update `run_manifest.json` to `status: completed`, list the evidence artifacts there, capture `logs/stdout.log` / `logs/stderr.log`, and write at least one durable artifact, including intermediate data when it is needed to audit the analysis path.
 - **One research-review subagent before close-out.** Before a result becomes a load-bearing claim, state-changing decision, or report, exactly one fresh research-review subagent must record `PASS` for both analysis sufficiency and result reliability. Do not replace it with self-review, split it into disconnected reviews, or proceed on `REWORK` / `INVALID`.
 - **Decisions are labeled.** "Diagnostic detour," "let me keep going" are not decision labels. Pick from the 5.
 - **Claim records have all five fields.** Empty list `[]` is allowed; a missing field is not.

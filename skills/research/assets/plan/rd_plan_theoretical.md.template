@@ -2,7 +2,7 @@
 plan_id: <id>
 slug: <slug>
 category: <category>
-mode: milestone
+mode: theoretical
 status: planned
 created_at: YYYY-MM-DD
 created_commit: <git sha — auto-filled by new_plan.py>
@@ -13,7 +13,7 @@ last_updated: YYYY-MM-DD
 
 ## Question / Objective
 
-<One paragraph stating what artifact will be built and what it is for.>
+<One paragraph stating what is to be proved, derived, bounded, or characterized, and why the result matters.>
 
 ## Idea portfolio
 
@@ -113,9 +113,9 @@ last_updated: YYYY-MM-DD
 ### Grounding scope
 
 - Question/objective supported by: <literature/papers.md entries and why they are relevant>
-- Inherited assumptions: <assumptions carried from prior approaches, data, results, or systems>
-- Method choice: <prior work or constraint motivating the selected system/design route>
-- Controls/comparators/evaluation protocol: <baseline, control, benchmark, acceptance-test source, comparison source, or other evidence route>
+- Inherited assumptions: <assumptions carried from prior formulations, definitions, theorems, or systems>
+- Method choice: <prior work or constraint motivating the selected derivational route>
+- Controls/comparators/evaluation protocol: <known limiting case, prior theorem, equivalence result, counterexample class, or empirical sanity-check route>
 - Known limitations: <limitations from prior work that constrain interpretation>
 
 ### Research positioning
@@ -128,15 +128,15 @@ last_updated: YYYY-MM-DD
 
 ### Approach portfolio
 
-- Primary route: <the system/design route selected for this milestone>
-- Alternative A: <meaningfully different route; not just a small implementation variant>
-- Alternative B: <meaningfully different route; not just a larger version; if a hard constraint permits only one route, state that constraint and narrow later claims only if Research review records PASS for both judgments>
+- Primary route: <the derivational route selected for this theoretical plan>
+- Alternative A: <meaningfully different route; not just a notation change>
+- Alternative B: <meaningfully different route; not just a longer proof; if a hard constraint permits only one route, state that constraint and narrow later claims only if Research review records PASS for both judgments>
 
 ### Anchoring audit
 
 - Prior result / approach / dataset being imported: <what this plan may be anchored on>
-- Risk if the anchor is wrong: <what behavior or performance assumption would break>
-- Revalidation or control: <acceptance test / benchmark / condition change>
+- Risk if the anchor is wrong: <what theorem, definition, or interpretation would break>
+- Revalidation or control: <limiting case / counterexample / alternative derivation / sanity check>
 
 ### Research positioning
 
@@ -146,56 +146,77 @@ last_updated: YYYY-MM-DD
 
 ### Disconfirming evidence
 
-- Stop, narrow, or pivot if: <observation that would force a narrower question, a different route, a pause, or closure>
+- Stop, narrow, or pivot if: <derivation gap, counterexample, incompatible limiting case, or observation that would force a narrower question, a different route, a pause, or closure>
 - Branch if observed: <REFINE / ADJACENT / PARK / CLOSE>
 
 ### Commitment decision
 
-- Chosen route and reason: <why commit to this route now>
+- Chosen route and reason: <why commit to this derivational route now>
 - Skipped divergence: <what alternatives are not explored because of time/resource limits; None if none>
 - Effect on later claims: <how this limits later claims>
 
 ## Plan
 
-### Functional milestones
+### Derivation question
 
-- <feature 1>: <acceptance criterion>
-- <feature 2>: <acceptance criterion>
+- <one sentence stating what is to be proved, derived, bounded, or characterized>
 
-### Performance milestones
+### Axioms / definitions / prior theorems used
 
-- <metric>: <threshold under stated conditions>
+- <axiom or definition 1>: <statement, source if from external work>
+- <axiom or definition 2>: ...
+- <prior theorem 1>: <statement, source>
+- <prior theorem 2>: ...
 
-### Acceptance tests
+### Proposed derivation sketch
 
-- <scenario>: <pass criterion>
-- <scenario>: <pass criterion>
+- <high-level chain of reasoning the derivation will follow>
+- <key lemmas or sub-results expected>
+- <techniques the derivation will rely on (e.g., induction on N, change of variables, fixed-point argument)>
 
-### Out of scope
+### Predicted form of result
 
-- <explicit list of functionality not in this iteration>
+- <expected shape of the result: closed-form expression, asymptotic bound, equivalence statement, etc.>
+- <units and scope where applicable>
 
-### Compute / time envelope
+### Limiting-case checks
 
-- <resource envelope: runs, hardware time, deadline, or other execution constraint>
+- <known case 1 the result must reduce to>: <expected reduction>
+- <known case 2>: ...
+- These are the analog of "controls/comparators" for theoretical work; the derivation must recover known correct behavior in stated limits.
+
+### Empirical sanity check (if applicable)
+
+- <one observable consequence the derivation predicts that could be checked against existing data or simulation>
+- <state explicitly if no such check is available; this triggers the assumption_audit constraint-naming protocol for the resulting claim>
+
+### Failure modes to watch
+
+- <derivation step where an assumption could silently fail>
+- <known pathological case where the result might break>
+- <symmetry or invariance that must be preserved and how it will be checked>
+
+### Time / page envelope
+
+- <budget for the derivation work itself; for long derivations, plan checkpoint reviews>
 
 ## Actual execution
 
 ### Runs
 
-<List of acceptance test runs and performance measurement runs.>
+<List as derivation notes, proof attempts, simulations, or checks accumulate. Link to experiments/<plan_id>_<slug>/runs/<run_id>/ when applicable.>
 
-### System description (what was built)
+### Methodology used
 
-<Architecture, key design decisions, interfaces, and material conditions that affect interpretation. Env locks and commit hashes are provenance pointers, not methodology.>
+<Substantive description of the derivation procedure, definitions, proof route, limiting-case checks, and material conditions that affect interpretation. Enough for re-implementation; env locks and commit hashes are provenance pointers, not methodology.>
 
-### Test results
+### Observations
 
-<Per-milestone outcome. Link to test logs/reports.>
+<What was derived, which limiting cases were checked, what empirical sanity checks showed if any, and what gaps or counterexamples were found.>
 
 ## Planned vs Actual
 
-<Differences. Functionality deferred, scope changes. "No material deviation from plan." if none.>
+<Differences, with reasoning. "No material deviation from plan." if none.>
 
 ## Research review
 
@@ -208,14 +229,14 @@ last_updated: YYYY-MM-DD
 ### Analysis sufficiency
 
 - Verdict: <PASS / REWORK / INVALID>
-- Rationale: <why the analysis is sufficient, requires rework, or invalidates the current conclusion path>
-- Required reanalysis: <None / named analyses to run before any claim, decision, or report>
+- Rationale: <whether the derivation chain closes the question without gaps, and whether limiting-case checks are consistent>
+- Required reanalysis: <None / named proof repair, limiting-case check, counterexample search, or empirical sanity check before any claim, decision, or report>
 
 ### Result reliability
 
 - Verdict: <PASS / REWORK / INVALID>
-- Rationale: <whether approach, procedure, data, controls/comparators, and robustness support trusting the result>
-- Required repair or rerun: <None / script fix, data repair, comparator/control repair, rerun, or plan-level redo>
+- Rationale: <whether axioms, definitions, and prior theorems are used correctly, and whether the predicted form is actually established by the derivation>
+- Required repair or rerun: <None / definition repair, theorem-source repair, proof rerun, sanity-check rerun, or plan-level redo>
 
 ### Required action
 
@@ -223,7 +244,7 @@ last_updated: YYYY-MM-DD
 
 ## Claims
 
-<Load-bearing claims about functional behavior and performance, using claim_structure.md.>
+<Load-bearing claims using the schema in claim_structure.md.>
 
 ## Decision
 

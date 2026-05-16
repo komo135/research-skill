@@ -51,6 +51,31 @@ A pointer to the specific basis for the claim. This is an evidence-integrity anc
 
 Do not use vague evidence like "the experiments," "the data," or "as discussed above."
 
+#### Statistical reporting minimum (when evidence is a numeric measurement)
+
+A numeric `evidence` field for an empirical claim must specify at least:
+
+- **Point estimate** — the mean, median, or other summary statistic, with units
+- **Dispersion** — standard error, standard deviation, IQR, or confidence interval; **never a bare point estimate** for stochastic outcomes
+- **Sample size (n)** — number of independent draws, seeds, folds, runs, or observations contributing to the estimate
+- **Significance / effect size** — when the claim is comparative (e.g., "X is better than Y"), report effect size (Cohen's d, Δ%, IR difference, etc.) AND a significance criterion (p-value with correction for multiple testing, or confidence interval that excludes the null)
+
+Examples of compliant evidence:
+
+- Quant: `IR 1.12 (95% CI [0.78, 1.46], n=240 monthly returns, walk_forward 3 folds), Δ vs benchmark IR 0.42 (p<0.01 with Bonferroni correction across 18 tested signals); see experiments/02/runs/02__005/walk_forward_results.csv`
+- ML: `BLEU 28.4 (SE 0.3, n=5 seeds), Δ vs baseline 27.3 = 1.1 (Cohen's d 2.8, paired t-test p<0.001); see reports/R02/tables/translation_results.csv`
+- Basic research: `phase transition observed at T_c = 2.27 ± 0.05 (n=12 independent runs, σ/sqrt(n) reported); see experiments/01/runs/01__012/transition_temps.csv`
+
+Examples that fail the minimum:
+
+- `IR 1.12` — no dispersion, no n
+- `our method is better than baseline by 5%` — no significance, no n, no condition
+- `Sharpe ≈ 1.5` — point estimate only; for stochastic outcomes this is not evidence
+
+For non-stochastic outcomes (e.g., a closed-form derivation result, a deterministic algorithm output, a one-shot measurement that does not have a sampling distribution), say so explicitly: `evidence: deterministic output of f(x=3.7) = 12.49, no sampling distribution applicable, see lib/foo.py:L42`.
+
+This minimum derives from `references/analysis.md` disclosure floor; the floor says what analyses must be run, this minimum says how their numeric outputs are reported in the claim record.
+
 ### alternatives_not_excluded
 
 A list of competing explanations or confounders that the current evidence has NOT ruled out. Examples:

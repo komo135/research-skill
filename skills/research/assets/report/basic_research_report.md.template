@@ -7,18 +7,27 @@
 
 ## Summary
 
-<One or two paragraphs. A reader who reads only this should know:>
-<- what phenomenon was investigated>
-<- what was learned (the headline finding, or the refined question)>
-<- what the next action is>
+<One or two paragraphs. A reader who reads only this should know what phenomenon was investigated, what was learned or refined, and what the next action is.>
 
 ## Background
 
-<What was known before. What motivated this investigation. Brief — cite a handful of directly relevant prior works from literature/papers.md.>
+<What was known before, what motivated this investigation, and which directly relevant prior works from literature/papers.md matter for the question.>
+
+## Related Work
+
+<How this investigation stands on, extends, contradicts, or replicates the prior work recorded in literature/positioning.md.>
+
+Not applicable: <state why there is no substantive prior-work comparison beyond the Background grounding, if true.>
+
+## Theory / Formulation
+
+<For theoretical mode: definitions, assumptions, theorem or derivation statement, proof sketch, limiting cases, and predictions.>
+
+Not applicable: <state why this basic-research report is observational rather than derivational, if true.>
 
 ## Methods & Conditions
 
-<Substantive description of how the phenomenon was probed. Enough for re-implementation.>
+<Substantive description of how the phenomenon was probed. Enough for re-implementation. See plans/<plan-id>_<slug>.md Methodology for full re-implementation detail.>
 
 ### What was probed
 
@@ -43,15 +52,21 @@
 
 ## Observations
 
-<What the data showed, with actual generated figures. Placeholder figures are not acceptable.>
+<What the data, derivation, or probe showed. Include actual generated figures or tables. Placeholder figures are not acceptable. Numeric observations must report sample size, variance/dispersion, confidence interval, or another stated reason the statistical reporting minimum does not apply.>
 
-![<Figure caption>](figures/<filename>.png)
+![<Self-standing figure caption with claim, axes/units/sample size/variance when measured, and source artifact pointer>](figures/<filename>.png)
 
 <Tables for quantitative summaries when figures alone are not enough.>
 
-## Mechanism / Interpretation
+## Ablation / Sensitivity
 
-<What explains the observations. What alternative explanations were considered. What remains unexplained.>
+<Controlled variation, sensitivity grid, robustness check, or limiting-case comparison that tests whether the observation depends on a specific component, parameter, assumption, or condition.>
+
+Not applicable: <state why no component-causality or robustness claim is made.>
+
+## Discussion
+
+<Mechanism / interpretation. What explains the observations, what alternative explanations were considered, what surprised or contradicted expectations, and what rung of evidence the interpretation occupies.>
 
 ## Limitations
 

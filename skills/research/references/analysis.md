@@ -11,6 +11,17 @@ Two flavors:
 
 Both have well-established methodology. The skill enforces structure for claims (see `claim_structure.md`) and decisions (see `iteration_loop.md`), but the analysis step that produces those claims has been left implicit until now. This reference fills that gap.
 
+## Research script artifact contract
+
+EDA and result-analysis scripts may print progress, but stdout is not evidence. A print-only script run leaves no audit trail for later analysis, review, or report writing. Every completed research script run must write durable artifact files under `experiments/<plan>/runs/<run_id>/`:
+
+- `run_manifest.json` records the command, `status: completed`, seed or material run condition, and manifest-listed artifact paths.
+- `logs/stdout.log` and `logs/stderr.log` capture console output for debugging and provenance.
+- `intermediate/` stores intermediate data, filtered slices, derived features, sampled records, or diagnostics needed to audit how the final observation was produced.
+- `outputs/`, `tables/`, or `figures/` store metrics, tables, plots, predictions, traces, or other evidence that later claims and reports can cite.
+
+Run `scripts/check_run_artifacts.py` before promoting observations from EDA or result analysis. The checker does not impose a full experiment-tracker schema; it only rejects terminal-only evidence by requiring at least one manifest-listed non-log durable artifact.
+
 ## EDA standard pass
 
 The modern EDA pipeline derives from Tukey's *Exploratory Data Analysis* (1977) and Wickham's tidy-data restatement. The common core across authoritative sources:
@@ -154,11 +165,14 @@ In the iteration_loop, this maps to:
 | Result-analysis notebooks (after runs) | `experiments/<plan>/notebooks/analysis_<n>.ipynb` |
 | Diagnostic plots used in reports | `reports/<id>/figures/` (copy/regenerate, not symlink — reports are self-contained snapshots) |
 | Raw outputs analyzed | `experiments/<plan>/runs/<run_id>/outputs/` |
+| Intermediate EDA/result-analysis evidence | `experiments/<plan>/runs/<run_id>/intermediate/` |
+| Run manifest and logs | `experiments/<plan>/runs/<run_id>/run_manifest.json`, `experiments/<plan>/runs/<run_id>/logs/stdout.log`, `experiments/<plan>/runs/<run_id>/logs/stderr.log` |
 | Analysis summary that informs the plan | `plans/<id>.md` Observations section + Methodology section |
 
 ## Common failures
 
 - **Treating analysis as optional.** Skipping result analysis and going directly from "the experiment ran" to "the method works" — missing the disclosure floor.
+- **Print-only analysis.** A script that prints metrics and exits has produced no durable artifact; stdout is not evidence after the terminal scrollback is gone.
 - **Observation/claim conflation.** Writing "the method is more stable" when the actual observation is "loss did not spike on this run." Stage discipline matters.
 - **Endless analysis without claim.** Running analysis branch after branch without committing to a claim. Eventually some branch will look favorable; that is HARKing. Stop at the depth-to-defend-the-claim.
 - **HARKing from EDA.** Finding a pattern during EDA and writing the plan as if you had predicted it. Either commit to confirmatory mode on independent data, or label the work exploratory.

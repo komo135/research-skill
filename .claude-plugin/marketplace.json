@@ -8,8 +8,8 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v2.2.0 - Aligns R&D categories with OECD Frascati Manual 2015 and adds the research lifecycle: observation discovery, hypothesis synthesis, prior-work grounding, and approach transition criteria.",
-      "version": "2.2.0"
+      "description": "v2.4.0 - Agent-driven R&D protocol with prior-work grounding, substrate-driven ideation, assumption audit, theoretical mode, and paper-grade report/claim structure.",
+      "version": "2.4.0"
     }
   ]
 }

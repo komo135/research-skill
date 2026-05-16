@@ -5,7 +5,7 @@ Usage:
     python new_plan.py <project_root> \
         --id <id> --slug <slug> \
         --category basic_research|applied_research|experimental_development \
-        --mode exploratory|confirmatory|milestone
+        --mode exploratory|confirmatory|milestone|theoretical
 
 Creates:
     plans/<id>_<slug>.md           (from template, with metadata filled in)
@@ -13,9 +13,10 @@ Creates:
 
 The plan is NOT auto-committed. Commit it yourself once the Question / Objective,
 Idea portfolio when ideating, Prior-work grounding, Divergence checkpoint, and
-Plan sections are filled in — that commit is the time-anchor for the plan. After
-execution, fill the Research review section before writing Claims, a
-state-changing Decision, or a report.
+Plan sections are filled in. For ideation plans, run check_idea_portfolio.py
+before promotion. That commit is the time-anchor for the plan. After execution,
+fill the Research review section before writing Claims, a state-changing
+Decision, or a report.
 """
 import argparse
 import subprocess
@@ -53,7 +54,7 @@ def main():
     parser.add_argument(
         "--mode",
         required=True,
-        choices=["exploratory", "confirmatory", "milestone"],
+        choices=["exploratory", "confirmatory", "milestone", "theoretical"],
     )
     parser.add_argument("--title", default=None, help="Plan title (defaults to slug)")
     args = parser.parse_args()
@@ -116,9 +117,10 @@ def main():
         f"  1. Fill in the Question / Objective, Idea portfolio when ideating, Prior-work grounding, Divergence checkpoint, and Plan sections of "
         f"{plan_path.relative_to(project)}"
     )
-    print(f"  2. git add plans/{plan_name}.md experiments/{plan_name}/")
-    print(f"  3. git commit -m 'Plan {plan_id}: {slug}'")
-    print("  4. After execution, fill Research review before Claims, state-changing Decision, or report")
+    print("  2. If ideating, run scripts/check_idea_portfolio.py before promoting a candidate")
+    print(f"  3. git add plans/{plan_name}.md experiments/{plan_name}/")
+    print(f"  4. git commit -m 'Plan {plan_id}: {slug}'")
+    print("  5. After execution, fill Research review before Claims, state-changing Decision, or report")
     print()
     print("The commit time-anchors the plan. Execution comes after.")
 
