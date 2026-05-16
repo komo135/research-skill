@@ -20,7 +20,7 @@ Every report has these sections, in this order. Category-specific shapes adjust 
 1. **Summary**
 2. **Background**
 3. **Related Work** (required when the plan's `literature/positioning.md` entry contains substantive prior-work comparison; otherwise this section may be merged into Background)
-4. **Theory / Formulation** (required for `basic_research_theoretical` mode and for any applied / experimental_development report whose claim rests on a mathematical or algorithmic derivation; otherwise omit)
+4. **Theory / Formulation** (required for `basic_research` with `mode: theoretical` and for any applied / experimental_development report whose claim rests on a mathematical or algorithmic derivation; otherwise omit)
 5. **Methods & Conditions** (basic and applied) / **System description** (experimental development)
 6. **Results** (or Observations for basic research)
 7. **Ablation / Sensitivity** (required when the claim attributes an effect to a specific component, or when robustness across parameters/conditions is part of the claim; otherwise omit)
@@ -63,7 +63,7 @@ This section exists because the plan-level positioning currently lives in `liter
 
 ### Theory / Formulation (conditional)
 
-Required for `basic_research_theoretical` mode and for applied / experimental_development reports whose claim rests on a mathematical or algorithmic derivation that the reader needs to understand to interpret the result. Otherwise omit.
+Required for `basic_research` with `mode: theoretical` and for applied / experimental_development reports whose claim rests on a mathematical or algorithmic derivation that the reader needs to understand to interpret the result. Otherwise omit.
 
 Content:
 - **Definitions**: notation, key objects, scope of validity
@@ -209,7 +209,7 @@ The Methods section must be specific enough that someone could re-implement the 
 
 ### Basic research — theoretical sub-mode
 
-For `basic_research_theoretical` plans (pure conceptual / derivational work without empirical evaluator, e.g., Einstein 1905, Shannon 1948, Turing 1936, Bell 1964 form factors), the report shape differs from probing basic research:
+For `basic_research` plans with `mode: theoretical` (pure conceptual / derivational work without empirical evaluator, e.g., Einstein 1905, Shannon 1948, Turing 1936, Bell 1964 form factors), the report shape differs from probing basic research with `mode: exploratory` or `mode: confirmatory`:
 
 **Theory / Formulation** is the primary load-bearing section (see Section requirements above).
 

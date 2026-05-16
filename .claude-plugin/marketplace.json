@@ -8,7 +8,7 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v2.4.0 - Adds report-format structural extensions (Theory/Related Work/Ablation/Discussion/References sections, Figure-as-argument convention, Statistical reporting minimum), theoretical plan mode for derivational research, and iterative_ideation protocol (F v2: MANDATORY Bash execution, self-simulation EXPLICITLY FORBIDDEN, evolutionary candidate update with mutation/crossover/wildcard for applied/development plans with executable evaluators).",
+      "description": "v2.4.0 - Agent-driven R&D protocol with prior-work grounding, assumption audit, theoretical mode, iterative ideation, and expanded report/claim structure.",
       "version": "2.4.0"
     }
   ]

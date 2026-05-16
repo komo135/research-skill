@@ -4,7 +4,7 @@
 
 Single-pass ideation (Idea portfolio → promote one candidate) tends to lock in early picks even when minimal executable evaluation would dramatically re-rank the portfolio. This file adds an iterative protocol for domains where a minimal executable evaluator already exists and can be invoked from the agent's session.
 
-**TDD-validated** (1 round of RED/GREEN): without mandatory executable invocation, agents simulate fitness from prior knowledge ("literary estimates dressed as measurements", self-quote from a RED-baseline subagent) and proceed to single-pass-equivalent picks. With mandatory Bash execution + an EXPLICITLY FORBIDDEN self-simulation clause, agents either obtain real fitness or honestly KILL candidates whose evaluator path does not exist.
+**TDD-validated** (1 round of RED/GREEN): without mandatory executable invocation, agents simulate fitness from prior knowledge ("literary estimates dressed as measurements", self-quote from a RED-baseline agent) and proceed to single-pass-equivalent picks. With mandatory real shell / command-line execution + an EXPLICITLY FORBIDDEN self-simulation clause, agents either obtain real fitness or honestly mark candidates `killed` when their evaluator path does not exist.
 
 ## Skill role boundary
 
@@ -16,11 +16,11 @@ L3-L4 paradigm-shift generation remains structurally outside the skill's scope (
 
 **Required preconditions** (all three):
 1. Plan category is `applied_research` or `experimental_development`
-2. A minimal executable evaluator exists for the domain and is invocable from the agent's Bash tool (e.g., `quant-research/scripts/walk_forward.py` with a working CLI binding and accessible data)
-3. The agent has Bash tool access and the per-candidate execution time fits within the session's time budget
+2. A minimal executable evaluator exists for the domain and is invocable through a real shell / command-line command (e.g., `quant-research/scripts/walk_forward.py` with a working CLI binding and accessible data)
+3. The agent has command-line execution access and the per-candidate execution time fits within the session's time budget
 
 **Out of scope**:
-- `basic_research_*` plans (use `references/assumption_audit.md` alone; basic-research evaluators are typically observation-based, not script-based)
+- `basic_research` plans in any mode (use `references/assumption_audit.md` alone; basic-research evaluators are typically observation-based, not script-based)
 - Domains without an existing executable evaluator (run candidates as plain Idea portfolio → constraint-naming for the missing evaluator → ADJACENT plan to build the evaluator)
 - Plans where data access is blocked (PARK with named constraint until data becomes available)
 
@@ -32,7 +32,7 @@ If preconditions are not met, do NOT invoke this protocol. Falling back to simul
 
 Run normal `Idea portfolio` (de-anchoring + observation discovery + assumption_audit + hypothesis synthesis + quality-diversity). Produce 6 candidates.
 
-Each candidate must have an **executable signature**: an explicit Bash command (or sequence) that would evaluate it.
+Each candidate must have an **executable signature**: an explicit shell / command-line invocation (or sequence) that would evaluate it.
 
 Example (quant):
 ```bash
@@ -44,28 +44,28 @@ If a candidate cannot be expressed as a runnable command, PARK it with named con
 
 ### Cycle N (N=1, 2) — Evolutionary update
 
-#### Step 1 — MANDATORY Bash execution (NOT simulation)
+#### Step 1 — MANDATORY real command-line execution (NOT simulation)
 
-For each candidate, invoke the executable signature via the Bash tool. Capture stdout/stderr. Parse fitness vector (e.g., Sharpe, IC, hit rate, variance).
+For each candidate, invoke the executable signature through a real shell / command-line runner. Capture stdout/stderr. Parse fitness vector (e.g., Sharpe, IC, hit rate, variance).
 
 **Agent simulating fitness is EXPLICITLY FORBIDDEN.** Specifically forbidden:
 - Estimating fitness from prior knowledge of mechanism ("Sharpe ≈ 1.5 based on the literature")
-- Skipping Bash invocation because "the script presumably does X"
+- Skipping the real command-line invocation because "the script presumably does X"
 - Fabricating stand-in fitness numbers to keep the cycle alive
 - Re-defining "executable signature" to mean "the script imports without error"
 - Hand-coding a toy `run_pipeline` over synthetic returns to make the evaluator print numbers and laundering those as the candidate's fitness (the numbers would measure the toy, not the candidate)
 
-If script execution fails (no data, missing args, runtime error, etc.), the candidate is **KILLed** with the actual failure reason recorded. Do not fabricate a fallback fitness.
+If script execution fails (no data, missing args, runtime error, etc.), mark the candidate `killed` with the actual failure reason recorded. Do not fabricate a fallback fitness.
 
-#### Step 2 — Fitness analysis (separate Task subagent)
+#### Step 2 — Fitness analysis (separate-context analysis agent)
 
-Dispatch a Task subagent (separate context) with input = REAL fitness numbers from Bash stdout ONLY, plus the candidates' mechanism signatures. The subagent has NO prior expectations from the main agent.
+Dispatch a separate-context analysis agent with input = REAL fitness numbers from command stdout ONLY, plus the candidates' mechanism signatures. The analysis agent has NO prior expectations from the main agent.
 
-The subagent returns:
+The analysis agent returns:
 - Top-2 candidates by fitness vector dominance (primary metric, then variance, then turnover-adjusted variant)
 - Mechanism signature of each top candidate (which data assumption / metric / evaluation protocol / horizon / gate axis values the candidate uses)
 
-The separate-context subagent is what severs the rubric-leakage loop. If the main agent does this analysis itself, the protocol degenerates to v2-style hard gate (failed earlier in TDD).
+The separate-context analysis is what severs the rubric-leakage loop. If the main agent does this analysis itself, the protocol degenerates to v2-style hard gate (failed earlier in TDD).
 
 #### Step 3 — Mutation
 
@@ -94,15 +94,15 @@ Next-cycle portfolio = top-2 (kept) + mutation-2 (one variant per top) + crossov
 Stop iteration when ANY of:
 - Cycle ≥ 2 AND primary-metric improvement vs previous cycle < epsilon (default ε domain-specific; for quant Sharpe-based: 0.1)
 - Cycle = 3 (hard cap)
-- Time budget exhausted (per-candidate Bash execution time × 6 × remaining cycles exceeds session budget)
-- All candidates KILLed in Cycle 1 (typically indicates scope precondition is not met — the executable evaluator does not actually exist or data is not accessible)
+- Time budget exhausted (per-candidate command execution time × 6 × remaining cycles exceeds session budget)
+- All candidates are marked `killed` in Cycle 1 (typically indicates scope precondition is not met — the executable evaluator does not actually exist or data is not accessible)
 
 ### Promotion
 
 Cycle-final top candidate (by fitness vector dominance) is promoted to the plan's `Plan` section.
 
 Record in `plans/<id>.md`:
-- The executable signature (Bash command) — for reproducibility
+- The executable signature (shell / command-line invocation) — for reproducibility
 - The fitness vector and any confidence interval / variance
 - A one-sentence rationale for why this candidate dominated cycle-finals
 
@@ -113,20 +113,20 @@ Record in `plans/<id>.md`:
 | Failure mode | F v2 design counter |
 |---|---|
 | **AlphaEvolve trap** (protocol silently selects for evaluator-rich problems across the project) | Scope restriction in this file: only applies when executable evaluator already exists. For domains without, use assumption_audit + ADJACENT-plan for evaluator construction. |
-| **Rubric leakage** (gate criteria leak into ideation prompt) | Fitness is computed in Bash output and parsed by separate Task subagent (Step 2). Main agent prompt has no PASS criteria. |
-| **Self-simulation** (agent estimates fitness from prior) | Cycle N Step 1 explicitly forbids simulation. KILL is mandatory if execution fails. TDD GREEN-run agent rejected 3 named rationalization paths under this clause. |
+| **Rubric leakage** (gate criteria leak into ideation prompt) | Fitness is computed in command output and parsed by a separate-context analysis agent (Step 2). Main agent prompt has no PASS criteria. |
+| **Self-simulation** (agent estimates fitness from prior) | Cycle N Step 1 explicitly forbids simulation. Candidate-level `killed` classification is mandatory if execution fails. TDD GREEN-run agent rejected 3 named rationalization paths under this clause. |
 | **Back-leak via durable state** | Fitness scores are ephemeral; only final promoted candidate's fitness goes to durable plan record. |
-| **Friction overflow** | Hard cap: 2-3 cycles × 6 candidates × 1 evaluator call ≤ 18 Bash calls per plan. |
+| **Friction overflow** | Hard cap: 2-3 cycles × 6 candidates × 1 evaluator call <= 18 command-line executions per plan. |
 | **Mutation as parameter sweep** | Step 3 explicitly requires axis change; threshold/seed/window tweaks are disallowed. |
 | **Wildcard as control** | Step 5 mandates max-cosine-distance heuristic, not random. |
 
 ## Common failures
 
-- **Invoking the protocol when no executable evaluator exists**: scope violation. Symptom: every candidate KILLs in Cycle 1 (TDD GREEN run reproduced this exactly when the quant-research scripts turned out to be CLI-less). The honest deliverable is "the harness does not exist, ADJACENT plan needed to build it" — not fabricated fitness.
-- **Synthesizing toy data to keep Bash alive**: the toy `run_pipeline` returns real Sharpe numbers, but they measure the toy, not the candidate. This is the most seductive failure mode and is explicitly named in Cycle N Step 1's forbidden list.
+- **Invoking the protocol when no executable evaluator exists**: scope violation. Symptom: every candidate is marked `killed` in Cycle 1 (TDD GREEN run reproduced this exactly when the quant-research scripts turned out to be CLI-less). The honest deliverable is "the harness does not exist, ADJACENT plan needed to build it" — not fabricated fitness.
+- **Synthesizing toy data to keep command execution alive**: the toy `run_pipeline` returns real Sharpe numbers, but they measure the toy, not the candidate. This is the most seductive failure mode and is explicitly named in Cycle N Step 1's forbidden list.
 - **Re-defining "executable signature" loosely**: e.g., counting `python script.py` (no args, exits silently) as evaluation. The signature must produce a parseable fitness output.
 - **Mutation-as-parameter-tweak**: agent produces variants that change a threshold from 2.0 to 2.5. This is sensitivity_grid territory, not mutation.
-- **Skipping Step 2 subagent**: main agent reads fitness numbers and runs the analysis itself. This re-introduces rubric leakage. The Task subagent's separate context is what severs the loop.
+- **Skipping Step 2 separate-context analysis**: main agent reads fitness numbers and runs the analysis itself. This re-introduces rubric leakage. The separate context is what severs the loop.
 - **Crossover as stapling**: "candidate uses both signal A and signal B" is not a mechanism-coherent crossover. The crossover must define a single coherent mechanism.
 
 ## Relationship to other reference files
@@ -138,8 +138,8 @@ Record in `plans/<id>.md`:
 
 ## Sources
 
-- TDD validation: 1 round of RED (F v1, simulation allowed) vs GREEN (F v2, Bash mandatory) on intraday equity mean-reversion ideation case
+- TDD validation: 1 round of RED (F v1, simulation allowed) vs GREEN (F v2, real command-line execution mandatory) on intraday equity mean-reversion ideation case
   - RED agent produced 18 literary-estimate fitness values, self-quoted as "literary estimates dressed as measurements"
-  - GREEN agent invoked Bash 11 times, captured real "no_CLI/no_data" failure, KILLed all candidates, and explicitly rejected 3 rationalization paths
+  - GREEN agent invoked the command-line evaluator path 11 times, captured real "no_CLI/no_data" failure, marked all candidates `killed`, and explicitly rejected 3 rationalization paths
 - Empirical basis: Si 2024/2025 (Ideation-Execution Gap), AlphaEvolve / Google Co-Scientist (evaluator-grounded evolutionary search). F is a markdown-skill protocolization of the evaluator-grounded approach for domains where minimal executable evaluator exists.
 - Design spec: `docs/superpowers/specs/2026-05-16-research-ideation-assumption-audit-design.md` (Phase I extension)

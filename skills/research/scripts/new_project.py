@@ -90,7 +90,7 @@ def main():
     print(f"  cd {target}")
     print("  git init && git add -A && git commit -m 'Initial project structure'")
     print(f"  python {SKILL_ROOT}/scripts/new_plan.py {target} \\")
-    print("    --id 01 --slug <slug> --category <basic|applied|experimental_development> --mode <exploratory|confirmatory|milestone>")
+    print("    --id 01 --slug <slug> --category <basic_research|applied_research|experimental_development> --mode <exploratory|confirmatory|milestone|theoretical>")
 
 
 if __name__ == "__main__":

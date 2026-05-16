@@ -76,6 +76,8 @@ An observation is not yet a hypothesis. Observations name phenomena, failures, t
 
 Prior work has two roles. First, it can be material for observations: references may expose empirical patterns, baseline limits, historical failures, theoretical tensions, or problem facts that feed observation discovery. Second, it provides grounding after candidates exist: prior work checks whether candidates duplicate known work, inherit assumptions, require controls or comparators, need different evaluation, or should be advanced, merged, parked, or killed. The second role must not collapse the candidate space before raw candidates exist.
 
+When this skill says "subagent", it means a fresh agent analysis in a separate context. It is an agent-protocol role, not a dependency on any host's specific Task tool.
+
 ## Project Structure
 
 ```
@@ -221,14 +223,16 @@ The schema derives from Toulmin's argument model (1958) but is adapted for machi
 
 Reports are for humans. They live under `reports/<id>_<slug>/`. Each report is a snapshot — figures and tables ship inside the report directory so the report is self-contained.
 
-Required sections (category-specific shapes in `references/report_format.md`):
+Required sections and allowed conditional sections are defined in `references/report_format.md`. The common required sections are:
 
 1. **Summary** — 1–2 paragraphs. A reader who reads only this should understand what was done, what was found, and what is next.
 2. **Background** — what was known before, what motivated the work.
-3. **Methods & Conditions** — substantive enough for re-implementation. Methods reproducibility lives here.
-4. **Results** — actual generated figures or tables. Placeholders are not acceptable.
+3. **Methods & Conditions** / **System description** / **Theory / Formulation** / **Derivation context** as applicable to category and mode — substantive enough for re-implementation or derivation review. Methods reproducibility lives here.
+4. **Results** / **Observations** / **Performance** as applicable — actual evidence, figures, tables, or derivational observations. Placeholders are not acceptable.
 5. **Limitations** — what alternatives remain plausible, what conditions were not tested.
 6. **Next action** — one of the 5 iteration decisions, or a specific request to the human reader.
+
+Conditional sections such as **Related Work**, **Theory / Formulation**, **Ablation / Sensitivity**, **Discussion**, and **References** are required when their conditions in `references/report_format.md` apply. `scripts/check_report.py` enforces the common contract and figure integrity; the agent remains responsible for applying the conditional section rules.
 
 Reports do not need env locks, commit hashes, or seed lists in the prose. Include material execution conditions when they affect interpretation, and treat seed information as a variability disclosure: stochastic claims should report variance, failures, and the number of seeds rather than relying on one fixed seed. One line pointing to `experiments/<plan>/runs/` is enough if a reader wants to dig into raw artifacts.
 
@@ -251,7 +255,7 @@ Reports do not need env locks, commit hashes, or seed lists in the prose. Includ
 | Plan schema | `references/rd_plan.md` | Writing or reviewing `plans/<id>.md` |
 | Research ideation | `references/ideation.md` | When asked for research ideas, research directions, hypothesis candidates, or "what should we try next" before Prior-work grounding; use a sanitized brief and fresh de-anchoring subagent if anchors are already visible |
 | Assumption audit | `references/assumption_audit.md` | Between Observation discovery pass and Hypothesis synthesis pass — surfaces load-bearing background assumptions of the reference model being challenged (distinct from anchor audit at Divergence checkpoint). Includes constraint-naming protocol for un-evaluable hypotheses. |
-| Iterative ideation | `references/iterative_ideation.md` | Between Quality-diversity pass and Grounded pruning pass — ONLY when plan is applied/development AND a minimal executable evaluator exists. MANDATORY Bash execution, self-simulation EXPLICITLY FORBIDDEN. |
+| Iterative ideation | `references/iterative_ideation.md` | Between Quality-diversity pass and Grounded pruning pass — ONLY when plan is applied/development AND a minimal executable evaluator exists. Real shell / command-line execution is mandatory; self-simulation is explicitly forbidden. |
 | Divergence checkpoint | `references/rd_plan.md` | Before execution, after Question / Objective and before committing the Plan |
 | Analysis discipline | `references/analysis.md` | Before or during analysis (EDA / post-experiment), and before promoting an observation to a load-bearing claim |
 | Research review | `references/rd_plan.md` and `references/analysis.md` | After result analysis, before Claims, state-changing Decision, or report |

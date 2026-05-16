@@ -19,6 +19,11 @@ last_updated: YYYY-MM-DD
 
 <Not applicable: objective already chosen. If this plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," summarize the sanitized brief, fresh de-anchoring subagent, de-anchored candidates from `references/ideation.md`, transformation axes, grounded pruning, information-gain scoring, pre-execution divergence review, and the one candidate promoted into this plan.>
 
+### Unknown-unknowns
+
+- Catalog source: <assumption_audit.md Sub-protocol 1b run, including reference model challenged; None if Idea portfolio is not applicable>
+- <unknown area>: <why this could hide a load-bearing constraint; affected candidates or claims; claim-scope effect>
+
 ## Prior-work grounding
 
 ### Grounding scope

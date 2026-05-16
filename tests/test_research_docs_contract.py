@@ -669,3 +669,148 @@ def test_new_project_seeds_positioning_with_required_fields():
     for field in required_fields:
         assert field in positioning
     assert_absent(positioning, "Use the format from `references/literature_review.md`.")
+
+
+def test_new_plan_accepts_theoretical_mode_and_generates_theoretical_sections():
+    script = ROOT / "skills" / "research" / "scripts" / "new_plan.py"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        target.mkdir()
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(script),
+                str(target),
+                "--id",
+                "42",
+                "--slug",
+                "closed-form-bound",
+                "--category",
+                "basic_research",
+                "--mode",
+                "theoretical",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+        assert result.returncode == 0, result.stderr
+        plan = (target / "plans" / "42_closed-form-bound.md").read_text(encoding="utf-8")
+
+    assert "mode: theoretical" in plan
+    assert "### Derivation question" in plan
+    assert "### Limiting-case checks" in plan
+    assert "### Empirical sanity check" in plan
+
+
+def test_idea_portfolio_schema_and_templates_include_unknown_unknowns_bucket():
+    rd_plan = read("skills/research/references/rd_plan.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    assert_ordered_fragments(
+        rd_plan,
+        "## Idea portfolio",
+        "### Unknown-unknowns",
+        "## Prior-work grounding",
+    )
+
+    for template in template_dir.glob("*.template"):
+        text = template.read_text(encoding="utf-8")
+        assert_ordered_fragments(
+            text,
+            "## Idea portfolio",
+            "### Unknown-unknowns",
+            "## Prior-work grounding",
+        )
+
+
+def test_check_report_rejects_reports_without_background_section():
+    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+
+    report = """# Missing Background Report
+
+## Summary
+This report summarizes a complete analysis with enough substance for validation.
+
+## Results
+The observed result is described with enough detail to avoid placeholder text.
+
+## Limitations
+The report leaves plausible alternatives and untested conditions explicitly open.
+
+## Next action
+NEXT_STEP: continue the same plan after the reader reviews this evidence.
+"""
+
+    with tempfile.TemporaryDirectory() as tmp:
+        report_path = Path(tmp) / "report.md"
+        report_path.write_text(report, encoding="utf-8")
+        result = subprocess.run(
+            [sys.executable, str(script), str(report_path)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+    assert result.returncode == 1
+    assert "Missing required section: 'Background'" in result.stdout
+
+
+def test_check_report_accepts_theoretical_report_shape():
+    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+
+    report = """# Theoretical Report
+
+## Summary
+This report summarizes a derivational result and the next research action.
+
+## Background
+Prior formulations motivate the derivation and define the known constraints.
+
+## Theory / Formulation
+The formulation states the objects, assumptions, and result being derived.
+
+## Derivation context
+The derivation route and limiting cases are described for independent review.
+
+## Observations
+The limiting case checks and proof-state observations are recorded here.
+
+## Limitations
+The report names unevaluated assumptions and conditions not covered by the derivation.
+
+## Next action
+NEXT_STEP: continue the same plan with a focused counterexample search.
+"""
+
+    with tempfile.TemporaryDirectory() as tmp:
+        report_path = Path(tmp) / "report.md"
+        report_path.write_text(report, encoding="utf-8")
+        result = subprocess.run(
+            [sys.executable, str(script), str(report_path)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_new_project_next_steps_use_formal_categories_and_theoretical_mode():
+    script = ROOT / "skills" / "research" / "scripts" / "new_project.py"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        result = subprocess.run(
+            [sys.executable, str(script), str(target), "--name", "Next Step Contract"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+
+    assert "--category <basic_research|applied_research|experimental_development>" in result.stdout
+    assert "--mode <exploratory|confirmatory|milestone|theoretical>" in result.stdout
+    assert "--category <basic|applied|experimental_development>" not in result.stdout

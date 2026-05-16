@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Verify a report.md against the skill's report contract.
+"""Verify a report.md against the skill's v2.4 report contract.
 
 Checks:
-- All required sections present (Summary, Methods/System description, Results,
-  Limitations, Next action).
+- Common required sections are present: Summary, Background, Limitations, and
+  Next action.
+- At least one evidence-bearing outcome section is present: Results,
+  Observations, or Performance.
+- At least one method, system, theory, or derivation-context section is present.
+- v2.4 conditional sections are allowed, including Related Work,
+  Theory / Formulation, Derivation context, Ablation / Sensitivity,
+  Discussion, and References.
 - Figure references (![...](figures/X) or relative paths) resolve to actual files.
 - Limitations section is non-empty (not just placeholder text).
 - Next action section is non-empty and ideally references an iteration decision.
@@ -19,12 +25,31 @@ import sys
 from pathlib import Path
 
 
-REQUIRED_SECTIONS_BASIC = ["Summary", "Background", "Methods", "Observations", "Limitations", "Next action"]
-REQUIRED_SECTIONS_APPLIED = ["Summary", "Background", "Method / Procedure", "Evaluation", "Results", "Limitations", "Next action"]
-REQUIRED_SECTIONS_DEV = ["Summary", "Background", "System description", "Performance", "Operational limits", "Limitations", "Next action"]
-
-# Less strict: at least one of these sections must exist (we infer category from contents)
-CORE_REQUIRED = ["Summary", "Limitations", "Next action"]
+COMMON_REQUIRED = ["Summary", "Background", "Limitations", "Next action"]
+CONTEXT_SECTION_OPTIONS = [
+    "Methods & Conditions",
+    "Methods",
+    "Method / Procedure",
+    "System description",
+    "Theory / Formulation",
+    "Derivation context",
+]
+OUTCOME_SECTION_OPTIONS = ["Results", "Observations", "Performance"]
+NONEMPTY_IF_PRESENT = [
+    "Summary",
+    "Background",
+    "Methods & Conditions",
+    "Methods",
+    "Method / Procedure",
+    "System description",
+    "Theory / Formulation",
+    "Derivation context",
+    "Results",
+    "Observations",
+    "Performance",
+    "Limitations",
+    "Next action",
+]
 
 PLACEHOLDER_PATTERNS = [
     re.compile(r"<[A-Z]"),                 # <Some placeholder text>
@@ -79,6 +104,14 @@ def check_section_present(sections: dict, expected: list) -> list:
         if not found:
             issues.append(f"  Missing required section: '{required}'")
     return issues
+
+
+def check_any_section_present(sections: dict, options: list, label: str) -> list:
+    sections_lower = [k.lower() for k in sections]
+    for option in options:
+        if any(option.lower() in key for key in sections_lower):
+            return []
+    return [f"  Missing required {label}: one of {options}"]
 
 
 def check_section_nonempty(sections: dict, name: str) -> list:
@@ -155,11 +188,14 @@ def main():
 
     all_issues = []
 
-    # Core sections required regardless of category.
-    all_issues.extend(check_section_present(sections, CORE_REQUIRED))
+    # Common sections required regardless of category. Category- and
+    # mode-specific sections are intentionally conditional in v2.4.
+    all_issues.extend(check_section_present(sections, COMMON_REQUIRED))
+    all_issues.extend(check_any_section_present(sections, CONTEXT_SECTION_OPTIONS, "method/system/theory section"))
+    all_issues.extend(check_any_section_present(sections, OUTCOME_SECTION_OPTIONS, "outcome section"))
 
-    # Non-empty checks for Summary, Limitations.
-    for sec in ["Summary", "Results", "Observations", "Performance", "Limitations", "Next action"]:
+    # Non-empty checks for common and recognized conditional sections.
+    for sec in NONEMPTY_IF_PRESENT:
         all_issues.extend(check_section_nonempty(sections, sec))
 
     # Next action discipline.

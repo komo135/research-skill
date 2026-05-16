@@ -1,0 +1,173 @@
+---
+plan_id: <id>
+slug: <slug>
+category: <category>
+mode: theoretical
+status: planned
+created_at: YYYY-MM-DD
+created_commit: <git sha — auto-filled by new_plan.py>
+last_updated: YYYY-MM-DD
+---
+
+# <Plan title>
+
+## Question / Objective
+
+<One paragraph stating what is to be proved, derived, bounded, or characterized, and why the result matters.>
+
+## Idea portfolio
+
+<Not applicable: objective already chosen. If this plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," summarize the sanitized brief, fresh de-anchoring subagent, de-anchored candidates from `references/ideation.md`, transformation axes, grounded pruning, information-gain scoring, pre-execution divergence review, and the one candidate promoted into this plan.>
+
+### Unknown-unknowns
+
+- Catalog source: <assumption_audit.md Sub-protocol 1b run, including reference model challenged; None if Idea portfolio is not applicable>
+- <unknown area>: <why this could hide a load-bearing constraint; affected candidates or claims; claim-scope effect>
+
+## Prior-work grounding
+
+### Grounding scope
+
+- Question/objective supported by: <literature/papers.md entries and why they are relevant>
+- Inherited assumptions: <assumptions carried from prior formulations, definitions, theorems, or systems>
+- Method choice: <prior work or constraint motivating the selected derivational route>
+- Controls/comparators/evaluation protocol: <known limiting case, prior theorem, equivalence result, counterexample class, or empirical sanity-check route>
+- Known limitations: <limitations from prior work that constrain interpretation>
+
+### Research positioning
+
+- Positioning entry: <literature/positioning.md entry showing how this work stands on prior work>
+- Claim scope: <what this bounded but sufficient grounding supports, narrows, or blocks for the question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations>
+- Unknown prior-work constraint: <named constraint and affected claims; None if none>
+
+## Divergence checkpoint
+
+### Approach portfolio
+
+- Primary route: <the derivational route selected for this theoretical plan>
+- Alternative A: <meaningfully different route; not just a notation change>
+- Alternative B: <meaningfully different route; not just a longer proof; if a hard constraint permits only one route, state that constraint and narrow later claims only if Research review records PASS for both judgments>
+
+### Anchoring audit
+
+- Prior result / approach / dataset being imported: <what this plan may be anchored on>
+- Risk if the anchor is wrong: <what theorem, definition, or interpretation would break>
+- Revalidation or control: <limiting case / counterexample / alternative derivation / sanity check>
+
+### Research positioning
+
+- Contribution type: <question / mechanism / data / metric / evaluation protocol / method / system / replication / baseline strengthening>
+- Positioning status: <literature/positioning.md entry and claim scope>
+- External novelty / no-baseline claim: <None, or comprehensive literature survey reference before execution>
+
+### Disconfirming evidence
+
+- Stop, narrow, or pivot if: <derivation gap, counterexample, incompatible limiting case, or observation that would force a narrower question, a different route, a pause, or closure>
+- Branch if observed: <REFINE / ADJACENT / PARK / CLOSE>
+
+### Commitment decision
+
+- Chosen route and reason: <why commit to this derivational route now>
+- Skipped divergence: <what alternatives are not explored because of time/resource limits; None if none>
+- Effect on later claims: <how this limits later claims>
+
+## Plan
+
+### Derivation question
+
+- <one sentence stating what is to be proved, derived, bounded, or characterized>
+
+### Axioms / definitions / prior theorems used
+
+- <axiom or definition 1>: <statement, source if from external work>
+- <axiom or definition 2>: ...
+- <prior theorem 1>: <statement, source>
+- <prior theorem 2>: ...
+
+### Proposed derivation sketch
+
+- <high-level chain of reasoning the derivation will follow>
+- <key lemmas or sub-results expected>
+- <techniques the derivation will rely on (e.g., induction on N, change of variables, fixed-point argument)>
+
+### Predicted form of result
+
+- <expected shape of the result: closed-form expression, asymptotic bound, equivalence statement, etc.>
+- <units and scope where applicable>
+
+### Limiting-case checks
+
+- <known case 1 the result must reduce to>: <expected reduction>
+- <known case 2>: ...
+- These are the analog of "controls/comparators" for theoretical work; the derivation must recover known correct behavior in stated limits.
+
+### Empirical sanity check (if applicable)
+
+- <one observable consequence the derivation predicts that could be checked against existing data or simulation>
+- <state explicitly if no such check is available; this triggers the assumption_audit constraint-naming protocol for the resulting claim>
+
+### Failure modes to watch
+
+- <derivation step where an assumption could silently fail>
+- <known pathological case where the result might break>
+- <symmetry or invariance that must be preserved and how it will be checked>
+
+### Time / page envelope
+
+- <budget for the derivation work itself; for long derivations, plan checkpoint reviews>
+
+## Actual execution
+
+### Runs
+
+<List as derivation notes, proof attempts, simulations, or checks accumulate. Link to experiments/<plan_id>_<slug>/runs/<run_id>/ when applicable.>
+
+### Methodology used
+
+<Substantive description of the derivation procedure, definitions, proof route, limiting-case checks, and material conditions that affect interpretation. Enough for re-implementation; env locks and commit hashes are provenance pointers, not methodology.>
+
+### Observations
+
+<What was derived, which limiting cases were checked, what empirical sanity checks showed if any, and what gaps or counterexamples were found.>
+
+## Planned vs Actual
+
+<Differences, with reasoning. "No material deviation from plan." if none.>
+
+## Research review
+
+### Reviewer
+
+- Agent: <one fresh research-review subagent>
+- Reviewed at: <YYYY-MM-DD>
+- Scope: <claim / CLOSE / REFINE / ADJACENT / PARK / report>
+
+### Analysis sufficiency
+
+- Verdict: <PASS / REWORK / INVALID>
+- Rationale: <whether the derivation chain closes the question without gaps, and whether limiting-case checks are consistent>
+- Required reanalysis: <None / named proof repair, limiting-case check, counterexample search, or empirical sanity check before any claim, decision, or report>
+
+### Result reliability
+
+- Verdict: <PASS / REWORK / INVALID>
+- Rationale: <whether axioms, definitions, and prior theorems are used correctly, and whether the predicted form is actually established by the derivation>
+- Required repair or rerun: <None / definition repair, theorem-source repair, proof rerun, sanity-check rerun, or plan-level redo>
+
+### Required action
+
+- <Proceed only if both judgments are PASS / run named analysis / fix and rerun affected work / reopen plan>
+
+## Claims
+
+<Load-bearing claims using the schema in claim_structure.md.>
+
+## Decision
+
+<One of NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE — see iteration_loop.md.>
+
+## References
+
+- Runs: experiments/<plan_id>_<slug>/runs/
+- Related plans: <other plan IDs and their relationship>
+- Related literature: <papers.md entries>

@@ -110,10 +110,10 @@ Do not select only the highest-scoring candidate. Keep at least one representati
 
 When ALL of the following hold, invoke `references/iterative_ideation.md` between `Quality-diversity pass` and `Grounded pruning pass`:
 1. Plan category is `applied_research` or `experimental_development`
-2. A minimal executable evaluator exists for the domain (e.g., a runnable Bash command that returns parseable fitness)
+2. A minimal executable evaluator exists for the domain (e.g., a runnable shell / command-line invocation that returns parseable fitness)
 3. Per-candidate execution time fits within the session budget
 
-The iterative protocol uses the quality-diversity-balanced 6 candidates as Cycle 0, runs 1-2 cycles of MANDATORY Bash execution + mutation/crossover/wildcard with self-simulation forbidden, and replaces the portfolio with the evolved set before `Grounded pruning pass` continues.
+The iterative protocol uses the quality-diversity-balanced 6 candidates as Cycle 0, runs 1-2 cycles of mandatory real shell / command-line execution + mutation/crossover/wildcard with self-simulation forbidden, and replaces the portfolio with the evolved set before `Grounded pruning pass` continues.
 
 When preconditions are not met (basic research, no executable evaluator, blocked data), skip this pass. Single-pass ideation is honest in those cases; simulated fitness is forbidden by `references/iterative_ideation.md` because it produces "literary estimates dressed as measurements" (TDD finding).
 

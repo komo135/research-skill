@@ -63,8 +63,8 @@ Rationale: empirical evidence (Si 2024, Si 2025 Ideation-Execution Gap, Kadavath
 When an audited assumption has no current evaluator (the candidate hypothesis cannot be tested with available data, instruments, or theory), the agent must record this fact in **two existing places**:
 
 1. In `plans/<id>.md` `Prior-work grounding.Unknown prior-work constraint` (or `Divergence checkpoint.Disconfirming evidence` if it concerns disconfirmability rather than literature), as a named constraint with category-specific default phrasing:
-   - `basic_research_theoretical` → "no decisive empirical evaluator available at the present state of knowledge"
-   - `basic_research_empirical` → "named observation requires <instrument/dataset> that is not currently accessible"
+   - `basic_research` with `mode: theoretical` → "no decisive empirical evaluator available at the present state of knowledge"
+   - `basic_research` with `mode: exploratory` or `mode: confirmatory` → "named observation requires <instrument/dataset> that is not currently accessible"
    - `applied_research` → "evaluator construction deferred to ADJACENT plan <id>" (open the adjacent plan for evaluator construction)
    - `experimental_development` → "acceptance test deferred to milestone <name>"
 2. In any resulting load-bearing claim, narrow `conditions_tested` to the regime that actually was tested, and record the missing-evaluator regime as a `conditions_not_tested` entry referencing the plan-level named constraint by name.

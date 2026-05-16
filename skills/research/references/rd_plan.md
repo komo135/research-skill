@@ -28,7 +28,7 @@ last_updated: YYYY-MM-DD
 <One paragraph stating what this plan investigates or builds.>
 
 ## Idea portfolio
-<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Summarize de-anchored candidates generated from a sanitized brief by a fresh de-anchoring subagent, transformation axes from `references/ideation.md`, grounded pruning, information-gain scoring, and the one candidate promoted into this plan.>
+<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Summarize de-anchored candidates generated from a sanitized brief by a fresh de-anchoring subagent, transformation axes from `references/ideation.md`, unknown-unknowns from `references/assumption_audit.md`, grounded pruning, information-gain scoring, and the one candidate promoted into this plan.>
 
 ## Prior-work grounding
 <Bounded but sufficient grounding for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations. Cite `literature/papers.md` and `literature/positioning.md`. If prior work is genuinely unknown, record the named constraint and narrow or block relevant claims.>
@@ -84,6 +84,10 @@ The section is optional for ordinary plans that begin with an already chosen obj
   - Predicted effect: <measurable effect expected if the mechanism conjecture is right>
   - Counter-hypothesis: <plausible alternative explanation under which the predicted effect should not appear>
   - Minimal disconfirming test: <smallest test, ablation, comparison, or observation that would reject, narrow, or park the candidate>
+
+### Unknown-unknowns
+- Catalog source: <assumption_audit.md Sub-protocol 1b run, including reference model challenged>
+- <unknown area>: <why this could hide a load-bearing constraint; affected candidates or claims; claim-scope effect>
 
 ### Grounded pruning
 - Advance: <candidate promoted toward a plan and why>
@@ -252,7 +256,7 @@ Fix the acceptance criteria.
 
 ### Mode: theoretical
 
-For pure conceptual / derivational work where the claim rests on a formal derivation rather than empirical observation (e.g., a new closed-form result, a proof of equivalence between two formulations, a derived bound). Use this mode for `basic_research_theoretical` plans and for any applied / experimental_development plan whose primary contribution is a mathematical or algorithmic derivation rather than an empirical result.
+For pure conceptual / derivational work where the claim rests on a formal derivation rather than empirical observation (e.g., a new closed-form result, a proof of equivalence between two formulations, a derived bound). Use this mode for `basic_research` plans with `mode: theoretical` and for any applied / experimental_development plan whose primary contribution is a mathematical or algorithmic derivation rather than an empirical result.
 
 Empirical verification (when it exists) is treated as a secondary check (limiting-case match), not as the primary evidence.
 

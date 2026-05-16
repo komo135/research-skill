@@ -5,7 +5,7 @@ Usage:
     python new_plan.py <project_root> \
         --id <id> --slug <slug> \
         --category basic_research|applied_research|experimental_development \
-        --mode exploratory|confirmatory|milestone
+        --mode exploratory|confirmatory|milestone|theoretical
 
 Creates:
     plans/<id>_<slug>.md           (from template, with metadata filled in)
@@ -53,7 +53,7 @@ def main():
     parser.add_argument(
         "--mode",
         required=True,
-        choices=["exploratory", "confirmatory", "milestone"],
+        choices=["exploratory", "confirmatory", "milestone", "theoretical"],
     )
     parser.add_argument("--title", default=None, help="Plan title (defaults to slug)")
     args = parser.parse_args()
