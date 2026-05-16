@@ -73,7 +73,7 @@ Read `references/categories/<category>.md` after picking a category.
 
 Research state moves through this lifecycle:
 
-`Observation discovery` → `Hypothesis synthesis` → `Intervention idea` → `Prior-work grounding` → `Plan` → `Execution` → `Analysis` → `Claim` → `Decision`
+`Observation discovery` → `Hypothesis synthesis` → `Intervention idea` → `Prior-work grounding` → `Plan` → `Execution` → `Result analysis` → `Research review` → `Claim` → `Decision`
 
 An observation is not yet a hypothesis. Observations name phenomena, failures, tensions, baseline limits, or problem facts that may motivate a hypothesis later; they do not by themselves explain the mechanism or justify an intervention.
 
@@ -128,9 +128,8 @@ Boundaries that matter:
 4. Write the Prior-work grounding and Divergence checkpoint.
 5. Write the Plan section. git commit. (Plan is now time-anchored by git.)
 6. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/. A print-only script run is incomplete: stdout is not evidence, and `scripts/check_run_artifacts.py` should pass before observations are promoted.
-7. ANALYZE — apply the EDA / result-analysis discipline (references/analysis.md), using durable artifact files rather than terminal-only output.
-   Observations live in plans/<id>.md Observations and in experiments/<plan>/notebooks/.
-8. Write Actual section in plans/<id>.md. Compare planned vs actual.
+7. Write Actual section in plans/<id>.md. Compare planned vs actual.
+8. RESULT ANALYSIS — dispatch a fresh separate-context result-analysis subagent using the `research-result-analysis` skill and the template in `references/result_analysis_subagent_prompt.md`. Pass the plan path as the only starting context; the subagent reconstructs evidence from referenced runs, manifests, logs, scripts, outputs, tables, and figures. The main research agent must not perform result analysis itself for load-bearing promotion.
 9. Dispatch exactly one research-review subagent before any load-bearing claim, state-changing decision, or human-facing report.
    The review assesses analysis sufficiency and result reliability; record it in the Research review section.
 10. Record load-bearing claims using the structure in references/claim_structure.md.
@@ -192,9 +191,17 @@ The checkpoint is lightweight, but it is not optional:
 
 This checkpoint does not replace prior-work grounding. Every plan needs bounded but sufficient grounding before the Plan section; comprehensive literature survey is required only for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. The agent may still choose the user's requested approach, but only after making the alternatives, anchor risks, and research positioning explicit. Claim-scope narrowing from this checkpoint never overrides the later Research review gate: if the review finds insufficient analysis or compromised reliability, rework or invalidation is required before any claim, decision, or report.
 
+## Result analysis
+
+After execution and the Planned vs Actual comparison, but before Research review, Claims, state-changing Decision, or report drafting, the parent research agent dispatches a fresh separate-context result-analysis subagent. Use `research-result-analysis` and the exact template in `references/result_analysis_subagent_prompt.md`.
+
+The subagent receives only the plan path as starting context. It must reconstruct necessary evidence from the plan's references and report missing evidence as `context_missing`. Parent-agent summaries, expected conclusions, and private execution notes are not inputs. The main research agent must not perform result analysis itself for load-bearing promotion.
+
+Record the returned `## Result analysis` section in the plan. This section is the input to Research review; it is not a claim record and it does not choose the iteration decision.
+
 ## Research review
 
-Before a result becomes a load-bearing claim, a state-changing `REFINE` / `ADJACENT` / `PARK` / `CLOSE` decision, or a human-facing report, dispatch exactly one fresh subagent as the research reviewer. This is one review subagent with two required judgments, not two separate reviewers:
+Before a result becomes a load-bearing claim, a state-changing `REFINE` / `ADJACENT` / `PARK` / `CLOSE` decision, or a human-facing report, the plan must already contain Result analysis from a fresh separate-context result-analysis subagent. Then dispatch exactly one fresh subagent as the research reviewer. This is one review subagent with two required judgments, not two separate reviewers:
 
 1. **Analysis sufficiency** — judge whether the analysis is sufficient for the conclusion being drawn. The reason is direct: analysis is the bridge from result to conclusion, so inadequate analysis can produce a wrong close-out even when the run itself succeeded.
 2. **Result reliability** — judge whether the result is trustworthy given the approach, research procedure, data handling, controls/comparators when applicable, robustness checks, and any deviations from the plan.
@@ -251,7 +258,7 @@ Reports do not need env locks, commit hashes, or seed lists in the prose. Includ
 |---|---|
 | New project | `scripts/new_project.py` lays down the structure |
 | New investigation in an existing project | `scripts/new_plan.py` (asks for category and mode) |
-| Result came in | Update `plans/<id>.md` (Actual) and dispatch one research-review subagent; if both judgments are `PASS`, record Claims and an iteration decision, otherwise perform the required reanalysis, repair, rerun, or redo and review again |
+| Result came in | Update `plans/<id>.md` (Actual and Planned vs Actual), dispatch a fresh result-analysis subagent using `research-result-analysis`, then dispatch one research-review subagent; if both review judgments are `PASS`, record Claims and an iteration decision, otherwise perform the required reanalysis, repair, rerun, or redo and review again |
 | Human asked for a writeup | Draft a report only after the plan has a research review with `PASS` for both judgments |
 | Claim feels strong | Re-read `references/claim_structure.md` and verify alternatives/conditions honestly |
 | Don't know which category | Read `references/categories/*.md`; pick the closest fit |
@@ -266,8 +273,9 @@ Reports do not need env locks, commit hashes, or seed lists in the prose. Includ
 | Assumption audit | `references/assumption_audit.md` | Between Observation discovery pass and Hypothesis synthesis pass — surfaces load-bearing background assumptions of the reference model being challenged (distinct from anchor audit at Divergence checkpoint). Includes constraint-naming protocol for un-evaluable hypotheses. |
 | Iterative ideation | `references/iterative_ideation.md` | Between Quality-diversity pass and Grounded pruning pass — ONLY when plan is applied/development AND a minimal executable evaluator exists. Real shell / command-line execution is mandatory; self-simulation is explicitly forbidden. |
 | Divergence checkpoint | `references/rd_plan.md` | Before execution, after Question / Objective and before committing the Plan |
-| Analysis discipline | `references/analysis.md` | Before or during analysis (EDA / post-experiment), and before promoting an observation to a load-bearing claim |
-| Research review | `references/rd_plan.md` and `references/analysis.md` | After result analysis, before Claims, state-changing Decision, or report |
+| Result analysis subagent prompt | `references/result_analysis_subagent_prompt.md` | After Actual execution and Planned vs Actual are recorded; pass only the plan path to a fresh separate-context result-analysis subagent |
+| Analysis discipline | `references/analysis.md` and `research-result-analysis` | Before or during analysis (EDA / post-experiment), and before promoting an observation to a load-bearing claim |
+| Research review | `references/rd_plan.md` and `references/analysis.md` | After separate-context Result analysis, before Claims, state-changing Decision, or report |
 | Iteration branches | `references/iteration_loop.md` | After every interpreted result |
 | Claim schema | `references/claim_structure.md` | Writing or reviewing any load-bearing claim |
 | Report shape | `references/report_format.md` | Drafting `reports/<id>/report.md` |
@@ -284,6 +292,7 @@ These are not formatting preferences. They are what makes other agents and human
 - **No placeholder figures in reports.** Generate the figure or remove the reference. `scripts/check_report.py` verifies figure references resolve.
 - **Plan content exists before execution.** The Plan section must be filled in and committed before any execution begins. `created_commit` in the front matter is meaningful only if the Plan section is non-empty at that commit. After-the-fact plan rewriting is detectable in git diff.
 - **Research scripts leave durable artifacts.** Print-only EDA or evaluator output is not evidence. Completed runs must update `run_manifest.json` to `status: completed`, list the evidence artifacts there, capture `logs/stdout.log` / `logs/stderr.log`, and write at least one durable artifact, including intermediate data when it is needed to audit the analysis path.
+- **Separate result analysis before review.** Before Research review, Claims, state-changing decision, or report, dispatch a fresh separate-context result-analysis subagent using `research-result-analysis` and the plan-path-only prompt template. The main research agent must not perform result analysis itself for load-bearing promotion.
 - **One research-review subagent before close-out.** Before a result becomes a load-bearing claim, state-changing decision, or report, exactly one fresh research-review subagent must record `PASS` for both analysis sufficiency and result reliability. Do not replace it with self-review, split it into disconnected reviews, or proceed on `REWORK` / `INVALID`.
 - **Decisions are labeled.** "Diagnostic detour," "let me keep going" are not decision labels. Pick from the 5.
 - **Claim records have all five fields.** Empty list `[]` is allowed; a missing field is not.

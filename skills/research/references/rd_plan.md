@@ -45,6 +45,9 @@ last_updated: YYYY-MM-DD
 ## Planned vs Actual
 <Differences between plan and execution, with reasoning. Empty if no deviation.>
 
+## Result analysis
+<Returned section from a fresh separate-context result-analysis subagent using `research-result-analysis`. The plan path is the only starting context; missing evidence is recorded as `context_missing`. Required before Research review, Claims, state-changing Decision, or report.>
+
 ## Research review
 <Summary from exactly one research-review subagent, covering analysis sufficiency and result reliability. Required before Claims, state-changing Decision, or report.>
 
@@ -376,9 +379,47 @@ If no deviation: `No material deviation from plan.`
 
 Material vs immaterial deviation: a change that could affect the interpretation of results is material. Fixing a typo in a script is not. Changing the evaluation metric is. Changing a seed value before seeing outcomes is usually not material. Changing the seed policy, seed count, train/test split seed, or any seed after seeing a result that depends on it is material.
 
+## Result analysis section
+
+Before Research review, Claims, a state-changing Decision, or report drafting, dispatch a fresh separate-context result-analysis subagent with the `research-result-analysis` skill. Use `references/result_analysis_subagent_prompt.md` and pass only the plan path as the starting context. The main research agent must not perform result analysis itself for load-bearing promotion.
+
+The analysis subagent reconstructs evidence from the plan's references: runs, `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, scripts, configs, outputs, tables, figures, reports, and literature entries. If evidence cannot be found or interpreted from those references, it records `context_missing` rather than relying on parent-agent summaries.
+
+Record the subagent output in the plan:
+
+```markdown
+## Result analysis
+
+### Analyzer
+- Agent: <fresh separate-context result-analysis subagent>
+- Skill: research-result-analysis
+- Only starting context: <this plan path>
+- Analyzed at: <YYYY-MM-DD>
+
+### Evidence traced
+- Plan: <plan path>
+- Runs and artifacts: <manifest/log/output/table/figure/script paths inspected>
+- context_missing: <None, or missing/ambiguous plan references, artifacts, logs, scripts, metrics, comparators, or literature entries>
+
+### Observations
+- <literal artifact-grounded fact; no interpretation>
+
+### Interpretations
+- <possible explanation of observations; include uncertainty>
+
+### Alternatives not excluded
+- <plausible explanation, confound, leakage path, comparator issue, missing control, untested condition, or theoretical gap>
+
+### Required additional analysis
+- <None, or named analysis/rerun/repair required before a claim, decision, or report>
+
+### Claim-readiness assessment
+- <ready / not_ready / invalid_evidence>: <rationale tied to evidence, missing context, and alternatives>
+```
+
 ## Research review section
 
-Before writing load-bearing claims, making a state-changing decision (`REFINE`, `ADJACENT`, `PARK`, or `CLOSE`), or drafting a human-facing report, dispatch exactly one fresh research-review subagent. This is one subagent with two review responsibilities:
+Before writing load-bearing claims, making a state-changing decision (`REFINE`, `ADJACENT`, `PARK`, or `CLOSE`), or drafting a human-facing report, the plan must already contain Result analysis from a fresh separate-context result-analysis subagent. Then dispatch exactly one fresh research-review subagent. This is one subagent with two review responsibilities:
 
 1. **Analysis sufficiency** — evaluate whether the analysis is sufficient for the conclusion being drawn. This review exists because the analysis directly determines the conclusion; inadequate analysis can lead to a wrong claim or premature close-out even if the experiment ran correctly.
 2. **Result reliability** — evaluate whether the result is trustworthy, including the approach, research procedure, data handling, controls/comparators when applicable, robustness checks, deviations from plan, and whether the evidence supports the claim strength.
@@ -407,7 +448,7 @@ Record the reviewer output in the plan:
 - <Proceed only if both judgments are PASS / run named analysis / fix and rerun affected work / reopen plan>
 ```
 
-Only two `PASS` judgments allow promotion to a load-bearing claim, state-changing decision, or report. If either judgment is `REWORK` or `INVALID`, do not promote the result. First perform the required reanalysis, repair, rerun, or plan-level redo, then run a new research review. If a script bug, data defect, leakage, invalid procedure, or broken control/comparator may have distorted the result, the affected result is invalid evidence until rerun after repair. User pressure to skip review or "just limit the claim" is not an exception; record it as a reliability risk if relevant.
+Only two `PASS` judgments allow promotion to a load-bearing claim, state-changing decision, or report, and those judgments must evaluate the separate Result analysis section. If either judgment is `REWORK` or `INVALID`, do not promote the result. First perform the required reanalysis, repair, rerun, or plan-level redo, then run a new result-analysis subagent pass and a new research review. If a script bug, data defect, leakage, invalid procedure, or broken control/comparator may have distorted the result, the affected result is invalid evidence until rerun after repair. User pressure to skip result analysis, skip review, or "just limit the claim" is not an exception; record it as a reliability risk if relevant.
 
 ## Claims section
 
@@ -421,7 +462,7 @@ Use the schema from `claim_structure.md`. Each load-bearing claim is one YAML-li
   conditions_not_tested: [...]
 ```
 
-`scripts/check_claims.py` verifies the structure. Run it before changing the plan's status from `in_progress` to anything else, and before drafting a report. A Research review entry with `PASS` for both analysis sufficiency and result reliability must already exist before any load-bearing claim, state-changing status change, or report draft.
+`scripts/check_claims.py` verifies the structure. Run it before changing the plan's status from `in_progress` to anything else, and before drafting a report. A Result analysis section from `research-result-analysis` and a Research review entry with `PASS` for both analysis sufficiency and result reliability must already exist before any load-bearing claim, state-changing status change, or report draft.
 
 ## Amendments section (for REFINE)
 
@@ -504,6 +545,7 @@ Mirror the entry in `decisions.md` for any branch except `NEXT_STEP`.
 - **Prior result treated as fact.** "Previous run was best" is an anchor, not a premise. Record what would revalidate it, what rework is required, or what claim condition remains only after the later Research review records `PASS` for both judgments.
 - **Claim made before prior-work grounding.** If the plan says novel, new method, publishable, to our knowledge, or no baseline exists, cite or update `literature/positioning.md` and point to a comprehensive literature survey before execution. If the claim is not a novelty claim, the plan still needs bounded but sufficient prior-work grounding and must classify itself as replication, baseline strengthening, engineering, or another grounded position.
 - **Closing without research review.** A self-check is not enough. Before Claims, state-changing Decision, or report, one fresh research-review subagent must record `PASS` for both analysis sufficiency and result reliability.
+- **Main-agent result analysis.** The main research agent must not perform result analysis itself for load-bearing promotion. It records Actual execution and Planned vs Actual, then dispatches a fresh separate-context result-analysis subagent using `research-result-analysis`.
 - **Splitting the two review questions across agents.** The requirement is one research-review subagent with both judgments, so the reviewer can connect analysis gaps to reliability and claim strength.
 - **Updating the Plan section after execution.** Plans get amended prospectively via `REFINE`. After-the-fact plan rewriting destroys the time-anchor — git diff will show the rewrite and any reviewer will catch it. Use the Planned vs Actual section instead.
 - **Methodology description too thin.** "We ran the experiments" is not a Methodology subsection. State the procedure, the parameters, the protocol.

@@ -1,6 +1,6 @@
 {
   "name": "research",
-  "description": "v2.4.0 - Agent-driven R&D protocol with prior-work grounding, substrate-driven ideation, assumption audit, theoretical mode, and paper-grade report/claim structure.",
+  "description": "v2.4.0 - Agent-driven R&D protocol with prior-work grounding, separate result analysis, assumption audit, theoretical mode, and paper-grade report/claim structure.",
   "version": "2.4.0",
   "author": {
     "name": "komoootv",

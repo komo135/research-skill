@@ -218,6 +218,41 @@ last_updated: YYYY-MM-DD
 
 <Differences, with reasoning. "No material deviation from plan." if none.>
 
+## Result analysis
+
+### Analyzer
+
+- Agent: <fresh separate-context result-analysis subagent>
+- Skill: research-result-analysis
+- Only starting context: <this plan path>
+- Analyzed at: <YYYY-MM-DD>
+
+### Evidence traced
+
+- Plan: <this plan path>
+- Runs and artifacts: <run_manifest.json, logs/stdout.log, logs/stderr.log, scripts, outputs, tables, figures, reports, or literature entries inspected>
+- context_missing: <None, or missing/ambiguous references that block or narrow analysis>
+
+### Observations
+
+<Artifact-grounded facts only.>
+
+### Interpretations
+
+<Possible explanations, separated from observations.>
+
+### Alternatives not excluded
+
+<Plausible explanations, confounds, proof gaps, missing limiting-case checks, or untested assumptions.>
+
+### Required additional analysis
+
+<None, or named proof repair, limiting-case check, counterexample search, empirical sanity check, or rerun required before any claim, decision, or report.>
+
+### Claim-readiness assessment
+
+<ready / not_ready / invalid_evidence>: <rationale tied to evidence and missing context.>
+
 ## Research review
 
 ### Reviewer

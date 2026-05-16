@@ -1,8 +1,9 @@
 # research-skill
 
-A Claude Code and Codex plugin providing two skills for **agent-driven R&D**:
+A Claude Code and Codex plugin providing three skills for **agent-driven R&D**:
 
 - **`research`** — protocol skill for R&D work across the three Frascati categories: basic research (new knowledge about underlying foundations without a particular application in view), applied research (new knowledge directed toward a specific practical aim or objective), and experimental development (new or improved products/processes plus additional knowledge). Enforces vocabulary, plan/claim structure, iteration discipline, analysis methodology, and human-readable reports.
+- **`research-result-analysis`** — independent result-analysis skill used by a fresh separate-context result-analysis subagent. It starts from a plan path only, reconstructs evidence from referenced artifacts, and returns observations, interpretations, alternatives, missing context, required analysis, and claim-readiness without writing final claims or decisions.
 - **`quant-research`** — domain extension layered on `research` for time-series and statistically rigorous quantitative R&D. Adds methodology for time-series cross-validation, multiple-testing corrections, leakage detection, and statistical robustness.
 
 The core rule: **research-level reproducibility (someone can re-implement from your description) is enforced; experiment-level replicability (someone can rerun your exact code) is the agent's discretion.** This separation, following [Drummond (2009)](https://cogprints.org/7691/7/icmle09.pdf) and [Goodman et al. (2016)](https://www.science.org/doi/10.1126/scitranslmed.aaf5027), keeps agents focused on doing good research rather than on producing perfect env.lock files. Reports record material conditions, not environment locks: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date only when those conditions affect interpretation. Research scripts still need evidence: stdout is not evidence, so completed runs keep a manifest with `status: completed`, logs, and at least one manifest-listed durable artifact.
@@ -43,7 +44,7 @@ Categories are not a one-way pipeline ([Kline & Rosenberg 1986](https://fenix.is
 
 Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Theoretical mode is for derivational work where axioms, definitions, and limiting-case checks carry the evidence burden; it is a plan/report mode, not a fourth R&D category.
 
-### Plan-Execute-Analyze-Compare-Report cycle
+### Plan-Execution-Result analysis-Research review-Claim cycle
 
 ```
 1. new_plan.py creates plans/{id}_{slug}.md (mode-specific template)
@@ -52,10 +53,10 @@ Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Th
 4. Write Prior-work grounding and the Divergence checkpoint.
 5. Write Plan section. git commit. (Plan is time-anchored.)
 6. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact.
-7. ANALYZE — apply the discipline in references/analysis.md; print-only results do not support observations or claims.
-8. Write Actual section + Planned-vs-Actual comparison.
-9. Dispatch exactly one research-review subagent (a fresh separate-context analysis agent, not a host-specific Task tool) to evaluate analysis sufficiency and result reliability.
-10. Record load-bearing claims using the Toulmin-derived structure.
+7. Write Actual section + Planned-vs-Actual comparison.
+8. Result analysis — dispatch a fresh separate-context result-analysis subagent using `research-result-analysis` and pass only the plan path. The subagent reconstructs evidence from referenced runs, manifests, logs, scripts, outputs, tables, and figures. The main research agent must not perform result analysis itself for load-bearing promotion.
+9. Research review — dispatch exactly one research-review subagent (a fresh separate-context analysis agent, not a host-specific Task tool) to evaluate analysis sufficiency and result reliability.
+10. Claim — record load-bearing claims using the Toulmin-derived structure.
 11. Pick one of 5 iteration branches: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE.
 12. If human-facing, draft a report.
 ```
@@ -96,12 +97,18 @@ This keeps agents from silently accepting "just improve last time's best approac
 
 ### Research review
 
-Before a result becomes a load-bearing claim, state-changing decision (`REFINE`, `ADJACENT`, `PARK`, or `CLOSE`), or report, the agent dispatches exactly one fresh research-review subagent. That reviewer must record a verdict for both:
+Before a result becomes a load-bearing claim, state-changing decision (`REFINE`, `ADJACENT`, `PARK`, or `CLOSE`), or report, the plan must first contain Result analysis from a fresh separate-context result-analysis subagent using `research-result-analysis`. Then the agent dispatches exactly one fresh research-review subagent. That reviewer must record a verdict for both:
 
 - Analysis sufficiency: whether the analysis is adequate for the conclusion, because weak analysis can directly produce a wrong close-out.
 - Result reliability: whether the result is trustworthy given the approach, research procedure, data handling, controls/comparators when applicable, robustness checks, and plan deviations.
 
 The review records `PASS`, `REWORK`, or `INVALID` for each judgment in the plan's Research review section. Only two `PASS` judgments allow promotion. `REWORK` requires the named analysis, repair, or rerun before any claim, decision, or report; `INVALID` means the affected result is not evidence until the distorted work is redone.
+
+### Result analysis subagent
+
+The result-analysis handoff uses `skills/research/references/result_analysis_subagent_prompt.md`. The prompt passes only the plan path; the subagent treats the plan as the only starting context and reconstructs necessary evidence from referenced artifacts. Parent-agent summaries, expected conclusions, and private execution notes are not inputs. Missing or ambiguous references are reported as `context_missing`.
+
+The output is a `## Result analysis` section with artifact-grounded observations, interpretations, alternatives not excluded, required additional analysis, and claim-readiness. It is input to Research review, not a claim record and not an iteration decision.
 
 ### Claim structure (Toulmin-derived, no numeric ladder)
 
@@ -147,11 +154,15 @@ research-skill/
 │   │   │   ├── claim_structure.md
 │   │   │   ├── ideation.md
 │   │   │   ├── iteration_loop.md
+│   │   │   ├── result_analysis_subagent_prompt.md
 │   │   │   ├── rd_plan.md
 │   │   │   ├── report_format.md
 │   │   │   └── literature_review.md
 │   │   ├── assets/{project,plan,report}/*.template
 │   │   └── scripts/{new_project,new_plan,new_run,check_run_artifacts,check_claims,check_report,draft_report}.py
+│   ├── research-result-analysis/
+│   │   ├── SKILL.md
+│   │   └── agents/openai.yaml
 │   └── quant-research/
 │       ├── SKILL.md
 │       ├── references/shared/
@@ -169,7 +180,7 @@ research-skill/
 /plugin install research@research-skill
 ```
 
-After installation the skills are available as `research` and `quant-research`.
+After installation the skills are available as `research`, `research-result-analysis`, and `quant-research`.
 
 ### Claude Code: local development
 
@@ -240,7 +251,7 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.4.0** — keeps prior-work grounding as a first-class contract while adding assumption audit, theoretical plan/report support, iterative ideation for executable-evaluator settings, paper-grade report sections, and statistical reporting minimums.
+**Version 2.4.0** — keeps prior-work grounding as a first-class contract while adding assumption audit, separate-context result analysis, theoretical plan/report support, iterative ideation for executable-evaluator settings, paper-grade report sections, and statistical reporting minimums.
 
 <details>
 <summary>Changelog</summary>
@@ -257,6 +268,7 @@ Extends the v2 research protocol without adding new R&D categories.
 - Expanded report format with paper-grade Theory / Formulation, Related Work, Ablation / Sensitivity, Discussion, and References sections.
 - Added Figure-as-argument guidance and a Statistical reporting minimum for numeric evidence.
 - Clarified that theoretical support is a mode/report shape under the existing `basic_research`, `applied_research`, and `experimental_development` categories.
+- Added `research-result-analysis` and a plan-path-only subagent prompt so load-bearing promotion uses independent Result analysis before Research review.
 
 ### v2.3.0 — assumption audit for challenged reference models
 

@@ -15,8 +15,9 @@ The plan is NOT auto-committed. Commit it yourself once the Question / Objective
 Idea portfolio when ideating, Prior-work grounding, Divergence checkpoint, and
 Plan sections are filled in. For ideation plans, run check_idea_portfolio.py
 before promotion. That commit is the time-anchor for the plan. After execution,
-fill the Research review section before writing Claims, a state-changing
-Decision, or a report.
+fill Actual execution and Planned vs Actual, dispatch a fresh result-analysis
+subagent with the plan path only, then fill Research review before writing
+Claims, a state-changing Decision, or a report.
 """
 import argparse
 import subprocess
@@ -120,7 +121,8 @@ def main():
     print("  2. If ideating, run scripts/check_idea_portfolio.py before promoting a candidate")
     print(f"  3. git add plans/{plan_name}.md experiments/{plan_name}/")
     print(f"  4. git commit -m 'Plan {plan_id}: {slug}'")
-    print("  5. After execution, fill Research review before Claims, state-changing Decision, or report")
+    print("  5. After execution, fill Actual and Planned vs Actual, then dispatch research-result-analysis with the plan path only")
+    print("  6. Fill Research review before Claims, state-changing Decision, or report")
     print()
     print("The commit time-anchors the plan. Execution comes after.")
 

@@ -445,6 +445,127 @@ def test_research_skill_orders_lifecycle_from_observation_to_decision():
     )
 
 
+def test_research_skill_requires_fresh_result_analysis_subagent_before_review():
+    skill = read("skills/research/SKILL.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    readme = read("README.md")
+
+    for text in [skill, rd_plan, readme]:
+        assert_ordered_fragments(
+            text,
+            "Execution",
+            "Result analysis",
+            "Research review",
+            "Claim",
+        )
+        assert_mentions(
+            text,
+            "research-result-analysis",
+            "fresh separate-context result-analysis subagent",
+            "main research agent must not perform result analysis itself",
+        )
+
+
+def test_result_analysis_subagent_prompt_uses_plan_as_only_starting_context():
+    prompt = read("skills/research/references/result_analysis_subagent_prompt.md")
+
+    assert_ordered_fragments(
+        prompt,
+        "Use the research-result-analysis skill.",
+        "Analyze this plan:",
+        "<plans/id_slug.md>",
+        "Treat the plan as the only starting context.",
+    )
+    assert_mentions(
+        prompt,
+        "Do not use parent-agent summaries",
+        "reconstruct necessary evidence yourself",
+        "referenced runs",
+        "run_manifest.json",
+        "logs/stdout.log",
+        "scripts",
+        "outputs",
+        "tables",
+        "figures",
+        "context_missing",
+        "Do not write final claims, decisions, or human-facing reports.",
+    )
+
+
+def test_result_analysis_skill_exists_and_stages_outputs_without_claim_authority():
+    skill = read("skills/research-result-analysis/SKILL.md")
+
+    assert_mentions(
+        skill,
+        "research-result-analysis",
+        "plan path",
+        "only starting context",
+        "Observation",
+        "Interpretation",
+        "claim-readiness",
+        "context_missing",
+    )
+    assert_ordered_fragments(
+        skill,
+        "Read the plan",
+        "Reconstruct evidence",
+        "Analyze",
+        "Return",
+    )
+    assert_mentions(
+        skill,
+        "Do not write final claims",
+        "Do not choose iteration decisions",
+        "Do not rely on parent-agent summaries",
+    )
+
+
+def test_result_analysis_prompt_preserves_subagent_output_before_review():
+    prompt = read("skills/research/references/result_analysis_subagent_prompt.md")
+    analysis = read("skills/research/references/analysis.md")
+
+    assert_ordered_fragments(
+        prompt,
+        "records the returned `## Result analysis` section",
+        "before dispatching the research-review subagent",
+    )
+    assert_mentions(
+        prompt,
+        "Do not analytically summarize",
+        "rewrite",
+        "collapse the subagent's findings",
+    )
+    assert_ordered_fragments(
+        analysis,
+        "An interpretation becomes a claim only when:",
+        "research-result-analysis",
+        "Exactly one fresh research-review subagent",
+    )
+
+
+def test_plan_templates_record_result_analysis_before_research_review():
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    for template in template_dir.glob("*.template"):
+        text = template.read_text(encoding="utf-8")
+        assert_ordered_fragments(
+            text,
+            "## Actual execution",
+            "## Planned vs Actual",
+            "## Result analysis",
+            "## Research review",
+            "## Claims",
+        )
+        assert_mentions(
+            text,
+            "fresh separate-context result-analysis subagent",
+            "research-result-analysis",
+            "only starting context",
+            "context_missing",
+            "claim-readiness",
+        )
+
+
 def test_confirmatory_plan_template_requires_hypothesis_rationale_chain():
     template = read("skills/research/assets/plan/rd_plan_confirmatory.md.template")
 

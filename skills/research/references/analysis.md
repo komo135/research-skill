@@ -4,6 +4,8 @@
 
 Analysis is the activity between **"the experiment ran"** and **"I have a load-bearing claim."** It is exploratory by nature, produces many intermediate artifacts, and has its own discipline distinct from planning, execution, and claim-recording.
 
+For load-bearing promotion in the `research` protocol, result analysis is performed by a fresh separate-context result-analysis subagent using the `research-result-analysis` skill. The main research agent records Actual execution and Planned vs Actual, then passes only the plan path to the analysis subagent. This reference defines the analysis discipline that the subagent applies.
+
 Two flavors:
 
 - **EDA (Exploratory Data Analysis)** — done before or during plan design, to understand what the data actually contains before committing to a plan
@@ -132,6 +134,7 @@ The transition from interpretation to claim is where the disclosure floor applie
 - The evidence is anchored to specific artifacts (file:line, run, value)
 - Alternative explanations have been actively considered (and listed if not excluded)
 - The conditions under which the claim holds are stated precisely
+- A fresh separate-context result-analysis subagent using `research-result-analysis` has returned a `## Result analysis` section from the plan path only
 - Exactly one fresh research-review subagent has recorded `PASS` for both analysis sufficiency and result reliability in `plans/<id>.md` Research review section
 
 ### Pearl's Ladder applies
