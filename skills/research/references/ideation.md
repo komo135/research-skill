@@ -78,6 +78,17 @@ References can supply observations at this stage. The agent may read or use refe
 
 References later ground candidates after raw candidates and hypothesis rationales exist. In that later role, references test whether candidates duplicate known work, inherit known assumptions, require standard baselines, need different evaluation, should be merged, should be parked, or should be killed.
 
+### Assumption audit pass
+
+Before synthesizing hypotheses, run the assumption audit (see `references/assumption_audit.md`). This pass surfaces background assumptions of the reference model being challenged — distinct from the anchor audit in `Divergence checkpoint` which audits assumptions imported from prior approaches. The two are different and both are required.
+
+The audit produces:
+- A load-bearing assumption (with downstream-check applied so the named assumption is not downstream of a deeper one). This assumption becomes a candidate for inversion in `Hypothesis synthesis pass.Source observation`.
+- An unknown-unknowns catalog (recorded but not used for retrieval; can narrow claim scope and trigger constraint-naming).
+- (Optional, manual) reference-class forecasting as an overconfidence check — not used during generation.
+
+When the inverted assumption has no current evaluator, follow the constraint-naming protocol in `references/assumption_audit.md` to record the named constraint in `plans/<id>.md` and in the resulting claim's `conditions_not_tested`.
+
 ### Hypothesis synthesis pass
 
 A candidate list is not enough. Before quality-diversity scoring or promotion, transform each candidate into a falsifiable hypothesis rationale chain:

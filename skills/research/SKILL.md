@@ -7,6 +7,12 @@ description: Use when conducting R&D work that needs claim discipline, planning 
 
 A protocol skill for agent-driven R&D. The job: keep research state honest while preserving research velocity. Use shared vocabulary so multiple sessions and tools can interoperate. Produce human-readable reports that someone outside the session can act on.
 
+## Skill role: regulator, not generator
+
+**Innovation generation is out of scope.** This skill regulates honesty of research — what is known vs. assumed, what is tested vs. extrapolated, what is claimed vs. supported. It does not generate paradigm-shift ideas. Innovation at the level of problem redefinition or framework change requires taste, access, time, and obsession that a markdown skill cannot supply. The skill keeps the agent honest about innovation when it happens; it does not produce innovation.
+
+This boundary is load-bearing. Past iterations of this skill's design tested cross-domain paper injection, multi-agent paradigm debate, and evaluator gates as candidate generation mechanisms; all were rejected after pressure testing (see `docs/superpowers/specs/2026-05-16-research-ideation-assumption-audit-design.md` for the trail). The retained ideation extension (`references/assumption_audit.md`) helps the agent name what it is assuming so that inversion candidates get a fair seat in the portfolio; it does not produce the inverted candidate.
+
 ## What this skill covers and what it does not
 
 **Covered (audited by this skill):**

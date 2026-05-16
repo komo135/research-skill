@@ -8,8 +8,8 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v2.2.0 - Aligns R&D categories with OECD Frascati Manual 2015 and adds the research lifecycle: observation discovery, hypothesis synthesis, prior-work grounding, and approach transition criteria.",
-      "version": "2.2.0"
+      "description": "v2.3.0 - Adds assumption_audit: load-bearing assumption surfacing for ideation (with downstream-check), unknown-unknowns catalog, manual reference-class forecasting, and constraint-naming protocol for un-evaluable hypotheses. Reinforces skill role boundary (regulator, not generator).",
+      "version": "2.3.0"
     }
   ]
 }
