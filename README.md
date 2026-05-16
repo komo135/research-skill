@@ -26,7 +26,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.4.0)
+## Core design (v2.5.0)
 
 ### R&D categories (Frascati 2015)
 
@@ -251,12 +251,24 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.4.0** — keeps prior-work grounding as a first-class contract while adding assumption audit, separate-context result analysis, theoretical plan/report support, iterative ideation for executable-evaluator settings, paper-grade report sections, and statistical reporting minimums.
+**Version 2.5.0** — keeps prior-work grounding as a first-class contract while adding a dedicated result-analysis skill with quality gates, assumption audit, theoretical plan/report support, iterative ideation for executable-evaluator settings, paper-grade report sections, and statistical reporting minimums.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.4.0 (current) — theoretical, iterative, report, and claim additions
+### v2.5.0 (current) — independent result analysis quality gates
+
+Splits result analysis into a dedicated skill and makes analysis quality reviewable before Research review.
+
+**Added / changed**
+
+- Added `research-result-analysis` as a separate skill for fresh separate-context analysis from the plan path only.
+- Added `skills/research/references/result_analysis_subagent_prompt.md` so the parent research skill passes only the plan path and records the returned `## Result analysis` section before Research review.
+- Added claim-readiness verdicts: `ready`, `not_ready`, and `invalid_evidence`.
+- Added an analysis quality gate: artifact-faithful, arithmetically checked, claim-fit checked, depth-calibrated, and reviewable.
+- Clarified that claim-readiness is not a release decision and must not be translated into GO/NO-GO, ship, CLOSE, NEXT_STEP, REFINE, ADJACENT, or PARK.
+
+### v2.4.0 — theoretical, iterative, report, and claim additions
 
 Extends the v2 research protocol without adding new R&D categories.
 
@@ -268,7 +280,6 @@ Extends the v2 research protocol without adding new R&D categories.
 - Expanded report format with paper-grade Theory / Formulation, Related Work, Ablation / Sensitivity, Discussion, and References sections.
 - Added Figure-as-argument guidance and a Statistical reporting minimum for numeric evidence.
 - Clarified that theoretical support is a mode/report shape under the existing `basic_research`, `applied_research`, and `experimental_development` categories.
-- Added `research-result-analysis` and a plan-path-only subagent prompt so load-bearing promotion uses independent Result analysis before Research review.
 
 ### v2.3.0 — assumption audit for challenged reference models
 

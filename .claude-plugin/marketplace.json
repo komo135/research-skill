@@ -8,8 +8,8 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v2.4.0 - Agent-driven R&D protocol with prior-work grounding, separate result analysis, assumption audit, theoretical mode, and paper-grade report/claim structure.",
-      "version": "2.4.0"
+      "description": "v2.5.0 - Agent-driven R&D protocol with prior-work grounding, independent result-analysis quality gates, assumption audit, theoretical mode, and paper-grade report/claim structure.",
+      "version": "2.5.0"
     }
   ]
 }
