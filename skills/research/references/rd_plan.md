@@ -76,6 +76,15 @@ The section is optional for ordinary plans that begin with an already chosen obj
 ### Transformation axes
 - <candidate>: <method / mechanism / data assumption / metric / evaluation protocol / system design / problem framing>
 
+### Hypothesis synthesis
+- <candidate>:
+  - Source observation: <observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension>
+  - Mechanism conjecture: <proposed mechanism that would explain the observation or make the intervention plausible>
+  - Proposed intervention: <method, architecture, data change, metric change, evaluation change, system change, or framing change>
+  - Predicted effect: <measurable effect expected if the mechanism conjecture is right>
+  - Counter-hypothesis: <plausible alternative explanation under which the predicted effect should not appear>
+  - Minimal disconfirming test: <smallest test, ablation, comparison, or observation that would reject, narrow, or park the candidate>
+
 ### Grounded pruning
 - Advance: <candidate promoted toward a plan and why>
 - Parked: <candidate blocked by missing survey, data, baseline, or condition>
@@ -187,6 +196,14 @@ Fix the boundaries, not the prediction. From Dirnagl (PLOS Biology 2020): explor
 Fix the hypothesis or objective, primary evidence measure, and decision threshold. Include controls, comparators, or ablations when the planned claim requires them.
 
 ```markdown
+### Hypothesis rationale
+- Source observation: <observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension>
+- Mechanism conjecture: <proposed mechanism that would explain the observation or make the intervention plausible>
+- Proposed intervention: <method, architecture, data change, metric change, evaluation change, system change, or framing change>
+- Predicted effect: <measurable effect expected if the mechanism conjecture is right>
+- Counter-hypothesis: <plausible alternative explanation under which the predicted effect should not appear>
+- Minimal disconfirming test: <smallest test, ablation, comparison, or observation that would reject, narrow, or park the hypothesis>
+
 ### Hypothesis
 - <one sentence statement of the prediction>
 
