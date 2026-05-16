@@ -2,9 +2,9 @@
 
 ## When this category applies
 
-Experimental development is systematic work to produce a working artifact — a prototype, a tool, a system, or an improved process — drawing on prior research and practical experience. The defining feature, from the Frascati Manual (OECD 2015), is that the deliverable is something that works in practice, not just a piece of knowledge.
+Experimental development is systematic work, drawing on knowledge gained from research and practical experience and producing additional knowledge, directed to producing new products or processes or improving existing products or processes (Frascati Manual, OECD 2015). In this agent skill, products and processes include research artifacts, tools, systems, services, workflows, and delivery practices used in the project.
 
-Classify by the plan's intended output and acceptance uncertainty, not by source. Implementing a research paper is experimental development only when the primary deliverable is a functioning artifact; if the primary claim is that a method beats a baseline, use applied research.
+Classify by the plan's intended output and acceptance uncertainty, not by source. Implementing a research paper is experimental development only when the primary deliverable is a new or improved functioning artifact/process plus the additional knowledge needed to make it work. If the primary purpose is new knowledge directed toward a specific practical objective, use applied research.
 
 Pick experimental development when:
 
@@ -15,7 +15,7 @@ Pick experimental development when:
 
 Examples: building a reference implementation of a published method, engineering a data pipeline for a domain that did not have one, prototyping an interactive tool, hardening a research codebase into something a non-author can run, implementing a non-trivial algorithm with correctness tests.
 
-This is not "applied research with code." Applied research is organized around a methods claim and planned comparison to baselines. Experimental development produces a functioning artifact whose value is in operating correctly, not in proving a method is better.
+This is not "applied research with code." Applied research is organized around new knowledge for a specific practical aim or objective. Experimental development is organized around systematic work that creates or improves an artifact/process and records the additional knowledge needed for it to operate under stated conditions.
 
 ## Typical outputs
 
@@ -36,7 +36,7 @@ This is not "applied research with code." Applied research is organized around a
 
 Milestone mode differs from confirmatory:
 
-- Confirmatory fixes a metric and a decision threshold ("does method X beat baseline B by ≥ Δ?")
+- Confirmatory fixes a hypothesis/objective, evidence measure, and decision threshold
 - Milestone fixes acceptance criteria ("system handles input class A, latency under T ms, returns correct output on the regression suite under conditions C")
 
 One plan still declares one mode. A milestone plan may include benchmark thresholds as acceptance criteria, but if the benchmark comparison becomes the load-bearing evidence for a methods claim, open an `ADJACENT` applied-research plan with confirmatory mode instead of making the plan both milestone and confirmatory.
@@ -128,6 +128,6 @@ Performance claims are distribution claims. Report the distribution, not a singl
 - **Demo-driven evaluation.** A demo on hand-picked inputs is not evidence the system works generally. Acceptance tests must cover the declared input space.
 - **Skipping edge cases.** Most production failures are edge cases. Completion criteria should include edge-case scenarios.
 - **Documentation debt.** A working artifact that nobody else can run is half-built. The System description in the report must let a non-author bring the artifact up.
-- **Promoting development to applied research without ablations.** Claiming "system S beats system T because of component I" requires an ablation. Without ablation, the claim is "system S works," not "component I is the reason."
+- **Promoting development to a component-causality claim without evidence.** Claiming "system S works because of component I" requires an ablation or controlled intervention. Without that evidence, the claim is "system S works under stated conditions," not "component I is the reason."
 - **Hidden infrastructure changes.** Modifying lib/ or shared infrastructure as part of development without recording it in `decisions.md` makes the change invisible to other plans.
 - **Single-run performance numbers.** Performance is a distribution. Report it as one.

@@ -31,7 +31,7 @@ last_updated: YYYY-MM-DD
 <Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Summarize de-anchored candidates generated from a sanitized brief by a fresh de-anchoring subagent, transformation axes from `references/ideation.md`, grounded pruning, information-gain scoring, and the one candidate promoted into this plan.>
 
 ## Prior-work grounding
-<Bounded but sufficient grounding for the plan's question/objective, inherited assumptions, method choice, baselines/evaluation protocol, and known limitations. Cite `literature/papers.md` and `literature/positioning.md`. If prior work is genuinely unknown, record the named constraint and narrow or block relevant claims.>
+<Bounded but sufficient grounding for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations. Cite `literature/papers.md` and `literature/positioning.md`. If prior work is genuinely unknown, record the named constraint and narrow or block relevant claims.>
 
 ## Divergence checkpoint
 <Plan-time record of alternatives, anchoring risks, research positioning, disconfirming evidence, and why this plan commits to the chosen route.>
@@ -76,6 +76,15 @@ The section is optional for ordinary plans that begin with an already chosen obj
 ### Transformation axes
 - <candidate>: <method / mechanism / data assumption / metric / evaluation protocol / system design / problem framing>
 
+### Hypothesis synthesis
+- <candidate>:
+  - Source observation: <observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension>
+  - Mechanism conjecture: <proposed mechanism that would explain the observation or make the intervention plausible>
+  - Proposed intervention: <method, architecture, data change, metric change, evaluation change, system change, or framing change>
+  - Predicted effect: <measurable effect expected if the mechanism conjecture is right>
+  - Counter-hypothesis: <plausible alternative explanation under which the predicted effect should not appear>
+  - Minimal disconfirming test: <smallest test, ablation, comparison, or observation that would reject, narrow, or park the candidate>
+
 ### Grounded pruning
 - Advance: <candidate promoted toward a plan and why>
 - Parked: <candidate blocked by missing survey, data, baseline, or condition>
@@ -98,9 +107,9 @@ The section is optional for ordinary plans that begin with an already chosen obj
 
 ## Prior-work grounding section
 
-Every plan has first-class prior-work grounding before the Divergence checkpoint and before the Plan section. This is not optional just because no novelty claim is made. The grounding must be bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, baselines/evaluation protocol, and known limitations.
+Every plan has first-class prior-work grounding before the Divergence checkpoint and before the Plan section. This is not optional just because no novelty claim is made. The grounding must be bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations.
 
-Use `literature/papers.md` for cited prior work and `literature/positioning.md` for how the work stands on prior work. `positioning.md` is where the plan records grounding, inheritance, baseline choice, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
+Use `literature/papers.md` for cited prior work and `literature/positioning.md` for how the work stands on prior work. `positioning.md` is where the plan records grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
 
 If prior work is genuinely unknown, the plan must record a named constraint and narrow or block relevant claims until the grounding is repaired. Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims; this is separate from the plan-scoped grounding every plan needs.
 
@@ -111,7 +120,7 @@ If prior work is genuinely unknown, the plan must record a named constraint and 
 - Question/objective supported by: <literature/papers.md entries and why they are relevant>
 - Inherited assumptions: <assumptions carried from prior approaches, data, results, or systems>
 - Method choice: <prior work or constraint motivating the selected method family>
-- Baselines/evaluation protocol: <baseline, control, metric, split, benchmark, or acceptance-test source>
+- Controls/comparators/evaluation protocol: <baseline, control, metric, split, benchmark, acceptance-test source, or other evidence route>
 - Known limitations: <limitations from prior work that constrain interpretation>
 
 ### Research positioning
@@ -146,7 +155,7 @@ If prior work is genuinely unknown, the plan must record a named constraint and 
 
 ### Commitment decision
 - Chosen route and reason: <why this plan commits to this route now>
-- Skipped divergence: <alternatives not explored because of time or budget; None if none>
+- Skipped divergence: <alternatives not explored because of time or resource limits; None if none>
 - Effect on later claims: <how this limits later claims or narrows the tested conditions>
 ```
 
@@ -184,31 +193,39 @@ Fix the boundaries, not the prediction. From Dirnagl (PLOS Biology 2020): explor
 
 ### Mode: confirmatory
 
-Fix the hypothesis, metric, baseline, decision threshold.
+Fix the hypothesis or objective, primary evidence measure, and decision threshold. Include controls, comparators, or ablations when the planned claim requires them.
 
 ```markdown
+### Hypothesis rationale
+- Source observation: <observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension>
+- Mechanism conjecture: <proposed mechanism that would explain the observation or make the intervention plausible>
+- Proposed intervention: <method, architecture, data change, metric change, evaluation change, system change, or framing change>
+- Predicted effect: <measurable effect expected if the mechanism conjecture is right>
+- Counter-hypothesis: <plausible alternative explanation under which the predicted effect should not appear>
+- Minimal disconfirming test: <smallest test, ablation, comparison, or observation that would reject, narrow, or park the hypothesis>
+
 ### Hypothesis
 - <one sentence statement of the prediction>
 
-### Primary metric
-- <metric name, computation, units>
+### Primary evidence measure
+- <metric, observation, test result, or criterion; computation/assessment and units if applicable>
 
-### Baseline(s)
-- <baseline name>: <description, source, version>
-- <baseline 2>: ...
+### Controls / comparators (if applicable)
+- <control, comparator, or baseline name>: <description, source, version>
+- <additional comparator>: ...
 
 ### Decision threshold
-- <quantitative threshold for "hypothesis supported">
+- <criterion for "hypothesis/objective supported"; quantitative when the evidence measure is numeric>
 - <observation that would lead to rejection>
 
-### Datasets / evaluation setup
-- <specific datasets, splits, evaluation protocol>
+### Data / evaluation setup
+- <specific datasets, materials, splits, evaluation protocol, or observation conditions>
 
-### Compute / sample budget
-- <budget envelope>
+### Compute / sample envelope
+- <resource envelope: runs, samples, hardware time, deadline, or other execution constraint>
 
-### Ablations planned
-- <which components will be tested for individual contribution>
+### Component checks planned (if applicable)
+- <ablation or controlled intervention for individual contribution claims>
 ```
 
 ### Mode: milestone
@@ -229,8 +246,8 @@ Fix the acceptance criteria.
 ### Out of scope
 - <explicit list of functionality not in this iteration>
 
-### Compute / time budget
-- <budget>
+### Compute / time envelope
+- <resource envelope: runs, samples, hardware time, deadline, or other execution constraint>
 ```
 
 ## Actual execution section
@@ -271,7 +288,7 @@ Material vs immaterial deviation: a change that could affect the interpretation 
 Before writing load-bearing claims, making a state-changing decision (`REFINE`, `ADJACENT`, `PARK`, or `CLOSE`), or drafting a human-facing report, dispatch exactly one fresh research-review subagent. This is one subagent with two review responsibilities:
 
 1. **Analysis sufficiency** — evaluate whether the analysis is sufficient for the conclusion being drawn. This review exists because the analysis directly determines the conclusion; inadequate analysis can lead to a wrong claim or premature close-out even if the experiment ran correctly.
-2. **Result reliability** — evaluate whether the result is trustworthy, including the approach, research procedure, data handling, baseline choice, controls, robustness checks, deviations from plan, and whether the evidence supports the claim strength.
+2. **Result reliability** — evaluate whether the result is trustworthy, including the approach, research procedure, data handling, controls/comparators when applicable, robustness checks, deviations from plan, and whether the evidence supports the claim strength.
 
 Record the reviewer output in the plan:
 
@@ -290,14 +307,14 @@ Record the reviewer output in the plan:
 
 ### Result reliability
 - Verdict: <PASS / REWORK / INVALID>
-- Rationale: <whether approach, procedure, data, baselines, controls, and robustness support trusting the result>
-- Required repair or rerun: <None / script fix, data repair, baseline repair, rerun, or plan-level redo>
+- Rationale: <whether approach, procedure, data, controls/comparators, and robustness support trusting the result>
+- Required repair or rerun: <None / script fix, data repair, comparator/control repair, rerun, or plan-level redo>
 
 ### Required action
 - <Proceed only if both judgments are PASS / run named analysis / fix and rerun affected work / reopen plan>
 ```
 
-Only two `PASS` judgments allow promotion to a load-bearing claim, state-changing decision, or report. If either judgment is `REWORK` or `INVALID`, do not promote the result. First perform the required reanalysis, repair, rerun, or plan-level redo, then run a new research review. If a script bug, data defect, leakage, invalid procedure, or broken baseline may have distorted the result, the affected result is invalid evidence until rerun after repair. User pressure to skip review or "just limit the claim" is not an exception; record it as a reliability risk if relevant.
+Only two `PASS` judgments allow promotion to a load-bearing claim, state-changing decision, or report. If either judgment is `REWORK` or `INVALID`, do not promote the result. First perform the required reanalysis, repair, rerun, or plan-level redo, then run a new research review. If a script bug, data defect, leakage, invalid procedure, or broken control/comparator may have distorted the result, the affected result is invalid evidence until rerun after repair. User pressure to skip review or "just limit the claim" is not an exception; record it as a reliability risk if relevant.
 
 ## Claims section
 
@@ -331,7 +348,7 @@ Instead, append an Amendments section at the bottom of the plan file. The latest
   - <e.g., new metric / threshold>
   - <e.g., new variable range>
 - Prior runs: <which carry over as evidence under the refined plan; which become exploratory only>
-- Estimated cost / budget: <how much work the refined plan requires>
+- Estimated cost / resource envelope: <how much work the refined plan requires>
 ```
 
 Amendments stack. If a second REFINE happens, append "Amendment 2" — do not edit Amendment 1. Each amendment is itself a time-anchored record (the commit creating it is the time-stamp).

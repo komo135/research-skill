@@ -27,7 +27,7 @@ The output of EDA is a **revised understanding of the variable space** that info
 
 ## Result analysis — claim disclosure floor
 
-After experiments run, before a load-bearing claim is recorded, the result analysis must include a baseline level of disclosure. Synthesising [Mitchell et al. 2019 Model Cards](https://arxiv.org/abs/1810.03993), [Gebru et al. 2021 Datasheets](https://cacm.acm.org/research/datasheets-for-datasets/), [Bouthillier et al. 2021 MLSys](https://proceedings.mlsys.org/paper_files/paper/2021/file/0184b0cd3cfb185989f858a1d9f5c1eb-Paper.pdf), [Ribeiro et al. 2020 CheckList](https://aclanthology.org/2020.acl-main.442.pdf), and [Guo et al. 2017 calibration](https://proceedings.mlr.press/v70/guo17a/guo17a.pdf), this is the floor:
+After experiments run, before a load-bearing claim is recorded, the result analysis must include a level of disclosure matched to the claim type. For ML/quant method claims, synthesising [Mitchell et al. 2019 Model Cards](https://arxiv.org/abs/1810.03993), [Gebru et al. 2021 Datasheets](https://cacm.acm.org/research/datasheets-for-datasets/), [Bouthillier et al. 2021 MLSys](https://proceedings.mlsys.org/paper_files/paper/2021/file/0184b0cd3cfb185989f858a1d9f5c1eb-Paper.pdf), [Ribeiro et al. 2020 CheckList](https://aclanthology.org/2020.acl-main.442.pdf), and [Guo et al. 2017 calibration](https://proceedings.mlr.press/v70/guo17a/guo17a.pdf), this is the floor:
 
 | Disclosure | Required for | Standard reference |
 |---|---|---|
@@ -36,10 +36,10 @@ After experiments run, before a load-bearing claim is recorded, the result analy
 | **Ablation of each claimed-novel component** | Any "method X works because of Y" claim | [Lipton & Steinhardt — Troubling Trends](https://queue.acm.org/detail.cfm?id=3328534) |
 | **Slice / subgroup evaluation on standard axes** | Any claim that generalizes across populations | Ribeiro et al. 2020; Mitchell 2019 Sec. *Quantitative Analyses* |
 | **Calibration check** (reliability diagram / ECE) | When confidence scores feed downstream decisions | Guo et al. 2017 |
-| **Perturbation / robustness probe** | Any claim of practical applicability | [Hendrycks robustness](https://danhendrycks.com/robustness/); [Taori et al. NeurIPS 2020](https://proceedings.neurips.cc/paper/2020/file/d8330f857a17c53d217014ee776bfd50-Paper.pdf) |
+| **Perturbation / robustness probe** | Any ML/quant claim of practical applicability | [Hendrycks robustness](https://danhendrycks.com/robustness/); [Taori et al. NeurIPS 2020](https://proceedings.neurips.cc/paper/2020/file/d8330f857a17c53d217014ee776bfd50-Paper.pdf) |
 | **Error analysis on a sample of failures** | Any claim that needs a mechanism | [Ng CS230 Section 8](https://cs230.stanford.edu/section/8/) |
 
-Below this floor, the result remains an exploratory observation, not a claim-bearing conclusion. If an applied-research plan declares `mode: confirmatory` but skips applicable items above, the missing analysis must be completed before promotion to a load-bearing claim, state-changing decision, or report.
+Below the applicable floor, the result remains an exploratory observation, not a claim-bearing conclusion. If an applied-research plan declares `mode: confirmatory` but skips applicable items for its claim type, the missing analysis must be completed before promotion to a load-bearing claim, state-changing decision, or report.
 
 For non-ML quantitative research, the same principle adapts:
 
@@ -68,7 +68,7 @@ If you find yourself running analysis #15 because you have not yet found anythin
 
 ### 3. Disclosure floor reached
 
-For load-bearing claims, the floor above (leakage probe, variance, ablation, slice, calibration, perturbation, error analysis) is the minimum. Once the floor is reached AND no required item shows a failure, the claim is defensible. Below the floor, the claim is exploratory regardless of effect size.
+For load-bearing claims, the applicable floor above is the minimum. For ML/quant method claims this may include leakage probe, variance, ablation, slice, calibration, perturbation, and error analysis. For other applied claims, use the analogous checks needed to rule out plausible alternatives and support the stated objective. Once the floor is reached AND no required item shows a failure, the claim is defensible. Below the floor, the claim is exploratory regardless of effect size.
 
 ### Composite stop rule
 
@@ -142,8 +142,8 @@ In the iteration_loop, this maps to:
 
 | Category | Analysis center of mass |
 |---|---|
-| **basic_research** | EDA + descriptive analysis IS the deliverable. Observations are the primary output. Promotion to claim requires the disclosure floor (variance, alternatives) but ablations may not apply if there is no "method" to ablate. Mechanism description leans on Pearl Rung 2 evidence (controlled variation) |
-| **applied_research** | EDA scopes the validation design. Result analysis powers ablations + slice + calibration disclosures. Without these the claim is exploratory regardless of headline number. Run learning curves + loss curves as standard practice |
+| **basic_research** | EDA + descriptive analysis often carry the main evidential weight. Observations are the primary output. Promotion to claim requires stated conditions, alternatives, and variance/replication when relevant. Mechanism description leans on Pearl Rung 2 evidence (controlled variation) |
+| **applied_research** | General applied claims: evidence tied to the practical objective, stated conditions, plausible alternatives, and limitations. ML/quant method claims: apply the relevant floor for leakage, stochastic variance, comparator fairness, ablation for component-causality claims, slice/calibration/robustness/error analysis when applicable |
 | **experimental_development** | EDA = profiling the input space. Result analysis = acceptance test deep-dive + performance distribution characterization. Variance across runs is required. Failure-mode catalog is the deliverable, not just "it works" |
 
 ## Where artifacts live
@@ -163,8 +163,8 @@ In the iteration_loop, this maps to:
 - **Endless analysis without claim.** Running analysis branch after branch without committing to a claim. Eventually some branch will look favorable; that is HARKing. Stop at the depth-to-defend-the-claim.
 - **HARKing from EDA.** Finding a pattern during EDA and writing the plan as if you had predicted it. Either commit to confirmatory mode on independent data, or label the work exploratory.
 - **Diagnostic-as-causal.** Citing a correlation plot (Rung 1) as evidence for a causal/counterfactual claim (Rung 3). Requires ablation or controlled intervention.
-- **Single-run analysis on stochastic outputs.** Drawing conclusions from one seed when results are seed-dependent. Three-seed minimum for any claim-bearing comparison.
-- **Skipping slice / subgroup analysis.** Reporting only aggregate metrics when the underlying data has distinct subgroups. Hides failure modes that matter.
+- **Single-run analysis on stochastic outputs.** Drawing conclusions from one seed when results are seed-dependent. Use multiple seeds or replications for claim-bearing stochastic comparisons.
+- **Skipping slice / subgroup analysis.** Reporting only aggregate metrics when the claim covers distinct subgroups. Hides failure modes that matter.
 - **Cherry-picking the favorable analysis.** Doing many analyses, reporting only the supportive ones. This is selective reporting — disclose ALL analyses run, even those that did not support the claim.
 
 ## Sources

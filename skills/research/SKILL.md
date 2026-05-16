@@ -1,6 +1,6 @@
 ---
 name: research
-description: Use when conducting R&D work that needs claim discipline, planning structure, or human-facing reports. Triggers when planning experiments, designing baselines, writing up findings, deciding what to do next after a result, characterizing a phenomenon, building a prototype, or maintaining research state across sessions. Applies to basic research (understanding phenomena, building baselines), applied research (achieving measurable objectives), and experimental development (building working systems). Use this skill even when the user does not say the word "research" if the task involves the activities above.
+description: Use when conducting R&D work that needs claim discipline, planning structure, or human-facing reports. Triggers when planning experiments, designing baselines, writing up findings, deciding what to do next after a result, characterizing a phenomenon, building a prototype, or maintaining research state across sessions. Applies to basic research (new knowledge about underlying foundations), applied research (new knowledge for a specific practical aim), and experimental development (new or improved products/processes plus additional knowledge). Use this skill even when the user does not say the word "research" if the task involves the activities above.
 ---
 
 # Research
@@ -34,21 +34,41 @@ Every plan declares exactly one category. The choice changes the planning style,
 
 Choose the category by the plan's primary purpose, intended use, expected output, and type of uncertainty.
 
+### R&D eligibility check
+
+Use Frascati's five criteria as an agent-side lightweight check before classifying a plan. This is a research-recording discipline for plans, evidence, and claims.
+
+- **Novel** — the plan seeks new knowledge for this project, not routine execution.
+- **Creative** — the work involves non-obvious questions, methods, designs, or interpretations.
+- **Uncertain** — the outcome, best method, or validity of the claim is not known in advance.
+- **Systematic** — the plan records objective, procedure, evidence, and decision rules.
+- **Transferable and/or reproducible** — the record is clear enough for another agent or researcher to reuse, inspect, or re-implement.
+
 - Do not classify work by its source or origin alone: extending a basic-research result does not automatically make the next plan applied research, and implementing a paper does not automatically make the plan experimental development.
 - "Innovation" is not a primary R&D category label here.
 - Do not mix the contribution at publication time with later adoption, diffusion, or social value when classifying the plan.
 
 | Category | When to use | Typical output | Default plan mode | Report shape |
 |---|---|---|---|---|
-| **basic_research** | Investigating a phenomenon, building a baseline, characterizing failure modes, refining a question | New observations, refined question, theoretical insight, reference baseline, failure-mode catalog | exploratory | Phenomenon → Mechanism → Learned → Refined question |
-| **applied_research** | Achieving a measurable objective by designing a new method or system | Method achieving target metric, ablation results, comparison vs baselines | confirmatory | Background → Method → Experiments → Ablations → Discussion |
-| **experimental_development** | Engineering a working system, prototype, or process improvement | Functioning artifact, performance metrics, operational limits | milestone | System → Performance → Limits → Next iteration |
+| **basic_research** | Acquiring new knowledge about the underlying foundations of phenomena and observable facts, without a particular application or use in view | New observations, refined question, theoretical insight, reference baseline, failure-mode catalog | exploratory | Phenomenon → Mechanism → Learned → Refined question |
+| **applied_research** | Acquiring new knowledge directed primarily toward a specific practical aim or objective | Practical objective investigated, method/procedure or way of achieving it, evaluation evidence, scoped finding | confirmatory | Background → Method/procedure → Evidence → Limits |
+| **experimental_development** | Systematic work drawing on research and practical experience to produce additional knowledge while creating or improving products/processes | Functioning artifact or process, performance characterization, operational limits, improvement record | milestone | System/process → Performance → Limits → Next iteration |
 
-Categories are not a one-way pipeline. A project or program may mix and cycle between them: basic research characterizes a phenomenon → applied research builds a method against the resulting baseline → development engineers it into a system → basic research investigates the new failure modes. The non-linear view is the modern consensus (Kline & Rosenberg 1986; Stokes 1997). Cycling is normal.
+Categories are not a one-way pipeline. A project or program may mix and cycle between them: basic research characterizes a phenomenon, applied research investigates a practical objective, development turns knowledge and experience into a working artifact or process, and any of those can expose new questions. The non-linear view is the modern consensus (Kline & Rosenberg 1986; Stokes 1997). Cycling is normal.
 
 The plan is the unit that must make a single category declaration. If secondary category work is incidental, record it as context only, not as another declared category inside the same plan. If it becomes load-bearing for a claim, decision, or report, open a separate plan. When there is an originating plan, normally record that transition as an `ADJACENT` decision.
 
 Read `references/categories/<category>.md` after picking a category.
+
+## Research lifecycle
+
+Research state moves through this lifecycle:
+
+`Observation discovery` → `Hypothesis synthesis` → `Intervention idea` → `Prior-work grounding` → `Plan` → `Execution` → `Analysis` → `Claim` → `Decision`
+
+An observation is not yet a hypothesis. Observations name phenomena, failures, tensions, baseline limits, or problem facts that may motivate a hypothesis later; they do not by themselves explain the mechanism or justify an intervention.
+
+Prior work has two roles. First, it can be material for observations: references may expose empirical patterns, baseline limits, historical failures, theoretical tensions, or problem facts that feed observation discovery. Second, it provides grounding after candidates exist: prior work checks whether candidates duplicate known work, inherit assumptions, require controls or comparators, need different evaluation, or should be advanced, merged, parked, or killed. The second role must not collapse the candidate space before raw candidates exist.
 
 ## Project Structure
 
@@ -116,7 +136,7 @@ Agents must use these labels exactly. They are how other agents, downstream scri
 **Plan modes** (in `plans/<id>.md` YAML front matter):
 
 - `exploratory` — variable space + decision rules fixed; specific predictions not required
-- `confirmatory` — hypothesis + primary metric + baseline + decision threshold fixed
+- `confirmatory` — hypothesis/objective + primary evidence measure + decision threshold fixed; comparator or ablation fields are included when the claim requires them
 - `milestone` — working/not-working criteria + performance target
 
 **Iteration decisions** (in `decisions.md` entries):
@@ -133,9 +153,9 @@ Informal substitutes ("diagnostic detour," "let me keep exploring," "exploratory
 
 ## Prior-work grounding
 
-Every plan records prior-work grounding before the Plan section. This is plan-scoped and bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, baselines/evaluation protocol, and known limitations. It is not optional just because no novelty claim is being made.
+Every plan records prior-work grounding before the Plan section. This is plan-scoped and bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, and known limitations. It is not optional just because no novelty claim is being made.
 
-Use `literature/papers.md` for annotated prior work and `literature/positioning.md` for how the work stands on prior work. `positioning.md` records grounding, inheritance, baseline choice, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
+Use `literature/papers.md` for annotated prior work and `literature/positioning.md` for how the work stands on prior work. `positioning.md` records grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
 
 If prior work is genuinely unknown, record the named constraint in the plan and narrow or block relevant claims until the grounding is repaired. For strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, do a comprehensive literature survey; that is separate from the plan-scoped grounding every plan needs.
 
@@ -155,7 +175,7 @@ The checkpoint is lightweight, but it is not optional:
 2. **Anchoring audit** — identify assumptions imported from prior approaches, prior data, or prior results. State what revalidation, control, holdout, placebo, or condition change prevents those assumptions from becoming untested premises.
 3. **Research positioning** — classify how the plan stands on prior work as one or more of: question, mechanism, data, metric, evaluation protocol, method, system, replication, or baseline strengthening. Cite the relevant `literature/positioning.md` entry and state the claim scope. If the plan claims novelty with words such as novel, new method, publishable, or to our knowledge, the positioning entry must be backed by a comprehensive literature survey before execution.
 4. **Disconfirming evidence** — state what observation would force a narrower question, a different route, a pause, or closure, and whether that would trigger `REFINE`, `ADJACENT`, `PARK`, or `CLOSE`.
-5. **Commitment decision** — explain why this plan commits to the chosen approach now instead of one of the alternatives. If time or budget prevents broader exploration, record the skipped divergence as a constraint that the later Research review must evaluate before any claim.
+5. **Commitment decision** — explain why this plan commits to the chosen approach now instead of one of the alternatives. If time or resource limits prevent broader exploration, record the skipped divergence as a constraint that the later Research review must evaluate before any claim.
 
 This checkpoint does not replace prior-work grounding. Every plan needs bounded but sufficient grounding before the Plan section; comprehensive literature survey is required only for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. The agent may still choose the user's requested approach, but only after making the alternatives, anchor risks, and research positioning explicit. Claim-scope narrowing from this checkpoint never overrides the later Research review gate: if the review finds insufficient analysis or compromised reliability, rework or invalidation is required before any claim, decision, or report.
 
@@ -164,13 +184,13 @@ This checkpoint does not replace prior-work grounding. Every plan needs bounded 
 Before a result becomes a load-bearing claim, a state-changing `REFINE` / `ADJACENT` / `PARK` / `CLOSE` decision, or a human-facing report, dispatch exactly one fresh subagent as the research reviewer. This is one review subagent with two required judgments, not two separate reviewers:
 
 1. **Analysis sufficiency** — judge whether the analysis is sufficient for the conclusion being drawn. The reason is direct: analysis is the bridge from result to conclusion, so inadequate analysis can produce a wrong close-out even when the run itself succeeded.
-2. **Result reliability** — judge whether the result is trustworthy given the approach, research procedure, data handling, baselines, controls, robustness checks, and any deviations from the plan.
+2. **Result reliability** — judge whether the result is trustworthy given the approach, research procedure, data handling, controls/comparators when applicable, robustness checks, and any deviations from the plan.
 
 For each judgment, the reviewer records one of:
 
 - `PASS` — the claim or decision can proceed as written.
 - `REWORK` — the result must not be promoted yet; run the named missing analysis, repair the analysis path, or rerun affected work before any claim, decision, or report.
-- `INVALID` — the result is not trustworthy because a bug, data defect, leakage, invalid procedure, or broken baseline may have distorted it; invalidate the affected result and redo the affected analysis, experiment, or research plan before drawing conclusions.
+- `INVALID` — the result is not trustworthy because a bug, data defect, leakage, invalid procedure, or broken control/comparator may have distorted it; invalidate the affected result and redo the affected analysis, experiment, or research plan before drawing conclusions.
 
 Only two `PASS` judgments allow promotion to Claims, state-changing Decision, or report. Record the review summary in `plans/<id>.md` before the Claims and Decision sections. User pressure to skip review or "just limit the claim" is recorded as pressure, not obeyed. A limitation is not a substitute for rework when analysis is insufficient or reliability is compromised.
 

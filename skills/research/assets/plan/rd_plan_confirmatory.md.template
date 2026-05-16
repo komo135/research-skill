@@ -26,13 +26,13 @@ last_updated: YYYY-MM-DD
 - Question/objective supported by: <literature/papers.md entries and why they are relevant>
 - Inherited assumptions: <assumptions carried from prior approaches, data, results, or systems>
 - Method choice: <prior work or constraint motivating the selected method family>
-- Baselines/evaluation protocol: <baseline, control, metric, split, benchmark, or comparison source>
+- Controls/comparators/evaluation protocol: <baseline, control, metric, split, benchmark, comparison source, or other evidence route>
 - Known limitations: <limitations from prior work that constrain interpretation>
 
 ### Research positioning
 
 - Positioning entry: <literature/positioning.md entry showing how this work stands on prior work>
-- Claim scope: <what this bounded but sufficient grounding supports, narrows, or blocks for the question/objective, inherited assumptions, method choice, baselines/evaluation protocol, and known limitations>
+- Claim scope: <what this bounded but sufficient grounding supports, narrows, or blocks for the question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations>
 - Unknown prior-work constraint: <named constraint and affected claims; None if none>
 
 ## Divergence checkpoint
@@ -63,40 +63,49 @@ last_updated: YYYY-MM-DD
 ### Commitment decision
 
 - Chosen route and reason: <why commit to this route now>
-- Skipped divergence: <what alternatives are not explored because of time/budget; None if none>
+- Skipped divergence: <what alternatives are not explored because of time/resource limits; None if none>
 - Effect on later claims: <how this limits later claims>
 
 ## Plan
+
+### Hypothesis rationale
+
+- Source observation: <observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension>
+- Mechanism conjecture: <proposed mechanism that would explain the observation or make the intervention plausible>
+- Proposed intervention: <method, architecture, data change, metric change, evaluation change, system change, or framing change>
+- Predicted effect: <measurable effect expected if the mechanism conjecture is right>
+- Counter-hypothesis: <plausible alternative explanation under which the predicted effect should not appear>
+- Minimal disconfirming test: <smallest test, ablation, comparison, or observation that would reject, narrow, or park the hypothesis>
 
 ### Hypothesis
 
 <One-sentence prediction. Specific enough to be falsified.>
 
-### Primary metric
+### Primary evidence measure
 
-- <metric name>: <how it is computed, units, where defined>
+- <metric, observation, test result, or criterion>: <how it is assessed, units if applicable, where defined>
 
-### Baseline(s)
+### Controls / comparators (if applicable)
 
-- <baseline name>: <description, source/version>
-- <baseline 2>: ...
+- <control, comparator, or baseline name>: <description, source/version>
+- <additional comparator>: ...
 
 ### Decision threshold
 
-- Supported when: <quantitative criterion>
+- Supported when: <criterion for objective support; quantitative when the evidence measure is numeric>
 - Rejected when: <observation that would lead to rejection>
 
-### Datasets / evaluation setup
+### Data / evaluation setup
 
-- <dataset>: <split definition, evaluation protocol>
+- <dataset, material, or setting>: <split definition, evaluation protocol, or observation conditions>
 
-### Compute / sample budget
+### Compute / sample envelope
 
-- <budget envelope; total runs, total GPU-hours, deadline>
+- <resource envelope: total runs, total GPU-hours, sample count, deadline, or other execution constraint>
 
-### Ablations planned
+### Component checks planned (if applicable)
 
-- <component 1>: <how it will be tested for individual contribution>
+- <component 1>: <ablation or controlled intervention for individual contribution claims>
 - <component 2>: ...
 
 ## Actual execution
@@ -107,11 +116,11 @@ last_updated: YYYY-MM-DD
 
 ### Methodology used
 
-<Substantive description — architecture, training procedure, evaluation protocol, hyperparameters, and material conditions that affect interpretation. Enough for re-implementation; env locks and commit hashes are provenance pointers, not methodology.>
+<Substantive description — method/procedure, evaluation protocol, parameters, and material conditions that affect interpretation. Enough for re-implementation; env locks and commit hashes are provenance pointers, not methodology.>
 
 ### Observations
 
-<Per-run results, ablation outcomes, anomalies.>
+<Per-run results, component-check outcomes when applicable, anomalies.>
 
 ## Planned vs Actual
 
@@ -134,8 +143,8 @@ last_updated: YYYY-MM-DD
 ### Result reliability
 
 - Verdict: <PASS / REWORK / INVALID>
-- Rationale: <whether approach, procedure, data, baselines, controls, and robustness support trusting the result>
-- Required repair or rerun: <None / script fix, data repair, baseline repair, rerun, or plan-level redo>
+- Rationale: <whether approach, procedure, data, controls/comparators, and robustness support trusting the result>
+- Required repair or rerun: <None / script fix, data repair, comparator/control repair, rerun, or plan-level redo>
 
 ### Required action
 

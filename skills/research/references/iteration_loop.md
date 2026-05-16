@@ -67,7 +67,7 @@ Pause the plan, with an explicit unblock condition.
 Use when:
 
 - The plan cannot proceed without external input (data not yet available, a dependency that must be built first)
-- Compute budget is exhausted for this cycle and the plan resumes later
+- Compute/resource envelope is exhausted for this cycle and the plan resumes later
 - A higher-priority plan needs resources
 
 Required `decisions.md` entry:
@@ -121,6 +121,20 @@ Did the result resolve the plan's question?
 
 Was the plan superseded?                                 → CLOSE: replaced
 ```
+
+## Approach transition criteria
+
+Use these criteria when deciding whether to stay with the current approach, refine it, open an adjacent plan, park it, or close it.
+
+Stay with the current approach when the result leaves the question, mechanism conjecture, method family, data assumption, and evaluation target intact. Routine planned execution is `NEXT_STEP`; a prospective narrowing inside the same approach is `REFINE`.
+
+Pick `REFINE` when the same research question and same mechanism conjecture still organize the work, but the result identifies a repairable cause, narrower scope, missing control, parameter range, or measurement adjustment. The intervention remains in the same method family and the same data assumption and evaluation target still define what would count as evidence.
+
+Pick `ADJACENT` when the next useful move requires an alternative approach: a different mechanism conjecture, a different method family, a changed data assumption, or a changed evaluation target. This includes cases where the current result creates information gain by showing that another method principle, data regime, or evaluation target must be studied as its own plan.
+
+Pick `PARK` when the current approach or alternative approach cannot be evaluated until an external unblock condition is met. Waiting for data access, a dependency, a completed adjacent baseline, or a resource window is a pause contract, not evidence for or against the approach.
+
+Pick `CLOSE` when the plan has answered its question, has been replaced, or has exhausted useful information gain after repairable cause checks have been ruled out. A negative close requires evidence that failure is not explained by a configuration error, data defect, wrong scope, missing dependency, broken comparator, or other repairable cause. If the failure is repairable, use `REFINE`; if the repair requires a different mechanism, method family, data assumption, or evaluation target, use `ADJACENT`.
 
 The branches are mutually exclusive within a single decision. A result can prompt sequential decisions in subsequent sessions, but each decisions.md entry is one branch.
 

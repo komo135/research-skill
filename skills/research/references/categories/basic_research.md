@@ -2,31 +2,31 @@
 
 ## When this category applies
 
-Basic research investigates a phenomenon, builds a baseline that future research will use, characterizes failure modes, or refines a question that was previously vague. The defining feature, from the Frascati Manual (OECD 2015), is uncertainty of outcome — you don't yet know what you'll find, and that uncertainty is the point.
+Basic research is experimental or theoretical work undertaken primarily to acquire new knowledge of the underlying foundations of phenomena and observable facts, without any particular application or use in view (Frascati Manual, OECD 2015).
 
-Classify by the plan's purpose and uncertainty, not by where the idea came from. Basic research can be use-inspired or triggered by an engineering failure when the immediate output is understanding, characterization, a baseline, or a better question.
+Classify by the plan's primary purpose, intended use, and expected output, not by where the idea came from. Basic research can be pure or oriented. Oriented basic research may have broad fields of general interest or expected future possibilities, but it still does not pursue a specific practical use in the plan.
 
 Pick basic research when:
 
 - You want to understand a mechanism, not yet to optimize it.
 - You need to characterize what a system does before anyone proposes to improve it.
-- You are building a reference baseline (a metric, a benchmark dataset, a reference implementation) that future applied work will compare against.
+- You are defining or characterizing a measurement, dataset, reference implementation, or other reusable research object as foundational knowledge.
 - You are cataloging the failure modes of an existing method.
 - Your research question is broad and you expect it to sharpen as evidence accumulates.
 
 Do not force basic research into a confirmatory mold. The output is often a refined question, a characterized phenomenon, or a useful baseline — not a yes/no answer.
 
-## Why basic research matters
+## Role in R&D classification
 
-Basic research produces the references applied research depends on. The Transformer paper (Vaswani et al. 2017) could report BLEU scores because Papineni et al. (2002) had done the basic research of inventing BLEU twenty years earlier. ResNet ([He et al. 2016](https://arxiv.org/abs/1512.03385)) became applied-research's default vision baseline because it was first characterized as basic research. Scaling laws ([Kaplan et al. 2020](https://arxiv.org/abs/2001.08361)) characterized a phenomenon that subsequent applied work in LLMs depends on.
+Basic research records work whose primary output is knowledge about foundations, mechanisms, observable facts, reference baselines, or better-posed questions. Its outputs may later support applied research or development, but later use does not retroactively define the category of the plan.
 
-If you are tempted to skip basic research because "no one is asking for it," remember that someone always asks for it eventually — applied researchers need somewhere to point when they say "we improved on X." If no one ever does the basic work, applied research has no ground to stand on.
+Examples include defining or characterizing a metric such as BLEU (Papineni et al. 2002), establishing a reference baseline such as ResNet ([He et al. 2016](https://arxiv.org/abs/1512.03385)), or characterizing scaling behavior ([Kaplan et al. 2020](https://arxiv.org/abs/2001.08361)) when the plan's immediate purpose is knowledge acquisition rather than a specific practical objective.
 
 ## Typical outputs
 
 - New observations about a system's behavior under varying conditions
 - A refined or sharpened research question
-- A reference baseline — a metric definition, a benchmark dataset, a reference implementation that others will use to compare against
+- A reference object — a metric definition, benchmark dataset, reference implementation, or characterization that others can inspect or reuse
 - A mechanism description — what causes what
 - A failure-mode catalog — where the system breaks and why
 - A theoretical insight — a bound, a conservation law, a structural property
@@ -96,7 +96,7 @@ Example of a well-scoped basic-research claim:
 
 ## Analysis weight
 
-For basic research, **EDA and descriptive analysis IS the deliverable**. The work is not a means to an end; it is the end. Apply the EDA standard pass from `analysis.md` thoroughly:
+For basic research, EDA and descriptive analysis often carry the main evidential weight because the plan's immediate purpose is knowledge acquisition, characterization, or question refinement. Apply the EDA standard pass from `analysis.md` thoroughly:
 
 - Distribution checks, missingness, outliers, covariation
 - For time-series basic research: stationarity, autocorrelation
@@ -112,6 +112,6 @@ Observations are the primary output. Promote to claim sparingly — only when th
 - **Treating basic research as failed when no decision is reached.** A characterized phenomenon and a refined question are valid completions.
 - **Implicit confirmatory framing.** Writing "we wanted to find that X" before doing the work converts exploration into confirmation. Either commit to confirmatory mode and write a hypothesis explicitly, or stay exploratory and write a variable space.
 - **Overclaiming generality.** A finding at σ ∈ [5, 10] is not a finding about all σ. `conditions_not_tested` must say so.
-- **Building a baseline without documenting it.** A baseline that nobody else can use is not a baseline. The report's Methods section is where the baseline becomes a usable reference.
+- **Building a reference object without documenting it.** A metric, dataset, reference implementation, or characterization that nobody else can inspect is not reusable research knowledge. The report's Methods section is where the object becomes a usable reference.
 - **Inventing structure for the sake of inventing it.** Not every basic-research project produces a reusable baseline. Plenty of basic research only produces a refined question. That is still a completion.
 - **Classifying by origin.** A plan is not applied research merely because it extends a prior basic-research result. If its primary purpose is still to understand, characterize, or refine the question, keep it basic research.

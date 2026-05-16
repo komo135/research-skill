@@ -302,6 +302,143 @@ def test_ideation_reference_defines_deanchoring_before_grounded_pruning():
     )
 
 
+def test_ideation_reference_requires_hypothesis_synthesis_not_just_candidate_listing():
+    ideation = read("skills/research/references/ideation.md")
+
+    assert_ordered_fragments(
+        ideation,
+        "Hypothesis synthesis pass",
+        "Source observation",
+        "Mechanism conjecture",
+        "Proposed intervention",
+        "Predicted effect",
+        "Counter-hypothesis",
+        "Minimal disconfirming test",
+    )
+    assert_mentions(
+        ideation,
+        "landmark papers",
+        "historical exemplars",
+        "Attention Is All You Need",
+        "ResNet",
+        "DQN",
+        "Generative Pre-Training",
+        "candidate list is not enough",
+    )
+
+
+def test_ideation_reference_defines_observation_discovery_before_hypothesis_synthesis():
+    ideation = read("skills/research/references/ideation.md")
+
+    assert_ordered_fragments(
+        ideation,
+        "De-anchoring pass",
+        "Raw candidate generation",
+        "Main-agent handoff",
+        "Transformation pass",
+        "Observation discovery pass",
+        "Observation is not yet a hypothesis",
+        "Empirical observation",
+        "Literature observation",
+        "Failure-mode observation",
+        "Tension observation",
+        "Baseline observation",
+        "User/problem observation",
+        "Hypothesis synthesis pass",
+    )
+    assert_mentions(
+        ideation,
+        "observed phenomenon",
+        "mechanism conjecture",
+        "References can supply observations",
+        "References later ground candidates",
+    )
+
+
+def test_research_skill_orders_lifecycle_from_observation_to_decision():
+    skill = read("skills/research/SKILL.md")
+
+    assert_ordered_fragments(
+        skill,
+        "Research lifecycle",
+        "Observation discovery",
+        "Hypothesis synthesis",
+        "Intervention idea",
+        "Prior-work grounding",
+        "Plan",
+        "Execution",
+        "Analysis",
+        "Claim",
+        "Decision",
+    )
+    assert_mentions(
+        skill,
+        "observation is not yet a hypothesis",
+        "prior work has two roles",
+        "material for observations",
+        "grounding after candidates exist",
+    )
+
+
+def test_confirmatory_plan_template_requires_hypothesis_rationale_chain():
+    template = read("skills/research/assets/plan/rd_plan_confirmatory.md.template")
+
+    assert_ordered_fragments(
+        template,
+        "### Hypothesis rationale",
+        "Source observation",
+        "Mechanism conjecture",
+        "Proposed intervention",
+        "Predicted effect",
+        "Counter-hypothesis",
+        "Minimal disconfirming test",
+        "### Hypothesis",
+    )
+
+
+def test_plan_schema_records_hypothesis_synthesis_in_idea_portfolio():
+    rd_plan = read("skills/research/references/rd_plan.md")
+
+    assert_ordered_fragments(
+        rd_plan,
+        "## Idea portfolio",
+        "### De-anchored candidates",
+        "### Transformation axes",
+        "### Hypothesis synthesis",
+        "Source observation",
+        "Mechanism conjecture",
+        "Proposed intervention",
+        "Predicted effect",
+        "Counter-hypothesis",
+        "Minimal disconfirming test",
+        "### Grounded pruning",
+    )
+
+
+def test_iteration_loop_defines_approach_transition_criteria():
+    iteration_loop = read("skills/research/references/iteration_loop.md")
+
+    assert_ordered_fragments(
+        iteration_loop,
+        "Approach transition criteria",
+        "stay with the current approach",
+        "REFINE",
+        "ADJACENT",
+        "PARK",
+        "CLOSE",
+    )
+    assert_mentions(
+        iteration_loop,
+        "mechanism conjecture",
+        "method family",
+        "data assumption",
+        "evaluation target",
+        "repairable cause",
+        "information gain",
+        "alternative approach",
+    )
+
+
 def test_research_skill_docs_are_english_only():
     checked_paths = [
         ROOT / "skills" / "research" / "SKILL.md",

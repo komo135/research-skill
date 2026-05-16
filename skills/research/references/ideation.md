@@ -61,6 +61,36 @@ For each raw idea, state what is being changed. Use one or more of these differe
 
 Drop candidates that change none of these axes as mere parameter variations of an existing approach. Model size, thresholds, seeds, or extra sweeps alone do not count as transformations.
 
+### Observation discovery pass
+
+Observation is not yet a hypothesis. Before hypothesis synthesis, collect the observations that make each transformed candidate worth considering without treating those observations as explanations, claims, or proof.
+
+Use observations from these sources, in this order:
+
+- **Empirical observation** — a measured pattern, anomaly, capability gap, or observed phenomenon in the project or comparable evidence.
+- **Literature observation** — a pattern abstracted from references, prior work, or historical exemplars without importing the named method as the default solution.
+- **Failure-mode observation** — a reproducible error, instability, negative result, broken assumption, or evaluation failure.
+- **Tension observation** — a conflict between results, theories, metrics, constraints, or expected and observed behavior.
+- **Baseline observation** — what a simple baseline, standard comparator, or current approach already explains or fails to explain.
+- **User/problem observation** — a durable fact about the user's problem, use context, constraints, or desired effect.
+
+References can supply observations at this stage. The agent may read or use references to extract abstract observations, tensions, failure modes, baseline limits, or problem facts. This does not license literature-first anchoring: keep paper titles, SOTA systems, leaderboard winners, and named methods out of sanitized briefs and raw candidate generation, and do not narrow the raw portfolio around them before raw candidates exist.
+
+References later ground candidates after raw candidates and hypothesis rationales exist. In that later role, references test whether candidates duplicate known work, inherit known assumptions, require standard baselines, need different evaluation, should be merged, should be parked, or should be killed.
+
+### Hypothesis synthesis pass
+
+A candidate list is not enough. Before quality-diversity scoring or promotion, transform each candidate into a falsifiable hypothesis rationale chain:
+
+- Source observation: <the observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension that motivates the candidate>
+- Mechanism conjecture: <the proposed mechanism that would explain the observation or make the intervention plausible>
+- Proposed intervention: <the method, architecture, data change, metric change, evaluation change, system change, or framing change to test>
+- Predicted effect: <the measurable effect expected if the mechanism conjecture is right>
+- Counter-hypothesis: <a plausible alternative explanation under which the intervention should not produce the predicted effect>
+- Minimal disconfirming test: <the smallest test, ablation, comparison, or observation that would force rejection, narrowing, or parking of the candidate>
+
+Keep paper titles, author names, and named methods out of sanitized briefs and raw candidate generation. After raw candidates exist, grounded and synthesis phases may use landmark papers and historical exemplars to abstract research patterns, not to narrow the raw portfolio in advance. Use names such as `Attention Is All You Need`, `ResNet`, `DQN`, and `Generative Pre-Training` only as compact examples of patterns: recasting an architecture around a different dependency mechanism, stabilizing deeper optimization through a structural path, converting sequential decision learning into a target/control problem, or testing whether generative pretraining supplies reusable representations.
+
 ### Quality-diversity pass
 
 Do not select only the highest-scoring candidate. Keep at least one representative candidate for each meaningful difference axis, and merge similar candidates. The goal is not single-best optimization, but a portfolio of high-quality candidates across distinct niches.
