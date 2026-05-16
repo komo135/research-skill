@@ -302,6 +302,66 @@ def test_ideation_reference_defines_deanchoring_before_grounded_pruning():
     )
 
 
+def test_ideation_reference_requires_hypothesis_synthesis_not_just_candidate_listing():
+    ideation = read("skills/research/references/ideation.md")
+
+    assert_ordered_fragments(
+        ideation,
+        "Hypothesis synthesis pass",
+        "Source observation",
+        "Mechanism conjecture",
+        "Proposed intervention",
+        "Predicted effect",
+        "Counter-hypothesis",
+        "Minimal disconfirming test",
+    )
+    assert_mentions(
+        ideation,
+        "landmark papers",
+        "historical exemplars",
+        "Attention Is All You Need",
+        "ResNet",
+        "DQN",
+        "Generative Pre-Training",
+        "candidate list is not enough",
+    )
+
+
+def test_confirmatory_plan_template_requires_hypothesis_rationale_chain():
+    template = read("skills/research/assets/plan/rd_plan_confirmatory.md.template")
+
+    assert_ordered_fragments(
+        template,
+        "### Hypothesis rationale",
+        "Source observation",
+        "Mechanism conjecture",
+        "Proposed intervention",
+        "Predicted effect",
+        "Counter-hypothesis",
+        "Minimal disconfirming test",
+        "### Hypothesis",
+    )
+
+
+def test_plan_schema_records_hypothesis_synthesis_in_idea_portfolio():
+    rd_plan = read("skills/research/references/rd_plan.md")
+
+    assert_ordered_fragments(
+        rd_plan,
+        "## Idea portfolio",
+        "### De-anchored candidates",
+        "### Transformation axes",
+        "### Hypothesis synthesis",
+        "Source observation",
+        "Mechanism conjecture",
+        "Proposed intervention",
+        "Predicted effect",
+        "Counter-hypothesis",
+        "Minimal disconfirming test",
+        "### Grounded pruning",
+    )
+
+
 def test_research_skill_docs_are_english_only():
     checked_paths = [
         ROOT / "skills" / "research" / "SKILL.md",
