@@ -20,7 +20,7 @@ from pathlib import Path
 
 
 REQUIRED_SECTIONS_BASIC = ["Summary", "Background", "Methods", "Observations", "Limitations", "Next action"]
-REQUIRED_SECTIONS_APPLIED = ["Summary", "Background", "Method", "Experiments", "Results", "Ablations", "Limitations", "Next action"]
+REQUIRED_SECTIONS_APPLIED = ["Summary", "Background", "Method / Procedure", "Evaluation", "Results", "Limitations", "Next action"]
 REQUIRED_SECTIONS_DEV = ["Summary", "Background", "System description", "Performance", "Operational limits", "Limitations", "Next action"]
 
 # Less strict: at least one of these sections must exist (we infer category from contents)

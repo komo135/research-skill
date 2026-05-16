@@ -26,13 +26,13 @@ last_updated: YYYY-MM-DD
 - Question/objective supported by: <literature/papers.md entries and why they are relevant>
 - Inherited assumptions: <assumptions carried from prior approaches, data, results, or systems>
 - Method choice: <prior work or constraint motivating the selected exploratory route>
-- Baselines/evaluation protocol: <baseline, control, metric, split, benchmark, or comparison source>
+- Controls/comparators/evaluation protocol: <baseline, control, metric, split, benchmark, comparison source, or other evidence route>
 - Known limitations: <limitations from prior work that constrain interpretation>
 
 ### Research positioning
 
 - Positioning entry: <literature/positioning.md entry showing how this work stands on prior work>
-- Claim scope: <what this bounded but sufficient grounding supports, narrows, or blocks for the question/objective, inherited assumptions, method choice, baselines/evaluation protocol, and known limitations>
+- Claim scope: <what this bounded but sufficient grounding supports, narrows, or blocks for the question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations>
 - Unknown prior-work constraint: <named constraint and affected claims; None if none>
 
 ## Divergence checkpoint
@@ -63,7 +63,7 @@ last_updated: YYYY-MM-DD
 ### Commitment decision
 
 - Chosen route and reason: <why commit to this route now>
-- Skipped divergence: <what alternatives are not explored because of time/budget; None if none>
+- Skipped divergence: <what alternatives are not explored because of time/resource limits; None if none>
 - Effect on later claims: <how this limits later claims>
 
 ## Plan
@@ -126,8 +126,8 @@ last_updated: YYYY-MM-DD
 ### Result reliability
 
 - Verdict: <PASS / REWORK / INVALID>
-- Rationale: <whether approach, procedure, data, baselines, controls, and robustness support trusting the result>
-- Required repair or rerun: <None / script fix, data repair, baseline repair, rerun, or plan-level redo>
+- Rationale: <whether approach, procedure, data, controls/comparators, and robustness support trusting the result>
+- Required repair or rerun: <None / script fix, data repair, comparator/control repair, rerun, or plan-level redo>
 
 ### Required action
 

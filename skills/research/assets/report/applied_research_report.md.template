@@ -9,46 +9,46 @@
 
 <One or two paragraphs:>
 <- what was proposed and tried>
-<- what worked, with the headline numbers>
+<- what was found, with the headline evidence>
 <- what the recommended next action is>
 
 ## Background
 
 <What prior work this builds on. A handful of directly relevant citations from literature/papers.md. Why this approach was tried.>
 
-## Method
+## Method / Procedure
 
 <Substantive description — enough for re-implementation:>
 
 ### Proposed approach
 
-<Architecture, algorithm, training procedure. Specific. "We used a Transformer" is not sufficient.>
+<Method, procedure, architecture, algorithm, or operational form. Specific enough for re-implementation. "We used a Transformer" is not sufficient for an ML method claim.>
 
 ### Key design choices
 
 <Decisions that distinguish this method, with reasoning.>
 
-### Hyperparameters
+### Parameters / settings
 
-<Concrete values. List or table.>
+<Concrete values that affect interpretation. List or table.>
 
-## Experiments
+## Evaluation
 
-### Datasets
+### Data / materials / conditions
 
-<Names, versions, splits, preprocessing.>
+<Names, versions, splits, preprocessing, materials, or conditions tested.>
 
-### Baselines
+### Controls / comparators
 
-<What the method is compared against, with sources/versions.>
+<When the claim is comparative, describe what the method/procedure is compared against, with sources/versions. Otherwise state the control or evaluation route.>
 
 ### Evaluation protocol
 
-<How the primary metric is computed. Beam size, length penalty, test set, etc.>
+<How the primary evidence measure is assessed. For ML/quant claims, include metric computation, test set, and material evaluation settings.>
 
 ### Compute setup
 
-<Hardware and training duration for context. Not env locks.>
+<Hardware, sample count, runtime, or other execution constraints when they affect interpretation. Not env locks.>
 
 ### Material conditions
 
@@ -56,21 +56,23 @@
 
 ## Results
 
-<Quantitative comparison with figures and tables. Include variance across seeds.>
+<Evidence tied to the stated practical objective. Include quantitative comparison when the claim is comparative and variance/replication when stochastic variation affects interpretation.>
 
-| Method | <metric> | <metric> | Notes |
+| Evidence item | Result / observation | Interpretation | Source |
 |---|---|---|---|
-| Baseline | x ± σ | | |
-| Proposed | y ± σ | | |
+| <procedure output, measurement, test result, or observation> | <value or finding> | <what it says about the objective> | <artifact or citation> |
 
 ![<Figure caption>](figures/<filename>.png)
 
-## Ablations
+<When the claim is comparative, add a comparison table with the relevant control/comparator and variance/replication if stochastic variation affects interpretation.>
 
-<Component-wise contribution analysis. Table or figure.>
+## Component / mechanism checks
 
-| Component removed | <metric> | Δ from full method |
-|---|---|---|
+<Required when the claim attributes an effect to a component. Use ablation or controlled-intervention evidence. If no component-causality claim is made, state that this section is not applicable.>
+
+Not applicable: <state why no component-causality claim is made, or replace this line with the evidence table below.>
+
+For component-causality claims, add a compact table or figure showing each controlled intervention, the evidence measure, and the change from the full method/procedure.
 
 ## Limitations
 

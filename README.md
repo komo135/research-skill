@@ -2,7 +2,7 @@
 
 A Claude Code and Codex plugin providing two skills for **agent-driven R&D**:
 
-- **`research`** — protocol skill for R&D work across the three Frascati categories: basic research (understanding phenomena, building baselines), applied research (achieving measurable objectives), and experimental development (building working systems). Enforces vocabulary, plan/claim structure, iteration discipline, analysis methodology, and human-readable reports.
+- **`research`** — protocol skill for R&D work across the three Frascati categories: basic research (new knowledge about underlying foundations without a particular application in view), applied research (new knowledge directed toward a specific practical aim or objective), and experimental development (new or improved products/processes plus additional knowledge). Enforces vocabulary, plan/claim structure, iteration discipline, analysis methodology, and human-readable reports.
 - **`quant-research`** — domain extension layered on `research` for time-series and statistically rigorous quantitative R&D. Adds methodology for time-series cross-validation, multiple-testing corrections, leakage detection, and statistical robustness.
 
 The core rule: **research-level reproducibility (someone can re-implement from your description) is enforced; experiment-level replicability (someone can rerun your exact code) is the agent's discretion.** This separation, following [Drummond (2009)](https://cogprints.org/7691/7/icmle09.pdf) and [Goodman et al. (2016)](https://www.science.org/doi/10.1126/scitranslmed.aaf5027), keeps agents focused on doing good research rather than on producing perfect env.lock files. Reports record material conditions, not environment locks: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date only when those conditions affect interpretation.
@@ -19,7 +19,7 @@ Examples of work that triggers the skill:
 
 - ML method research (architecture, training-procedure, evaluation studies)
 - Phenomenon investigations in computational science (chaos systems, simulation experiments)
-- Reference-baseline building (creating datasets, metrics, reference implementations for others to compare against)
+- Foundational measurement or resource characterization (datasets, metrics, reference implementations, or other reusable research objects)
 - System/prototype development with quantitative acceptance criteria
 - Quantitative-rigor extensions (time-series statistical evaluation, multiple-testing-aware claims)
 
@@ -31,11 +31,13 @@ It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock
 
 Every plan declares one of:
 
+Agent-side R&D eligibility is a lightweight research-recording check. Work should be novel, creative, uncertain, systematic, and transferable and/or reproducible enough that another agent can understand and reuse the record.
+
 | Category | When | Default plan mode | Report shape |
 |---|---|---|---|
-| `basic_research` | Phenomenon investigation, baseline building, failure-mode catalog | `exploratory` | Phenomenon → Mechanism → Refined question |
-| `applied_research` | Method achieving a target metric vs baselines | `confirmatory` | Method → Experiments → Results → Ablations |
-| `experimental_development` | Working artifact + performance | `milestone` | System → Performance → Limits |
+| `basic_research` | New knowledge about underlying foundations, without a particular application or use in view | `exploratory` | Phenomenon → Mechanism → Refined question |
+| `applied_research` | New knowledge directed toward a specific practical aim or objective | `confirmatory` | Objective → Method/procedure → Evidence → Limits |
+| `experimental_development` | Systematic work producing additional knowledge while creating or improving a product/process | `milestone` | System/process → Performance → Limits |
 
 Categories are not a one-way pipeline ([Kline & Rosenberg 1986](https://fenix.iseg.ulisboa.pt/downloadFile/1407508027548318/Kline%20and%20Rosenberg%20(1986)%20An%20overview%20of%20innovation.pdf); [Stokes 1997](https://www.brookings.edu/books/pasteurs-quadrant/)). Cycling between them is normal.
 
@@ -57,9 +59,9 @@ Categories are not a one-way pipeline ([Kline & Rosenberg 1986](https://fenix.is
 
 ### Prior-work grounding
 
-Every new plan records first-class prior-work grounding before the Plan section. The required depth is bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, baselines/evaluation protocol, and known limitations. It is not optional just because no novelty claim is made.
+Every new plan records first-class prior-work grounding before the Plan section. The required depth is bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol when applicable, and known limitations. It is not optional just because no novelty claim is made.
 
-Projects use `literature/{papers.md,positioning.md}`. `positioning.md` records how the work stands on prior work: grounding, inheritance, baseline choice, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
+Projects use `literature/{papers.md,positioning.md}`. `positioning.md` records how the work stands on prior work: grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
 
 Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. That is separate from the plan-scoped prior-work grounding every plan needs.
 
@@ -86,7 +88,7 @@ This keeps agents from silently accepting "just improve last time's best approac
 Before a result becomes a load-bearing claim, state-changing decision (`REFINE`, `ADJACENT`, `PARK`, or `CLOSE`), or report, the agent dispatches exactly one fresh research-review subagent. That reviewer must record a verdict for both:
 
 - Analysis sufficiency: whether the analysis is adequate for the conclusion, because weak analysis can directly produce a wrong close-out.
-- Result reliability: whether the result is trustworthy given the approach, research procedure, data handling, baselines, controls, robustness checks, and plan deviations.
+- Result reliability: whether the result is trustworthy given the approach, research procedure, data handling, controls/comparators when applicable, robustness checks, and plan deviations.
 
 The review records `PASS`, `REWORK`, or `INVALID` for each judgment in the plan's Research review section. Only two `PASS` judgments allow promotion. `REWORK` requires the named analysis, repair, or rerun before any claim, decision, or report; `INVALID` means the affected result is not evidence until the distorted work is redone.
 
@@ -107,7 +109,7 @@ Strength is read off the contents of `alternatives_not_excluded` and `conditions
 `references/analysis.md` provides:
 
 - The modern EDA standard pass (Tukey 1977 + Wickham): tidy → distribution → covariation → leakage probe
-- The claim disclosure floor for ML: leakage / ≥3 seeds / ablation / slice / calibration / perturbation / error analysis (per [Mitchell et al. 2019 Model Cards](https://arxiv.org/abs/1810.03993), [Bouthillier 2021](https://proceedings.mlsys.org/paper_files/paper/2021/file/0184b0cd3cfb185989f858a1d9f5c1eb-Paper.pdf), [Ribeiro 2020 CheckList](https://aclanthology.org/2020.acl-main.442.pdf))
+- The claim disclosure floor for ML/quant method claims: leakage / ≥3 seeds for stochastic comparisons / ablation for component-causality claims / slice / calibration / perturbation / error analysis when applicable (per [Mitchell et al. 2019 Model Cards](https://arxiv.org/abs/1810.03993), [Bouthillier 2021](https://proceedings.mlsys.org/paper_files/paper/2021/file/0184b0cd3cfb185989f858a1d9f5c1eb-Paper.pdf), [Ribeiro 2020 CheckList](https://aclanthology.org/2020.acl-main.442.pdf))
 - Depth stop conditions (Tukey's compromise, depth-to-defend-claim, disclosure floor)
 - Observation → Interpretation → Claim staging with [Pearl's Ladder of Causation](https://causalai.net/r60.pdf)
 - HARKing prevention via [Gelman-Loken Garden of Forking Paths](https://sites.stat.columbia.edu/gelman/research/unpublished/p_hacking.pdf)
@@ -248,7 +250,7 @@ Reframes literature review from novelty/differentiation toward prior-work ground
 **Changed**
 
 - Every new plan now requires a Prior-work grounding section before the Plan section.
-- Required grounding depth is bounded but sufficient for the plan's question/objective, inherited assumptions, method choice, baselines/evaluation protocol, and known limitations.
+- Required grounding depth is bounded but sufficient for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations.
 - Replaced the project-level differentiation file with `literature/positioning.md`, focused on how the work stands on prior work.
 - Comprehensive literature survey remains required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, separate from plan-scoped grounding.
 - Removed the no-novelty loophole for unknown prior work; unknown prior work must be recorded as a named constraint that narrows or blocks relevant claims.

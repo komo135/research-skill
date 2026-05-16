@@ -67,7 +67,7 @@ Pause the plan, with an explicit unblock condition.
 Use when:
 
 - The plan cannot proceed without external input (data not yet available, a dependency that must be built first)
-- Compute budget is exhausted for this cycle and the plan resumes later
+- Compute/resource envelope is exhausted for this cycle and the plan resumes later
 - A higher-priority plan needs resources
 
 Required `decisions.md` entry:

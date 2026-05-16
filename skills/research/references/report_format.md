@@ -11,7 +11,7 @@ A report is a snapshot. Once written, it does not get retroactively rewritten wh
 The skill does not require paper-level formality (full Related Work survey, formal citations, LaTeX). Reports are summaries a non-author can act on. Two design consequences follow:
 
 - **No environment locks or commit hashes in the prose.** Reports should describe material conditions, not environment locks: data identity, evaluation protocol, major tool/model versions, hardware class, external API/model version, or collection date only when those conditions could change the interpretation. A one-line pointer to `experiments/<plan>/runs/` is enough if a reader wants to dig into raw artifacts. This is methods reproducibility, not computational replicability.
-- **No exhaustive citation lists.** Cite the directly relevant prior work (baselines, methods built on) — typically a handful, not dozens.
+- **No exhaustive citation lists.** Cite the directly relevant prior work (methods, resources, controls, comparators, or foundations used) — typically a handful, not dozens.
 
 ## Required structure
 
@@ -38,7 +38,7 @@ If the report is for a decision, the recommended decision goes here.
 
 ### Background
 
-What was known before, what motivated the work, what existing work or baseline this builds on. Brief — assume the reader has context but no specific knowledge of this plan.
+What was known before, what motivated the work, and what existing work, resource, control, or comparator this builds on. Brief — assume the reader has context but no specific knowledge of this plan.
 
 Cite a handful of directly relevant prior works (from `literature/papers.md`). Do not pad with tangentially related citations.
 
@@ -67,7 +67,7 @@ What was observed, with at least one actual generated figure or table. **Placeho
 
 Numbers in this section should be traceable and verifiable against the cited artifacts. Mention sample size, variance, and any statistical setup that bears on interpretation.
 
-For applied research: include a comparison table with baselines and the proposed method, variance across seeds, and ablation results.
+For applied research: include evidence tied to the stated practical objective. Use a comparison table when the claim is comparative, report variance/replication when stochastic variation affects interpretation, and include ablation or controlled-intervention results when the claim attributes an effect to a component.
 
 For basic research: figures and tables showing the phenomenon across the explored variable space.
 
@@ -108,18 +108,20 @@ A basic-research report often ends with a refined question, not a yes/no answer.
 
 **Methods & Conditions** has paper-like depth:
 
-- Proposed method — architecture, algorithm, training procedure, hyperparameters
-- Baselines — what was compared against, with sources/versions
-- Evaluation protocol — datasets, splits, metric computation
+- Practical objective and success criterion
+- Proposed method or procedure — architecture, algorithm, training procedure, protocol, or operational form
+- Controls/comparators — what was compared against, with sources/versions, when the claim is comparative
+- Evaluation protocol — datasets, materials, splits, metric computation, or other evidence route
 - Compute setup — hardware class and training duration when they are material conditions; env locks belong in raw provenance if needed
 
 **Results** includes:
 
-- Quantitative comparison vs baselines with variance across seeds (table preferred)
-- Ablation table or figure showing component contributions
+- Evidence that the practical objective or success criterion was met or not met
+- Quantitative comparison with variance/replication when the claim is comparative and stochastic
+- Ablation or controlled-intervention table/figure when component contribution is claimed
 - Failure cases if relevant
 
-The Methods section must be specific enough that someone could re-implement the method. "We used attention" is not sufficient. "We replaced the standard MHA block with a sparse-attention variant: queries attend to a learned set of K=32 prototype keys, value aggregation uses softmax-normalized attention scores. We applied this in all 12 layers of a 350M-parameter base." is sufficient.
+The Methods section must be specific enough that someone could re-implement the method or procedure. "We used attention" is not sufficient for an ML method claim. "We replaced the standard MHA block with a sparse-attention variant: queries attend to a learned set of K=32 prototype keys, value aggregation uses softmax-normalized attention scores. We applied this in all 12 layers of a 350M-parameter base." is sufficient.
 
 ### Experimental development
 
@@ -163,7 +165,7 @@ Claim-to-artifact consistency is an evidence-integrity check, not a separate rep
 ## Common failures
 
 - **Placeholder figures.** Generate the figure or remove the reference. A report with `![figure](figures/TODO.png)` fails the contract.
-- **Methods section that does not enable re-implementation.** "We tuned hyperparameters" — what hyperparameters, on what objective, with what budget?
+- **Methods section that does not enable re-implementation.** "We tuned hyperparameters" — what hyperparameters, on what objective, with what resource envelope?
 - **Hidden limitations.** Caveats relegated to a final paragraph the reader skips. Move them up or call them out in Summary.
 - **Decision claimed but not labeled.** "We do not recommend X yet" without `REFINE` / `PARK` / `CLOSE`.
 - **No actual numbers in Results.** Prose without measurements is not a research result.

@@ -2,21 +2,21 @@
 
 ## Purpose
 
-Document what is already known about the research question before writing the Plan section, choosing baselines, or making claims.
+Document what is already known about the research question before writing the Plan section, choosing controls/comparators, or making claims.
 
-Every plan needs prior-work grounding. It is not optional just because no novelty claim is made. The plan-scoped job is bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, baselines/evaluation protocol, and known limitations.
+Every plan needs prior-work grounding. It is not optional just because no novelty claim is made. The plan-scoped job is bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations.
 
 The job is to:
 
 1. Know what is already established so you are not re-running prior work unknowingly
 2. Identify assumptions inherited from prior approaches, prior data, or prior results
-3. Cite the baselines and evaluation protocols the plan relies on
+3. Cite the controls, comparators, baselines when applicable, and evaluation protocols the plan relies on
 4. Record known limitations and claim scope before execution
 
 ## When to do this
 
 - At the start of any new plan, before writing the Plan section
-- Before choosing baselines, controls, evaluation protocol, or method family
+- Before choosing controls, comparators, baselines when applicable, evaluation protocol, or method family
 - Before claiming a method is novel
 - Before claiming a baseline does not exist
 - When the agent encounters an unfamiliar method during execution
@@ -60,11 +60,11 @@ Two paragraphs per entry maximum. Longer summaries belong in the agent's session
 - ...
 ```
 
-Differences or novelty can be recorded in `literature/positioning.md` when claimed, but the primary purpose is grounding, inheritance, baseline choice, known limitations, and claim scope. If the work does not differ from prior approaches in a meaningful way, this is itself an important finding. Basic-research replication is valuable, but the report should be honest about being a replication.
+Differences or novelty can be recorded in `literature/positioning.md` when claimed, but the primary purpose is grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. If the work does not differ from prior approaches in a meaningful way, this is itself an important finding. Basic-research replication is valuable, but the report should be honest about being a replication.
 
 ## Common failures
 
 - **Claiming novelty without literature search.** "To our knowledge" is not a search; it is an absence of search. If the agent has not actually searched, the claim of novelty is unsupported.
 - **Listing tangentially related papers to look thorough.** Each entry should connect to the current plan, not pad a citation count.
-- **Comparing against the wrong baselines.** If you compare to a 5-year-old baseline because the recent ones are hard to run, the comparison is biased; say so explicitly in `literature/positioning.md` and in the report.
+- **Comparing against the wrong comparator.** If you compare to a weak or outdated comparator because stronger ones are hard to run, the comparison is biased; say so explicitly in `literature/positioning.md` and in the report.
 - **Not updating papers.md mid-investigation.** When a new relevant paper appears during execution (e.g., the agent finds it while debugging), add it to `literature/papers.md` and update `literature/positioning.md` if relevant.

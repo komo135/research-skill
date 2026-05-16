@@ -2,85 +2,87 @@
 
 ## When this category applies
 
-Applied research aims at a specific practical objective by designing a method, model, or procedure. The defining feature, from the Frascati Manual (OECD 2015), is that the work is directed toward a stated objective with a measurable success criterion.
+Applied research is original investigation undertaken in order to acquire new knowledge, directed primarily towards a specific practical aim or objective (Frascati Manual, OECD 2015).
 
-Classify by the objective, intended use, output, and uncertainty type, not by source. A plan can build on basic research and still remain basic if the primary purpose is characterization; it becomes applied research when the primary purpose is achieving a stated objective through planned comparative evaluation.
+Classify by the objective, intended use, expected output, and uncertainty type, not by source. A plan can build on basic research and still remain basic if the primary purpose is characterization; it becomes applied research when the primary purpose is acquiring new knowledge for a specific practical aim or objective.
 
 Pick applied research when:
 
-- You have a target metric (BLEU, accuracy, energy efficiency, error rate, throughput).
-- You want to propose a new method that improves on existing baselines.
-- You will compare quantitatively to prior approaches.
-- You expect to run ablation studies showing the contribution of each component.
+- You have a specific practical aim or objective and need new knowledge to address it.
+- You are determining possible uses for basic-research findings.
+- You are giving operational form to an idea, method, model, or procedure.
+- You are evaluating whether a method, procedure, or way of working supports the objective under stated conditions.
 
-This is the dominant form of method research in ML, optimization, control, signal processing, and similar fields. The Transformer paper ([Vaswani et al. 2017](https://arxiv.org/abs/1706.03762)) is a canonical example: a new architecture, BLEU as the metric, comparison to ConvS2S and prior RNN-based seq2seq, ablations isolating attention's contribution.
+For ML/quant method claims, the practical objective is often operationalized with a target metric, comparator, and evaluation protocol. Baseline comparison is required when the claim is comparative. Ablation or controlled intervention is required when the claim says a component causes the improvement.
 
-Do not pick applied research if the metric is not yet defined or if you are still trying to understand the phenomenon. Those are basic research first. Applied research depends on basic research having established the metric, the baselines, and the conditions of evaluation.
+Do not pick applied research if the practical aim is not yet defined or if you are still trying to understand the phenomenon. Those are basic research first. In ML method work, applied research usually depends on a defined metric, relevant baselines, and stated conditions of evaluation.
 
 ## Typical outputs
 
-- A method (architecture, algorithm, training procedure) achieving the target metric
-- Quantitative comparison to baselines
-- Ablation results showing which components contribute
-- Failure modes of the method (under what conditions it does not improve)
-- Hyperparameter sensitivity characterization
+- A method, procedure, or way of achieving the practical objective
+- Evidence that the objective or success criterion was met or not met
+- Possible uses for prior findings or a new operational form of an idea
+- Scoped finding about the conditions where the method/procedure does or does not work
+- Failure modes, sensitivity, or limitation characterization
 
 ## Default plan mode
 
 `confirmatory`. Fix in advance:
 
-- Primary metric and how it is measured
-- Baseline(s) for comparison, with source/version
-- Decision threshold (what improvement counts as a positive result)
-- Datasets / evaluation splits
-- Compute budget
-- Ablations planned
+- Primary evidence measure and how it is assessed
+- Comparator, control, or baseline when the claim requires one
+- Decision threshold (what evidence supports or rejects the objective)
+- Data / evaluation setup
+- Compute or sample envelope
+- Ablations or controlled interventions when component-causality claims are planned
 
 Exploratory mode is acceptable for early scoping (which architectures are even feasible) but the claim-bearing phase should be confirmatory. If you do exploratory work first and then switch to confirmatory, those are two separate plans — the exploratory plan informs the confirmatory plan but does not contribute its evidence directly.
 
-`milestone` is rarely appropriate for pure applied research — milestone implies "does it work end-to-end" while applied research asks "does it beat the baseline."
+`milestone` mode is appropriate only when the plan's main question is whether a working artifact meets operational criteria. Applied research can use working artifacts, but its main purpose is acquiring new knowledge for a stated practical aim or objective. When the plan makes an improvement claim, baseline comparison is part of the evidence for that claim.
 
 ## Completion conditions
 
 Acceptable completion shapes:
 
-- Target metric improved over baseline by the pre-stated threshold, with claims scoped to the conditions tested
-- Target metric not improved — explicit negative result with diagnosis
-- Method works under specific conditions but not others — scoped claim
-- Method is dominated by a simpler baseline — also a result; report it honestly
+- Stated practical objective or success criterion is met, with claims scoped to the conditions tested
+- Stated practical objective or success criterion is not met, with an explicit negative result and diagnosis
+- Method, model, or procedure works under specific conditions but not others — scoped claim
+- Improvement over a comparator is demonstrated when an improvement claim was part of the objective
+- Proposed improvement is not demonstrated, or is dominated by a simpler comparator — also a result; report it honestly
 
 Not acceptable as completion:
 
-- "Looks like it works" without baseline comparison
-- "Probably better" without quantitative evidence
+- "Looks like it works" without an evaluable objective or success criterion
+- "Probably better" without evidence tied to the stated objective
+- Improvement claims without an appropriate comparator
 - Improvement that disappears under reasonable perturbation (different seeds, different splits, slightly different hyperparameters)
 - Improvement only on the specific evaluation the agent chose; failure on the standard evaluation glossed over
 
 ## Report shape
 
-Applied research reports follow paper-like structure, without paper formality (no LaTeX, no Related Work survey of dozens of papers, no formal abstract). Use `assets/report/applied_research_report.md.template`.
+Applied research reports describe the practical objective, the method/procedure or operational form tested, the evaluation evidence, and the scoped finding. Use `assets/report/applied_research_report.md.template`.
 
-1. **Summary** — what was tried, what worked, the headline numbers
+1. **Summary** — what was tried, what was found, the headline evidence
 2. **Background** — what prior work this builds on (cite a handful, not dozens)
-3. **Method** — substantive description of the proposed approach; enough for re-implementation
-4. **Experiments** — datasets, baselines, training/evaluation protocol, hyperparameters
-5. **Results** — quantitative comparison with figures and tables, including variance across seeds
-6. **Ablations** — which components contribute; what happens when each is removed
+3. **Method / Procedure** — substantive description of the proposed approach; enough for re-implementation
+4. **Evaluation** — data, conditions, controls/comparators when applicable, and success criteria
+5. **Results** — evidence with figures or tables; include uncertainty/variance when it affects interpretation
+6. **Component or mechanism checks** — required when the claim attributes an effect to a component
 7. **Limitations** — conditions not tested, failure modes, possible confounds
 8. **Next action** — iteration decision, or a request to the human reader
 
-Methods description must be substantive. "We used a Transformer" is not a methods description. The architecture choices (heads, layers, hidden dim, position encoding), training details (optimizer, schedule, regularization), and evaluation protocol (beam size, length penalty, test set) must be specific enough that another researcher could re-implement and roughly reproduce.
+Methods description must be substantive. "We used a Transformer" is not a methods description. For ML/quant methods, architecture choices (heads, layers, hidden dim, position encoding), training details (optimizer, schedule, regularization), and evaluation protocol (beam size, length penalty, test set) must be specific enough that another researcher could re-implement and roughly reproduce. For non-ML applied work, describe the procedure, materials, conditions, and evaluation route at the same level of re-implementable detail.
 
 ## Claims in applied research
 
-The headline claim is typically: "method M achieves metric value V on benchmark B, exceeding baseline B' by Δ under conditions C." For this claim to be load-bearing:
+Applied-research claims state how the work addressed a practical objective under specified conditions. A general form is: "method/procedure M supports objective O under conditions C, with evidence E." For this claim to be load-bearing:
 
-- `evidence` must cite the specific runs and the benchmark
-- `alternatives_not_excluded` must list confounders not yet ruled out (different hyperparameter budgets between method and baseline, different seed pools, lucky data splits, etc.)
-- `conditions_tested` must specify which datasets, which model sizes, which compute regimes
+- `evidence` must cite the specific observations, runs, measurements, or artifacts
+- `alternatives_not_excluded` must list confounders not yet ruled out
+- `conditions_tested` must specify the data, settings, materials, operating conditions, or compute regimes tested
 - `conditions_not_tested` must explicitly call out generalization gaps
 
-Ablations support claims about which components are responsible. Without ablations, "method M works because of component I" is weak — you cannot rule out that the improvement comes from one component you happened to also change.
+For ML/quant method claims, a comparative claim such as "method M exceeds baseline B by Δ" requires an appropriate comparator and fair comparison protocol. A component-causality claim such as "method M works because of component I" requires an ablation or controlled intervention; otherwise the claim should be scoped to the observed method behavior, not the cause of that behavior.
 
 Example claim record:
 
@@ -100,7 +102,7 @@ Example claim record:
 
 ## Analysis weight
 
-For applied research, the **claim disclosure floor from `analysis.md` is non-optional**. Without it, the claim is exploratory regardless of headline numbers. The floor:
+For applied research, analysis must be sufficient for the stated practical objective and claim type. General applied claims need evidence tied to the objective, stated conditions, plausible alternatives, and limitations. ML/quant method claims use the applicable disclosure floor from `analysis.md`:
 
 - Leakage probe passed
 - ≥3 seeds with reported variance (Bouthillier et al. 2021)
@@ -110,20 +112,21 @@ For applied research, the **claim disclosure floor from `analysis.md` is non-opt
 - Perturbation / robustness probe
 - Error analysis on a sample of failures
 
-Run learning curves and loss curves as standard practice — these often reveal training instabilities, overfitting, or insufficient capacity before they show up in headline metrics.
+Run learning curves and loss curves for ML training claims — these often reveal training instabilities, overfitting, or insufficient capacity before they show up in headline metrics.
 
-Standard ablation patterns: one component removed at a time, OR factorial design if interactions matter, with the full method and a simple baseline always in the comparison set. Single-seed ablations are not ablations — variance across seeds is part of the result.
+For component-causality claims, standard ablation patterns are one component removed at a time, or factorial design if interactions matter, with the full method and an appropriate comparator in the comparison set. For stochastic comparisons, single-seed ablations are not enough; variance across seeds is part of the result.
 
 Pearl Rung 2 (intervention via ablation) is the standard warrant for "component X is responsible for the improvement." Diagnostic plots alone (Rung 1) do not support causal claims about why the method works.
 
 ## Pitfalls
 
-- **No baseline.** A new method without a comparator is not applied research.
-- **Single-seed results.** Variance across seeds is part of the result. Always run multiple seeds for claim-bearing comparisons.
-- **Hyperparameter asymmetry.** If your method got more hyperparameter tuning than the baseline, the comparison is biased. Report tuning budgets explicitly.
+- **No evaluable objective.** A specific practical aim still needs an evaluation route: a criterion, measurement, test, or decision rule that can show whether the objective was met.
+- **Unsubstantiated improvement claim.** If you claim a method is better, faster, cheaper, safer, or more accurate, you need an appropriate comparator and a fair comparison protocol.
+- **Single-seed comparative claims.** For stochastic comparisons, variance across seeds is part of the result. Run multiple seeds for claim-bearing comparisons.
+- **Hyperparameter asymmetry.** If your method got more hyperparameter tuning than the comparator, the comparison is biased. Report tuning effort explicitly.
 - **In-sample tuning.** Methods tuned on the test set are not tested. Use a validation split for tuning; test only at the end.
-- **Metric shopping.** If the primary metric did not improve, do not switch to a different metric and present it as a success. If a secondary metric is more relevant, REFINE the plan before any claim is made.
-- **Compute apples-vs-oranges.** Comparing a 10× larger model to a baseline tells you about scale, not about your method. Hold compute constant or report scaling curves.
+- **Metric shopping.** If the primary success criterion was not met, do not switch to a different criterion and present it as a success. If a secondary criterion is more relevant, REFINE the plan before any claim is made.
+- **Compute apples-vs-oranges.** Comparing a 10× larger model to a smaller comparator tells you about scale, not about your method. Hold compute constant or report scaling curves.
 - **Ablation theater.** Single-component ablations on isolated runs do not isolate causal contribution if the components interact. Report joint ablations when interactions matter.
 - **Skipping the negative-result writeup.** A method that did not improve is still a result. Document it; the next agent should not re-run it.
-- **Origin-only classification.** "This extends basic research" is not enough. The applied-research label requires a planned measurable objective, intended practical use, and baseline comparison.
+- **Origin-only classification.** "This extends basic research" is not enough. The applied-research label requires new knowledge directed primarily toward a specific practical aim or objective. In ML method work, that practical aim is usually operationalized through a target metric and intended use; baseline comparison is required when the plan makes an improvement claim.
