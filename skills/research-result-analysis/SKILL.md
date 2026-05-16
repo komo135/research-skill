@@ -43,6 +43,30 @@ Minimum evidence rule: stdout is not evidence. A completed run needs `run_manife
 
 Do not mark causal, mechanism, or counterfactual claim-readiness from association-only evidence. Pearl ladder applies: diagnostic correlation is not enough for intervention or counterfactual claims.
 
+## Analysis quality gate
+
+Do not score depth by length, number of caveats, or how many extra checks are proposed. Score it by whether the analysis is sufficient for the claim strength under review and stops before over-analysis.
+
+A result analysis is acceptable only when it is:
+
+| Check | Requirement |
+|---|---|
+| artifact-faithful | Every observation traces to a plan reference or inspected artifact; missing files become `context_missing`. |
+| arithmetically checked | Deltas, thresholds, counts, seed summaries, and sample-size statements are recomputed or explicitly marked unavailable. |
+| claim-fit checked | The evidence type matches the requested claim strength, mode, and Pearl rung; association-only evidence cannot support intervention or counterfactual claims. |
+| depth-calibrated | The applicable disclosure floor is applied, required alternatives are named, and additional analysis is limited to blockers for this claim. |
+| reviewable | A later reviewer can identify each required observation, forbidden conclusion, required missing context, and verdict rationale without re-inferring the analysis. |
+
+For pressure-test and review scenarios, compare the output against an answer key with:
+
+- required observation: artifact facts that must appear for the analysis to be correct
+- forbidden conclusion: claims, GO/NO-GO decisions, causal leaps, or final reports the analyzer must not write
+- required missing context: absent artifacts, comparators, logs, scripts, or controls that must be named
+- verdict expectation: `ready`, `not_ready`, or `invalid_evidence`, with the blocking reason
+- depth boundary: checks required before the planned claim, and checks that would be over-analysis for this claim
+
+Claim-readiness is not a release decision. Never translate `ready`, `not_ready`, or `invalid_evidence` into GO/NO-GO, ship, CLOSE, NEXT_STEP, REFINE, ADJACENT, or PARK. State implications for evidence only; the parent research protocol decides actions.
+
 ## Output Shape
 
 ```markdown
@@ -83,4 +107,5 @@ Do not mark causal, mechanism, or counterfactual claim-readiness from associatio
 | Treating missing references as harmless | Record `context_missing` and narrow or block claim readiness. |
 | Writing final claims | Return claim-readiness only; the parent research protocol records claims. |
 | Choosing `NEXT_STEP`, `REFINE`, `ADJACENT`, `PARK`, or `CLOSE` | Explain implications, but leave iteration decisions to the parent research skill. |
+| Translating analysis into GO/NO-GO | Claim-readiness is not a release decision; do not choose ship, block, or rollout actions. |
 | Collapsing observation and interpretation | Write literal artifact facts first, then interpretations separately. |

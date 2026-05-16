@@ -558,6 +558,31 @@ def test_result_analysis_skill_defines_claim_readiness_verdicts():
     )
 
 
+def test_result_analysis_skill_defines_quality_and_depth_gate():
+    skill = read("skills/research-result-analysis/SKILL.md")
+
+    assert_ordered_fragments(
+        skill,
+        "Analysis quality gate",
+        "artifact-faithful",
+        "arithmetically checked",
+        "claim-fit checked",
+        "depth-calibrated",
+        "reviewable",
+    )
+    assert_mentions(
+        skill,
+        "Do not score depth by length",
+        "claim strength",
+        "forbidden conclusion",
+        "required observation",
+        "required missing context",
+        "over-analysis",
+        "GO/NO-GO",
+        "claim-readiness is not a release decision",
+    )
+
+
 def test_result_analysis_prompt_preserves_subagent_output_before_review():
     prompt = read("skills/research/references/result_analysis_subagent_prompt.md")
     analysis = read("skills/research/references/analysis.md")
