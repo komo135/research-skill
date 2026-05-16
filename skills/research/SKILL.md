@@ -60,6 +60,16 @@ The plan is the unit that must make a single category declaration. If secondary 
 
 Read `references/categories/<category>.md` after picking a category.
 
+## Research lifecycle
+
+Research state moves through this lifecycle:
+
+`Observation discovery` → `Hypothesis synthesis` → `Intervention idea` → `Prior-work grounding` → `Plan` → `Execution` → `Analysis` → `Claim` → `Decision`
+
+An observation is not yet a hypothesis. Observations name phenomena, failures, tensions, baseline limits, or problem facts that may motivate a hypothesis later; they do not by themselves explain the mechanism or justify an intervention.
+
+Prior work has two roles. First, it can be material for observations: references may expose empirical patterns, baseline limits, historical failures, theoretical tensions, or problem facts that feed observation discovery. Second, it provides grounding after candidates exist: prior work checks whether candidates duplicate known work, inherit assumptions, require controls or comparators, need different evaluation, or should be advanced, merged, parked, or killed. The second role must not collapse the candidate space before raw candidates exist.
+
 ## Project Structure
 
 ```

@@ -61,6 +61,23 @@ For each raw idea, state what is being changed. Use one or more of these differe
 
 Drop candidates that change none of these axes as mere parameter variations of an existing approach. Model size, thresholds, seeds, or extra sweeps alone do not count as transformations.
 
+### Observation discovery pass
+
+Observation is not yet a hypothesis. Before hypothesis synthesis, collect the observations that make each transformed candidate worth considering without treating those observations as explanations, claims, or proof.
+
+Use observations from these sources, in this order:
+
+- **Empirical observation** — a measured pattern, anomaly, capability gap, or observed phenomenon in the project or comparable evidence.
+- **Literature observation** — a pattern abstracted from references, prior work, or historical exemplars without importing the named method as the default solution.
+- **Failure-mode observation** — a reproducible error, instability, negative result, broken assumption, or evaluation failure.
+- **Tension observation** — a conflict between results, theories, metrics, constraints, or expected and observed behavior.
+- **Baseline observation** — what a simple baseline, standard comparator, or current approach already explains or fails to explain.
+- **User/problem observation** — a durable fact about the user's problem, use context, constraints, or desired effect.
+
+References can supply observations at this stage. The agent may read or use references to extract abstract observations, tensions, failure modes, baseline limits, or problem facts. This does not license literature-first anchoring: keep paper titles, SOTA systems, leaderboard winners, and named methods out of sanitized briefs and raw candidate generation, and do not narrow the raw portfolio around them before raw candidates exist.
+
+References later ground candidates after raw candidates and hypothesis rationales exist. In that later role, references test whether candidates duplicate known work, inherit known assumptions, require standard baselines, need different evaluation, should be merged, should be parked, or should be killed.
+
 ### Hypothesis synthesis pass
 
 A candidate list is not enough. Before quality-diversity scoring or promotion, transform each candidate into a falsifiable hypothesis rationale chain:
