@@ -333,7 +333,7 @@ When no empirical evaluator exists, `Limitations` (in the eventual report) recor
 
 ## Plan review section
 
-Before execution, dispatch a fresh separate-context plan-review subagent with the `research-plan-review` skill. Pass only the plan path as the starting context. The reviewer evaluates research design before any results exist.
+Before execution, dispatch a fresh separate-context plan-review subagent with the `research-plan-review` skill. Pass only the plan path as the starting context. The reviewer evaluates research design before any results exist and acts as a stop gate for plans built on a wrong, unsupported, or unverified premise, or on a hypothesis validation method that cannot test the hypothesis.
 
 Plan review may return an execution recommendation because it is a pre-execution design gate. That recommendation is not a claim-readiness verdict; readiness, claims, decisions, and reports remain outside plan review.
 
@@ -352,14 +352,13 @@ Record the subagent output in the plan:
 - <one short paragraph describing the planned question/objective, mechanism or principle under investigation, predicted effect or output, and evidence route>
 
 ### Research-design checks
-- Category/mode fit: <adequate / revise / block>: <reason>
-- Mechanism hypothesis or principle: <adequate / revise / block>: <reason>
-- Prediction or expected output: <adequate / revise / block>: <reason>
-- Discriminating test: <adequate / revise / block>: <reason>
+- Premise check: <adequate / revise / block>: <whether the hypothesis rests on a wrong / unsupported / unverified premise, contradicted project state, discredited proxy, or ungrounded prior-work claim>
+- Hypothesis validation method: <adequate / revise / block>: <whether the planned validation can test the hypothesis and distinguish it from plausible alternatives>
 - Controls, comparators, or limiting cases: <adequate / revise / block / not applicable>: <reason>
 - Evidence route and artifact plan: <adequate / revise / block>: <reason>
 - Prior-work survey evidence: <adequate / revise / block>: <block if missing, placeholder-only, unsupported by Survey evidence, or unsupported by a verifiable retrieval-unavailable constraint with claim-scope narrowing>
 - Scope and constraints: <adequate / revise / block>: <reason>
+- Stop decision: <continue / repair_before_execution / stop_execution>: <why the plan may run, must be repaired, or must stop>
 
 ### Category-specific concerns
 - Basic research: <phenomenon, mechanism, or principle clarity; None if not applicable>

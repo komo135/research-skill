@@ -161,14 +161,13 @@ last_updated: YYYY-MM-DD
 
 ### Research-design checks
 
-- Category/mode fit: <adequate / revise / block>: <reason>
-- Mechanism hypothesis or principle: <adequate / revise / block>: <reason>
-- Prediction or expected output: <adequate / revise / block>: <reason>
-- Discriminating test: <adequate / revise / block>: <reason>
+- Premise check: <adequate / revise / block>: <whether the hypothesis rests on a wrong / unsupported / unverified premise, contradicted project state, discredited proxy, or ungrounded prior-work claim>
+- Hypothesis validation method: <adequate / revise / block>: <whether the planned validation can test the hypothesis and distinguish it from plausible alternatives>
 - Controls, comparators, or limiting cases: <adequate / revise / block / not applicable>: <reason>
 - Evidence route and artifact plan: <adequate / revise / block>: <reason>
 - Prior-work survey evidence: <adequate / revise / block>: <block if missing, placeholder-only, unsupported by Survey evidence, or unsupported by a verifiable retrieval-unavailable constraint with claim-scope narrowing>
 - Scope and constraints: <adequate / revise / block>: <reason>
+- Stop decision: <continue / repair_before_execution / stop_execution>: <why the plan may run, must be repaired, or must stop>
 
 ### Required repairs before execution
 

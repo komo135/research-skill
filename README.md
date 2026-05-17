@@ -105,7 +105,7 @@ This keeps agents from silently accepting "just improve last time's best approac
 
 ### Plan review subagent
 
-Before execution, the plan-review handoff uses `research-plan-review` and passes only the plan path. The reviewer checks the research design before any results exist: category/mode fit, mechanism hypothesis or principle, prediction or expected output, planned discriminating test, controls/comparators or limiting cases, evidence route, artifact plan, scope, and constraints. It returns `execute_as_written`, `revise_before_execution`, or `block_execution`.
+Before execution, the plan-review handoff uses `research-plan-review` and passes only the plan path. The reviewer is a stop gate for plans that should not run: it first checks whether the hypothesis rests on a wrong, unsupported, or unverified premise, then checks whether the hypothesis validation method can actually test the hypothesis and distinguish it from plausible alternatives. Mechanically runnable, cheap, deadline-driven, or demo-visible plans still receive `block_execution` when the premise or validation route is broken. It returns `execute_as_written`, `revise_before_execution`, or `block_execution`.
 
 This verdict asymmetry is intentional. Plan review happens before execution, so it may recommend whether the design is informative enough to run. Result analysis happens after evidence exists and before claims / decisions, so it explains what happened and why but does not assess claim readiness, deployment, or iteration decisions.
 

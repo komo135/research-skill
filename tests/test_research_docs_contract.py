@@ -1162,6 +1162,57 @@ def test_plan_review_blocks_missing_literature_survey_evidence():
     )
 
 
+def test_plan_review_blocks_wrong_premises_and_invalid_validation_methods():
+    plan_review = read("skills/research-plan-review/SKILL.md")
+    readme = read("README.md")
+
+    for text in [plan_review, readme]:
+        assert_mentions(
+            text,
+            "wrong",
+            "unsupported",
+            "unverified premise",
+            "hypothesis validation method",
+            "block_execution",
+        )
+
+    assert_mentions(
+        plan_review,
+        "mechanically runnable",
+        "discredited proxy",
+        "contradicted project state",
+        "Stop decision",
+    )
+    assert_ordered_fragments(
+        plan_review,
+        "Review purpose",
+        "Premise check",
+        "Hypothesis validation method",
+        "block_execution",
+    )
+
+
+def test_plan_review_templates_center_premise_and_validation_method():
+    rd_plan = read("skills/research/references/rd_plan.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
+        assert_ordered_fragments(
+            text,
+            "### Research-design checks",
+            "Premise check",
+            "Hypothesis validation method",
+            "Prior-work survey evidence",
+            "Stop decision",
+            "### Required repairs before execution",
+        )
+        assert_mentions(
+            text,
+            "wrong / unsupported / unverified premise",
+            "distinguish it from plausible alternatives",
+        )
+
+
 def test_plan_review_templates_include_prior_work_survey_check():
     rd_plan = read("skills/research/references/rd_plan.md")
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
