@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Verify a Mechanism hypothesis record against the research ideation contract.
+"""Verify a hypothesis-generation record against the research ideation contract.
 
 Checks:
 - If a Mechanism hypothesis record section is present and applicable, it
   contains diagnosis, lens consideration, adopted lenses, mechanistic analysis,
   and the final mechanism hypothesis record.
+- If a Hypothesis generation section is non-mechanistic, it contains diagnosis
+  and a type-specific hypothesis record instead of mechanism-only fields.
 - The final record includes a hypothesis, competing hypothesis, discriminating
   prediction, minimal test, required evidence, decision, and reason.
 - Decisions are exactly commit / park / kill.
@@ -35,6 +37,16 @@ SECTION_FIELDS = {
         "Missing material",
         "Why hypothesis generation is allowed or blocked",
     ],
+    "Type-specific hypothesis record": [
+        "Hypothesis type",
+        "Situation-grounding",
+        "Hypothesis statement",
+        "Prediction / expected observation",
+        "Primary evidence route",
+        "Support threshold",
+        "Rejection / park condition",
+        "Mechanism claim included",
+    ],
     "Analysis lenses considered": [
         "Lens",
         "What it would inspect",
@@ -63,6 +75,13 @@ SECTION_FIELDS = {
         "Reason",
     ],
 }
+
+NON_MECHANISTIC_REQUIRED_SUBSECTIONS = [
+    "Research situation diagnosis",
+    "Type-specific hypothesis record",
+]
+
+PREDICTIVE_TYPES = {"predictive", "performance"}
 
 PLACEHOLDER_PATTERNS = [
     re.compile(r"<[^>]+>"),
@@ -154,6 +173,13 @@ def value_for_field(body: str, field: str) -> str | None:
     return None
 
 
+def section_value_for_field(sections: dict[str, str], section: str, field: str) -> str | None:
+    key = section_key(sections, section)
+    if key is None:
+        return None
+    return value_for_field(sections[key], field)
+
+
 def is_meaningful(value: str | None) -> bool:
     if value is None:
         return False
@@ -176,6 +202,19 @@ def check_required_subsections(sections: dict[str, str]) -> list[str]:
         body = sections[key]
         if len(body.strip()) < 20 or has_placeholder_only(body):
             issues.append(f"  Mechanism hypothesis record subsection '{key}' is empty or placeholder-only")
+    return issues
+
+
+def check_non_mechanistic_subsections(sections: dict[str, str]) -> list[str]:
+    issues: list[str] = []
+    for expected in NON_MECHANISTIC_REQUIRED_SUBSECTIONS:
+        key = section_key(sections, expected)
+        if key is None:
+            issues.append(f"  Missing required hypothesis-generation subsection: '{expected}'")
+            continue
+        body = sections[key]
+        if len(body.strip()) < 20 or has_placeholder_only(body):
+            issues.append(f"  Hypothesis-generation subsection '{key}' is empty or placeholder-only")
     return issues
 
 
@@ -202,6 +241,57 @@ def check_fields(sections: dict[str, str]) -> list[str]:
             elif not is_meaningful(value):
                 issues.append(f"  Section '{key}' field '{field}' is empty or placeholder-only")
     return issues
+
+
+def check_non_mechanistic_fields(sections: dict[str, str]) -> list[str]:
+    issues: list[str] = []
+    for section in ["Research situation diagnosis", "Type-specific hypothesis record"]:
+        key = section_key(sections, section)
+        if key is None:
+            continue
+        body = sections[key]
+        for field in SECTION_FIELDS[section]:
+            value = value_for_field(body, field)
+            if value is None:
+                issues.append(f"  Section '{key}' missing required field: '{field}'")
+            elif not is_meaningful(value):
+                issues.append(f"  Section '{key}' field '{field}' is empty or placeholder-only")
+
+    hypothesis_type = normalized_hypothesis_type(sections)
+    if any(kind in hypothesis_type for kind in PREDICTIVE_TYPES):
+        record_key = section_key(sections, "Type-specific hypothesis record")
+        if record_key is not None:
+            value = value_for_field(sections[record_key], "Fair comparator or baseline")
+            if value is None:
+                issues.append(f"  Section '{record_key}' missing required field: 'Fair comparator or baseline'")
+            elif not is_meaningful(value):
+                issues.append(f"  Section '{record_key}' field 'Fair comparator or baseline' is empty or placeholder-only")
+    return issues
+
+
+def normalized_hypothesis_type(sections: dict[str, str]) -> str:
+    for section in ["Research situation diagnosis", "Type-specific hypothesis record"]:
+        value = section_value_for_field(sections, section, "Hypothesis type")
+        if is_meaningful(value):
+            return value.strip().lower()
+    return ""
+
+
+def mechanism_claim_included(sections: dict[str, str]) -> str:
+    value = section_value_for_field(sections, "Type-specific hypothesis record", "Mechanism claim included")
+    if is_meaningful(value):
+        return value.strip().lower()
+    return ""
+
+
+def is_non_mechanistic_record(sections: dict[str, str]) -> bool:
+    hypothesis_type = normalized_hypothesis_type(sections)
+    claim = mechanism_claim_included(sections)
+    if claim.startswith("no"):
+        return True
+    if hypothesis_type and "mechanistic" not in hypothesis_type:
+        return True
+    return False
 
 
 def lens_count(value: str | None) -> int:
@@ -318,6 +408,11 @@ def check_record(text: str) -> list[str]:
     sections = extract_subsections(section)
     issues: list[str] = []
     issues.extend(check_section_starts_with_diagnosis(section))
+    if is_non_mechanistic_record(sections):
+        issues.extend(check_non_mechanistic_subsections(sections))
+        issues.extend(check_non_mechanistic_fields(sections))
+        return issues
+
     issues.extend(check_required_subsections(sections))
     issues.extend(check_fields(sections))
     issues.extend(check_lens_contract(sections))

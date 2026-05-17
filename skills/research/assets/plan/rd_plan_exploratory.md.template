@@ -33,6 +33,7 @@ last_updated: YYYY-MM-DD
 - Hypothesis statement: <one falsifiable or supportable statement>
 - Prediction / expected observation: <observable result expected if the hypothesis is useful>
 - Primary evidence route: <metric, evaluator, comparison, measurement, derivation, or observation route>
+- Fair comparator or baseline: <required for predictive / performance claims; otherwise `Not applicable` with reason>
 - Support threshold: <what evidence would support proceeding>
 - Rejection / park condition: <what evidence or missing material would reject or park the hypothesis>
 - Mechanism claim included: <yes only if the final claim asks why/how through entities, activities, process, organization, or mechanism of action; otherwise no>
@@ -195,6 +196,7 @@ flowchart LR
 
 - Premise check: <adequate / revise / block>: <whether the hypothesis rests on a wrong / unsupported / unverified premise, contradicted project state, discredited proxy, or ungrounded prior-work claim>
 - Hypothesis validation method: <adequate / revise / block>: <whether the planned validation can test the hypothesis and distinguish it from plausible alternatives>
+- Plan visual: <adequate / revise / block>: <whether architecture, data flow, evaluation flow, mechanism, system boundary, variable space, decision flow, or derivation dependency is inspectable>
 - Controls, comparators, or limiting cases: <adequate / revise / block / not applicable>: <reason>
 - Evidence route and artifact plan: <adequate / revise / block>: <reason>
 - Prior-work survey evidence: <adequate / revise / block>: <block if missing, placeholder-only, unsupported by Survey evidence, or unsupported by a verifiable retrieval-unavailable constraint with claim-scope narrowing>

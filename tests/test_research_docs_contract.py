@@ -37,6 +37,32 @@ def assert_absent(text: str, *terms: str):
     assert not present, f"unexpected terms present: {present}"
 
 
+def markdown_section(text: str, heading: str) -> str:
+    lines = text.splitlines()
+    start = None
+    for index, line in enumerate(lines):
+        if line.strip() == heading:
+            start = index + 1
+            break
+    assert start is not None, f"missing section: {heading}"
+
+    level = len(heading) - len(heading.lstrip("#"))
+    end = len(lines)
+    for index in range(start, len(lines)):
+        if re.match(rf"^#{{1,{level}}}\s+\S", lines[index]):
+            end = index
+            break
+    return "\n".join(lines[start:end])
+
+
+def first_subheading(section: str) -> str:
+    for line in section.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            return stripped
+    return ""
+
+
 def test_report_format_distinguishes_material_conditions_from_env_locks():
     report_format = read("skills/research/references/report_format.md")
 
@@ -347,6 +373,7 @@ def test_mechanistic_generation_starts_with_research_situation_diagnosis():
 
 def test_hypothesis_generation_separates_performance_from_mechanism_contract():
     reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
+    skill = read("skills/research/SKILL.md")
     plan_review = read("skills/research-plan-review/SKILL.md")
     rd_plan = read("skills/research/references/rd_plan.md")
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
@@ -360,6 +387,12 @@ def test_hypothesis_generation_separates_performance_from_mechanism_contract():
         "Do not make why-it-worked decomposition the main plan unless",
     )
     assert_mentions(
+        skill,
+        "Do not collapse all hypotheses into mechanism hypotheses",
+        "Predictive / performance hypothesis",
+        "Do not force predictive, causal, descriptive, or performance hypotheses into a Mechanism hypothesis record",
+    )
+    assert_mentions(
         plan_review,
         'if the intended claim is only "A improves metric B over baseline C," the type is predictive / performance',
         "The review must not turn a predictive / performance hypothesis into a mechanism study",
@@ -370,6 +403,11 @@ def test_hypothesis_generation_separates_performance_from_mechanism_contract():
             "Type-specific hypothesis record",
             "Mechanism claim included",
             "Omitted: hypothesis type is <type>; no Mechanism hypothesis record",
+            "Prediction / expected observation",
+            "Primary evidence route",
+            "Fair comparator or baseline",
+            "Support threshold",
+            "Rejection / park condition",
         )
 
 
@@ -493,10 +531,11 @@ def test_mechanistic_generation_defines_evaluator_grounded_refinement():
         reference,
         "Evaluator-grounded refinement",
         "failed hypothesis",
+        "hypothesis type",
         "new observation",
-        "which mechanism explanation was ruled out",
-        "which explanations remain live",
-        "revised Mechanism hypothesis record",
+        "what explanation, prediction, comparator, threshold, or mechanism was ruled out",
+        "which alternatives remain live",
+        "revised typed hypothesis-generation record",
         "Decision",
     )
     assert_mentions(
@@ -548,7 +587,7 @@ def test_research_skill_orders_lifecycle_from_observation_to_decision():
         "observation is not yet a hypothesis",
         "prior work has two roles",
         "material for observations",
-        "grounding after mechanism records exist",
+        "grounding after hypothesis-generation records exist",
     )
 
 
@@ -786,7 +825,6 @@ def test_plan_schema_and_templates_require_plan_visuals():
     skill = read("skills/research/SKILL.md")
     plan_review = read("skills/research-plan-review/SKILL.md")
     readme = read("README.md")
-    new_plan = read("skills/research/scripts/new_plan.py")
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     assert_mentions(
@@ -812,17 +850,13 @@ def test_plan_schema_and_templates_require_plan_visuals():
     assert_mentions(
         plan_review,
         "Check the Plan visual",
-        "architecture, data flow, evaluation flow, mechanism",
+        "Plan must start with `### Plan visual`",
         "No diagram:",
     )
     assert_mentions(
         readme,
         "Plan visual",
         "architecture, data/evaluation flow",
-    )
-    assert_mentions(
-        new_plan,
-        "Plan sections including Plan visual",
     )
 
     for template in template_dir.glob("*.template"):
@@ -841,6 +875,11 @@ def test_plan_schema_and_templates_require_plan_visuals():
             "PlantUML",
             "ASCII",
             "No diagram:",
+        )
+        assert first_subheading(markdown_section(text, "## Plan")) == "### Plan visual"
+        assert_mentions(
+            markdown_section(text, "## Plan review"),
+            "Plan visual",
         )
 
 
@@ -1448,6 +1487,8 @@ def test_new_plan_accepts_theoretical_mode_and_generates_theoretical_sections():
         plan = (target / "plans" / "42_closed-form-bound.md").read_text(encoding="utf-8")
 
     assert "mode: theoretical" in plan
+    assert "### Plan visual" in plan
+    assert first_subheading(markdown_section(plan, "## Plan")) == "### Plan visual"
     assert "### Derivation question" in plan
     assert "### Limiting-case checks" in plan
     assert "### Empirical sanity check" in plan
@@ -1817,6 +1858,56 @@ Grounding starts here.
 """
 
 
+def complete_predictive_hypothesis_record() -> str:
+    return """# Predictive Plan
+
+## Question / Objective
+
+Test whether method A improves metric B over baseline C.
+
+## Hypothesis generation
+
+### Research situation diagnosis
+
+- Available material: baseline score, metric definition, data split, prior failure logs, and candidate method description.
+- Missing material: internal mechanism observations.
+- Why hypothesis generation is allowed or blocked: allowed because material supports an observable prediction.
+- Hypothesis type: predictive / performance
+
+### Type-specific hypothesis record
+
+- Hypothesis type: predictive / performance
+- Situation-grounding: baseline C underperforms on split X and method A changes the input representation.
+- Hypothesis statement: method A improves metric B over baseline C on benchmark X.
+- Prediction / expected observation: method A exceeds baseline C by at least two points on metric B.
+- Primary evidence route: benchmark X evaluation with the same split and metric.
+- Fair comparator or baseline: baseline C using the same split, metric, tuning budget, and data preprocessing.
+- Support threshold: metric B improves by at least two points over baseline C.
+- Rejection / park condition: improvement is below threshold or split/evaluator is invalid.
+- Mechanism claim included: no
+
+### Analysis lenses considered
+
+Omitted: hypothesis type is predictive / performance; analysis lenses are not required because no mechanism claim is being made.
+
+### Adopted analysis lenses
+
+Omitted: hypothesis type is predictive / performance; no mechanism lenses adopted.
+
+### Mechanistic analysis
+
+Omitted: hypothesis type is predictive / performance; no mechanism explanation is being tested.
+
+### Mechanism hypothesis record
+
+Omitted: hypothesis type is predictive / performance; no Mechanism hypothesis record.
+
+## Prior-work grounding
+
+Grounding starts here.
+"""
+
+
 def run_mechanism_record_check(plan: str):
     script = ROOT / "skills" / "research" / "scripts" / "check_mechanism_hypothesis_record.py"
 
@@ -2004,6 +2095,12 @@ Grounding starts here.
 """
 
     result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_check_mechanism_hypothesis_record_accepts_non_mechanistic_typed_record():
+    result = run_mechanism_record_check(complete_predictive_hypothesis_record())
 
     assert result.returncode == 0, result.stdout + result.stderr
 

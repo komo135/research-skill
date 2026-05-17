@@ -28,7 +28,7 @@ last_updated: YYYY-MM-DD
 <One paragraph stating what this plan investigates or builds.>
 
 ## Hypothesis generation
-<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Use `references/mechanistic_hypothesis_generation.md` to diagnose the situation and choose a hypothesis type. Record a Mechanism hypothesis record only when the selected hypothesis is mechanistic. For predictive / performance, causal / intervention, descriptive, or theoretical hypotheses, record the hypothesis type, grounding, prediction or expected observation, evidence route, and threshold in the Plan section. This section does not replace Survey evidence.>
+<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Use `references/mechanistic_hypothesis_generation.md` to diagnose the situation and choose a hypothesis type. Record the type-specific hypothesis record here before Prior-work grounding. Record a Mechanism hypothesis record only when the selected hypothesis is mechanistic. For predictive / performance, causal / intervention, descriptive, or theoretical hypotheses, record the hypothesis type, grounding, prediction or expected observation, evidence route, comparator/control when applicable, and threshold here; the Plan section later turns that record into an execution design. This section does not replace Survey evidence.>
 
 ## Prior-work grounding
 <Bounded but sufficient grounding from a plan-scoped literature survey for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations. Cite `literature/papers.md` and `literature/positioning.md`. Record search date, queries/sources, selection rationale, negative findings, any retrieval-unavailable constraint, and a citation-use map that states how each cited work is used in the plan. If prior work is genuinely unknown after the survey, record the named constraint and narrow or block relevant claims.>
@@ -88,6 +88,7 @@ This section does not replace Survey evidence. A `commit` decision is not final 
 - Hypothesis statement: <one falsifiable or supportable statement>
 - Prediction / expected observation: <observable result expected if the hypothesis is useful>
 - Primary evidence route: <metric, evaluator, comparison, measurement, derivation, or observation route>
+- Fair comparator or baseline: <required for predictive / performance claims; otherwise `Not applicable` with reason>
 - Support threshold: <what evidence would support proceeding>
 - Rejection / park condition: <what evidence or missing material would reject or park the hypothesis>
 - Mechanism claim included: <yes only if the final claim asks why/how through entities, activities, process, organization, or mechanism of action; otherwise no>
@@ -415,6 +416,7 @@ Record the subagent output in the plan:
 ### Research-design checks
 - Premise check: <adequate / revise / block>: <whether the hypothesis rests on a wrong / unsupported / unverified premise, contradicted project state, discredited proxy, or ungrounded prior-work claim>
 - Hypothesis validation method: <adequate / revise / block>: <whether the planned validation can test the hypothesis and distinguish it from plausible alternatives>
+- Plan visual: <adequate / revise / block>: <whether architecture, data flow, evaluation flow, mechanism, system boundary, variable space, decision flow, or derivation dependency is inspectable>
 - Controls, comparators, or limiting cases: <adequate / revise / block / not applicable>: <reason>
 - Evidence route and artifact plan: <adequate / revise / block>: <reason>
 - Prior-work survey evidence: <adequate / revise / block>: <block if missing, placeholder-only, unsupported by Survey evidence, or unsupported by a verifiable retrieval-unavailable constraint with claim-scope narrowing>

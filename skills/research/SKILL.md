@@ -88,7 +88,7 @@ This lifecycle is for hypothesis-driven work. Keep the timing boundary explicit.
 
 An observation is not yet a hypothesis. Observations name phenomena, failures, tensions, baseline limits, or problem facts that may motivate a hypothesis later; they do not by themselves explain the mechanism or justify an intervention.
 
-Prior work has two roles. First, it can be material for observations: references may expose empirical patterns, baseline limits, historical failures, theoretical tensions, or problem facts that feed research situation diagnosis. Second, it provides grounding after mechanism records exist: prior work checks whether the mechanism duplicates known work, inherits assumptions, requires controls or comparators, needs different evaluation, or should be committed, parked, or killed. The second role must not replace diagnosis or discriminating-test design.
+Prior work has two roles. First, it can be material for observations: references may expose empirical patterns, baseline limits, historical failures, theoretical tensions, or problem facts that feed research situation diagnosis. Second, it provides grounding after hypothesis-generation records exist: prior work checks whether the selected hypothesis duplicates known work, inherits assumptions, requires controls or comparators, needs different evaluation, or should be committed, parked, or killed. For mechanistic records, this includes whether the mechanism duplicates known work. The second role must not replace diagnosis or discriminating-test design.
 
 When this skill says "subagent" or "fresh separate-context agent", it means an agent-protocol role, not a dependency on any host's specific Task tool. Plan review and Result analysis remain the two mandatory lifecycle gates around execution.
 
@@ -186,7 +186,7 @@ The plan must include a citation-use map. For each cited work, state how it is u
 
 If prior work is genuinely unknown after the plan-scoped literature survey, record the named constraint in the plan and narrow or block relevant claims until the grounding is repaired. For strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, do a comprehensive literature survey; that is separate from the plan-scoped grounding every plan needs.
 
-## Hypothesis generation and mechanism records
+## Hypothesis generation and typed records
 
 When the user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," read `references/mechanistic_hypothesis_generation.md` before Prior-work grounding. Despite its historical filename, this reference must first decide what kind of hypothesis is being generated. The first output is a hypothesis-generation record, not a Plan and not a claim.
 

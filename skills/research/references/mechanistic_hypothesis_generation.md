@@ -42,8 +42,8 @@ Choose the type before choosing the record shape.
 Use this order. Do not choose by vibe, method name, or how interesting the explanation sounds.
 
 1. If the user or intended claim asks for proof, derivation, theorem, bound, or formal relationship, choose `theoretical`.
-2. If the user or intended claim asks "why", "how", "mechanism", "inside the model", "component contribution", "circuit", "process", "mechanism of action", or equivalent, choose `mechanistic`.
-3. If the user or intended claim says changing A causes, prevents, increases, decreases, or otherwise intervenes on B, choose `causal / intervention`.
+2. If the user or intended claim asks "why", "how", "mechanism", "inside the model", "why/how of component contribution", "circuit", "process", "mechanism of action", or equivalent, choose `mechanistic`.
+3. If the user or intended claim says changing A causes, prevents, increases, decreases, contributes to, or otherwise intervenes on B without claiming why/how the internal mechanism works, choose `causal / intervention`.
 4. If the user or intended claim asks what properties, limits, regimes, slices, failure modes, or empirical patterns exist, choose `descriptive / characterization`.
 5. If the user or intended claim asks whether a method, setting, model, or system will beat a baseline/SOTA, improve a metric, match a threshold, or produce an observable effect, choose `predictive / performance`.
 
@@ -235,7 +235,7 @@ Do not finalize commit before Survey evidence exists. A retrieval note made whil
 
 ### Candidate-list pressure
 
-If asked for 5, 10, 10 ideas, or many ideas, do not answer with a list. Under time pressure, return to diagnosis and produce at most mechanism records that satisfy the full output shape.
+If asked for 5, 10, 10 ideas, or many ideas, do not answer with a list. Under time pressure, return to diagnosis, choose the hypothesis type, and produce at most typed hypothesis-generation records that satisfy the selected output shape. Use a Mechanism hypothesis record only when the selected type is mechanistic.
 
 ### Method-name pressure
 
@@ -257,15 +257,16 @@ In all pressure cases, return to diagnosis before committing.
 
 ## Evaluator-grounded refinement
 
-When a failed hypothesis has a minimal-test result, treat that failure as a new observation. Do not return to a new list of ideas.
+When a failed hypothesis has a test, evaluator, derivation, or observation result, treat that failure as a new observation. Do not return to a new list of ideas.
 
 Record:
 
 - failed hypothesis:
+- hypothesis type:
 - new observation:
-- which mechanism explanation was ruled out:
-- which explanations remain live:
-- revised Mechanism hypothesis record:
+- what explanation, prediction, comparator, threshold, or mechanism was ruled out:
+- which alternatives remain live:
+- revised typed hypothesis-generation record:
 - Decision: commit / park / kill
 
 If executable feedback exists, it must leave durable artifacts. Print-only output is not evidence: completed evaluator runs need `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and at least one durable artifact under `outputs/`, `tables/`, `figures/`, or `intermediate/`. stdout is not evidence.

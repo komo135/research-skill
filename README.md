@@ -89,7 +89,7 @@ Information gaps normally force `park`, not a more confident idea. Method names,
 
 v2.3.0 adds `references/assumption_audit.md` between observation discovery and hypothesis synthesis. It surfaces background assumptions of the reference model being challenged, separate from the Divergence checkpoint's anchoring audit on imported prior work. The audit records load-bearing assumptions, downstream checks, blind-spot catalog entries tied to candidate mechanisms and claim scope, reference-class forecasts, and named constraints for hypotheses that cannot currently be evaluated.
 
-Evaluator-grounded refinement now lives in `references/mechanistic_hypothesis_generation.md`. After a failed minimal test or evaluator result, the result becomes a new observation: record which mechanism explanation was ruled out, which explanations remain live, and update the Mechanism hypothesis record instead of returning to a new idea list.
+Evaluator-grounded refinement now lives in `references/mechanistic_hypothesis_generation.md`. After a failed test, evaluator, derivation, or observation result, the result becomes a new observation: record which explanation, prediction, comparator, threshold, or mechanism was ruled out, which alternatives remain live, and update the typed hypothesis-generation record instead of returning to a new idea list. Update a Mechanism hypothesis record only when the selected hypothesis type is mechanistic.
 
 Executable feedback must persist to run artifacts. A command that only prints a fitness number is not valid evaluator feedback until the run directory contains `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and a durable artifact such as `outputs/fitness.json`, `tables/fitness.csv`, or an `intermediate/` diagnostic.
 
@@ -372,7 +372,7 @@ Clarifies R&D category definitions and makes hypothesis generation explicit.
 - R&D category definitions now follow OECD Frascati Manual 2015 wording while remaining scoped to agent research work, not corporate activity.
 - Added a research lifecycle from `Observation discovery` through `Decision`.
 - Added `Observation discovery pass` before hypothesis synthesis, with observation sources including empirical, literature, failure-mode, tension, baseline, and user/problem observations.
-- Split prior work into two roles: references can supply observations, then later ground mechanism records after hypothesis rationales exist.
+- Split prior work into two roles: references can supply observations, then later ground hypothesis-generation records after hypothesis rationales exist.
 - Added a hypothesis synthesis chain: source observation, mechanism conjecture, proposed intervention, predicted effect, counter-hypothesis, and minimal disconfirming test.
 - Added approach transition criteria for staying with the current approach, `REFINE`, `ADJACENT`, `PARK`, and `CLOSE`.
 
