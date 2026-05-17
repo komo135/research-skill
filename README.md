@@ -27,7 +27,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.6.0)
+## Core design (v2.6.1)
 
 ### R&D categories (Frascati 2015)
 
@@ -51,11 +51,11 @@ Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Th
 1. new_plan.py creates plans/{id}_{slug}.md (mode-specific template)
 2. Write Question / Objective. If ideating, write the Research ideation Idea portfolio before prior-work grounding.
 3. For ideation work, run assumption audit before hypothesis synthesis; use iterative ideation only when its executable-evaluator preconditions hold.
-4. Write Prior-work grounding and the Divergence checkpoint.
+4. Run a plan-scoped literature survey, then write Prior-work grounding and the Divergence checkpoint before the Plan section.
 5. Write Plan section.
 6. Plan review — dispatch a fresh separate-context plan-review subagent using `research-plan-review` and pass only the plan path. Repair blockers before execution.
 7. git commit. (Plan plus Plan review are time-anchored.)
-8. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact.
+8. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact. Record a mid-execution literature update if an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears.
 9. Write Actual section + Planned-vs-Actual comparison.
 10. Result analysis — dispatch a fresh separate-context result-analysis subagent using `research-result-analysis` and pass only the plan path. The subagent reconstructs evidence and decomposes why the result happened.
 11. Claim — record only the load-bearing claims supported by the evidence and alternatives using the Toulmin-derived structure.
@@ -67,7 +67,11 @@ Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Th
 
 Every new plan records first-class prior-work grounding before the Plan section. The required depth is bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol when applicable, and known limitations. It is not optional just because no novelty claim is made.
 
+Prior-work grounding starts with a plan-scoped literature survey before the Plan section. The plan records survey evidence: search date, queries or source names, selection rationale, negative findings, and any retrieval-unavailable constraint. Retrieval-unavailable is not a survey bypass; it needs attempted source/tool, failure evidence, and claim-scope narrowing. Unknown prior work is a post-survey constraint, not a reason to skip search.
+
 Projects use `literature/{papers.md,positioning.md}`. `positioning.md` records how the work stands on prior work: grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
+
+Plans also record a citation-use map: each cited work must name how it is used in the plan, such as question framing, mechanism prior, baseline, comparator, metric, evaluation protocol, theoretical foundation, limitation, contradictory evidence, or claim-scope boundary. The literature files keep the project-level role union; the plan's citation-use map is the plan-specific source of truth.
 
 Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. That is separate from the plan-scoped prior-work grounding every plan needs.
 
@@ -251,12 +255,25 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.6.0** — adds independent plan review before execution and refocuses result analysis on why the result happened, while keeping prior-work grounding, assumption audit, theoretical mode, paper-grade reports, and statistical reporting minimums.
+**Version 2.6.1** — requires plan-scoped literature survey evidence, citation-use mapping, verifiable retrieval-unavailable constraints, and mid-execution literature updates, while keeping independent plan review, explanation-centered result analysis, assumption audit, theoretical mode, paper-grade reports, and statistical reporting minimums.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.6.0 (current) — plan review and explanation-centered result analysis
+### v2.6.1 (current) — plan-scoped literature survey evidence
+
+Makes prior-work grounding first-class in every research plan before execution.
+
+**Added / changed**
+
+- Required Survey evidence before the Plan section: search date, queries/sources, selection rationale, negative findings, and retrieval-unavailable constraints.
+- Added a Citation-use map so each cited work states its concrete role in the plan, instead of appearing only in a bibliography.
+- Defined `literature/papers.md` and `literature/positioning.md` `Used in plan as` fields as a project-level role union; the plan's Citation-use map is the plan-specific source of truth.
+- Made retrieval-unavailable constraints verifiable: attempted source/tool, failure evidence, and claim-scope narrowing are required.
+- Added Mid-execution literature updates for unfamiliar methods, unexpected results, new comparators, contradictions, or missing-baseline signals.
+- Made missing or merely formal Survey evidence / Citation-use mapping a Plan review blocker.
+
+### v2.6.0 — plan review and explanation-centered result analysis
 
 Splits pre-execution design review and post-execution result analysis into the two mandatory fresh separate-context gates around execution. Ideation can also use a fresh hypothesis-generation handoff, but that output is seed material until main-agent intake, pruning, and plan promotion adjudicate it.
 

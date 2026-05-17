@@ -31,7 +31,7 @@ last_updated: YYYY-MM-DD
 <Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Record the substrate-driven ideation contract from `references/ideation.md`: idea substrate, de-anchored seed generation, hypothesis-generation handoff or a Not-used reason, main-agent intake, generation operators, assumption audit, anti-vacuity gate, evaluator feedback, grounded pruning, information-gain scoring, and the one candidate promoted into this plan. Raw seeds are not accepted ideas.>
 
 ## Prior-work grounding
-<Bounded but sufficient grounding for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations. Cite `literature/papers.md` and `literature/positioning.md`. If prior work is genuinely unknown, record the named constraint and narrow or block relevant claims.>
+<Bounded but sufficient grounding from a plan-scoped literature survey for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations. Cite `literature/papers.md` and `literature/positioning.md`. Record search date, queries/sources, selection rationale, negative findings, any retrieval-unavailable constraint, and a citation-use map that states how each cited work is used in the plan. If prior work is genuinely unknown after the survey, record the named constraint and narrow or block relevant claims.>
 
 ## Divergence checkpoint
 <Plan-time record of alternatives, anchoring risks, research positioning, disconfirming evidence, and why this plan commits to the chosen route.>
@@ -43,7 +43,7 @@ last_updated: YYYY-MM-DD
 <Returned section from a fresh separate-context plan-review subagent using `research-plan-review`. The plan path is the only starting context. Required before execution.>
 
 ## Actual execution
-<What was done. Updated as runs accumulate.>
+<What was done. Updated as runs accumulate. Record any mid-execution literature update when an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears.>
 
 ## Planned vs Actual
 <Differences between plan and execution, with reasoning. Empty if no deviation.>
@@ -67,7 +67,7 @@ last_updated: YYYY-MM-DD
 
 This section appears after `## Question / Objective` and before `## Prior-work grounding` when the user asks for research ideas, research directions, hypothesis candidates, or "what should we try next." It records the output of `references/ideation.md`, including the idea substrate, anchor-stripped seed brief, excluded-anchor ledger, hypothesis-generation handoff or a Not-used reason, main-agent intake, raw seed generation, generation operators, anti-vacuity gate, evaluator feedback, and promotion decision.
 
-The section is optional for ordinary plans that begin with an already chosen objective. It is required for ideation tasks because prior-work-first planning can anchor the agent to the literature's safest extensions before raw seeds and substrate/operator candidates exist.
+The section is optional for ordinary plans that begin with an already chosen objective. It is required for ideation tasks because prior-work-first planning can anchor the agent to the literature's safest extensions before raw seeds and substrate/operator candidates exist. This section order is not permission to finalize promotion before Survey evidence; write the survey-backed grounding before finalizing `Grounded pruning` or `Promotion decision`.
 
 ```markdown
 ## Idea portfolio
@@ -145,7 +145,7 @@ The section is optional for ordinary plans that begin with an already chosen obj
 - Effect on promotion: <PARK / ADJACENT evaluator-construction plan / theoretical-only scope / advance with narrowed claim>
 
 ### Grounded pruning
-- Advance: <candidate promoted toward a plan and why>
+- Advance: <candidate promoted toward a plan and why; not final until Survey evidence exists>
 - Parked: <candidate blocked by missing survey, data, baseline, or condition>
 - Killed: <candidate that is duplicate, untestable, too costly, not falsifiable, or only a parameter sweep>
 - Merged: <candidates collapsed into another candidate>
@@ -160,7 +160,7 @@ The section is optional for ordinary plans that begin with an already chosen obj
 - Required repair before promotion: <None, or candidate regeneration / merge / kill / park action>
 
 ### Promotion decision
-- Promoted idea: <the single candidate that becomes this plan>
+- Promoted idea: <the single candidate that becomes this plan; section order is not permission to finalize promotion before Survey evidence>
 - Non-promoted ideas: <parked / killed / merged reasons; these are not claims>
 ```
 
@@ -168,12 +168,34 @@ The section is optional for ordinary plans that begin with an already chosen obj
 
 Every plan has first-class prior-work grounding before the Divergence checkpoint and before the Plan section. This is not optional just because no novelty claim is made. The grounding must be bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations.
 
+Before writing the Plan section, perform a plan-scoped literature survey and record Survey evidence in this section. The survey does not need to be comprehensive unless the plan makes strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, but it must leave enough evidence for a reviewer to see what was searched, what was selected, what was not found, and whether retrieval was unavailable.
+
 Use `literature/papers.md` for cited prior work and `literature/positioning.md` for how the work stands on prior work. `positioning.md` is where the plan records grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
 
-If prior work is genuinely unknown, the plan must record a named constraint and narrow or block relevant claims until the grounding is repaired. Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims; this is separate from the plan-scoped grounding every plan needs.
+The Citation-use map is the plan-level bridge between the bibliography and the plan body. It must state how each cited work is used; a citation that has no role in the question, mechanism, baseline, comparator, metric, dataset, evaluation protocol, theoretical foundation, limitation, contradictory evidence, or claim-scope boundary should not be cited.
+
+`Used in plan as` in `literature/papers.md` and `literature/positioning.md` is a project-level role union. The plan-specific source of truth is the plan's Citation-use map, because the same paper can be a baseline in one plan and a mechanism prior, metric, or claim-scope boundary in another.
+
+Retrieval-unavailable is not a survey bypass. The plan may record retrieval as unavailable only with a verifiable signal: attempted source/tool, query or source ID when available, failure evidence such as tool error, access denial, connectivity output, or blocked database access, and explicit claim-scope narrowing. If prior work is genuinely unknown after the plan-scoped literature survey, the plan must record a named constraint and narrow or block relevant claims until the grounding is repaired. Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims; this is separate from the plan-scoped grounding every plan needs.
 
 ```markdown
 ## Prior-work grounding
+
+### Survey evidence
+- Search date: <YYYY-MM-DD, or retrieval-unavailable constraint>
+- Queries/sources: <queries, databases, search engines, seed papers, or retrieval-unavailable constraint>
+- Selection rationale: <why included papers matter and what near misses were excluded>
+- Negative findings: <missing baselines, failed comparator searches, contradictions not found, or None>
+- Retrieval-unavailable constraint: <tool/access/connectivity failure and affected grounding or claims; None if survey ran>
+- Retrieval-unavailable evidence: <attempted source/tool, query/source id when available, and failure evidence such as tool error, access denial, connectivity output, or blocked database access; None if survey ran>
+- Claim-scope narrowing: <claims narrowed or blocked because retrieval was unavailable; None if survey ran>
+
+### Citation-use map
+- <literature/papers.md entry>:
+  - Used for: <question framing / mechanism prior / baseline / comparator / metric / data / evaluation protocol / theoretical foundation / limitation / contradictory evidence / claim-scope boundary>
+  - Plan dependency: <Question / Objective / Hypothesis rationale / Controls / Data setup / Decision threshold / Limitations / Claim scope>
+  - How it is used: <specific sentence explaining what the plan borrows, tests, contrasts, or bounds>
+  - Claim-scope effect: <supports / narrows / blocks which claims>
 
 ### Grounding scope
 - Question/objective supported by: <literature/papers.md entries and why they are relevant>
@@ -385,6 +407,7 @@ Record the subagent output in the plan:
 - Discriminating test: <adequate / revise / block>: <reason>
 - Controls, comparators, or limiting cases: <adequate / revise / block / not applicable>: <reason>
 - Evidence route and artifact plan: <adequate / revise / block>: <reason>
+- Prior-work survey evidence: <adequate / revise / block>: <block if missing, placeholder-only, unsupported by Survey evidence, or unsupported by a verifiable retrieval-unavailable constraint with claim-scope narrowing>
 - Scope and constraints: <adequate / revise / block>: <reason>
 
 ### Category-specific concerns
@@ -411,6 +434,14 @@ Research scripts must leave evidence, not just console text. A print-only execut
 ### Runs
 - <run_id>: <one-line summary, link to runs/<run_id>/>
 - <run_id>: ...
+
+### Mid-execution literature updates
+- <YYYY-MM-DD or None>:
+  - Survey trigger: <unfamiliar method / unexpected result / new comparator / contradiction with prior work / missing-baseline signal / other>
+  - Sources checked: <queries, papers, databases, or retrieval-unavailable constraint with attempted source/tool and failure evidence>
+  - Literature files updated: <literature/papers.md and literature/positioning.md entries, or None with reason>
+  - Effect on plan: <none / update limitations / change comparator / change metric / change evaluation protocol / amend plan / open ADJACENT plan>
+  - Plan review: <not needed with reason / rerun Plan review before continuing claim-bearing execution>
 
 ### Methodology used
 <Substantive description of what was done. Methods reproducibility — enough for someone else to re-implement based on this text. Include material conditions that affect interpretation: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, collection date, and stochastic variability. These are material conditions, not env locks or commit hashes — run artifacts may carry audit pointers when useful.>

@@ -8,8 +8,8 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v2.6.0 - Agent-driven R&D protocol with prior-work grounding, independent plan review, explanation-centered result analysis, assumption audit, theoretical mode, and paper-grade report/claim structure.",
-      "version": "2.6.0"
+      "description": "v2.6.1 - Agent-driven R&D protocol with prior-work grounding, plan-scoped literature survey evidence, citation-use mapping, plan review, result analysis, and paper-grade reports.",
+      "version": "2.6.1"
     }
   ]
 }

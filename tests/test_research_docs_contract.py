@@ -370,6 +370,47 @@ def test_ideation_reference_defines_hypothesis_generation_handoff_and_main_intak
     )
 
 
+def test_ideation_retrieval_skip_does_not_waive_plan_scoped_survey():
+    ideation = read("skills/research/references/ideation.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    assert_mentions(
+        ideation,
+        "does not satisfy or waive the plan-scoped literature survey",
+        "Survey evidence",
+    )
+
+    for template in template_dir.glob("*.template"):
+        text = template.read_text(encoding="utf-8")
+        assert_mentions(
+            text,
+            "does not replace Survey evidence",
+        )
+
+
+def test_ideation_promotion_waits_for_survey_evidence_despite_template_order():
+    ideation = read("skills/research/references/ideation.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    assert_mentions(
+        ideation,
+        "Do not finalize Grounded pruning or Promotion decision before Survey evidence exists",
+    )
+    assert_mentions(
+        rd_plan,
+        "section order is not permission to finalize promotion before Survey evidence",
+    )
+
+    for template in template_dir.glob("*.template"):
+        text = template.read_text(encoding="utf-8")
+        assert_mentions(
+            text,
+            "not final until Survey evidence exists",
+            "section order is not permission",
+        )
+
+
 def test_ideation_reference_requires_hypothesis_synthesis_not_just_candidate_listing():
     ideation = read("skills/research/references/ideation.md")
 
@@ -862,6 +903,208 @@ def test_literature_review_contract_uses_positioning_for_grounding_not_default_n
     )
 
 
+def test_literature_review_contract_requires_plan_scoped_paper_survey_before_plan():
+    literature = read("skills/research/references/literature_review.md")
+
+    assert_ordered_fragments(
+        literature,
+        "plan-scoped paper survey",
+        "before writing the Plan section",
+        "Prior-work grounding",
+    )
+    assert_mentions(
+        literature,
+        "search date",
+        "queries or source names",
+        "selection rationale",
+        "negative findings",
+        "retrieval-unavailable constraint",
+    )
+
+
+def test_plan_templates_record_survey_evidence_before_plan():
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    for template in template_dir.glob("*.template"):
+        text = template.read_text(encoding="utf-8")
+        assert_ordered_fragments(
+            text,
+            "## Prior-work grounding",
+            "Survey evidence",
+            "Question/objective supported by",
+            "## Divergence checkpoint",
+            "## Plan",
+        )
+        assert_mentions(
+            text,
+            "search date",
+            "queries/sources",
+            "negative findings",
+            "retrieval-unavailable constraint",
+        )
+
+
+def test_prior_work_grounding_requires_citation_use_map():
+    literature = read("skills/research/references/literature_review.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    assert_mentions(
+        literature,
+        "citation-use map",
+        "how each cited work is used",
+        "not enough to list papers",
+    )
+
+    for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
+        assert_ordered_fragments(
+            text,
+            "### Survey evidence",
+            "### Citation-use map",
+            "### Grounding scope",
+        )
+        assert_mentions(
+            text,
+            "Used for",
+            "Plan dependency",
+            "How it is used",
+            "Claim-scope effect",
+        )
+
+
+def test_retrieval_unavailable_is_verifiable_and_narrows_claim_scope():
+    literature = read("skills/research/references/literature_review.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    plan_review = read("skills/research-plan-review/SKILL.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    for text in [literature, rd_plan, plan_review]:
+        assert_mentions(
+            text,
+            "retrieval-unavailable is not a survey bypass",
+            "verifiable signal",
+            "attempted source/tool",
+            "failure evidence",
+            "claim-scope narrowing",
+        )
+
+    for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
+        assert_mentions(
+            text,
+            "Retrieval-unavailable evidence",
+            "attempted source/tool",
+            "failure evidence",
+            "Claim-scope narrowing",
+        )
+
+
+def test_citation_role_fields_define_plan_source_of_truth():
+    literature = read("skills/research/references/literature_review.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+
+    for text in [literature, rd_plan]:
+        assert_mentions(
+            text,
+            "project-level role union",
+            "plan-specific source of truth",
+            "Citation-use map",
+            "papers.md",
+            "positioning.md",
+        )
+
+
+def test_plan_review_subfield_completion_is_not_grounding_sufficiency():
+    plan_review = read("skills/research-plan-review/SKILL.md")
+
+    assert_mentions(
+        plan_review,
+        "Sub-field completion is not grounding sufficiency",
+        "substantive",
+        "filled fields",
+        "block_execution",
+    )
+
+
+def test_research_docs_require_mid_execution_literature_updates():
+    literature = read("skills/research/references/literature_review.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    readme = read("README.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    for text in [literature, rd_plan, readme]:
+        assert_mentions(
+            text,
+            "mid-execution literature update",
+            "unfamiliar method",
+            "unexpected result",
+            "new comparator",
+        )
+
+    for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
+        assert_ordered_fragments(
+            text,
+            "## Actual execution",
+            "### Mid-execution literature updates",
+            "## Planned vs Actual",
+        )
+        assert_mentions(
+            text,
+            "survey trigger",
+            "effect on plan",
+            "rerun Plan review",
+        )
+
+
+def test_research_skill_and_new_plan_guidance_require_literature_survey_before_plan():
+    skill = read("skills/research/SKILL.md")
+    new_plan = read("skills/research/scripts/new_plan.py")
+    readme = read("README.md")
+
+    for text in [skill, new_plan, readme]:
+        assert_mentions(
+            text,
+            "plan-scoped literature survey",
+            "before the Plan section",
+        )
+
+
+def test_plan_review_blocks_missing_literature_survey_evidence():
+    plan_review = read("skills/research-plan-review/SKILL.md")
+
+    assert_mentions(
+        plan_review,
+        "Survey evidence",
+        "Citation-use map",
+        "literature/papers.md",
+        "literature/positioning.md",
+        "block_execution",
+        "bibliography without use mapping",
+    )
+    assert_ordered_fragments(
+        plan_review,
+        "Read the plan",
+        "Prior-work grounding",
+        "Survey evidence",
+        "Execution recommendation",
+    )
+
+
+def test_plan_review_templates_include_prior_work_survey_check():
+    rd_plan = read("skills/research/references/rd_plan.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
+        assert_ordered_fragments(
+            text,
+            "### Research-design checks",
+            "Evidence route and artifact plan",
+            "Prior-work survey evidence",
+            "Scope and constraints",
+            "### Required repairs before execution",
+        )
+        assert_mentions(text, "block if missing")
+
+
 def test_research_skill_and_project_seed_positioning_not_differentiation():
     skill = read("skills/research/SKILL.md")
     new_project = read("skills/research/scripts/new_project.py")
@@ -934,6 +1177,7 @@ def test_new_project_seeds_positioning_with_required_fields():
     script = ROOT / "skills" / "research" / "scripts" / "new_project.py"
     required_fields = [
         "What it establishes",
+        "Used in plan as",
         "Inherited assumption",
         "Baseline / protocol use",
         "Known limitation",

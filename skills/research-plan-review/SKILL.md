@@ -16,7 +16,7 @@ The `Execution recommendation` is a pre-execution design recommendation: whether
 ## Workflow
 
 1. **Read the plan**  
-   Identify category, mode, Question / Objective, Idea portfolio when present, Prior-work grounding, Divergence checkpoint, and Plan.
+   Identify category, mode, Question / Objective, Idea portfolio when present, Prior-work grounding, Survey evidence, Citation-use map, Divergence checkpoint, and Plan. Prior-work grounding must cite `literature/papers.md` and `literature/positioning.md`, or record a retrieval-unavailable constraint with evidence.
 
 2. **Review research design**  
    For applied research, check the chain from observation to mechanism hypothesis, proposed intervention, predicted measurable effect, counter-hypothesis, and discriminating test.  
@@ -27,7 +27,10 @@ The `Execution recommendation` is a pre-execution design recommendation: whether
 3. **Check discriminating power**  
    Ask whether the plan can separate the primary hypothesis from plausible alternatives, procedure defects, comparator issues, leakage, and measurement artifacts. A plan that can only show "metric went up" is not enough when the research objective asks why.
 
-4. **Return**  
+4. **Check prior-work survey evidence**
+   Block execution when Survey evidence is missing, left as `TBD`, or replaced by an unknown-prior-work constraint without search evidence or a retrieval-unavailable constraint. Retrieval-unavailable is not a survey bypass: block execution unless the plan records a verifiable signal with attempted source/tool, query or source ID when available, failure evidence, and claim-scope narrowing. Also block a bibliography without use mapping: each cited work must appear in the Citation-use map with a concrete role in the plan. A plan can use `revise_before_execution` for incomplete summaries, but absence of survey evidence or citation-use mapping is a pre-execution blocker because controls, comparators, baselines, and claim scope are not grounded. Sub-field completion is not grounding sufficiency; filled fields must still substantively connect the cited work to the question, method, controls/comparators, evidence route, limitations, and claim scope.
+
+5. **Return**
    Return a `## Plan review` section that names design strengths, blockers, required repairs, and whether the plan should execute as written.
 
 ## Output Shape
@@ -50,6 +53,7 @@ The `Execution recommendation` is a pre-execution design recommendation: whether
 - Prediction or expected observation: <present / missing / weak, with rationale>
 - Counter-hypothesis or alternative explanation: <present / missing / weak, with rationale>
 - Discriminating test: <present / missing / weak, with rationale>
+- Prior-work survey evidence: <present / missing / weak, with rationale; missing Survey evidence or Citation-use map means block_execution unless a retrieval-unavailable constraint has a verifiable signal, attempted source/tool, failure evidence, and claim-scope narrowing>
 
 ### Category-specific concerns
 - <applied/basic/experimental-development issue that could make the plan uninformative>
@@ -66,6 +70,7 @@ The `Execution recommendation` is a pre-execution design recommendation: whether
 | Mistake | Correction |
 |---|---|
 | Reviewing formatting instead of design | Review whether the plan can produce knowledge, not whether headings are filled. |
+| Treating filled fields as grounding | Sub-field completion is not grounding sufficiency; require a substantive citation-to-plan connection or return `block_execution`. |
 | Accepting metric movement as research | Require a mechanism hypothesis, principle, or explanation route when the objective asks why. |
 | Ignoring alternatives | Name counter-hypotheses and procedure/artifact explanations before execution. |
 | Doing the experiment | Stop at plan review; execution belongs to the parent research workflow. |
