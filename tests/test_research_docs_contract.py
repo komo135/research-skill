@@ -781,6 +781,69 @@ def test_confirmatory_plan_template_requires_hypothesis_rationale_chain():
     )
 
 
+def test_plan_schema_and_templates_require_plan_visuals():
+    rd_plan = read("skills/research/references/rd_plan.md")
+    skill = read("skills/research/SKILL.md")
+    plan_review = read("skills/research-plan-review/SKILL.md")
+    readme = read("README.md")
+    new_plan = read("skills/research/scripts/new_plan.py")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    assert_mentions(
+        rd_plan,
+        "### Plan visual",
+        "Mermaid",
+        "PlantUML",
+        "ASCII",
+        "architecture",
+        "data flow",
+        "evaluation flow",
+        "mechanism diagram",
+        "No diagram:",
+    )
+    assert_mentions(
+        skill,
+        "Every Plan section starts with `### Plan visual`",
+        "Mermaid",
+        "PlantUML",
+        "ASCII",
+        "No diagram:",
+    )
+    assert_mentions(
+        plan_review,
+        "Check the Plan visual",
+        "architecture, data flow, evaluation flow, mechanism",
+        "No diagram:",
+    )
+    assert_mentions(
+        readme,
+        "Plan visual",
+        "architecture, data/evaluation flow",
+    )
+    assert_mentions(
+        new_plan,
+        "Plan sections including Plan visual",
+    )
+
+    for template in template_dir.glob("*.template"):
+        text = template.read_text(encoding="utf-8")
+        assert_ordered_fragments(
+            text,
+            "## Plan",
+            "### Plan visual",
+            "Visual format",
+            "What it shows",
+            "Reader check",
+        )
+        assert_mentions(
+            text,
+            "Mermaid",
+            "PlantUML",
+            "ASCII",
+            "No diagram:",
+        )
+
+
 def test_plan_schema_records_mechanistic_hypothesis_generation_contract():
     rd_plan = read("skills/research/references/rd_plan.md")
 

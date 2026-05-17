@@ -143,6 +143,18 @@ last_updated: YYYY-MM-DD
 
 ## Plan
 
+### Plan visual
+
+- Visual format: <Mermaid | PlantUML | ASCII | linked figure/table | No diagram: <specific reason>>
+- What it shows: <variable-space map, data flow, exploratory procedure, phenomenon map, or system boundary>
+- Reader check: <what the reader can understand faster from the visual than from prose>
+
+```mermaid
+flowchart LR
+    A["<observed material>"] --> B["<variable space>"] --> C["<allowed procedure>"]
+    C --> D["<follow-up / stop criteria>"]
+```
+
 ### Variable space
 
 - <variable 1>: <range, justification for the range>

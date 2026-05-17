@@ -208,9 +208,34 @@ If the plan says novel, new method, publishable, to our knowledge, or no baselin
 
 ## Pre-result and post-result boundary
 
-Plan sections record **pre-result commitments**: the research question or objective, mechanism conjecture or principle, prediction or expected observation, primary measure, controls/comparators, planned discriminating test, evidence route, artifact plan, and stop / branch criteria. Do not explain why an unobserved result happened. That is not available before execution.
+Plan sections record **pre-result commitments**: the research question or objective, mechanism conjecture or principle, prediction or expected observation, primary measure, controls/comparators, planned discriminating test, evidence route, artifact plan, plan visual, and stop / branch criteria. Do not explain why an unobserved result happened. That is not available before execution.
 
 Result analysis records **post-result explanations** after evidence exists: what happened, candidate explanations for the observed result, evidence for and against those explanations, procedure / artifact explanations, alternatives still live, and discriminating next analyses. Keep these out of the pre-execution Plan and Plan review.
+
+## Plan visual section
+
+Every Plan section starts with a `### Plan visual` subsection. The visual is part of the research design, not decoration: it lets a human inspect the proposed architecture, data flow, evaluation flow, mechanism diagram, causal graph, variable-space map, system boundary, decision flow, or derivation dependency before execution.
+
+Use the clearest durable format for the plan:
+
+- Mermaid for most flowcharts, architecture blocks, data/evaluation pipelines, causal graphs, and decision flows.
+- PlantUML when UML-style component, sequence, or state diagrams are clearer.
+- ASCII when the diagram must stay plain-text and simple.
+- A linked figure/table only when the file is durable and the caption states what the reader should inspect.
+
+If there is truly no useful visual structure, write `No diagram:` with a specific reason. Do not use `No diagram:` when the plan includes a model architecture, data pipeline, evaluation protocol, mechanism, causal relation, system boundary, variable space, or derivation dependency that would be clearer visually.
+
+````markdown
+### Plan visual
+- Visual format: <Mermaid | PlantUML | ASCII | linked figure/table | No diagram: <specific reason>>
+- What it shows: <architecture / data flow / evaluation flow / mechanism diagram / causal graph / variable-space map / system boundary / decision flow / derivation structure>
+- Reader check: <what ambiguity, dependency, or design choice a human can verify from the visual>
+
+```mermaid
+flowchart LR
+    A["<input / condition>"] --> B["<method / intervention>"] --> C["<evidence / decision>"]
+```
+````
 
 ## Plan section by mode
 
@@ -219,6 +244,11 @@ Result analysis records **post-result explanations** after evidence exists: what
 Fix the boundaries, not the prediction. From Dirnagl (PLOS Biology 2020): exploratory work commits to the *space of investigation*, not to a point hypothesis.
 
 ```markdown
+### Plan visual
+- Visual format: <Mermaid | PlantUML | ASCII | linked figure/table | No diagram: <specific reason>>
+- What it shows: <variable-space map, data flow, exploratory procedure, phenomenon map, or system boundary>
+- Reader check: <what the reader can understand faster from the visual than from prose>
+
 ### Variable space
 - <variable 1>: <range, justification>
 - <variable 2>: ...
@@ -243,6 +273,11 @@ Fix the boundaries, not the prediction. From Dirnagl (PLOS Biology 2020): explor
 Fix the hypothesis or objective, primary evidence measure, and decision threshold. Include controls, comparators, or ablations when the planned claim requires them.
 
 ```markdown
+### Plan visual
+- Visual format: <Mermaid | PlantUML | ASCII | linked figure/table | No diagram: <specific reason>>
+- What it shows: <hypothesis structure, proposed architecture, data flow, evaluation flow, mechanism diagram, causal graph, or component check>
+- Reader check: <what the reader can verify about the intervention, comparator, evidence route, or decision threshold>
+
 ### Hypothesis rationale
 - Source observation: <observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension>
 - Hypothesis type: <predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical>
@@ -281,6 +316,11 @@ Fix the hypothesis or objective, primary evidence measure, and decision threshol
 Fix the acceptance criteria.
 
 ```markdown
+### Plan visual
+- Visual format: <Mermaid | PlantUML | ASCII | linked figure/table | No diagram: <specific reason>>
+- What it shows: <system boundary, artifact architecture, workflow, acceptance-test flow, integration path, or decision flow>
+- Reader check: <what the reader can verify about scope, interfaces, dependencies, or acceptance criteria>
+
 ### Functional milestones
 - <feature 1>: <acceptance criterion>
 - <feature 2>: ...
@@ -305,6 +345,11 @@ For pure conceptual / derivational work where the claim rests on a formal deriva
 Empirical verification (when it exists) is treated as a secondary check (limiting-case match), not as the primary evidence.
 
 ```markdown
+### Plan visual
+- Visual format: <Mermaid | PlantUML | ASCII | linked figure/table | No diagram: <specific reason>>
+- What it shows: <definitions, theorem dependency graph, derivation structure, limiting-case map, or proof strategy>
+- Reader check: <what the reader can verify about assumptions, dependencies, or proof route>
+
 ### Derivation question
 - <one sentence stating what is to be proved, derived, bounded, or characterized>
 
@@ -580,6 +625,7 @@ Mirror the entry in `decisions.md` for any branch except `NEXT_STEP`.
 - **Confirmatory plan with no decision threshold.** The whole point of confirmatory is the threshold. State it explicitly.
 - **Exploratory plan with hidden hypothesis.** Writing "we expect X" without committing to a decision threshold converts exploration into informal confirmation. Either commit to confirmatory mode with an explicit threshold, or stay honestly exploratory with a variable space.
 - **No Divergence checkpoint.** A plan that only follows the user's preferred route can still be well formatted and still be weak research. Fill the checkpoint before execution.
+- **Plain-text-only Plan when structure matters.** If the plan has an architecture, data flow, evaluation flow, mechanism, causal relation, system boundary, variable space, decision flow, or derivation dependency, include a Plan visual. Use `No diagram:` only with a specific reason why no visual would help.
 - **Literature-first hypothesis generation.** If the user asked for research ideas, do not summarize prior work as a substitute for diagnosis. Use the `Hypothesis generation` section first, choose hypothesis type, then apply Prior-work grounding before finalizing `commit`.
 - **Portfolio made of parameter tweaks.** Three thresholds of the same signal are not three approaches. Record them as one primary route with a sweep, then add real alternatives or explicitly narrow the claim scope to the tested route.
 - **Prior result treated as fact.** "Previous run was best" is an anchor, not a premise. Record what would revalidate it, what rework is required, or what claim condition remains after Result analysis explains the new outcome.

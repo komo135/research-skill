@@ -119,7 +119,7 @@ def main():
     print()
     print("Next steps:")
     print(
-        f"  1. Fill in the Question / Objective, Mechanism hypothesis record when ideating and mechanistic, otherwise hypothesis type, plan-scoped literature survey, Prior-work grounding, Divergence checkpoint, and Plan sections of "
+        f"  1. Fill in the Question / Objective, Mechanism hypothesis record when ideating and mechanistic, otherwise hypothesis type, plan-scoped literature survey, Prior-work grounding, Divergence checkpoint, and Plan sections including Plan visual of "
         f"{plan_path.relative_to(project)}"
     )
     print("  2. If the selected hypothesis type is mechanistic, run scripts/check_mechanism_hypothesis_record.py before planning from the record")

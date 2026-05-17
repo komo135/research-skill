@@ -52,7 +52,7 @@ Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Th
 2. Write Question / Objective. If ideating, use `references/mechanistic_hypothesis_generation.md` to diagnose the situation and choose the hypothesis type before prior-work grounding.
 3. For mechanistic hypothesis-generation work, write the Mechanism hypothesis record and run `check_mechanism_hypothesis_record.py` before planning from the record.
 4. Run a plan-scoped literature survey, then write Prior-work grounding and the Divergence checkpoint before the Plan section.
-5. Write Plan section.
+5. Write Plan section, starting with a Plan visual so architecture, data/evaluation flow, mechanism, system boundary, variable space, decision flow, or derivation structure is inspectable.
 6. Plan review — dispatch a fresh separate-context plan-review subagent using `research-plan-review` and pass only the plan path. Repair blockers before execution.
 7. git commit. (Plan plus Plan review are time-anchored.)
 8. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact. Record a mid-execution literature update if an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears.
@@ -275,6 +275,7 @@ Tightens `research-plan-review` so reviewers stop plans built on wrong, unsuppor
 - Updated plan review output templates to center `Premise check`, `Hypothesis validation method`, and `Stop decision`.
 - Preserved narrowed observation, measurement-construction, and exploratory plans when their claim scope is explicit.
 - Clarified that not every hypothesis is mechanistic. Hypothesis generation now chooses a hypothesis type before requiring a Mechanism hypothesis record, and uses hypothetico-deductive prediction/evidence structure for verification.
+- Required `Plan visual` in research plans so structured designs are not left as prose-only descriptions.
 
 ### v2.7.0 — typed hypothesis generation and mechanistic hypothesis records
 
