@@ -42,7 +42,7 @@ last_updated: YYYY-MM-DD
 
 - Agent: <fresh separate-context hypothesis-generation agent, or Not used with reason>
 - Starting context: <anchor-stripped seed brief is the only generation brief; Excluded-anchor ledger is not input>
-- Web/literature retrieval: <used for abstract observations or cross-domain mechanisms / skipped with reason>
+- Web/literature retrieval: <used for abstract observations or cross-domain mechanisms / skipped with reason; this does not replace Survey evidence>
 - Output contract: <multiple working hypotheses with source observation, mechanism conjecture, predicted effect, counter-hypothesis, minimal disconfirming test, and retrieval notes>
 
 ### Main-agent intake
@@ -103,7 +103,7 @@ last_updated: YYYY-MM-DD
 
 ### Grounded pruning
 
-- Advance: <candidate promoted toward a plan and why>
+- Advance: <candidate promoted toward a plan and why; not final until Survey evidence exists>
 - Parked: <candidate blocked by missing survey, data, baseline, evaluator, substrate, or condition>
 - Killed: <candidate that is duplicate, untestable, too costly, not falsifiable, or only a parameter sweep>
 - Merged: <candidates collapsed into another candidate>
@@ -121,10 +121,28 @@ last_updated: YYYY-MM-DD
 
 ### Promotion decision
 
-- Promoted idea: <the single candidate that becomes this plan>
+- Promoted idea: <the single candidate that becomes this plan; section order is not permission to finalize promotion before Survey evidence>
 - Non-promoted ideas: <parked / killed / merged reasons; these are not claims>
 
 ## Prior-work grounding
+
+### Survey evidence
+
+- Search date: <YYYY-MM-DD, or retrieval-unavailable constraint>
+- Queries/sources: <queries, databases, search engines, seed papers, or retrieval-unavailable constraint>
+- Selection rationale: <why included papers matter and what near misses were excluded>
+- Negative findings: <missing baselines, failed comparator searches, contradictions not found, or None>
+- Retrieval-unavailable constraint: <tool/access/connectivity failure and affected grounding or claims; None if survey ran>
+- Retrieval-unavailable evidence: <attempted source/tool, query/source id when available, and failure evidence such as tool error, access denial, connectivity output, or blocked database access; None if survey ran>
+- Claim-scope narrowing: <claims narrowed or blocked because retrieval was unavailable; None if survey ran>
+
+### Citation-use map
+
+- <literature/papers.md entry>:
+  - Used for: <question framing / mechanism prior / baseline / comparator / metric / data / evaluation protocol / theoretical foundation / limitation / contradictory evidence / claim-scope boundary>
+  - Plan dependency: <Question / Objective / Hypothesis rationale / Controls / Data setup / Decision threshold / Limitations / Claim scope>
+  - How it is used: <specific sentence explaining what the plan borrows, tests, contrasts, or bounds>
+  - Claim-scope effect: <supports / narrows / blocks which claims>
 
 ### Grounding scope
 
@@ -217,6 +235,7 @@ last_updated: YYYY-MM-DD
 - Discriminating test: <adequate / revise / block>: <reason>
 - Controls, comparators, or limiting cases: <adequate / revise / block / not applicable>: <reason>
 - Evidence route and artifact plan: <adequate / revise / block>: <reason>
+- Prior-work survey evidence: <adequate / revise / block>: <block if missing, placeholder-only, unsupported by Survey evidence, or unsupported by a verifiable retrieval-unavailable constraint with claim-scope narrowing>
 - Scope and constraints: <adequate / revise / block>: <reason>
 
 ### Required repairs before execution
@@ -231,6 +250,15 @@ last_updated: YYYY-MM-DD
 ### Runs
 
 <List as runs accumulate. Link to experiments/<plan_id>_<slug>/runs/<run_id>/>
+
+### Mid-execution literature updates
+
+- <YYYY-MM-DD or None>:
+  - Survey trigger: <unfamiliar method / unexpected result / new comparator / contradiction with prior work / missing-baseline signal / other>
+  - Sources checked: <queries, papers, databases, or retrieval-unavailable constraint with attempted source/tool and failure evidence>
+  - Literature files updated: <literature/papers.md and literature/positioning.md entries, or None with reason>
+  - Effect on plan: <none / update limitations / change comparator / change metric / change evaluation protocol / amend plan / open ADJACENT plan>
+  - Plan review: <not needed with reason / rerun Plan review before continuing claim-bearing execution>
 
 ### Methodology used
 

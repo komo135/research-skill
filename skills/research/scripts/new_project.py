@@ -25,6 +25,7 @@ approach.
 ## <Prior approach or source — cite papers.md entry>
 
 - What it establishes: <summary of the result, method, data, metric, or system>
+- Used in plan as: <question framing / mechanism prior / baseline / comparator / metric / data / evaluation protocol / theoretical foundation / limitation / contradictory evidence / claim-scope boundary>
 - Inherited assumption: <assumption this project or plan carries forward>
 - Baseline / protocol use: <baseline when applicable, control, comparator, metric, split, benchmark, or evaluation setup informed by this work>
 - Known limitation: <limitation relevant to current plans or claims>

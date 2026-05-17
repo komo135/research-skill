@@ -85,6 +85,8 @@ The generator must produce multiple working hypotheses, not a list of different 
 - Minimal disconfirming test: <smallest observation, comparison, ablation, derivation check, or evaluator result that would kill or narrow it>
 - Web or literature retrieval notes: <abstract observations, cross-domain mechanisms, or missing-context note; no paper-title or SOTA-method anchors in raw hypotheses>
 
+A skipped Web/literature retrieval entry in this hypothesis-generation handoff does not satisfy or waive the plan-scoped literature survey. Before any candidate is promoted into a plan, the plan still needs Prior-work grounding with Survey evidence.
+
 The generator should consider the opposite of the visible favorite, foreground assumptions that may be false, transfer mechanisms across domains only at the abstract mechanism level, and include at least one candidate that changes the measurement or evaluator when the current evaluator may hide the phenomenon.
 
 ### Raw candidate generation
@@ -233,7 +235,7 @@ Apply prior-work grounding here for the first time. Check existing research, sta
 - `killed`: duplicates known results, is a parameter sweep, cannot be measured, cannot be falsified, or exceeds cost constraints
 - `merged`: collapses into the same claim or test path as another candidate
 
-Grounded pruning may remove most candidates. That is expected. The important constraint is that pruning happens after substrate/operator generation and anti-vacuity, not before them.
+Do not finalize Grounded pruning or Promotion decision before Survey evidence exists. The plan template keeps the whole Idea portfolio before `## Prior-work grounding` to preserve the de-anchored generation narrative, but section order is not permission to finalize promotion before Survey evidence. Grounded pruning may remove most candidates. That is expected. The important constraint is that pruning happens after substrate/operator generation and anti-vacuity, not before them.
 
 ### Information-gain scoring
 
@@ -259,7 +261,7 @@ Before execution, run one fresh review that attacks the portfolio breadth. Ask w
 
 ### Plan promotion
 
-An idea portfolio is not a plan. Promote only one selected candidate to `plans/<id>_<slug>.md`, and write `Prior-work grounding`, `Divergence checkpoint`, and `Plan` as usual.
+An idea portfolio is not a plan. Promote only one selected candidate to `plans/<id>_<slug>.md` after Survey evidence exists, then write `Prior-work grounding`, `Divergence checkpoint`, and `Plan` as usual.
 
 Failed idea is not a claim. Non-promoted ideas are not claims. Failed ideas, parked candidates, killed candidates, and merged candidates must not be written as claims. Non-promoted ideas are recorded as `parked / killed / merged`. Claims are written only for results that have passed execution, result analysis, and claim-structure checks.
 

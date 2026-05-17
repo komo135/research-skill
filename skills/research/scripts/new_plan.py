@@ -11,13 +11,14 @@ Creates:
     plans/<id>_<slug>.md           (from template, with metadata filled in)
     experiments/<id>_<slug>/{code,configs,runs,notebooks}/
 
-The plan is NOT auto-committed. Commit it yourself once the Question / Objective,
-Idea portfolio when ideating, Prior-work grounding, Divergence checkpoint, and
-Plan sections are filled in. For ideation plans, run check_idea_portfolio.py
-before promotion. Dispatch research-plan-review with the plan path only before
-execution. That commit is the time-anchor for the reviewed plan. After execution,
-fill Actual execution and Planned vs Actual, then dispatch research-result-analysis
-with the plan path only before writing Claims, a state-changing Decision, or a report.
+The plan is NOT auto-committed. Fill the Question / Objective, Idea portfolio
+when ideating, plan-scoped literature survey before the Plan section,
+Prior-work grounding, Divergence checkpoint, and Plan sections first. For ideation plans, run
+check_idea_portfolio.py before promotion. Dispatch research-plan-review with
+the plan path only before execution. Then commit the reviewed plan; that commit
+is the time-anchor. After execution, fill Actual execution and Planned vs
+Actual, then dispatch research-result-analysis with the plan path only before
+writing Claims, a state-changing Decision, or a report.
 """
 import argparse
 import subprocess
@@ -115,7 +116,7 @@ def main():
     print()
     print("Next steps:")
     print(
-        f"  1. Fill in the Question / Objective, Idea portfolio when ideating, Prior-work grounding, Divergence checkpoint, and Plan sections of "
+        f"  1. Fill in the Question / Objective, Idea portfolio when ideating, plan-scoped literature survey, Prior-work grounding, Divergence checkpoint, and Plan sections of "
         f"{plan_path.relative_to(project)}"
     )
     print("  2. If ideating, run scripts/check_idea_portfolio.py before promoting a candidate")

@@ -125,11 +125,11 @@ Boundaries that matter:
 1. scripts/new_plan.py creates plans/<id>_<slug>.md from a mode-specific template
 2. Write the Question / Objective. If the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," write an Idea portfolio using `references/ideation.md` before Prior-work grounding. If anchors are already visible, first write an anchor-stripped seed brief and generate raw seeds only from substrate, constraints, and generation operators; do not accept raw candidates directly.
 3. For ideation work, run substrate/operator generation, assumption audit, anti-vacuity gate, blind-spot catalog, evaluator feedback, and `scripts/check_idea_portfolio.py` before promoting any candidate.
-4. Write the Prior-work grounding and Divergence checkpoint.
+4. Run a plan-scoped literature survey, write the Prior-work grounding, and write the Divergence checkpoint before the Plan section.
 5. Write the Plan section.
 6. PLAN REVIEW — dispatch a fresh separate-context plan-review subagent using `research-plan-review`. Pass only the plan path. Record the returned `## Plan review` section, repair blockers, and review again if execution is blocked.
 7. git commit. (Plan plus Plan review are now time-anchored by git.)
-8. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/. A print-only script run is incomplete: stdout is not evidence, and `scripts/check_run_artifacts.py` should pass before observations are promoted.
+8. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/. A print-only script run is incomplete: stdout is not evidence, and `scripts/check_run_artifacts.py` should pass before observations are promoted. If an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears, record a mid-execution literature update before claim-bearing execution continues.
 9. Write Actual section in plans/<id>.md. Compare planned vs actual.
 10. RESULT ANALYSIS — dispatch a fresh separate-context result-analysis subagent using the `research-result-analysis` skill and the template in `references/result_analysis_subagent_prompt.md`. Pass the plan path as the only starting context; the subagent reconstructs evidence from referenced runs, manifests, logs, scripts, outputs, tables, and figures and decomposes why the result happened.
 11. Record load-bearing claims using the structure in references/claim_structure.md.
@@ -167,9 +167,13 @@ Informal substitutes ("diagnostic detour," "let me keep exploring," "exploratory
 
 Every plan records prior-work grounding before the Plan section. This is plan-scoped and bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, and known limitations. It is not optional just because no novelty claim is being made.
 
+Prior-work grounding starts with a plan-scoped literature survey before the Plan section. Record the survey evidence in the plan: search date, queries or source names, selection rationale, negative findings, and any retrieval-unavailable constraint. Retrieval-unavailable is not a survey bypass; it needs attempted source/tool, failure evidence, and claim-scope narrowing. Unknown prior work is allowed only after the survey has been attempted or retrieval is unavailable and explicitly constrained; it is not a shortcut around search.
+
 Use `literature/papers.md` for annotated prior work and `literature/positioning.md` for how the work stands on prior work. `positioning.md` records grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
 
-If prior work is genuinely unknown, record the named constraint in the plan and narrow or block relevant claims until the grounding is repaired. For strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, do a comprehensive literature survey; that is separate from the plan-scoped grounding every plan needs.
+The plan must include a citation-use map. For each cited work, state how it is used in the plan: question framing, mechanism prior, baseline, comparator, metric, data, evaluation protocol, theoretical foundation, limitation, contradictory evidence, or claim-scope boundary. A bibliography without use mapping is not grounding. The literature files keep the project-level role union; the plan's citation-use map is the plan-specific source of truth.
+
+If prior work is genuinely unknown after the plan-scoped literature survey, record the named constraint in the plan and narrow or block relevant claims until the grounding is repaired. For strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, do a comprehensive literature survey; that is separate from the plan-scoped grounding every plan needs.
 
 ## Research ideation
 
@@ -189,7 +193,7 @@ The checkpoint is lightweight, but it is not optional:
 4. **Disconfirming evidence** — state what observation would force a narrower question, a different route, a pause, or closure, and whether that would trigger `REFINE`, `ADJACENT`, `PARK`, or `CLOSE`.
 5. **Commitment decision** — explain why this plan commits to the chosen approach now instead of one of the alternatives. If time or resource limits prevent broader exploration, record the skipped divergence as a constraint that the later Plan review must evaluate before execution.
 
-This checkpoint does not replace prior-work grounding. Every plan needs bounded but sufficient grounding before the Plan section; comprehensive literature survey is required only for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. The agent may still choose the user's requested approach, but only after making the alternatives, anchor risks, and research positioning explicit. Claim-scope narrowing from this checkpoint does not rescue a weak design; the Plan review can block execution until the mechanism hypothesis, prediction, controls, alternatives, or evidence route are repaired.
+This checkpoint does not replace prior-work grounding. Every plan needs bounded but sufficient grounding from a plan-scoped literature survey before the Plan section; comprehensive literature survey is required only for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. The agent may still choose the user's requested approach, but only after making the alternatives, anchor risks, and research positioning explicit. Claim-scope narrowing from this checkpoint does not rescue a weak design; the Plan review can block execution until the mechanism hypothesis, prediction, controls, alternatives, or evidence route are repaired.
 
 ## Plan review
 
