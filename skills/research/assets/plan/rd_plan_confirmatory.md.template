@@ -15,17 +15,31 @@ last_updated: YYYY-MM-DD
 
 <One paragraph stating the practical objective and what improving it would mean.>
 
-## Mechanism hypothesis record
+## Hypothesis generation
 
-<Not applicable: objective already chosen. If this plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," use `references/mechanistic_hypothesis_generation.md` and record the full contract below. This section is required when the plan began from research ideas, research directions, hypothesis candidates, or "what should we try next." This does not replace Survey evidence.>
+<If the plan began with an already chosen objective, write `Not applicable: objective already chosen.` If the plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," use `references/mechanistic_hypothesis_generation.md`, fill the diagnosis, choose the hypothesis type, and fill the type-specific record. The mechanism-only subsections are required when the plan began from research ideas and the chosen hypothesis type is mechanistic; otherwise write `Omitted: hypothesis type is <type>; no mechanism claim is being made.` This does not replace Survey evidence.>
 
 ### Research situation diagnosis
 
 - Available material: <successes, failures or limits, lineage, evaluation or measurement, constraints, unknowns, observable quantities, comparators, and counterfactuals>
 - Missing material: <observations, reproduced failures, baselines, evaluator, measurement definitions, counterfactuals, prior-work grounding, or minimal model>
-- Why hypothesis generation is allowed or blocked: <allowed because material supports a discriminating prediction / hypothesis generation is blocked because named material is missing>
+- Why hypothesis generation is allowed or blocked: <allowed because material supports an observable prediction or expected observation / hypothesis generation is blocked because named material is missing>
+- Hypothesis type: <predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical | mixed with primary type>
+
+### Type-specific hypothesis record
+
+- Hypothesis type: <predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical | mixed with primary type>
+- Situation-grounding: <observations, analysis, prior result, failure trace, constraint, theory, or prior work that produced the hypothesis>
+- Hypothesis statement: <one falsifiable or supportable statement>
+- Prediction / expected observation: <observable result expected if the hypothesis is useful>
+- Primary evidence route: <metric, evaluator, comparison, measurement, derivation, or observation route>
+- Support threshold: <what evidence would support proceeding>
+- Rejection / park condition: <what evidence or missing material would reject or park the hypothesis>
+- Mechanism claim included: <yes only if the final claim asks why/how through entities, activities, process, organization, or mechanism of action; otherwise no>
 
 ### Analysis lenses considered
+
+<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; analysis lenses are not required because no mechanism claim is being made.`>
 
 - Lens: <Success mechanism / Failure dynamics / Lineage-difference / Center-auxiliary inversion / Problem-form transformation / Measurement and evaluation / Constraint relocation / Sparse-information / Cross-domain mechanism transfer>
   - What it would inspect: <process, evidence, or constraint inspected>
@@ -34,11 +48,15 @@ last_updated: YYYY-MM-DD
 
 ### Adopted analysis lenses
 
+<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; no mechanism lenses adopted.`>
+
 - Primary lens: <exactly one lens>
 - Auxiliary lenses: <0-2 lenses, or None with reason>
 - Reason: <why these lenses best separate the live explanations>
 
 ### Mechanistic analysis
+
+<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; no mechanism explanation is being tested.`>
 
 - Observation: <success, failure, limit, constraint, or measurement mismatch>
 - Analysis lens used: <primary lens plus auxiliaries when used>
@@ -47,6 +65,8 @@ last_updated: YYYY-MM-DD
 - What would be different if this interpretation is true: <observable contrast>
 
 ### Mechanism hypothesis record
+
+<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; no Mechanism hypothesis record.`>
 
 - Hypothesis: <cause, condition, and expected change>
 - Competing hypothesis: <another mechanism explaining the same observation>
@@ -126,11 +146,12 @@ last_updated: YYYY-MM-DD
 ### Hypothesis rationale
 
 - Source observation: <observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension>
-- Mechanism conjecture: <proposed mechanism that would explain the observation or make the intervention plausible>
+- Hypothesis type: <predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical>
+- Mechanism conjecture: <if mechanistic: proposed entities, activities, process, organization, or mechanism of action; otherwise `Not applicable`>
 - Proposed intervention: <method, architecture, data change, metric change, evaluation change, system change, or framing change>
-- Predicted effect: <measurable effect expected if the mechanism conjecture is right>
-- Counter-hypothesis: <plausible alternative explanation under which the predicted effect should not appear>
-- Minimal disconfirming test: <smallest test, ablation, comparison, or observation that would reject, narrow, or park the hypothesis>
+- Predicted effect: <measurable effect, prediction, or expected observation derived from the hypothesis>
+- Counter-hypothesis: <only when needed for the claim; plausible alternative explanation under which the predicted effect should not appear>
+- Minimal disconfirming test: <smallest comparison, observation, derivation check, or controlled intervention that would reject, narrow, or park the hypothesis; ablation only when component contribution is claimed>
 
 ### Hypothesis
 

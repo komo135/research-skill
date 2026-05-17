@@ -7,11 +7,20 @@ description: Use when conducting R&D work that needs claim discipline, planning 
 
 A protocol skill for agent-driven R&D. The job: keep research state honest while preserving research velocity. Use shared vocabulary so multiple sessions and tools can interoperate. Produce human-readable reports that someone outside the session can act on.
 
-## Skill role: mechanistic hypothesis generator
+## Skill role: hypothesis-driven research protocol
 
-This skill does not guarantee paradigm-shift ideas. It does, however, regulate research idea generation by forcing the agent to diagnose the research situation, compare analysis lenses, and convert observations into a falsifiable mechanism hypothesis record. A method name, paper name, analogy, or one-line brainstorm is an intervention fragment, not a hypothesis.
+This skill keeps research state honest. It regulates hypothesis generation, planning, evidence, analysis, claims, and decisions.
 
-The load-bearing boundary is now: the skill can commit a research direction only when the record has a mechanism hypothesis, competing hypothesis, discriminating prediction, minimal test, required evidence, and survey-backed grounding. If the agent lacks observations, failure traces, constraints, comparators, measurement definitions, or an evaluator path, the honest output is to gather observations, build an evaluator, define a measurement, or park the hypothesis. It must not hide missing material behind plausible-sounding ideas.
+Hypotheses must be grounded in the current situation: observations, analysis, prior results, failures, constraints, existing theory, or prior work. Hypothesis generation may use mechanistic reasoning, abduction / inference to the best explanation, analogy, theory-driven derivation, or induction from observations. The verification frame is hypothetico-deductive: state the hypothesis, derive observable predictions or expected effects, then compare those predictions with evidence.
+
+Do not collapse all hypotheses into mechanism hypotheses:
+
+- **Predictive / performance hypothesis**: a claim that some condition, method, or intervention will produce an observable effect, such as beating a baseline or improving a metric. It may be black-box.
+- **Mechanistic hypothesis**: a claim about why or how a phenomenon occurs: the entities, activities, process, organization, or mechanism of action that produces it. It is narrower than "the result should improve."
+- **Causal / intervention hypothesis**: a claim that an intervention changes an outcome under stated conditions.
+- **Descriptive / characterization hypothesis**: a claim about what properties, limits, regimes, or patterns a phenomenon has.
+
+A method name, paper name, analogy, or one-line brainstorm is an intervention fragment, not a hypothesis. A mechanism name without entities, activities, organization, and observable consequences is not a mechanistic hypothesis. If the agent lacks observations, failure traces, constraints, comparators, measurement definitions, or an evaluator path, the honest output is to gather observations, build an evaluator, define a measurement, or park the hypothesis. It must not hide missing material behind plausible-sounding ideas.
 
 ## What this skill covers and what it does not
 
@@ -73,9 +82,9 @@ Read `references/categories/<category>.md` after picking a category.
 
 Research state moves through this lifecycle:
 
-`Research situation diagnosis` → `Mechanistic analysis` → `Mechanism hypothesis record` → `Prior-work grounding` → `Plan` → `Plan review` → `Execution` → `Result analysis` → `Claim` → `Decision`
+`Research situation diagnosis` → `Hypothesis type selection` → `Hypothesis-generation record` → `Prior-work grounding` → `Plan` → `Plan review` → `Execution` → `Result analysis` → `Claim` → `Decision`
 
-Keep the timing boundary explicit. The Plan and Plan review contain **pre-result commitments**: the question, mechanism conjecture or principle, prediction or expected observation, primary measure, controls/comparators, planned discriminating test, evidence route, artifacts to preserve, and stop / branch criteria. They do not explain why an unobserved result happened. Result analysis contains **post-result explanations** after evidence exists: what happened, why it may have happened, what alternatives remain live, and what additional discriminator would separate those alternatives.
+This lifecycle is for hypothesis-driven work. Keep the timing boundary explicit. The Plan and Plan review contain **pre-result commitments**: the question, hypothesis type, hypothesis statement, predictions or expected observations, primary measure, controls/comparators when the claim requires them, evidence route, artifacts to preserve, and stop / branch criteria. They do not explain why an unobserved result happened. Result analysis contains **post-result explanations** after evidence exists: what happened, why it may have happened, what alternatives remain live, and what additional discriminator would separate those alternatives.
 
 An observation is not yet a hypothesis. Observations name phenomena, failures, tensions, baseline limits, or problem facts that may motivate a hypothesis later; they do not by themselves explain the mechanism or justify an intervention.
 
@@ -125,8 +134,8 @@ Boundaries that matter:
 
 ```
 1. scripts/new_plan.py creates plans/<id>_<slug>.md from a mode-specific template
-2. Write the Question / Objective. If the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," write a Mechanism hypothesis record using `references/mechanistic_hypothesis_generation.md` before Prior-work grounding. Start with Research situation diagnosis, compare Analysis lenses considered, adopt a primary lens plus 0-2 auxiliaries, then write the Mechanistic analysis and Mechanism hypothesis record.
-3. For hypothesis-generation work, run `scripts/check_mechanism_hypothesis_record.py` before treating the record as ready for Prior-work grounding or plan drafting. A `commit` decision is not final before Survey evidence.
+2. Write the Question / Objective. If the user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," use `references/mechanistic_hypothesis_generation.md` as the hypothesis-generation reference: start with Research situation diagnosis, choose the appropriate hypothesis type, and write a Mechanism hypothesis record only when the proposed hypothesis is mechanistic.
+3. For mechanistic hypothesis-generation work, run `scripts/check_mechanism_hypothesis_record.py` before treating the record as ready for Prior-work grounding or plan drafting. A `commit` decision is not final before Survey evidence.
 4. Run a plan-scoped literature survey, write the Prior-work grounding, and write the Divergence checkpoint before the Plan section.
 5. Write the Plan section.
 6. PLAN REVIEW — dispatch a fresh separate-context plan-review subagent using `research-plan-review`. Pass only the plan path. Record the returned `## Plan review` section, repair blockers, and review again if execution is blocked.
@@ -177,11 +186,11 @@ The plan must include a citation-use map. For each cited work, state how it is u
 
 If prior work is genuinely unknown after the plan-scoped literature survey, record the named constraint in the plan and narrow or block relevant claims until the grounding is repaired. For strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, do a comprehensive literature survey; that is separate from the plan-scoped grounding every plan needs.
 
-## Mechanistic hypothesis generation
+## Hypothesis generation and mechanism records
 
-When the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," read `references/mechanistic_hypothesis_generation.md` before Prior-work grounding. The first output is a Mechanism hypothesis record, not a Plan and not a claim.
+When the user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," read `references/mechanistic_hypothesis_generation.md` before Prior-work grounding. Despite its historical filename, this reference must first decide what kind of hypothesis is being generated. The first output is a hypothesis-generation record, not a Plan and not a claim.
 
-The order matters: diagnose the situation before applying prior-work grounding, but do not confuse plausible interventions with hypotheses. Prior work is still mandatory before execution, but literature-first ideation tends to anchor the work to safe extensions of prior approaches. The record must include Research situation diagnosis, Analysis lenses considered, Adopted analysis lenses, Mechanistic analysis, and a Mechanism hypothesis record with Hypothesis, Competing hypothesis, Discriminating prediction, Minimal test, Required evidence, Decision, and Reason. Decisions are exactly `commit / park / kill`; information gaps normally force `park`, not a more confident idea.
+The order matters: diagnose the situation before applying prior-work grounding, but do not confuse plausible interventions with hypotheses. Prior work is still mandatory before execution, but literature-first ideation tends to anchor the work to safe extensions of prior approaches. For mechanistic hypotheses, the record must include Research situation diagnosis, Analysis lenses considered, Adopted analysis lenses, Mechanistic analysis, and a Mechanism hypothesis record with Hypothesis, Competing hypothesis, Discriminating prediction, Minimal test, Required evidence, Decision, and Reason. For predictive / performance, causal / intervention, or descriptive hypotheses, record the hypothesis type, situation-grounding, hypothesis statement, predictions or expected observations, evidence route, and decision threshold without forcing a mechanism record. Decisions are exactly `commit / park / kill`; information gaps normally force `park`, not a more confident idea.
 
 ## Divergence checkpoint
 
@@ -268,7 +277,7 @@ Reports do not need env locks, commit hashes, or seed lists in the prose. Includ
 |---|---|---|
 | Pick a category | `references/categories/<category>.md` | First action when starting a plan |
 | Plan schema | `references/rd_plan.md` | Writing or reviewing `plans/<id>.md` |
-| Mechanistic hypothesis generation | `references/mechanistic_hypothesis_generation.md` | When asked for research ideas, research directions, hypothesis candidates, or "what should we try next" before Prior-work grounding; use Research situation diagnosis, Analysis lenses considered, Mechanistic analysis, Mechanism hypothesis record, and `commit / park / kill` |
+| Hypothesis generation | `references/mechanistic_hypothesis_generation.md` | When asked for research ideas, research directions, hypothesis candidates, or "what should we try next" before Prior-work grounding; diagnose the situation, choose hypothesis type, derive predictions / expected observations, and use a Mechanism hypothesis record only for mechanistic hypotheses |
 | Assumption audit | `references/assumption_audit.md` | When a mechanism record depends on assumptions of a reference model being challenged. Distinct from anchor audit at Divergence checkpoint. Includes constraint-naming protocol for un-evaluable hypotheses. |
 | Deprecated ideation links | `references/ideation.md` and `references/iterative_ideation.md` | Stubs only; use mechanistic hypothesis generation instead |
 | Divergence checkpoint | `references/rd_plan.md` | Before execution, after Question / Objective and before committing the Plan |
@@ -286,7 +295,8 @@ These are not formatting preferences. They are what makes other agents and human
 
 - **One declared category per plan.** Don't dodge the choice. If you can't pick, read `references/categories/*.md`.
 - **One declared mode per plan.** `exploratory`, `confirmatory`, `milestone`, or `theoretical`. Hidden hypotheses inside exploratory plans are forbidden. Use `theoretical` for plans whose primary contribution is a derivation rather than an empirical result.
-- **Mechanism hypothesis record before prior-work anchoring when ideating.** If the task is research idea generation, hypothesis candidate generation, or "what should we try next," write Research situation diagnosis, Analysis lenses considered, Adopted analysis lenses, Mechanistic analysis, and a Mechanism hypothesis record using `references/mechanistic_hypothesis_generation.md` before Prior-work grounding. Method names, paper names, analogies, and candidate lists are intervention fragments until converted into a competing-hypothesis and discriminating-test record. Decisions are `commit / park / kill`; non-committed hypotheses are not claims.
+- **Hypothesis type before mechanism record.** If the task is research idea generation, hypothesis candidate generation, or "what should we try next," first write Research situation diagnosis and choose the hypothesis type. Do not force predictive, causal, descriptive, or performance hypotheses into a Mechanism hypothesis record.
+- **Mechanism hypothesis record only for mechanisms.** Use a Mechanism hypothesis record when the hypothesis explains why or how a phenomenon occurs through entities, activities, process, organization, or mechanism of action. Method names, paper names, analogies, and candidate lists are intervention fragments until converted into a grounded hypothesis with predictions or expected observations. Decisions are `commit / park / kill`; non-committed hypotheses are not claims.
 - **Prior-work grounding, Divergence checkpoint, and Plan review exist before execution.** A plan may still commit to one route, but it must first ground the plan in prior work, expose alternatives, anchor risks, research positioning, and disconfirming evidence, then pass a fresh separate-context plan-review subagent using `research-plan-review`. User pressure to "just use the previous approach" is recorded as a constraint, not silently obeyed.
 - **No placeholder figures in reports.** Generate the figure or remove the reference. `scripts/check_report.py` verifies figure references resolve.
 - **Plan content exists before execution.** The Plan section must be filled in and committed before any execution begins. `created_commit` in the front matter is meaningful only if the Plan section is non-empty at that commit. After-the-fact plan rewriting is detectable in git diff.

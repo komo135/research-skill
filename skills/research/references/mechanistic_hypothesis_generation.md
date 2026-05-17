@@ -1,12 +1,16 @@
-# Mechanistic Hypothesis Generation
+# Hypothesis Generation and Mechanistic Hypotheses
 
-This protocol governs research idea generation, research directions, hypothesis candidates, and "what should we try next" requests. It does not start from candidate ideas. It turns the current research situation into a falsifiable mechanism hypothesis, a competing hypothesis, a discriminating prediction, and a minimal test.
+This protocol governs research idea generation, research directions, hypothesis candidates, and "what should we try next" requests. The filename is historical: not every hypothesis is a mechanistic hypothesis.
 
-The output is not a Plan, not a claim, and not a substitute for the Divergence checkpoint. It is the pre-grounding mechanism record used before Prior-work grounding and the Plan section.
+The output is not a Plan, not a claim, and not a substitute for the Divergence checkpoint. It is the pre-grounding hypothesis-generation record used before Prior-work grounding and the Plan section.
 
 ## Core rule
 
-Do not start from candidate ideas. Do not create a candidate portfolio. Start with what is known, missing, measured, constrained, and comparable. A method name, paper name, analogy, metric swap, larger model, or "try Transformer" is an intervention fragment, not a mechanism hypothesis.
+Do not start from candidate ideas. Do not create a candidate portfolio. Start with what is observed, analyzed, known, missing, measured, constrained, and comparable. Hypotheses may come from mechanistic reasoning, abduction / inference to the best explanation, analogy, theory-driven derivation, or induction from observations, but they must connect back to the current situation and yield observable predictions or expected observations.
+
+A method name, paper name, analogy, metric swap, larger model, or "try Transformer" is an intervention fragment, not a hypothesis. A mechanism label is also not enough: a mechanistic hypothesis must say what entities, activities, process, organization, or mechanism of action produce the phenomenon and what observable consequences follow.
+
+Use the hypothetico-deductive verification frame: hypothesis -> predictions / expected observations -> evidence. Do not reverse the order by explaining why an unobserved success happened.
 
 ## Protocol
 
@@ -16,9 +20,83 @@ Record:
 
 - Available material: successes, failures or limits, lineage, evaluation or measurement, constraints, unknowns, observable quantities, comparators, and counterfactuals.
 - Missing material: observations, reproduced failures, baselines, evaluator, measurement definitions, counterfactuals, prior-work grounding, or minimal model.
-- Why hypothesis generation is allowed or blocked: if the material cannot support a discriminating prediction, park and define the next observation task.
+- Why hypothesis generation is allowed or blocked: if the material cannot support an observable prediction or expected observation, park and define the next observation task.
+- Hypothesis type: predictive / performance, mechanistic, causal / intervention, descriptive / characterization, theoretical, or mixed with a declared primary type.
 
 When material is missing, do not fill the gap with a plausible idea. Return to observation collection, success-case search, failure reproduction, evaluator construction, measurement definition, comparator creation, counterfactual construction, or minimal-model work.
+
+## Hypothesis types
+
+Choose the type before choosing the record shape.
+
+| Type | Use when | Required output |
+|---|---|---|
+| Predictive / performance | The claim is that a method, condition, or intervention will produce an observable effect, such as beating a baseline/SOTA or improving a metric. | Situation-grounding, hypothesis statement, prediction / expected effect, primary evidence measure, fair comparator or baseline, support/rejection threshold. |
+| Mechanistic | The claim is why or how a phenomenon occurs: entities, activities, process, organization, or mechanism of action that produces it. | Mechanistic analysis plus Mechanism hypothesis record. |
+| Causal / intervention | The claim is that changing A changes B under stated conditions. | Intervention, outcome, control/comparator, assumptions, evidence route, support/rejection threshold. |
+| Descriptive / characterization | The claim is about properties, limits, regimes, or patterns of a phenomenon. | Variable space, expected observation type, measurement, stopping or follow-up criteria. |
+| Theoretical | The claim is a derivation, theorem, bound, or formal relationship. | Definitions, assumptions, derivation route, limiting cases, expected formal consequences. |
+
+### Type decision procedure
+
+Use this order. Do not choose by vibe, method name, or how interesting the explanation sounds.
+
+1. If the user or intended claim asks for proof, derivation, theorem, bound, or formal relationship, choose `theoretical`.
+2. If the user or intended claim asks "why", "how", "mechanism", "inside the model", "component contribution", "circuit", "process", "mechanism of action", or equivalent, choose `mechanistic`.
+3. If the user or intended claim says changing A causes, prevents, increases, decreases, or otherwise intervenes on B, choose `causal / intervention`.
+4. If the user or intended claim asks what properties, limits, regimes, slices, failure modes, or empirical patterns exist, choose `descriptive / characterization`.
+5. If the user or intended claim asks whether a method, setting, model, or system will beat a baseline/SOTA, improve a metric, match a threshold, or produce an observable effect, choose `predictive / performance`.
+
+For mixed cases, choose the primary type from the claim the plan is meant to support. Secondary ideas can appear as rationale or limitations, but they must not change the record shape. In particular, do not add a Mechanism hypothesis record to a predictive / performance plan unless the final claim would include why or how the effect occurs.
+
+If the type is unclear, default to the narrowest claim the planned evidence can support. When evidence can only support "A improves metric B over baseline C," choose `predictive / performance`, not `mechanistic`.
+
+### Non-mechanistic record shapes
+
+For `predictive / performance`, record:
+
+- Hypothesis type: predictive / performance
+- Situation-grounding:
+- Hypothesis statement:
+- Prediction / expected effect:
+- Primary evidence measure:
+- Fair comparator or baseline:
+- Support threshold:
+- Rejection / park condition:
+- Artifact plan:
+
+For `causal / intervention`, record:
+
+- Hypothesis type: causal / intervention
+- Situation-grounding:
+- Intervention:
+- Outcome:
+- Control or comparator:
+- Assumptions:
+- Evidence route:
+- Support threshold:
+- Rejection / park condition:
+
+For `descriptive / characterization`, record:
+
+- Hypothesis type: descriptive / characterization
+- Situation-grounding:
+- Variable space:
+- Measurement:
+- Expected observation type:
+- Follow-up / stop criteria:
+- Artifact plan:
+
+For `theoretical`, record:
+
+- Hypothesis type: theoretical
+- Definitions / objects:
+- Assumptions:
+- Claim / conjecture:
+- Derivation route:
+- Limiting cases:
+- Expected formal consequences:
+- Counterexample / park condition:
 
 ### Analysis lenses considered
 
@@ -41,7 +119,7 @@ The constraint is deliberate: shallow coverage of every lens is weaker than a fo
 
 ### Success mechanism lens
 
-Inspects why a success worked rather than only what worked. Useful for strong baselines, simple methods beating complex methods, or stable empirical successes.
+Inspects why an observed success may work rather than only what worked. Useful for strong baselines, simple methods beating complex methods, or stable empirical successes. It is not permission to explain why an unobserved candidate method succeeded.
 
 Hypothesis rule: if the success mechanism is essential, direct it, purify it, extend it, or move it to a new condition, and predict what should change.
 
@@ -95,7 +173,7 @@ Hypothesis rule: if the problem structure is isomorphic, transfer the mechanism,
 
 ## From analysis to record
 
-Every adopted analysis must be converted to:
+Every adopted analysis must be converted to a hypothesis-generation record. For non-mechanistic hypotheses, use the required output for the selected hypothesis type above. For mechanistic hypotheses, use:
 
 - Observation: what was observed, including success, failure, limit, constraint, or measurement mismatch.
 - Mechanistic analysis: which process explains the observation: information flow, gradient flow, search, measurement, representation, constraint, state transition, or decision coupling.
@@ -108,13 +186,14 @@ Every adopted analysis must be converted to:
 
 ## Mechanism hypothesis record
 
-Use this shape in plans when the plan began from research ideas, research directions, hypothesis candidates, or "what should we try next":
+Use this shape only when the selected hypothesis type is mechanistic:
 
 ```markdown
 ## Research situation diagnosis
 - Available material:
 - Missing material:
 - Why hypothesis generation is allowed or blocked:
+- Hypothesis type: mechanistic
 
 ## Analysis lenses considered
 - Lens:
@@ -162,6 +241,10 @@ If asked for 5, 10, 10 ideas, or many ideas, do not answer with a list. Under ti
 
 If asked to use attention, Transformer, RNN, a larger model, a filter, or another named method, treat the method as an intervention fragment and ask what failure, success, measurement mismatch, or constraint it is supposed to explain.
 
+### Baseline / SOTA pressure
+
+If asked to beat a baseline, reach SOTA, or improve a benchmark, choose `predictive / performance` unless the user explicitly asks why/how the effect occurs or the intended final claim includes a mechanism. "Method A improves metric B over baseline C" is predictive / performance, not mechanistic. The right pre-result object is the prediction, baseline identity, evaluation protocol, leakage checks, variance or split policy when relevant, support/rejection threshold, and artifact plan. Do not make why-it-worked decomposition the main plan unless the user or claim explicitly asks for mechanism.
+
 ### Paper-name pressure
 
 If a user invokes ResNet, DenseNet, Transformer, GPT, LSTM, AlphaGo, AlphaFold, or another success, do not use the name as authority. Use only the extracted mechanism and state why the current problem has the same or different structure.
@@ -204,8 +287,16 @@ Do not collapse them into one universal principle.
 
 - Producing many candidate ideas before diagnosis.
 - Treating a named method, paper, or analogy as the hypothesis.
+- Treating all hypotheses as mechanism hypotheses.
+- Treating a predictive / performance hypothesis as if it already needs a why-it-worked decomposition.
 - Committing under sparse information instead of defining observable quantities or a minimal model.
 - Choosing one analysis lens mechanically without comparing what other lenses miss.
-- Writing good commentary but failing to convert it into a mechanism hypothesis record.
+- Writing good commentary but failing to convert it into a typed hypothesis record.
 - Treating performance improvement as enough when competing hypotheses remain live.
 - Treating evaluator failure as a reason to generate new ideas instead of revising, parking, or killing the mechanism record.
+
+## Sources
+
+- [Stanford Encyclopedia of Philosophy — Mechanisms in Science](https://plato.stanford.edu/archives/spr2021/entries/science-mechanisms/) for mechanism as organized entities and activities responsible for a phenomenon.
+- [NCBI Bookshelf — An Introduction to Mechanisms](https://www.ncbi.nlm.nih.gov/books/NBK543865/) for mechanisms of action and evidence of mechanisms.
+- [Encyclopaedia Britannica — Hypothetico-deductive method](https://www.britannica.com/science/hypothetico-deductive-method) for deriving empirically testable consequences from hypotheses.

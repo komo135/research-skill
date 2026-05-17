@@ -27,8 +27,8 @@ last_updated: YYYY-MM-DD
 ## Question / Objective
 <One paragraph stating what this plan investigates or builds.>
 
-## Mechanism hypothesis record
-<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Record the mechanistic generation contract from `references/mechanistic_hypothesis_generation.md`: research situation diagnosis, analysis lenses considered, adopted analysis lenses, mechanistic analysis, and a Mechanism hypothesis record with hypothesis, competing hypothesis, discriminating prediction, minimal test, required evidence, Decision, and Reason. This section does not replace Survey evidence.>
+## Hypothesis generation
+<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Use `references/mechanistic_hypothesis_generation.md` to diagnose the situation and choose a hypothesis type. Record a Mechanism hypothesis record only when the selected hypothesis is mechanistic. For predictive / performance, causal / intervention, descriptive, or theoretical hypotheses, record the hypothesis type, grounding, prediction or expected observation, evidence route, and threshold in the Plan section. This section does not replace Survey evidence.>
 
 ## Prior-work grounding
 <Bounded but sufficient grounding from a plan-scoped literature survey for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations. Cite `literature/papers.md` and `literature/positioning.md`. Record search date, queries/sources, selection rationale, negative findings, any retrieval-unavailable constraint, and a citation-use map that states how each cited work is used in the plan. If prior work is genuinely unknown after the survey, record the named constraint and narrow or block relevant claims.>
@@ -63,36 +63,50 @@ last_updated: YYYY-MM-DD
 - Related literature: <see literature/papers.md entries>
 ```
 
-## Mechanism hypothesis record section
+## Hypothesis generation section
 
 This section appears after `## Question / Objective` and before `## Prior-work grounding` when the user asks for research ideas, research directions, hypothesis candidates, or "what should we try next." It records the output of `references/mechanistic_hypothesis_generation.md`.
 
-The section is optional for ordinary plans that begin with an already chosen objective. It is required for ideation tasks because the user-visible contract is no longer a list of candidates. The contract is: diagnose the research situation, compare analysis lenses, adopt one primary lens plus 0-2 auxiliaries, convert the analysis into a mechanism hypothesis, separate a competing hypothesis, define a discriminating prediction and minimal test, then decide `commit / park / kill`.
+The section is optional for ordinary plans that begin with an already chosen objective. It is required for ideation tasks because the user-visible contract is no longer a list of candidates. The contract is: diagnose the research situation, choose the hypothesis type, derive predictions or expected observations, then decide `commit / park / kill`. A Mechanism hypothesis record is required only when the selected hypothesis is mechanistic.
 
 This section does not replace Survey evidence. A `commit` decision is not final until Survey evidence exists; section order is not permission to finalize commit before Survey evidence.
 
 ```markdown
-## Mechanism hypothesis record
+## Hypothesis generation
 
-<Not applicable: objective already chosen. If this plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," use `references/mechanistic_hypothesis_generation.md` and record the full contract below. This section is required when the plan began from research ideas, research directions, hypothesis candidates, or "what should we try next." This does not replace Survey evidence.>
+<If the plan began with an already chosen objective, write `Not applicable: objective already chosen.` If the plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," use `references/mechanistic_hypothesis_generation.md`, fill the diagnosis, choose the hypothesis type, and fill the type-specific record. The mechanism-only subsections are required when the plan began from research ideas and the chosen hypothesis type is mechanistic; otherwise write `Omitted: hypothesis type is <type>; no mechanism claim is being made.` This does not replace Survey evidence.>
 
 ### Research situation diagnosis
 - Available material: <successes, failures or limits, lineage, evaluation or measurement, constraints, unknowns, observable quantities, comparators, and counterfactuals>
 - Missing material: <observations, reproduced failures, baselines, evaluator, measurement definitions, counterfactuals, prior-work grounding, or minimal model>
-- Why hypothesis generation is allowed or blocked: <allowed because material supports a discriminating prediction / hypothesis generation is blocked because named material is missing>
+- Why hypothesis generation is allowed or blocked: <allowed because material supports an observable prediction or expected observation / hypothesis generation is blocked because named material is missing>
+- Hypothesis type: <predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical | mixed with primary type>
+
+### Type-specific hypothesis record
+- Hypothesis type: <predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical | mixed with primary type>
+- Situation-grounding: <observations, analysis, prior result, failure trace, constraint, theory, or prior work that produced the hypothesis>
+- Hypothesis statement: <one falsifiable or supportable statement>
+- Prediction / expected observation: <observable result expected if the hypothesis is useful>
+- Primary evidence route: <metric, evaluator, comparison, measurement, derivation, or observation route>
+- Support threshold: <what evidence would support proceeding>
+- Rejection / park condition: <what evidence or missing material would reject or park the hypothesis>
+- Mechanism claim included: <yes only if the final claim asks why/how through entities, activities, process, organization, or mechanism of action; otherwise no>
 
 ### Analysis lenses considered
+<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; analysis lenses are not required because no mechanism claim is being made.`>
 - Lens: <Success mechanism / Failure dynamics / Lineage-difference / Center-auxiliary inversion / Problem-form transformation / Measurement and evaluation / Constraint relocation / Sparse-information / Cross-domain mechanism transfer>
   - What it would inspect: <process, evidence, or constraint inspected>
   - What it may miss: <blind spot of this lens>
   - Use decision: <primary / auxiliary / not used with reason>
 
 ### Adopted analysis lenses
+<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; no mechanism lenses adopted.`>
 - Primary lens: <exactly one lens>
 - Auxiliary lenses: <0-2 lenses, or None with reason>
 - Reason: <why these lenses best separate the live explanations>
 
 ### Mechanistic analysis
+<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; no mechanism explanation is being tested.`>
 - Observation: <success, failure, limit, constraint, or measurement mismatch>
 - Analysis lens used: <primary lens plus auxiliaries when used>
 - Mechanistic interpretation: <information flow, gradient flow, search, measurement, representation, constraint, state transition, or decision-coupling explanation>
@@ -100,6 +114,7 @@ This section does not replace Survey evidence. A `commit` decision is not final 
 - What would be different if this interpretation is true: <observable contrast>
 
 ### Mechanism hypothesis record
+<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; no Mechanism hypothesis record.`>
 - Hypothesis: <cause, condition, and expected change>
 - Competing hypothesis: <another mechanism explaining the same observation>
 - Discriminating prediction: <how outcomes differ between hypothesis and competing hypothesis>
@@ -230,11 +245,12 @@ Fix the hypothesis or objective, primary evidence measure, and decision threshol
 ```markdown
 ### Hypothesis rationale
 - Source observation: <observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension>
-- Mechanism conjecture: <proposed mechanism that would explain the observation or make the intervention plausible>
+- Hypothesis type: <predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical>
+- Mechanism conjecture: <if mechanistic: proposed entities, activities, process, organization, or mechanism of action; otherwise `Not applicable`>
 - Proposed intervention: <method, architecture, data change, metric change, evaluation change, system change, or framing change>
-- Predicted effect: <measurable effect expected if the mechanism conjecture is right>
-- Counter-hypothesis: <plausible alternative explanation under which the predicted effect should not appear>
-- Minimal disconfirming test: <smallest test, ablation, comparison, or observation that would reject, narrow, or park the hypothesis>
+- Predicted effect: <measurable effect, prediction, or expected observation derived from the hypothesis>
+- Counter-hypothesis: <only when needed for the claim; plausible alternative explanation under which the predicted effect should not appear>
+- Minimal disconfirming test: <smallest comparison, observation, derivation check, or controlled intervention that would reject, narrow, or park the hypothesis; ablation only when component contribution is claimed>
 
 ### Hypothesis
 - <one sentence statement of the prediction>
@@ -564,7 +580,7 @@ Mirror the entry in `decisions.md` for any branch except `NEXT_STEP`.
 - **Confirmatory plan with no decision threshold.** The whole point of confirmatory is the threshold. State it explicitly.
 - **Exploratory plan with hidden hypothesis.** Writing "we expect X" without committing to a decision threshold converts exploration into informal confirmation. Either commit to confirmatory mode with an explicit threshold, or stay honestly exploratory with a variable space.
 - **No Divergence checkpoint.** A plan that only follows the user's preferred route can still be well formatted and still be weak research. Fill the checkpoint before execution.
-- **Literature-first hypothesis generation.** If the user asked for research ideas, do not summarize prior work as a substitute for diagnosis. Use the Mechanism hypothesis record section first, then apply Prior-work grounding before finalizing `commit`.
+- **Literature-first hypothesis generation.** If the user asked for research ideas, do not summarize prior work as a substitute for diagnosis. Use the `Hypothesis generation` section first, choose hypothesis type, then apply Prior-work grounding before finalizing `commit`.
 - **Portfolio made of parameter tweaks.** Three thresholds of the same signal are not three approaches. Record them as one primary route with a sweep, then add real alternatives or explicitly narrow the claim scope to the tested route.
 - **Prior result treated as fact.** "Previous run was best" is an anchor, not a premise. Record what would revalidate it, what rework is required, or what claim condition remains after Result analysis explains the new outcome.
 - **Claim made before prior-work grounding.** If the plan says novel, new method, publishable, to our knowledge, or no baseline exists, cite or update `literature/positioning.md` and point to a comprehensive literature survey before execution. If the claim is not a novelty claim, the plan still needs bounded but sufficient prior-work grounding and must classify itself as replication, baseline strengthening, engineering, or another grounded position.

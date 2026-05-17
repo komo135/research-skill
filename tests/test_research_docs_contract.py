@@ -312,7 +312,7 @@ def test_research_skill_routes_research_idea_generation_to_mechanistic_reference
     )
     assert_ordered_fragments(
         rd_plan,
-        "Mechanism hypothesis record",
+        "Hypothesis generation",
         "Prior-work grounding",
         "Divergence checkpoint",
         "## Plan",
@@ -343,6 +343,34 @@ def test_mechanistic_generation_starts_with_research_situation_diagnosis():
         "counterfactuals",
     )
     assert_absent(reference, "Idea portfolio")
+
+
+def test_hypothesis_generation_separates_performance_from_mechanism_contract():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
+    plan_review = read("skills/research-plan-review/SKILL.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    assert_mentions(
+        reference,
+        "beating a baseline/SOTA or improving a metric",
+        "choose `predictive / performance`",
+        "do not add a Mechanism hypothesis record to a predictive / performance plan",
+        '"A improves metric B over baseline C," choose `predictive / performance`, not `mechanistic`',
+        "Do not make why-it-worked decomposition the main plan unless",
+    )
+    assert_mentions(
+        plan_review,
+        'if the intended claim is only "A improves metric B over baseline C," the type is predictive / performance',
+        "The review must not turn a predictive / performance hypothesis into a mechanism study",
+    )
+    for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
+        assert_mentions(
+            text,
+            "Type-specific hypothesis record",
+            "Mechanism claim included",
+            "Omitted: hypothesis type is <type>; no Mechanism hypothesis record",
+        )
 
 
 def test_mechanistic_generation_compares_lenses_before_adopting_one():
@@ -758,7 +786,7 @@ def test_plan_schema_records_mechanistic_hypothesis_generation_contract():
 
     assert_ordered_fragments(
         rd_plan,
-        "## Mechanism hypothesis record",
+        "## Hypothesis generation",
         "### Research situation diagnosis",
         "Available material",
         "Missing material",
@@ -787,7 +815,7 @@ def test_plan_schema_and_templates_record_lens_and_decision_contract():
     for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
         assert_ordered_fragments(
             text,
-            "## Mechanism hypothesis record",
+            "## Hypothesis generation",
             "### Research situation diagnosis",
             "### Analysis lenses considered",
             "### Mechanistic analysis",
@@ -876,7 +904,7 @@ def test_plan_templates_include_mechanism_record_before_prior_work_grounding():
         assert_ordered_fragments(
             text,
             "## Question / Objective",
-            "## Mechanism hypothesis record",
+            "## Hypothesis generation",
             "## Prior-work grounding",
             "## Divergence checkpoint",
             "## Plan",
@@ -914,7 +942,7 @@ def test_mechanism_record_is_not_a_pre_execution_divergence_review():
 
     assert_ordered_fragments(
         rd_plan,
-        "## Mechanism hypothesis record",
+        "## Hypothesis generation",
         "### Mechanism hypothesis record",
         "Decision",
         "## Prior-work grounding",
@@ -928,13 +956,14 @@ def test_mechanism_record_is_not_a_pre_execution_divergence_review():
     )
 
 
-def test_readme_documents_mechanistic_hypothesis_generation_before_prior_work_grounding():
+def test_readme_documents_hypothesis_generation_before_prior_work_grounding():
     readme = read("README.md")
 
     assert_ordered_fragments(
         readme,
         "Question / Objective",
-        "Mechanistic hypothesis generation",
+        "Hypothesis generation and mechanistic hypotheses",
+        "hypothesis type",
         "Mechanism hypothesis record",
         "prior-work grounding",
     )
@@ -944,7 +973,8 @@ def test_readme_documents_mechanistic_hypothesis_generation_before_prior_work_gr
         "hypothesis candidates",
         "what should we try next",
         "research situation diagnosis",
-        "analysis lenses",
+        "predictive / performance",
+        "Mechanistic hypotheses are narrower",
         "commit / park / kill",
         "mechanistic_hypothesis_generation.md",
     )
@@ -1591,7 +1621,7 @@ def test_mechanism_record_schema_and_templates_include_assumptions_and_required_
 
     assert_ordered_fragments(
         rd_plan,
-        "## Mechanism hypothesis record",
+        "## Hypothesis generation",
         "### Mechanistic analysis",
         "Assumptions exposed",
         "What would be different if this interpretation is true",
@@ -1619,7 +1649,7 @@ def test_mechanism_record_schema_and_templates_include_assumptions_and_required_
         text = template.read_text(encoding="utf-8")
         assert_ordered_fragments(
             text,
-            "## Mechanism hypothesis record",
+            "## Hypothesis generation",
             "### Mechanistic analysis",
             "Assumptions exposed",
             "What would be different if this interpretation is true",
@@ -1644,7 +1674,7 @@ def test_mechanism_record_schema_and_templates_include_lens_selection_contract()
     for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
         assert_ordered_fragments(
             text,
-            "## Mechanism hypothesis record",
+            "## Hypothesis generation",
             "### Research situation diagnosis",
             "### Analysis lenses considered",
             "What it would inspect",
@@ -1886,7 +1916,7 @@ def test_check_mechanism_hypothesis_record_blocks_commit_when_generation_is_bloc
 def test_check_mechanism_hypothesis_record_allows_commit_when_diagnosis_says_not_blocked():
     plan = complete_mechanism_record(decision="commit").replace(
         "Why hypothesis generation is allowed or blocked: allowed because observed failures, baseline behavior, evaluation target, and comparator path are available.",
-        "Why hypothesis generation is allowed or blocked: not blocked; material supports a discriminating prediction.",
+        "Why hypothesis generation is allowed or blocked: not blocked; material supports an observable prediction.",
     )
 
     result = run_mechanism_record_check(plan)

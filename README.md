@@ -49,8 +49,8 @@ Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Th
 
 ```
 1. new_plan.py creates plans/{id}_{slug}.md (mode-specific template)
-2. Write Question / Objective. If ideating, write the Mechanistic hypothesis generation Mechanism hypothesis record before prior-work grounding.
-3. For hypothesis-generation work, run research situation diagnosis, analysis lens comparison, mechanistic analysis, and `check_mechanism_hypothesis_record.py` before planning from the record.
+2. Write Question / Objective. If ideating, use `references/mechanistic_hypothesis_generation.md` to diagnose the situation and choose the hypothesis type before prior-work grounding.
+3. For mechanistic hypothesis-generation work, write the Mechanism hypothesis record and run `check_mechanism_hypothesis_record.py` before planning from the record.
 4. Run a plan-scoped literature survey, then write Prior-work grounding and the Divergence checkpoint before the Plan section.
 5. Write Plan section.
 6. Plan review — dispatch a fresh separate-context plan-review subagent using `research-plan-review` and pass only the plan path. Repair blockers before execution.
@@ -77,11 +77,13 @@ Plans also record a citation-use map: each cited work must name how it is used i
 
 Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. That is separate from the plan-scoped prior-work grounding every plan needs.
 
-### Mechanistic hypothesis generation
+### Hypothesis generation and mechanistic hypotheses
 
-When a user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," the `research` skill uses `references/mechanistic_hypothesis_generation.md` to create a **Mechanism hypothesis record** before prior-work grounding. The record starts with research situation diagnosis, separates available and missing material, compares analysis lenses, adopts one primary lens plus 0-2 auxiliary lenses, converts observations into mechanistic analysis, and ends with a hypothesis, competing hypothesis, discriminating prediction, minimal test, required evidence, and `commit / park / kill` decision.
+When a user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," the `research` skill uses `references/mechanistic_hypothesis_generation.md` before prior-work grounding. The reference starts with research situation diagnosis, separates available and missing material, and chooses the hypothesis type: predictive / performance, mechanistic, causal / intervention, descriptive / characterization, theoretical, or mixed with a declared primary type.
 
-Information gaps normally force `park`, not a more confident idea. Method names, paper names, analogies, metric swaps, and model-size changes are intervention fragments until they become a discriminating mechanism record.
+The verification frame is hypothetico-deductive: state a grounded hypothesis, derive observable predictions or expected effects, then compare those predictions with evidence. Mechanistic hypotheses are narrower: they claim why or how a phenomenon occurs through entities, activities, process, organization, or mechanism of action. They use a Mechanism hypothesis record with mechanistic analysis, competing mechanism, discriminating prediction, minimal test, required evidence, and `commit / park / kill`.
+
+Information gaps normally force `park`, not a more confident idea. Method names, paper names, analogies, metric swaps, and model-size changes are intervention fragments until they become a grounded typed hypothesis with predictions or expected observations.
 
 ### Assumption audit and evaluator-grounded refinement
 
@@ -258,7 +260,7 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.7.1** — keeps the v2.7 mechanistic hypothesis protocol and tightens plan review into a premise and hypothesis-validation stop gate before execution.
+**Version 2.7.1** — keeps the v2.7 hypothesis-generation protocol, distinguishes mechanistic hypotheses from other hypothesis types, and tightens plan review into a premise and hypothesis-validation stop gate before execution.
 
 <details>
 <summary>Changelog</summary>
@@ -272,18 +274,19 @@ Tightens `research-plan-review` so reviewers stop plans built on wrong, unsuppor
 - Reframed plan review as a pre-execution stop gate for broken premises and invalid hypothesis validation methods.
 - Updated plan review output templates to center `Premise check`, `Hypothesis validation method`, and `Stop decision`.
 - Preserved narrowed observation, measurement-construction, and exploratory plans when their claim scope is explicit.
+- Clarified that not every hypothesis is mechanistic. Hypothesis generation now chooses a hypothesis type before requiring a Mechanism hypothesis record, and uses hypothetico-deductive prediction/evidence structure for verification.
 
-### v2.7.0 — mechanistic hypothesis generation
+### v2.7.0 — typed hypothesis generation and mechanistic hypothesis records
 
-Replaces active research idea generation with a mechanism-first record that makes assumptions, analysis lenses, competing hypotheses, predictions, tests, evidence needs, and commit / park / kill decisions explicit before planning.
+Replaces active research idea generation with a typed hypothesis-generation record. Mechanistic hypotheses use a mechanism record that makes assumptions, analysis lenses, competing mechanisms, predictions, tests, evidence needs, and commit / park / kill decisions explicit before planning.
 
 **Added / changed**
 
-- Replaced the active `Idea portfolio` workflow with the `Mechanism hypothesis record` workflow.
-- Added `skills/research/references/mechanistic_hypothesis_generation.md` as the primary idea-generation reference.
+- Replaced the active `Idea portfolio` workflow with the hypothesis-generation workflow.
+- Added `skills/research/references/mechanistic_hypothesis_generation.md` as the primary idea-generation reference. The filename is historical; the reference now distinguishes predictive / performance, mechanistic, causal / intervention, descriptive / characterization, and theoretical hypotheses.
 - Added `skills/research/scripts/check_mechanism_hypothesis_record.py` and removed the old idea-portfolio checker.
 - Deprecated the old ideation references as compatibility stubs that redirect to mechanistic hypothesis generation.
-- Updated the skill instructions, plan templates, and README contract to require mechanistic hypothesis generation before planning from research ideas.
+- Updated the skill instructions, plan templates, and README contract to require hypothesis type selection before planning from research ideas, with Mechanism hypothesis records only for mechanistic hypotheses.
 - Hardened the checker for candidate-list preambles, per-lens fields, primary/auxiliary lens counts, and blocked/commit consistency.
 
 ### v2.6.2 — pre-result planning boundary

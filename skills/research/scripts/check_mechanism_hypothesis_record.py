@@ -98,7 +98,7 @@ def extract_mechanism_section(text: str) -> str | None:
     lines = text.splitlines()
     start = None
     for i, line in enumerate(lines):
-        if re.match(r"^##\s+Mechanism hypothesis record\s*$", line, flags=re.IGNORECASE):
+        if re.match(r"^##\s+(Mechanism hypothesis record|Hypothesis generation)\s*$", line, flags=re.IGNORECASE):
             start = i + 1
             break
     if start is None:

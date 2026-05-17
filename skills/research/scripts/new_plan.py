@@ -12,11 +12,12 @@ Creates:
     experiments/<id>_<slug>/{code,configs,runs,notebooks}/
 
 The plan is NOT auto-committed. Fill the Question / Objective, Mechanism
-hypothesis record when ideating, plan-scoped literature survey before the Plan
-section, Prior-work grounding, Divergence checkpoint, and Plan sections first.
+hypothesis record when ideating and mechanistic, otherwise hypothesis type,
+plan-scoped literature survey before the Plan section,
+Prior-work grounding, Divergence checkpoint, and Plan sections first.
 The plan-scoped literature survey is before the Plan section.
-For hypothesis-generation plans, run check_mechanism_hypothesis_record.py before
-planning from the record. Dispatch research-plan-review with
+For mechanistic hypothesis-generation plans, run check_mechanism_hypothesis_record.py
+before planning from the record. Dispatch research-plan-review with
 the plan path only before execution. Then commit the reviewed plan; that commit
 is the time-anchor. After execution, fill Actual execution and Planned vs
 Actual, then dispatch research-result-analysis with the plan path only before
@@ -118,10 +119,10 @@ def main():
     print()
     print("Next steps:")
     print(
-        f"  1. Fill in the Question / Objective, Mechanism hypothesis record when ideating, plan-scoped literature survey, Prior-work grounding, Divergence checkpoint, and Plan sections of "
+        f"  1. Fill in the Question / Objective, Mechanism hypothesis record when ideating and mechanistic, otherwise hypothesis type, plan-scoped literature survey, Prior-work grounding, Divergence checkpoint, and Plan sections of "
         f"{plan_path.relative_to(project)}"
     )
-    print("  2. If ideating, run scripts/check_mechanism_hypothesis_record.py before planning from the record")
+    print("  2. If the selected hypothesis type is mechanistic, run scripts/check_mechanism_hypothesis_record.py before planning from the record")
     print(f"  3. git add plans/{plan_name}.md experiments/{plan_name}/")
     print("  4. Dispatch research-plan-review with the plan path only and record Plan review")
     print(f"  5. git commit -m 'Plan {plan_id}: {slug}'")
