@@ -104,6 +104,12 @@ PLACEHOLDER_PATTERNS = [
     re.compile(r"\{\{"),
 ]
 
+NON_CANDIDATE_BULLET_LABELS = {
+    "catalog source",
+    "note",
+    "notes",
+}
+
 
 def extract_idea_portfolio(text: str) -> str | None:
     lines = text.splitlines()
@@ -232,13 +238,16 @@ def parse_candidate_blocks(body: str) -> dict[str, dict[str, str]]:
         candidate = re.match(r"^-\s*([^:]+?)\s*:\s*(.*)$", line)
         if candidate:
             current = candidate.group(1).strip()
+            if current.lower() in NON_CANDIDATE_BULLET_LABELS:
+                current = None
+                continue
             candidates.setdefault(current, {})
             rest = candidate.group(2).strip()
             if rest:
                 candidates[current]["_summary"] = rest
             continue
 
-        field = re.match(r"^\s{2,}-\s*([^:]+?)\s*:\s*(.*?)\s*$", line)
+        field = re.match(r"^[ \t]+-\s*([^:]+?)\s*:\s*(.*?)\s*$", line)
         if field and current is not None:
             candidates[current][field.group(1).strip().lower()] = field.group(2).strip()
 
@@ -441,7 +450,7 @@ def check_portfolio(text: str) -> list[str]:
     if portfolio is None:
         return []
 
-    if "not applicable: objective already chosen" in portfolio.lower() and "###" not in portfolio:
+    if re.search(r"not applicable\b.*\bobjective\b.*\balready\b.*\bchosen\b", portfolio.lower(), flags=re.DOTALL) and "###" not in portfolio:
         return []
 
     sections = extract_subsections(portfolio)

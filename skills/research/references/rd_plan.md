@@ -362,6 +362,8 @@ When no empirical evaluator exists, `Limitations` (in the eventual report) recor
 
 Before execution, dispatch a fresh separate-context plan-review subagent with the `research-plan-review` skill. Pass only the plan path as the starting context. The reviewer evaluates research design before any results exist.
 
+Plan review may return an execution recommendation because it is a pre-execution design gate. That recommendation is not a claim-readiness verdict; readiness, claims, decisions, and reports remain outside plan review.
+
 Record the subagent output in the plan:
 
 ```markdown

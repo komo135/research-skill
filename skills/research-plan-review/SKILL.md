@@ -11,6 +11,8 @@ Independent review for a drafted research plan before execution. The plan path i
 
 This skill reviews design only. Do not execute the plan, do not analyze results, and do not write final claims.
 
+The `Execution recommendation` is a pre-execution design recommendation: whether the plan is informative enough to run as written, needs repair, or should be blocked before execution. It is not a claim-readiness verdict and must not use result-analysis readiness labels.
+
 ## Workflow
 
 1. **Read the plan**  
@@ -20,6 +22,7 @@ This skill reviews design only. Do not execute the plan, do not analyze results,
    For applied research, check the chain from observation to mechanism hypothesis, proposed intervention, predicted measurable effect, counter-hypothesis, and discriminating test.  
    For basic research, check the principle, phenomenon, or structure to be understood; the observation or derivation route; the method for separating candidate explanations; and what would refine the question.  
    For experimental development, check that acceptance criteria also produce knowledge about why the system or process behaves as observed.
+   For theoretical mode, check the derivation question, axioms / definitions / prior theorems, proposed derivation route, limiting-case checks, empirical sanity check if present, and named failure modes.
 
 3. **Check discriminating power**  
    Ask whether the plan can separate the primary hypothesis from plausible alternatives, procedure defects, comparator issues, leakage, and measurement artifacts. A plan that can only show "metric went up" is not enough when the research objective asks why.

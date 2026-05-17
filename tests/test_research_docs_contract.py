@@ -541,6 +541,24 @@ def test_plan_review_and_result_analysis_skill_boundaries_are_documented():
         "Do not write final claims",
     )
     assert_mentions(
+        plan_review,
+        "execution recommendation",
+        "pre-execution",
+        "not a claim-readiness verdict",
+        "theoretical mode",
+        "derivation question",
+        "limiting-case checks",
+    )
+    assert_absent(
+        plan_review,
+        "Claim-readiness verdicts",
+        "Claim-readiness assessment",
+        "`ready`",
+        "`not_ready`",
+        "`invalid_evidence`",
+        "GO/NO-GO",
+    )
+    assert_mentions(
         result_analysis,
         "research-result-analysis",
         "plan path",
@@ -782,6 +800,7 @@ def test_new_plan_guidance_mentions_idea_portfolio_before_prior_work_grounding()
 
 def test_idea_portfolio_records_pre_execution_divergence_review():
     rd_plan = read("skills/research/references/rd_plan.md")
+    ideation = read("skills/research/references/ideation.md")
 
     assert_ordered_fragments(
         rd_plan,
@@ -793,6 +812,7 @@ def test_idea_portfolio_records_pre_execution_divergence_review():
         "prior-work",
         "not claims",
     )
+    assert_absent(ideation, "research review")
 
 
 def test_readme_documents_research_ideation_before_prior_work_grounding():
@@ -850,6 +870,7 @@ def test_research_skill_and_project_seed_positioning_not_differentiation():
     for text in [skill, new_project, project_readme]:
         assert_mentions(text, "literature/positioning.md")
         assert_absent(text, "literature/differentiation.md")
+    assert_absent(project_readme, "research review")
 
     assert_mentions(
         new_project,
@@ -1563,6 +1584,21 @@ Find a better short-term reversal signal under existing data constraints.
 
 - Candidate A: Gate reversal only after spread compression following a spike.
 
+### Hypothesis-generation handoff
+
+- Agent: fresh separate-context hypothesis-generation agent.
+- Starting context: anchor-stripped seed brief is the only generation brief; Excluded-anchor ledger is not input.
+- Web/literature retrieval: skipped with reason - substrate is already sufficient for raw hypothesis generation.
+- Output contract: multiple working hypotheses with source observation, mechanism conjecture, predicted effect, counter-hypothesis, minimal disconfirming test, and retrieval notes.
+
+### Main-agent intake
+
+- Authority check: generator output is seed material, not accepted authority, claim, plan, or decision.
+- Observation trace check: Candidate A traces to S1 and S2.
+- Mechanism review: Candidate A explains spread-spike failures rather than merely swapping methods.
+- Decision: advance Candidate A after anti-vacuity and evaluator feedback.
+- Next-plan action: open ADJACENT evaluator-construction plan before intervention claims.
+
 ### Assumption audit
 
 - Reference model challenged: short-term reversal signal treats high spread as pure contamination.
@@ -1699,6 +1735,62 @@ def test_check_idea_portfolio_rejects_negated_or_vague_blind_spot_markers():
     assert result.returncode == 1
     assert "Claim-scope effect must start with" in result.stdout
     assert "Required repair must start with" in result.stdout
+
+
+def test_check_idea_portfolio_accepts_one_space_or_tab_field_indentation():
+    plan = idea_portfolio_plan_with_blind_spot(
+        """
+- Candidate A:
+ - Blind-spot area: market microstructure regime.
+\t- How it could break the mechanism: spread compression could mean quote cleanup rather than inventory pressure.
+ - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
+\t- Required repair: narrow_conditions: add venue-regime stratification before broad claims.
+"""
+    )
+
+    result = run_idea_portfolio_check(plan)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_check_idea_portfolio_ignores_section_notes_when_parsing_candidates():
+    plan = idea_portfolio_plan_with_blind_spot(
+        """
+- Candidate A:
+  - Blind-spot area: market microstructure regime.
+  - How it could break the mechanism: spread compression could mean quote cleanup rather than inventory pressure.
+  - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
+  - Required repair: narrow_conditions: add venue-regime stratification before broad claims.
+"""
+    ).replace(
+        "### Generation operators\n\n- Candidate A:",
+        "### Generation operators\n\n- Note: Portfolio intentionally keeps one candidate after pruning.\n- Candidate A:",
+    )
+
+    result = run_idea_portfolio_check(plan)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_check_idea_portfolio_accepts_loose_not_applicable_objective_chosen():
+    plan = """# Objective Already Chosen
+
+## Question / Objective
+
+Use the already selected objective.
+
+## Idea portfolio
+
+Not applicable: an objective was already chosen before this plan.
+
+## Prior-work grounding
+
+Grounding starts here.
+"""
+
+    result = run_idea_portfolio_check(plan)
+
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_check_idea_portfolio_requires_survivors_to_have_blind_spot_records():

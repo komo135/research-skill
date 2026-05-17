@@ -261,7 +261,7 @@ Before execution, run one fresh review that attacks the portfolio breadth. Ask w
 
 An idea portfolio is not a plan. Promote only one selected candidate to `plans/<id>_<slug>.md`, and write `Prior-work grounding`, `Divergence checkpoint`, and `Plan` as usual.
 
-Failed idea is not a claim. Non-promoted ideas are not claims. Failed ideas, parked candidates, killed candidates, and merged candidates must not be written as claims. Non-promoted ideas are recorded as `parked / killed / merged`. Claims are written only for results that have passed execution, analysis, and research review.
+Failed idea is not a claim. Non-promoted ideas are not claims. Failed ideas, parked candidates, killed candidates, and merged candidates must not be written as claims. Non-promoted ideas are recorded as `parked / killed / merged`. Claims are written only for results that have passed execution, result analysis, and claim-structure checks.
 
 ## Common failures
 

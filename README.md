@@ -101,6 +101,8 @@ This keeps agents from silently accepting "just improve last time's best approac
 
 Before execution, the plan-review handoff uses `research-plan-review` and passes only the plan path. The reviewer checks the research design before any results exist: category/mode fit, mechanism hypothesis or principle, prediction or expected output, discriminating test, controls/comparators or limiting cases, evidence route, artifact plan, scope, and constraints. It returns `execute_as_written`, `revise_before_execution`, or `block_execution`.
 
+This verdict asymmetry is intentional. Plan review happens before execution, so it may recommend whether the design is informative enough to run. Result analysis happens after evidence exists and before claims / decisions, so it explains what happened and why but does not assess claim readiness, deployment, or iteration decisions.
+
 ### Result analysis subagent
 
 The result-analysis handoff uses `skills/research/references/result_analysis_subagent_prompt.md`. The prompt passes only the plan path; the subagent treats the plan as the only starting context and reconstructs necessary evidence from referenced artifacts. Parent-agent summaries, expected conclusions, and private execution notes are not inputs. Missing or ambiguous references are reported as `context_missing`.
@@ -262,6 +264,7 @@ Splits pre-execution design review and post-execution result analysis into the t
 
 - Added `research-plan-review` for plan-path-only review before execution.
 - Removed the post-result review gate from the active lifecycle.
+- Removed the Codex-specific result-analysis agent definition; result-analysis is now skill / prompt-template driven across agent runtimes.
 - Refocused `research-result-analysis` from readiness verdicts to explaining why the result happened: candidate explanations, evidence for/against, procedure/artifact explanations, live alternatives, and discriminating next analyses.
 - Kept document checks as regression guards; behavioral quality is validated with pressure scenarios against the skills.
 - Reworked ideation so de-anchored hypothesis generation uses an anchor-stripped seed brief, excluded-anchor ledger, optional fresh hypothesis-generation handoff, and explicit main-agent intake.
