@@ -307,7 +307,7 @@ Splits pre-execution design review and post-execution result analysis into the t
 **Added / changed**
 
 - Added `research-plan-review` for plan-path-only review before execution.
-- Removed the post-result review gate from the active lifecycle.
+- Removed the older completion gate from the active lifecycle.
 - Removed the Codex-specific result-analysis agent definition; result-analysis is now skill / prompt-template driven across agent runtimes.
 - Refocused `research-result-analysis` from readiness verdicts to explaining why the result happened: candidate explanations, evidence for/against, procedure/artifact explanations, live alternatives, and discriminating next analyses.
 - Kept document checks as regression guards; behavioral quality is validated with pressure scenarios against the skills.
@@ -417,10 +417,7 @@ Strengthens v2 research discipline without changing plugin identity.
 **Added / changed**
 
 - Required Divergence checkpoint before execution: approach portfolio, anchoring audit, research positioning, disconfirming evidence, and commitment decision.
-- Required a single post-result review before load-bearing claims, state-changing decisions, or reports.
-- Review verdicts were `PASS` / `REWORK` / `INVALID`; only `PASS` + `PASS` permitted promotion in that older lifecycle.
-- `REWORK` requires named reanalysis, repair, or rerun before any claim, decision, or report.
-- `INVALID` makes affected results unusable as evidence until repair, rerun, or research-plan redo.
+- Added stricter result-promotion discipline in the older lifecycle; this mechanism was later replaced by result analysis plus claim-structure checks.
 - Quant time-series test-set reuse is treated as a reliability failure requiring protocol reopening and fresh evaluation, not a weaker writeup.
 
 ### v2.0.0 — agent-driven R&D redesign
@@ -433,7 +430,7 @@ Complete redesign. No backward compatibility with v1.x.
 - Plan modes initially: `exploratory`, `confirmatory`, `milestone`; v2.4.0 adds `theoretical`
 - Iteration FSA with 5 explicit branches: `NEXT_STEP` / `REFINE` / `ADJACENT` / `PARK` / `CLOSE`
 - Divergence checkpoint before execution to expose alternatives, anchoring risk, research positioning, and disconfirming evidence before committing to a plan
-- Single post-result review before claim/decision/report promotion, covering analysis sufficiency and result reliability
+- Result-promotion discipline before claim/decision/report promotion, later superseded by result analysis plus claim-structure checks
 - Toulmin-derived claim structure (5 required fields, no numeric ladder)
 - `references/analysis.md` covering EDA, result analysis, depth stop conditions, and Observation→Interpretation→Claim staging — backed by Tukey 1977, Wickham, Mitchell 2019 Model Cards, Gebru 2021 Datasheets, Ribeiro 2020 CheckList, Guo 2017 calibration, Bouthillier 2021 variance, Pearl Ladder of Causation, Gelman-Loken forking paths, Toulmin 1958
 - Lightweight Amendment pattern: `REFINE` appends an Amendment rather than rewriting the Plan
