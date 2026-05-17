@@ -7,11 +7,11 @@ description: Use when conducting R&D work that needs claim discipline, planning 
 
 A protocol skill for agent-driven R&D. The job: keep research state honest while preserving research velocity. Use shared vocabulary so multiple sessions and tools can interoperate. Produce human-readable reports that someone outside the session can act on.
 
-## Skill role: substrate-driven generator
+## Skill role: mechanistic hypothesis generator
 
-This skill does not guarantee paradigm-shift ideas. It does, however, regulate and drive agent ideation by forcing candidates to be generated from named observations, constraints, explicit generation operators, and external or executable feedback. A one-line brainstorm is seed material, not an idea.
+This skill does not guarantee paradigm-shift ideas. It does, however, regulate research idea generation by forcing the agent to diagnose the research situation, compare analysis lenses, and convert observations into a falsifiable mechanism hypothesis record. A method name, paper name, analogy, or one-line brainstorm is an intervention fragment, not a hypothesis.
 
-The load-bearing boundary is now: the skill can generate bounded research candidates only when it has an idea substrate. If the agent lacks observations, failure traces, constraints, prior-work tensions, or an evaluator path, the honest output is to gather substrate, build an evaluator, or park the candidate. It must not hide absence of substrate behind six plausible-sounding hypotheses.
+The load-bearing boundary is now: the skill can commit a research direction only when the record has a mechanism hypothesis, competing hypothesis, discriminating prediction, minimal test, required evidence, and survey-backed grounding. If the agent lacks observations, failure traces, constraints, comparators, measurement definitions, or an evaluator path, the honest output is to gather observations, build an evaluator, define a measurement, or park the hypothesis. It must not hide missing material behind plausible-sounding ideas.
 
 ## What this skill covers and what it does not
 
@@ -73,15 +73,15 @@ Read `references/categories/<category>.md` after picking a category.
 
 Research state moves through this lifecycle:
 
-`Observation discovery` → `Hypothesis synthesis` → `Intervention idea` → `Prior-work grounding` → `Plan` → `Plan review` → `Execution` → `Result analysis` → `Claim` → `Decision`
+`Research situation diagnosis` → `Mechanistic analysis` → `Mechanism hypothesis record` → `Prior-work grounding` → `Plan` → `Plan review` → `Execution` → `Result analysis` → `Claim` → `Decision`
 
 Keep the timing boundary explicit. The Plan and Plan review contain **pre-result commitments**: the question, mechanism conjecture or principle, prediction or expected observation, primary measure, controls/comparators, planned discriminating test, evidence route, artifacts to preserve, and stop / branch criteria. They do not explain why an unobserved result happened. Result analysis contains **post-result explanations** after evidence exists: what happened, why it may have happened, what alternatives remain live, and what additional discriminator would separate those alternatives.
 
 An observation is not yet a hypothesis. Observations name phenomena, failures, tensions, baseline limits, or problem facts that may motivate a hypothesis later; they do not by themselves explain the mechanism or justify an intervention.
 
-Prior work has two roles. First, it can be material for observations: references may expose empirical patterns, baseline limits, historical failures, theoretical tensions, or problem facts that feed observation discovery. Second, it provides grounding after candidates exist: prior work checks whether candidates duplicate known work, inherit assumptions, require controls or comparators, need different evaluation, or should be advanced, merged, parked, or killed. The second role must not collapse the candidate space before raw candidates exist.
+Prior work has two roles. First, it can be material for observations: references may expose empirical patterns, baseline limits, historical failures, theoretical tensions, or problem facts that feed research situation diagnosis. Second, it provides grounding after mechanism records exist: prior work checks whether the mechanism duplicates known work, inherits assumptions, requires controls or comparators, needs different evaluation, or should be committed, parked, or killed. The second role must not replace diagnosis or discriminating-test design.
 
-When this skill says "subagent" or "fresh separate-context agent", it means an agent-protocol role, not a dependency on any host's specific Task tool. Ideation may use a fresh hypothesis-generation agent to broaden mechanisms from an anchor-stripped brief; the main research agent still owns intake, pruning, and plan promotion. Plan review and Result analysis remain the two mandatory lifecycle gates around execution.
+When this skill says "subagent" or "fresh separate-context agent", it means an agent-protocol role, not a dependency on any host's specific Task tool. Plan review and Result analysis remain the two mandatory lifecycle gates around execution.
 
 ## Project Structure
 
@@ -125,8 +125,8 @@ Boundaries that matter:
 
 ```
 1. scripts/new_plan.py creates plans/<id>_<slug>.md from a mode-specific template
-2. Write the Question / Objective. If the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," write an Idea portfolio using `references/ideation.md` before Prior-work grounding. If anchors are already visible, first write an anchor-stripped seed brief and generate raw seeds only from substrate, constraints, and generation operators; do not accept raw candidates directly.
-3. For ideation work, run substrate/operator generation, assumption audit, anti-vacuity gate, blind-spot catalog, evaluator feedback, and `scripts/check_idea_portfolio.py` before promoting any candidate.
+2. Write the Question / Objective. If the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," write a Mechanism hypothesis record using `references/mechanistic_hypothesis_generation.md` before Prior-work grounding. Start with Research situation diagnosis, compare Analysis lenses considered, adopt a primary lens plus 0-2 auxiliaries, then write the Mechanistic analysis and Mechanism hypothesis record.
+3. For hypothesis-generation work, run `scripts/check_mechanism_hypothesis_record.py` before treating the record as ready for Prior-work grounding or plan drafting. A `commit` decision is not final before Survey evidence.
 4. Run a plan-scoped literature survey, write the Prior-work grounding, and write the Divergence checkpoint before the Plan section.
 5. Write the Plan section.
 6. PLAN REVIEW — dispatch a fresh separate-context plan-review subagent using `research-plan-review`. Pass only the plan path. Record the returned `## Plan review` section, repair blockers, and review again if execution is blocked.
@@ -177,11 +177,11 @@ The plan must include a citation-use map. For each cited work, state how it is u
 
 If prior work is genuinely unknown after the plan-scoped literature survey, record the named constraint in the plan and narrow or block relevant claims until the grounding is repaired. For strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, do a comprehensive literature survey; that is separate from the plan-scoped grounding every plan needs.
 
-## Research ideation
+## Mechanistic hypothesis generation
 
-When the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," read `references/ideation.md` before Prior-work grounding. The first output is an Idea portfolio, not a Plan and not a claim.
+When the user asks for a research idea, research direction, hypothesis candidate, or "what should we try next," read `references/mechanistic_hypothesis_generation.md` before Prior-work grounding. The first output is a Mechanism hypothesis record, not a Plan and not a claim.
 
-The order matters: generate seed material before applying prior-work grounding, but do not confuse seeds with ideas. Prior work is still mandatory before execution, but literature-first ideation tends to anchor the portfolio to safe extensions of prior approaches. If prior work names, SOTA methods, previous best approaches, user-preferred methods, or convenient dataset details are already visible, write an anchor-stripped seed brief that excludes those names and records them only as excluded anchors. When anchoring risk is high, use a fresh separate-context hypothesis-generation handoff from that brief; the generator returns multiple working hypotheses, and the main agent records intake instead of accepting the output as authority. Then accept candidates only through the substrate → generation operator → main-agent intake → assumption audit → anti-vacuity gate → blind-spot catalog → evaluator feedback path, and verify the completed portfolio with `scripts/check_idea_portfolio.py`.
+The order matters: diagnose the situation before applying prior-work grounding, but do not confuse plausible interventions with hypotheses. Prior work is still mandatory before execution, but literature-first ideation tends to anchor the work to safe extensions of prior approaches. The record must include Research situation diagnosis, Analysis lenses considered, Adopted analysis lenses, Mechanistic analysis, and a Mechanism hypothesis record with Hypothesis, Competing hypothesis, Discriminating prediction, Minimal test, Required evidence, Decision, and Reason. Decisions are exactly `commit / park / kill`; information gaps normally force `park`, not a more confident idea.
 
 ## Divergence checkpoint
 
@@ -268,9 +268,9 @@ Reports do not need env locks, commit hashes, or seed lists in the prose. Includ
 |---|---|---|
 | Pick a category | `references/categories/<category>.md` | First action when starting a plan |
 | Plan schema | `references/rd_plan.md` | Writing or reviewing `plans/<id>.md` |
-| Research ideation | `references/ideation.md` | When asked for research ideas, research directions, hypothesis candidates, or "what should we try next" before Prior-work grounding; use substrate ids, hypothesis-generation handoff when anchoring risk is high, main-agent intake, generation operators, anti-vacuity gate, evaluator feedback, and an anchor-stripped seed brief if anchors are already visible |
-| Assumption audit | `references/assumption_audit.md` | Between Observation discovery pass and Hypothesis synthesis pass — surfaces load-bearing background assumptions of the reference model being challenged (distinct from anchor audit at Divergence checkpoint). Includes constraint-naming protocol for un-evaluable hypotheses. |
-| Iterative ideation | `references/iterative_ideation.md` | Between Quality-diversity pass and Grounded pruning pass — ONLY when plan is applied/development AND a minimal executable evaluator exists. Real shell / command-line execution is mandatory; self-simulation is explicitly forbidden. |
+| Mechanistic hypothesis generation | `references/mechanistic_hypothesis_generation.md` | When asked for research ideas, research directions, hypothesis candidates, or "what should we try next" before Prior-work grounding; use Research situation diagnosis, Analysis lenses considered, Mechanistic analysis, Mechanism hypothesis record, and `commit / park / kill` |
+| Assumption audit | `references/assumption_audit.md` | When a mechanism record depends on assumptions of a reference model being challenged. Distinct from anchor audit at Divergence checkpoint. Includes constraint-naming protocol for un-evaluable hypotheses. |
+| Deprecated ideation links | `references/ideation.md` and `references/iterative_ideation.md` | Stubs only; use mechanistic hypothesis generation instead |
 | Divergence checkpoint | `references/rd_plan.md` | Before execution, after Question / Objective and before committing the Plan |
 | Plan review | `research-plan-review` and `references/rd_plan.md` | After the Plan section is drafted and before execution; pass only the plan path to a fresh separate-context plan-review subagent |
 | Result analysis subagent prompt | `references/result_analysis_subagent_prompt.md` | After Actual execution and Planned vs Actual are recorded; pass only the plan path to a fresh separate-context result-analysis subagent |
@@ -286,7 +286,7 @@ These are not formatting preferences. They are what makes other agents and human
 
 - **One declared category per plan.** Don't dodge the choice. If you can't pick, read `references/categories/*.md`.
 - **One declared mode per plan.** `exploratory`, `confirmatory`, `milestone`, or `theoretical`. Hidden hypotheses inside exploratory plans are forbidden. Use `theoretical` for plans whose primary contribution is a derivation rather than an empirical result.
-- **Substrate-driven Idea portfolio before prior-work anchoring when ideating.** If the task is research idea generation, hypothesis candidate generation, or "what should we try next," write substrate ids, hypothesis-generation handoff when anchoring risk is high, main-agent intake, generation operators, assumption audit, anti-vacuity gate, blind-spot catalog, evaluator feedback, and de-anchored seed material using `references/ideation.md` before Prior-work grounding. If anchors are already visible, use an anchor-stripped seed brief and keep excluded anchors out of raw seeds. Non-promoted ideas are parked, killed, merged, or regenerated; they are not claims.
+- **Mechanism hypothesis record before prior-work anchoring when ideating.** If the task is research idea generation, hypothesis candidate generation, or "what should we try next," write Research situation diagnosis, Analysis lenses considered, Adopted analysis lenses, Mechanistic analysis, and a Mechanism hypothesis record using `references/mechanistic_hypothesis_generation.md` before Prior-work grounding. Method names, paper names, analogies, and candidate lists are intervention fragments until converted into a competing-hypothesis and discriminating-test record. Decisions are `commit / park / kill`; non-committed hypotheses are not claims.
 - **Prior-work grounding, Divergence checkpoint, and Plan review exist before execution.** A plan may still commit to one route, but it must first ground the plan in prior work, expose alternatives, anchor risks, research positioning, and disconfirming evidence, then pass a fresh separate-context plan-review subagent using `research-plan-review`. User pressure to "just use the previous approach" is recorded as a constraint, not silently obeyed.
 - **No placeholder figures in reports.** Generate the figure or remove the reference. `scripts/check_report.py` verifies figure references resolve.
 - **Plan content exists before execution.** The Plan section must be filled in and committed before any execution begins. `created_commit` in the front matter is meaningful only if the Plan section is non-empty at that commit. After-the-fact plan rewriting is detectable in git diff.

@@ -27,8 +27,8 @@ last_updated: YYYY-MM-DD
 ## Question / Objective
 <One paragraph stating what this plan investigates or builds.>
 
-## Idea portfolio
-<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Record the substrate-driven ideation contract from `references/ideation.md`: idea substrate, de-anchored seed generation, hypothesis-generation handoff or a Not-used reason, main-agent intake, generation operators, assumption audit, anti-vacuity gate, evaluator feedback, grounded pruning, information-gain scoring, and the one candidate promoted into this plan. Raw seeds are not accepted ideas.>
+## Mechanism hypothesis record
+<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Record the mechanistic generation contract from `references/mechanistic_hypothesis_generation.md`: research situation diagnosis, analysis lenses considered, adopted analysis lenses, mechanistic analysis, and a Mechanism hypothesis record with hypothesis, competing hypothesis, discriminating prediction, minimal test, required evidence, Decision, and Reason. This section does not replace Survey evidence.>
 
 ## Prior-work grounding
 <Bounded but sufficient grounding from a plan-scoped literature survey for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations. Cite `literature/papers.md` and `literature/positioning.md`. Record search date, queries/sources, selection rationale, negative findings, any retrieval-unavailable constraint, and a citation-use map that states how each cited work is used in the plan. If prior work is genuinely unknown after the survey, record the named constraint and narrow or block relevant claims.>
@@ -63,105 +63,50 @@ last_updated: YYYY-MM-DD
 - Related literature: <see literature/papers.md entries>
 ```
 
-## Idea portfolio section
+## Mechanism hypothesis record section
 
-This section appears after `## Question / Objective` and before `## Prior-work grounding` when the user asks for research ideas, research directions, hypothesis candidates, or "what should we try next." It records the output of `references/ideation.md`, including the idea substrate, anchor-stripped seed brief, excluded-anchor ledger, hypothesis-generation handoff or a Not-used reason, main-agent intake, raw seed generation, generation operators, anti-vacuity gate, evaluator feedback, and promotion decision.
+This section appears after `## Question / Objective` and before `## Prior-work grounding` when the user asks for research ideas, research directions, hypothesis candidates, or "what should we try next." It records the output of `references/mechanistic_hypothesis_generation.md`.
 
-The section is optional for ordinary plans that begin with an already chosen objective. It is required for ideation tasks because prior-work-first planning can anchor the agent to the literature's safest extensions before raw seeds and substrate/operator candidates exist. This section order is not permission to finalize promotion before Survey evidence; write the survey-backed grounding before finalizing `Grounded pruning` or `Promotion decision`.
+The section is optional for ordinary plans that begin with an already chosen objective. It is required for ideation tasks because the user-visible contract is no longer a list of candidates. The contract is: diagnose the research situation, compare analysis lenses, adopt one primary lens plus 0-2 auxiliaries, convert the analysis into a mechanism hypothesis, separate a competing hypothesis, define a discriminating prediction and minimal test, then decide `commit / park / kill`.
+
+This section does not replace Survey evidence. A `commit` decision is not final until Survey evidence exists; section order is not permission to finalize commit before Survey evidence.
 
 ```markdown
-## Idea portfolio
+## Mechanism hypothesis record
 
-### Idea substrate
-- S1: <empirical / failure-mode / tension / baseline / constraint / literature / user-problem observation>
-- S2: <second substrate item>
-- S3: <third substrate item when available>
+<Not applicable: objective already chosen. If this plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," use `references/mechanistic_hypothesis_generation.md` and record the full contract below. This section is required when the plan began from research ideas, research directions, hypothesis candidates, or "what should we try next." This does not replace Survey evidence.>
 
-### Generation operators
-- <candidate>:
-  - Substrate ids: <S1, S2, ...>
-  - Operator: <assumption inversion / failure-mode exploitation / bottleneck relocation / mechanism transfer / measurement reframing / counterfactual control / boundary-condition search / evaluator construction / problem reframing>
-  - Changed premise: <what this candidate changes about the current framing>
+### Research situation diagnosis
+- Available material: <successes, failures or limits, lineage, evaluation or measurement, constraints, unknowns, observable quantities, comparators, and counterfactuals>
+- Missing material: <observations, reproduced failures, baselines, evaluator, measurement definitions, counterfactuals, prior-work grounding, or minimal model>
+- Why hypothesis generation is allowed or blocked: <allowed because material supports a discriminating prediction / hypothesis generation is blocked because named material is missing>
 
-### De-anchored candidates
-- Seed brief: <anchor-stripped brief with substrate ids only>
-- Excluded-anchor ledger: <prior-work names, SOTA systems, previous best approaches, user-preferred methods, convenient datasets, or None>
-- <candidate>: <raw seed generated before prior-work grounding; not accepted until operator + anti-vacuity gate pass>
+### Analysis lenses considered
+- Lens: <Success mechanism / Failure dynamics / Lineage-difference / Center-auxiliary inversion / Problem-form transformation / Measurement and evaluation / Constraint relocation / Sparse-information / Cross-domain mechanism transfer>
+  - What it would inspect: <process, evidence, or constraint inspected>
+  - What it may miss: <blind spot of this lens>
+  - Use decision: <primary / auxiliary / not used with reason>
 
-### Hypothesis-generation handoff
-- Agent: <fresh separate-context hypothesis-generation agent, or Not used with reason>
-- Starting context: <anchor-stripped seed brief is the only generation brief; Excluded-anchor ledger is not input>
-- Web/literature retrieval: <used for abstract observations or cross-domain mechanisms / skipped with reason>
-- Output contract: <multiple working hypotheses with source observation, mechanism conjecture, predicted effect, counter-hypothesis, minimal disconfirming test, and retrieval notes>
+### Adopted analysis lenses
+- Primary lens: <exactly one lens>
+- Auxiliary lenses: <0-2 lenses, or None with reason>
+- Reason: <why these lenses best separate the live explanations>
 
-### Main-agent intake
-- Authority check: <generator output is seed material, not accepted authority, claim, plan, or decision>
-- Observation trace check: <which substrate ids each hypothesis truly traces to, or missing-substrate constraint>
-- Mechanism review: <whether each mechanism explains observations, merely swaps methods, or is post-hoc prose>
-- Decision: <advance / park / kill / merge / regenerate for each hypothesis>
-- Next-plan action: <promote toward current plan / open ADJACENT evaluator-construction plan / gather substrate / run grounded pruning / no plan>
+### Mechanistic analysis
+- Observation: <success, failure, limit, constraint, or measurement mismatch>
+- Analysis lens used: <primary lens plus auxiliaries when used>
+- Mechanistic interpretation: <information flow, gradient flow, search, measurement, representation, constraint, state transition, or decision-coupling explanation>
+- Assumptions exposed: <load-bearing assumptions required for this interpretation>
+- What would be different if this interpretation is true: <observable contrast>
 
-### Assumption audit
-- Reference model challenged: <model, framing, baseline story, or implicit premise being challenged>
-- Assumptions considered: <at least three named assumptions>
-- Load-bearing assumption: <assumption selected after downstream-check>
-- Downstream-check result: <why it is not downstream of a deeper in-scope assumption>
-- Inversion candidate or no-inversion reason: <candidate that uses the inversion, or why none is admissible>
-
-### Anti-vacuity gate
-- <candidate>:
-  - Substrate ids: <at least two substrate ids, or named missing-substrate constraint>
-  - Changed premise: <what becomes false, weaker, conditional, or newly observable if the candidate is right>
-  - Mechanism conjecture: <why the changed premise would produce the predicted behavior>
-  - Predicted measurable effect: <observable measure expected to change>
-  - Counter-hypothesis: <alternative explanation with a different prediction under the minimal test>
-  - Minimal disconfirming test: <smallest observation, comparison, ablation, derivation check, or evaluator result that would kill or narrow the candidate>
-  - Verdict: <survives / killed; candidate is killed if any field is generic, circular, unavailable, or disconnected from substrate ids>
-
-### Blind-spot catalog
-- <candidate that survived anti-vacuity or was promoted>:
-  - Blind-spot area: <adjacent knowledge area or missing result pattern, or None with reason>
-  - How it could break the mechanism: <failure path if the blind spot is real>
-  - Claim-scope effect: <conditions_not_tested: ... / narrowed_claim: ... / PARK: ... / ADJACENT: ... / no_change: reason>
-  - Required repair: <retrieval: ... / user_input: ... / evaluator_construction: ... / narrow_conditions: ... / none_with_reason: reason>
-
-### Hypothesis synthesis
-- <candidate that survived anti-vacuity>:
-  - Source observation: <substrate ids plus observed phenomenon, failure mode, capability gap, empirical regularity, or theoretical tension>
-  - Mechanism conjecture: <proposed mechanism that would explain the observation or make the intervention plausible>
-  - Proposed intervention: <method, architecture, data change, metric change, evaluation change, system change, or framing change>
-  - Predicted effect: <measurable effect expected if the mechanism conjecture is right>
-  - Counter-hypothesis: <plausible alternative explanation under which the predicted effect should not appear>
-  - Minimal disconfirming test: <smallest test, ablation, comparison, derivation check, or observation that would reject, narrow, or park the candidate>
-
-### Evaluator feedback
-- Status: <Ran: executable evaluator / Skipped: named reason>
-- Executable signature: <real command-line invocation or None if skipped>
-- Artifact: <run directory plus durable artifact path; stdout alone is not evidence; None if skipped>
-- Fitness vector: <parseable score vector and uncertainty/variance if available; None if skipped>
-- Required evaluator or artifact: <what must exist before executable feedback is possible; None if ran>
-- Killed candidates: <candidate ids and real failure reasons; None if none>
-- Cycle-final winner: <candidate id and rationale; None if skipped>
-- Effect on promotion: <PARK / ADJACENT evaluator-construction plan / theoretical-only scope / advance with narrowed claim>
-
-### Grounded pruning
-- Advance: <candidate promoted toward a plan and why; not final until Survey evidence exists>
-- Parked: <candidate blocked by missing survey, data, baseline, or condition>
-- Killed: <candidate that is duplicate, untestable, too costly, not falsifiable, or only a parameter sweep>
-- Merged: <candidates collapsed into another candidate>
-
-### Information-gain scoring
-- <candidate>: <testability, measurement clarity, expected information gain, cost, prior-work distance, claim discipline>
-
-### Pre-execution divergence review
-- Portfolio breadth: <whether candidates are meaningfully distributed across generation operators and difference axes>
-- Parameter sweep laundering: <whether any candidate is only a threshold, seed, model-size, or sweep variant>
-- Anti-anchor check: <whether literature-first, prior-work-first, winning-approach, convenient-data, or user-preference anchors narrowed the portfolio too early>
-- Required repair before promotion: <None, or candidate regeneration / merge / kill / park action>
-
-### Promotion decision
-- Promoted idea: <the single candidate that becomes this plan; section order is not permission to finalize promotion before Survey evidence>
-- Non-promoted ideas: <parked / killed / merged reasons; these are not claims>
+### Mechanism hypothesis record
+- Hypothesis: <cause, condition, and expected change>
+- Competing hypothesis: <another mechanism explaining the same observation>
+- Discriminating prediction: <how outcomes differ between hypothesis and competing hypothesis>
+- Minimal test: <smallest experiment, analysis, counterexample, simplified model, measurement, evaluator, or derivation check>
+- Required evidence: <artifact, comparison, measurement, survey evidence, or observation required before plan execution claims advance>
+- Decision: <commit / park / kill>
+- Reason: <why this decision follows>
 ```
 
 ## Prior-work grounding section
@@ -620,7 +565,7 @@ Mirror the entry in `decisions.md` for any branch except `NEXT_STEP`.
 - **Confirmatory plan with no decision threshold.** The whole point of confirmatory is the threshold. State it explicitly.
 - **Exploratory plan with hidden hypothesis.** Writing "we expect X" without committing to a decision threshold converts exploration into informal confirmation. Either commit to confirmatory mode with an explicit threshold, or stay honestly exploratory with a variable space.
 - **No Divergence checkpoint.** A plan that only follows the user's preferred route can still be well formatted and still be weak research. Fill the checkpoint before execution.
-- **Literature-first ideation.** If the user asked for research ideas, do not summarize prior work before generating raw seeds and substrate/operator candidates. Use the Idea portfolio section, then apply Prior-work grounding.
+- **Literature-first hypothesis generation.** If the user asked for research ideas, do not summarize prior work as a substitute for diagnosis. Use the Mechanism hypothesis record section first, then apply Prior-work grounding before finalizing `commit`.
 - **Portfolio made of parameter tweaks.** Three thresholds of the same signal are not three approaches. Record them as one primary route with a sweep, then add real alternatives or explicitly narrow the claim scope to the tested route.
 - **Prior result treated as fact.** "Previous run was best" is an anchor, not a premise. Record what would revalidate it, what rework is required, or what claim condition remains after Result analysis explains the new outcome.
 - **Claim made before prior-work grounding.** If the plan says novel, new method, publishable, to our knowledge, or no baseline exists, cite or update `literature/positioning.md` and point to a comprehensive literature survey before execution. If the claim is not a novelty claim, the plan still needs bounded but sufficient prior-work grounding and must classify itself as replication, baseline strengthening, engineering, or another grounded position.

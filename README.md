@@ -27,7 +27,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.6.2)
+## Core design (v2.7.0)
 
 ### R&D categories (Frascati 2015)
 
@@ -49,8 +49,8 @@ Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Th
 
 ```
 1. new_plan.py creates plans/{id}_{slug}.md (mode-specific template)
-2. Write Question / Objective. If ideating, write the Research ideation Idea portfolio before prior-work grounding.
-3. For ideation work, run assumption audit before hypothesis synthesis; use iterative ideation only when its executable-evaluator preconditions hold.
+2. Write Question / Objective. If ideating, write the Mechanistic hypothesis generation Mechanism hypothesis record before prior-work grounding.
+3. For hypothesis-generation work, run research situation diagnosis, analysis lens comparison, mechanistic analysis, and `check_mechanism_hypothesis_record.py` before planning from the record.
 4. Run a plan-scoped literature survey, then write Prior-work grounding and the Divergence checkpoint before the Plan section.
 5. Write Plan section.
 6. Plan review — dispatch a fresh separate-context plan-review subagent using `research-plan-review` and pass only the plan path. Repair blockers before execution.
@@ -77,17 +77,17 @@ Plans also record a citation-use map: each cited work must name how it is used i
 
 Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. That is separate from the plan-scoped prior-work grounding every plan needs.
 
-### Research ideation
+### Mechanistic hypothesis generation
 
-When a user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," the `research` skill uses `references/ideation.md` to create an **Idea portfolio** before prior-work grounding. If anchors are already visible, it writes an anchor-stripped seed brief and an excluded-anchor ledger before raw seed generation. When anchoring risk is high, ideation may dispatch a fresh separate-context hypothesis-generation agent from that brief; the main agent then records intake instead of accepting the output as authority. Raw seeds are not accepted ideas. The portfolio must record substrate ids, hypothesis-generation handoff or a Not-used reason, main-agent intake, generation operators, changed premises, assumption audit, anti-vacuity gate results, blind-spot catalog entries tied to surviving candidates, evaluator feedback, grounded pruning, and information-gain scoring before one candidate can be promoted.
+When a user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," the `research` skill uses `references/mechanistic_hypothesis_generation.md` to create a **Mechanism hypothesis record** before prior-work grounding. The record starts with research situation diagnosis, separates available and missing material, compares analysis lenses, adopts one primary lens plus 0-2 auxiliary lenses, converts observations into mechanistic analysis, and ends with a hypothesis, competing hypothesis, discriminating prediction, minimal test, required evidence, and `commit / park / kill` decision.
 
-Only one candidate is promoted into a plan. Non-promoted ideas are recorded as `parked / killed / merged` and are not claims.
+Information gaps normally force `park`, not a more confident idea. Method names, paper names, analogies, metric swaps, and model-size changes are intervention fragments until they become a discriminating mechanism record.
 
-### Assumption audit and iterative ideation
+### Assumption audit and evaluator-grounded refinement
 
 v2.3.0 adds `references/assumption_audit.md` between observation discovery and hypothesis synthesis. It surfaces background assumptions of the reference model being challenged, separate from the Divergence checkpoint's anchoring audit on imported prior work. The audit records load-bearing assumptions, downstream checks, blind-spot catalog entries tied to candidate mechanisms and claim scope, reference-class forecasts, and named constraints for hypotheses that cannot currently be evaluated.
 
-v2.4.0 adds `references/iterative_ideation.md` for applied and experimental-development plans with an existing executable evaluator. It uses real shell / command-line execution for candidate scoring, explicitly forbids self-simulated fitness, and updates candidates with mutation, crossover, and wildcard variants before grounded pruning.
+Evaluator-grounded refinement now lives in `references/mechanistic_hypothesis_generation.md`. After a failed minimal test or evaluator result, the result becomes a new observation: record which mechanism explanation was ruled out, which explanations remain live, and update the Mechanism hypothesis record instead of returning to a new idea list.
 
 Executable feedback must persist to run artifacts. A command that only prints a fitness number is not valid evaluator feedback until the run directory contains `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and a durable artifact such as `outputs/fitness.json`, `tables/fitness.csv`, or an `intermediate/` diagnostic.
 
@@ -157,7 +157,8 @@ research-skill/
 │   │   │   ├── categories/{basic_research,applied_research,experimental_development}.md
 │   │   │   ├── analysis.md
 │   │   │   ├── claim_structure.md
-│   │   │   ├── ideation.md
+│   │   │   ├── mechanistic_hypothesis_generation.md
+│   │   │   ├── ideation.md                 # deprecated stub
 │   │   │   ├── iteration_loop.md
 │   │   │   ├── result_analysis_subagent_prompt.md
 │   │   │   ├── rd_plan.md
@@ -238,7 +239,7 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 | `new_plan.py` | Create a plan from mode-specific template, capture git SHA |
 | `new_run.py` | Create a run directory with manifest, logs, and artifact folders |
 | `check_run_artifacts.py` | Reject print-only runs and verify manifest/logs/non-log artifacts |
-| `check_idea_portfolio.py` | Verify Idea portfolio substrate/handoff/intake/operator/anti-vacuity/blind-spot/evaluator-feedback contract |
+| `check_mechanism_hypothesis_record.py` | Verify the Mechanism hypothesis record diagnosis/lens/analysis/discriminator/decision contract |
 | `check_claims.py` | Verify claim record structure (5 required fields, vagueness heuristics) |
 | `check_report.py` | Verify report contract (figures resolve, required sections, non-placeholder) |
 | `draft_report.py` | Initialize a report directory from a plan |
@@ -257,12 +258,25 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.6.2** — clarifies the boundary between pre-result planning commitments and post-result explanations, while keeping prior-work grounding, plan-scoped literature survey evidence, citation-use mapping, independent plan review, explanation-centered result analysis, assumption audit, theoretical mode, paper-grade reports, and statistical reporting minimums.
+**Version 2.7.0** — replaces active idea generation with mechanism hypothesis records, while keeping pre-result planning boundaries, prior-work grounding, independent plan review, explanation-centered result analysis, assumption audit, theoretical mode, paper-grade reports, and statistical reporting minimums.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.6.2 (current) — pre-result planning boundary
+### v2.7.0 (current) — mechanistic hypothesis generation
+
+Replaces active research idea generation with a mechanism-first record that makes assumptions, analysis lenses, competing hypotheses, predictions, tests, evidence needs, and commit / park / kill decisions explicit before planning.
+
+**Added / changed**
+
+- Replaced the active `Idea portfolio` workflow with the `Mechanism hypothesis record` workflow.
+- Added `skills/research/references/mechanistic_hypothesis_generation.md` as the primary idea-generation reference.
+- Added `skills/research/scripts/check_mechanism_hypothesis_record.py` and removed the old idea-portfolio checker.
+- Deprecated the old ideation references as compatibility stubs that redirect to mechanistic hypothesis generation.
+- Updated the skill instructions, plan templates, and README contract to require mechanistic hypothesis generation before planning from research ideas.
+- Hardened the checker for candidate-list preambles, per-lens fields, primary/auxiliary lens counts, and blocked/commit consistency.
+
+### v2.6.2 — pre-result planning boundary
 
 Clarifies that plans and plan review contain commitments made before results exist, while Result analysis contains explanations made after evidence exists.
 
@@ -288,7 +302,7 @@ Makes prior-work grounding first-class in every research plan before execution.
 
 ### v2.6.0 — plan review and explanation-centered result analysis
 
-Splits pre-execution design review and post-execution result analysis into the two mandatory fresh separate-context gates around execution. Ideation can also use a fresh hypothesis-generation handoff, but that output is seed material until main-agent intake, pruning, and plan promotion adjudicate it.
+Splits pre-execution design review and post-execution result analysis into the two mandatory fresh separate-context gates around execution. The older generation handoff has since been superseded by mechanistic hypothesis generation.
 
 **Added / changed**
 
@@ -297,7 +311,7 @@ Splits pre-execution design review and post-execution result analysis into the t
 - Removed the Codex-specific result-analysis agent definition; result-analysis is now skill / prompt-template driven across agent runtimes.
 - Refocused `research-result-analysis` from readiness verdicts to explaining why the result happened: candidate explanations, evidence for/against, procedure/artifact explanations, live alternatives, and discriminating next analyses.
 - Kept document checks as regression guards; behavioral quality is validated with pressure scenarios against the skills.
-- Reworked ideation so de-anchored hypothesis generation uses an anchor-stripped seed brief, excluded-anchor ledger, optional fresh hypothesis-generation handoff, and explicit main-agent intake.
+- Reworked the older generation flow; this has since been superseded by mechanistic hypothesis generation.
 
 ### v2.5.0 — independent result analysis quality gates
 
@@ -318,8 +332,8 @@ Extends the v2 research protocol without adding new R&D categories.
 **Added / changed**
 
 - Added `theoretical` plan mode for derivational work using axioms, definitions, and limiting-case checks.
-- Replaced raw one-line ideation with a substrate-driven generation contract: substrate ids, generation operators, changed premises, blind-spot entries, anti-vacuity gate, evaluator feedback, and `check_idea_portfolio.py`.
-- Added iterative ideation for applied and experimental-development plans with executable evaluators: real shell / command-line execution is mandatory and self-simulated fitness is forbidden.
+- Added the now-deprecated substrate-driven generation contract, later replaced by mechanistic hypothesis generation.
+- Added the now-deprecated evaluator-ranked generation loop, later replaced by evaluator-grounded refinement in the mechanism record protocol.
 - Expanded report format with paper-grade Theory / Formulation, Related Work, Ablation / Sensitivity, Discussion, and References sections.
 - Added Figure-as-argument guidance and a Statistical reporting minimum for numeric evidence.
 - Clarified that theoretical support is a mode/report shape under the existing `basic_research`, `applied_research`, and `experimental_development` categories.
@@ -344,20 +358,19 @@ Clarifies R&D category definitions and makes hypothesis generation explicit.
 - R&D category definitions now follow OECD Frascati Manual 2015 wording while remaining scoped to agent research work, not corporate activity.
 - Added a research lifecycle from `Observation discovery` through `Decision`.
 - Added `Observation discovery pass` before hypothesis synthesis, with observation sources including empirical, literature, failure-mode, tension, baseline, and user/problem observations.
-- Split prior work into two roles: references can supply observations, then later ground candidates after raw candidates and hypothesis rationales exist.
+- Split prior work into two roles: references can supply observations, then later ground mechanism records after hypothesis rationales exist.
 - Added a hypothesis synthesis chain: source observation, mechanism conjecture, proposed intervention, predicted effect, counter-hypothesis, and minimal disconfirming test.
 - Added approach transition criteria for staying with the current approach, `REFINE`, `ADJACENT`, `PARK`, and `CLOSE`.
 
-### v2.1.0 — research ideation protocol
+### v2.1.0 — superseded research ideation protocol
 
-Adds a research ideation protocol that separates candidate generation from grounding and execution.
+Added a research ideation protocol that separated generation from grounding and execution. This protocol is now superseded by mechanistic hypothesis generation.
 
 **Added / changed**
 
-- Research ideation now starts with a de-anchored Idea portfolio before prior-work grounding.
-- When anchors are already visible, the active protocol now uses an anchor-stripped seed brief and excluded-anchor ledger before raw seed generation; later versions require substrate/operator/anti-vacuity checks before a seed is accepted as a candidate.
-- Prior-work grounding remains mandatory before execution; ideation produces candidates, not execution-ready plans.
-- Only one candidate is promoted into a plan after grounding and information-gain scoring; non-promoted ideas are recorded as `parked / killed / merged` and are not claims.
+- Earlier versions started with de-anchored candidate generation before prior-work grounding.
+- Later versions replaced this with research situation diagnosis, analysis lenses, competing hypotheses, discriminating predictions, minimal tests, and `commit / park / kill`.
+- Prior-work grounding remains mandatory before execution.
 
 ### v2.0.4 — prior-work grounding and positioning
 

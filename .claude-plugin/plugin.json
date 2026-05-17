@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "description": "v2.6.2 - Agent-driven R&D protocol with pre-result planning boundaries, prior-work grounding, plan review, result analysis, and paper-grade reports.",
-  "version": "2.6.2",
+  "description": "v2.7.0 - Agent-driven R&D protocol with mechanistic hypothesis generation, prior-work grounding, plan review, result analysis, and paper-grade reports.",
+  "version": "2.7.0",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"

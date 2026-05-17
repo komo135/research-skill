@@ -295,7 +295,7 @@ def test_plan_schema_makes_prior_work_grounding_first_class_not_novelty_optional
     )
 
 
-def test_research_skill_routes_research_idea_generation_to_ideation_reference():
+def test_research_skill_routes_research_idea_generation_to_mechanistic_reference():
     skill = read("skills/research/SKILL.md")
     rd_plan = read("skills/research/references/rd_plan.md")
 
@@ -304,78 +304,103 @@ def test_research_skill_routes_research_idea_generation_to_ideation_reference():
         "research idea",
         "hypothesis candidate",
         "what should we try next",
-        "references/ideation.md",
-        "anchor-stripped seed brief",
-        "excluded anchors",
+        "references/mechanistic_hypothesis_generation.md",
+        "Research situation diagnosis",
+        "Analysis lenses considered",
+        "Mechanism hypothesis record",
         "before Prior-work grounding",
     )
     assert_ordered_fragments(
         rd_plan,
-        "Idea portfolio",
+        "Mechanism hypothesis record",
         "Prior-work grounding",
         "Divergence checkpoint",
         "## Plan",
     )
 
 
-def test_ideation_reference_defines_deanchoring_before_grounded_pruning():
-    ideation = read("skills/research/references/ideation.md")
+def test_mechanistic_generation_starts_with_research_situation_diagnosis():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
 
     assert_ordered_fragments(
-        ideation,
-        "De-anchoring pass",
-        "Transformation pass",
-        "Quality-diversity pass",
-        "Grounded pruning pass",
-        "Information-gain scoring",
-        "Pre-execution divergence review",
-        "Plan promotion",
+        reference,
+        "Research situation diagnosis",
+        "Available material",
+        "Missing material",
+        "Why hypothesis generation is allowed or blocked",
+        "Analysis lenses considered",
+        "Adopted analysis lenses",
+        "Mechanistic analysis",
+        "Mechanism hypothesis record",
     )
     assert_mentions(
-        ideation,
-        "do not read prior work first",
-        "prior work is applied after raw candidates exist",
-        "method / mechanism / data assumption / metric / evaluation protocol / system design / problem framing",
-        "failed idea",
-        "not a claim",
-        "parked / killed / merged",
+        reference,
+        "do not start from candidate ideas",
+        "do not create a candidate portfolio",
+        "successes",
+        "failures or limits",
+        "evaluation or measurement",
+        "counterfactuals",
     )
+    assert_absent(reference, "Idea portfolio")
 
 
-def test_ideation_reference_defines_hypothesis_generation_handoff_and_main_intake():
-    ideation = read("skills/research/references/ideation.md")
+def test_mechanistic_generation_compares_lenses_before_adopting_one():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
 
     assert_ordered_fragments(
-        ideation,
-        "De-anchoring pass",
-        "Hypothesis-generation handoff",
-        "Main-agent intake",
-        "Assumption audit pass",
-        "Anti-vacuity gate",
-        "Grounded pruning pass",
-        "Plan promotion",
+        reference,
+        "Analysis lenses considered",
+        "What it inspects",
+        "What it may miss",
+        "Use decision",
+        "Adopted analysis lenses",
+        "Primary lens",
+        "Auxiliary lenses",
     )
     assert_mentions(
-        ideation,
-        "fresh separate-context",
-        "anchor-stripped seed brief is the only generation brief",
-        "Excluded-anchor ledger is not input",
-        "multiple working hypotheses",
-        "current observations",
-        "web or literature retrieval notes",
-        "If the user requests web or literature",
-        "Do not accept generator output as authority",
-        "advance / park / kill / merge / regenerate",
-        "next-plan action",
+        reference,
+        "Success mechanism lens",
+        "Failure dynamics lens",
+        "Lineage-difference lens",
+        "Center-auxiliary inversion lens",
+        "Problem-form transformation lens",
+        "Measurement and evaluation lens",
+        "Constraint relocation lens",
+        "Sparse-information lens",
+        "Cross-domain mechanism transfer lens",
     )
 
 
-def test_ideation_retrieval_skip_does_not_waive_plan_scoped_survey():
-    ideation = read("skills/research/references/ideation.md")
+def test_mechanistic_generation_turns_analysis_into_discriminating_records():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
+
+    assert_ordered_fragments(
+        reference,
+        "Observation",
+        "Mechanistic analysis",
+        "Mechanism hypothesis",
+        "Competing hypothesis",
+        "Discriminating prediction",
+        "Minimal test",
+    )
+    assert_mentions(
+        reference,
+        "intervention fragment",
+        "Transformer",
+        "evaluation metric",
+        "not a mechanism hypothesis",
+        "same observation",
+        "different outcome",
+    )
+
+
+def test_mechanistic_generation_retrieval_skip_does_not_waive_plan_scoped_survey():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     assert_mentions(
-        ideation,
+        reference,
         "does not satisfy or waive the plan-scoped literature survey",
         "Survey evidence",
     )
@@ -388,18 +413,18 @@ def test_ideation_retrieval_skip_does_not_waive_plan_scoped_survey():
         )
 
 
-def test_ideation_promotion_waits_for_survey_evidence_despite_template_order():
-    ideation = read("skills/research/references/ideation.md")
+def test_mechanistic_generation_commit_waits_for_survey_evidence_despite_template_order():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
     rd_plan = read("skills/research/references/rd_plan.md")
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     assert_mentions(
-        ideation,
-        "Do not finalize Grounded pruning or Promotion decision before Survey evidence exists",
+        reference,
+        "Do not finalize commit before Survey evidence exists",
     )
     assert_mentions(
         rd_plan,
-        "section order is not permission to finalize promotion before Survey evidence",
+        "section order is not permission to finalize commit before Survey evidence",
     )
 
     for template in template_dir.glob("*.template"):
@@ -411,79 +436,66 @@ def test_ideation_promotion_waits_for_survey_evidence_despite_template_order():
         )
 
 
-def test_ideation_reference_requires_hypothesis_synthesis_not_just_candidate_listing():
-    ideation = read("skills/research/references/ideation.md")
+def test_mechanistic_generation_blocks_sparse_information_hypothesis_fabrication():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
 
     assert_ordered_fragments(
-        ideation,
-        "Hypothesis synthesis pass",
-        "Source observation",
-        "Mechanism conjecture",
-        "Proposed intervention",
-        "Predicted effect",
-        "Counter-hypothesis",
-        "Minimal disconfirming test",
+        reference,
+        "Sparse-information lens",
+        "park hypothesis generation",
+        "observable quantities",
+        "invariants",
+        "symmetries",
+        "limits",
+        "minimal model",
+        "comparators or counterfactuals",
     )
     assert_mentions(
-        ideation,
-        "landmark papers",
-        "historical exemplars",
-        "Attention Is All You Need",
-        "ResNet",
-        "DQN",
-        "Generative Pre-Training",
-        "candidate list is not enough",
+        reference,
+        "quantum",
+        "do not fill missing evidence with fashionable terms",
+        "what observation would narrow the hypothesis space",
     )
 
 
-def test_ideation_reference_defines_generation_substrate_and_antivacuity_gate():
-    ideation = read("skills/research/references/ideation.md")
+def test_mechanistic_generation_defines_evaluator_grounded_refinement():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
 
     assert_ordered_fragments(
-        ideation,
-        "Idea substrate pass",
-        "Generation operator pass",
-        "Anti-vacuity gate",
-        "Hypothesis synthesis pass",
-        "Evaluator feedback pass",
-        "Grounded pruning pass",
+        reference,
+        "Evaluator-grounded refinement",
+        "failed hypothesis",
+        "new observation",
+        "which mechanism explanation was ruled out",
+        "which explanations remain live",
+        "revised Mechanism hypothesis record",
+        "Decision",
     )
     assert_mentions(
-        ideation,
-        "candidate must cite at least two substrate ids",
-        "operator",
-        "changed premise",
-        "predicted measurable effect",
-        "minimal disconfirming test",
-        "kill the candidate",
-        "not post-hoc prose",
+        reference,
+        "do not return to a new list of ideas",
+        "commit / park / kill",
     )
 
 
-def test_ideation_reference_defines_observation_discovery_before_hypothesis_synthesis():
-    ideation = read("skills/research/references/ideation.md")
+def test_mechanistic_generation_uses_success_papers_as_design_samples_not_runtime_work():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
 
     assert_ordered_fragments(
-        ideation,
-        "De-anchoring pass",
-        "Raw candidate generation",
-        "Transformation pass",
-        "Observation discovery pass",
-        "Observation is not yet a hypothesis",
-        "Empirical observation",
-        "Literature observation",
-        "Failure-mode observation",
-        "Tension observation",
-        "Baseline observation",
-        "User/problem observation",
-        "Hypothesis synthesis pass",
+        reference,
+        "Using successful papers",
+        "Architecture-shift samples",
+        "Objective or pretraining-shift samples",
+        "Measurement and evaluation-shift samples",
+        "Constraint-breaking or systematization samples",
+        "Theory and sparse-domain samples",
+        "Cross-domain transfer samples",
     )
     assert_mentions(
-        ideation,
-        "observed phenomenon",
-        "mechanism conjecture",
-        "References can supply observations",
-        "References later ground candidates",
+        reference,
+        "do not make a paper table mandatory at runtime",
+        "extract analysis operations",
+        "do not collapse them into one universal principle",
     )
 
 
@@ -493,9 +505,9 @@ def test_research_skill_orders_lifecycle_from_observation_to_decision():
     assert_ordered_fragments(
         skill,
         "Research lifecycle",
-        "Observation discovery",
-        "Hypothesis synthesis",
-        "Intervention idea",
+        "Research situation diagnosis",
+        "Mechanistic analysis",
+        "Mechanism hypothesis record",
         "Prior-work grounding",
         "Plan",
         "Execution",
@@ -508,7 +520,7 @@ def test_research_skill_orders_lifecycle_from_observation_to_decision():
         "observation is not yet a hypothesis",
         "prior work has two roles",
         "material for observations",
-        "grounding after candidates exist",
+        "grounding after mechanism records exist",
     )
 
 
@@ -741,56 +753,56 @@ def test_confirmatory_plan_template_requires_hypothesis_rationale_chain():
     )
 
 
-def test_plan_schema_records_hypothesis_synthesis_in_idea_portfolio():
+def test_plan_schema_records_mechanistic_hypothesis_generation_contract():
     rd_plan = read("skills/research/references/rd_plan.md")
 
     assert_ordered_fragments(
         rd_plan,
-        "## Idea portfolio",
-        "### Idea substrate",
-        "### Generation operators",
-        "### De-anchored candidates",
-        "### Hypothesis-generation handoff",
-        "### Main-agent intake",
-        "### Anti-vacuity gate",
-        "### Hypothesis synthesis",
-        "Source observation",
-        "Mechanism conjecture",
-        "Proposed intervention",
-        "Predicted effect",
-        "Counter-hypothesis",
-        "Minimal disconfirming test",
-        "### Evaluator feedback",
-        "### Grounded pruning",
+        "## Mechanism hypothesis record",
+        "### Research situation diagnosis",
+        "Available material",
+        "Missing material",
+        "Why hypothesis generation is allowed or blocked",
+        "### Analysis lenses considered",
+        "Lens",
+        "What it would inspect",
+        "What it may miss",
+        "Use decision",
+        "### Mechanistic analysis",
+        "Observation",
+        "Mechanistic interpretation",
+        "### Mechanism hypothesis record",
+        "Hypothesis",
+        "Competing hypothesis",
+        "Discriminating prediction",
+        "Minimal test",
+        "Decision",
     )
 
 
-def test_plan_schema_and_templates_record_handoff_and_main_intake_contract():
+def test_plan_schema_and_templates_record_lens_and_decision_contract():
     rd_plan = read("skills/research/references/rd_plan.md")
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
         assert_ordered_fragments(
             text,
-            "## Idea portfolio",
-            "### De-anchored candidates",
-            "### Hypothesis-generation handoff",
-            "Agent",
-            "Starting context",
-            "Output contract",
-            "### Main-agent intake",
-            "Authority check",
-            "Observation trace check",
-            "Mechanism review",
+            "## Mechanism hypothesis record",
+            "### Research situation diagnosis",
+            "### Analysis lenses considered",
+            "### Mechanistic analysis",
+            "### Mechanism hypothesis record",
+            "Hypothesis",
+            "Competing hypothesis",
+            "Discriminating prediction",
+            "Minimal test",
             "Decision",
-            "Next-plan action",
-            "### Anti-vacuity gate",
         )
         assert_mentions(
             text,
-            "fresh separate-context hypothesis-generation agent",
-            "generator output is seed material",
-            "regenerate",
+            "commit / park / kill",
+            "required when the plan began from research ideas",
+            "does not replace Survey evidence",
         )
 
 
@@ -834,28 +846,29 @@ def test_research_skill_docs_are_english_only():
     assert not offenders, f"Japanese/CJK text found in skill docs: {offenders}"
 
 
-def test_ideation_uses_anchor_stripped_seed_brief_for_deanchored_raw_candidates():
-    ideation = read("skills/research/references/ideation.md")
+def test_mechanistic_generation_rejects_candidate_listing_and_method_names_as_hypotheses():
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
 
     assert_ordered_fragments(
-        ideation,
-        "Anchor-stripped seed brief",
-        "Excluded-anchor ledger",
-        "Raw candidate generation",
-        "Grounded pruning pass",
+        reference,
+        "Candidate-list pressure",
+        "time pressure",
+        "method-name pressure",
+        "paper-name pressure",
+        "analogy pressure",
+        "return to diagnosis",
     )
     assert_mentions(
-        ideation,
-        "do not let them define the raw seed space",
-        "prior work names",
-        "SOTA",
-        "previous best approaches",
-        "user's preferred method",
-        "convenient dataset details",
+        reference,
+        "10 ideas",
+        "attention",
+        "ResNet",
+        "annealing",
+        "intervention fragment",
     )
 
 
-def test_plan_templates_include_idea_portfolio_before_prior_work_grounding():
+def test_plan_templates_include_mechanism_record_before_prior_work_grounding():
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     for template in template_dir.glob("*.template"):
@@ -863,7 +876,7 @@ def test_plan_templates_include_idea_portfolio_before_prior_work_grounding():
         assert_ordered_fragments(
             text,
             "## Question / Objective",
-            "## Idea portfolio",
+            "## Mechanism hypothesis record",
             "## Prior-work grounding",
             "## Divergence checkpoint",
             "## Plan",
@@ -874,19 +887,20 @@ def test_plan_templates_include_idea_portfolio_before_prior_work_grounding():
             "research ideas",
             "hypothesis candidates",
             "what should we try next",
-            "references/ideation.md",
-            "anchor-stripped brief",
-            "Excluded-anchor ledger",
+            "references/mechanistic_hypothesis_generation.md",
+            "Research situation diagnosis",
+            "Analysis lenses considered",
+            "commit / park / kill",
         )
 
 
-def test_new_plan_guidance_mentions_idea_portfolio_before_prior_work_grounding():
+def test_new_plan_guidance_mentions_mechanism_record_before_prior_work_grounding():
     new_plan = read("skills/research/scripts/new_plan.py")
 
     assert_ordered_fragments(
         new_plan,
         "Question / Objective",
-        "Idea portfolio",
+        "Mechanism hypothesis record",
         "Prior-work grounding",
         "Divergence checkpoint",
         "Plan",
@@ -894,31 +908,34 @@ def test_new_plan_guidance_mentions_idea_portfolio_before_prior_work_grounding()
     )
 
 
-def test_idea_portfolio_records_pre_execution_divergence_review():
+def test_mechanism_record_is_not_a_pre_execution_divergence_review():
     rd_plan = read("skills/research/references/rd_plan.md")
-    ideation = read("skills/research/references/ideation.md")
+    reference = read("skills/research/references/mechanistic_hypothesis_generation.md")
 
     assert_ordered_fragments(
         rd_plan,
-        "anchor-stripped seed brief",
-        "excluded-anchor ledger",
-        "### Pre-execution divergence review",
-        "parameter sweep",
-        "literature-first",
-        "prior-work",
-        "not claims",
+        "## Mechanism hypothesis record",
+        "### Mechanism hypothesis record",
+        "Decision",
+        "## Prior-work grounding",
+        "## Divergence checkpoint",
     )
-    assert_absent(ideation, "research review")
+    assert_mentions(
+        reference,
+        "not a Plan",
+        "not a claim",
+        "not a substitute for the Divergence checkpoint",
+    )
 
 
-def test_readme_documents_research_ideation_before_prior_work_grounding():
+def test_readme_documents_mechanistic_hypothesis_generation_before_prior_work_grounding():
     readme = read("README.md")
 
     assert_ordered_fragments(
         readme,
         "Question / Objective",
-        "Research ideation",
-        "Idea portfolio",
+        "Mechanistic hypothesis generation",
+        "Mechanism hypothesis record",
         "prior-work grounding",
     )
     assert_mentions(
@@ -926,9 +943,10 @@ def test_readme_documents_research_ideation_before_prior_work_grounding():
         "research ideas",
         "hypothesis candidates",
         "what should we try next",
-        "de-anchored",
-        "parked / killed / merged",
-        "ideation.md",
+        "research situation diagnosis",
+        "analysis lenses",
+        "commit / park / kill",
+        "mechanistic_hypothesis_generation.md",
     )
 
 
@@ -1295,10 +1313,10 @@ def test_research_scripts_must_persist_durable_artifacts_not_only_print():
     skill = read("skills/research/SKILL.md")
     analysis = read("skills/research/references/analysis.md")
     rd_plan = read("skills/research/references/rd_plan.md")
-    iterative = read("skills/research/references/iterative_ideation.md")
+    mechanism_generation = read("skills/research/references/mechanistic_hypothesis_generation.md")
     project_readme = read("skills/research/assets/project/README.md.template")
 
-    for text in [skill, analysis, rd_plan, iterative, project_readme]:
+    for text in [skill, analysis, rd_plan, mechanism_generation, project_readme]:
         assert_mentions(
             text,
             "print-only",
@@ -1514,18 +1532,20 @@ def test_check_run_artifacts_accepts_manifest_logs_and_artifact():
     assert "Run artifacts pass contract checks." in result.stdout
 
 
-def test_idea_portfolio_schema_and_templates_include_blind_spot_catalog():
+def test_mechanism_record_schema_and_templates_include_assumptions_and_required_evidence():
     rd_plan = read("skills/research/references/rd_plan.md")
     assumption_audit = read("skills/research/references/assumption_audit.md")
-    ideation = read("skills/research/references/ideation.md")
+    mechanism_generation = read("skills/research/references/mechanistic_hypothesis_generation.md")
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     assert_ordered_fragments(
         rd_plan,
-        "## Idea portfolio",
-        "### Anti-vacuity gate",
-        "### Blind-spot catalog",
-        "### Hypothesis synthesis",
+        "## Mechanism hypothesis record",
+        "### Mechanistic analysis",
+        "Assumptions exposed",
+        "What would be different if this interpretation is true",
+        "### Mechanism hypothesis record",
+        "Required evidence",
         "## Prior-work grounding",
     )
     assert_mentions(
@@ -1537,10 +1557,10 @@ def test_idea_portfolio_schema_and_templates_include_blind_spot_catalog():
         "Required repair",
     )
     assert_mentions(
-        ideation,
-        "blind-spot catalog",
-        "narrow claim scope",
-        "trigger constraint-naming",
+        mechanism_generation,
+        "Assumptions exposed",
+        "Required evidence",
+        "commit / park / kill",
     )
     assert_absent(assumption_audit, "List 3-5", "3〜5", "Unknown-unknowns catalog")
 
@@ -1548,426 +1568,113 @@ def test_idea_portfolio_schema_and_templates_include_blind_spot_catalog():
         text = template.read_text(encoding="utf-8")
         assert_ordered_fragments(
             text,
-            "## Idea portfolio",
-            "### Anti-vacuity gate",
-            "### Blind-spot catalog",
-            "### Hypothesis synthesis",
+            "## Mechanism hypothesis record",
+            "### Mechanistic analysis",
+            "Assumptions exposed",
+            "What would be different if this interpretation is true",
+            "### Mechanism hypothesis record",
+            "Required evidence",
             "## Prior-work grounding",
         )
         assert_mentions(
             text,
-            "Blind-spot area",
-            "How it could break the mechanism",
-            "Claim-scope effect",
-            "Required repair",
+            "Hypothesis",
+            "Competing hypothesis",
+            "Discriminating prediction",
+            "Minimal test",
+            "Reason",
         )
 
 
-def test_idea_portfolio_schema_and_templates_include_generation_contract():
+def test_mechanism_record_schema_and_templates_include_lens_selection_contract():
     rd_plan = read("skills/research/references/rd_plan.md")
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
         assert_ordered_fragments(
             text,
-            "## Idea portfolio",
-            "### Idea substrate",
-            "### Generation operators",
-            "### Assumption audit",
-            "### Anti-vacuity gate",
-            "### Evaluator feedback",
-            "### Grounded pruning",
+            "## Mechanism hypothesis record",
+            "### Research situation diagnosis",
+            "### Analysis lenses considered",
+            "What it would inspect",
+            "What it may miss",
+            "Use decision",
+            "### Adopted analysis lenses",
+            "Primary lens",
+            "Auxiliary lenses",
         )
         assert_mentions(
             text,
-            "substrate ids",
-            "changed premise",
-            "candidate is killed",
-            "executable evaluator",
-            "Skipped:",
+            "hypothesis generation is blocked",
+            "available material",
+            "missing material",
+            "commit / park / kill",
         )
 
 
-def test_check_idea_portfolio_rejects_vacuous_candidate_list():
-    script = ROOT / "skills" / "research" / "scripts" / "check_idea_portfolio.py"
-
-    plan = """# Vacuous Plan
-
-## Question / Objective
-
-Find a better short-term reversal signal.
-
-## Idea portfolio
-
-### De-anchored candidates
-
-- Candidate A: Try a better filter.
-- Candidate B: Use volatility.
-
-### Grounded pruning
-
-- Advance: Candidate A sounds promising.
-
-## Prior-work grounding
-
-Placeholder.
-"""
-
-    with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "plan.md"
-        path.write_text(plan, encoding="utf-8")
-        result = subprocess.run(
-            [sys.executable, str(script), str(path)],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
-
-    assert result.returncode == 1
-    assert "Missing required Idea portfolio subsection" in result.stdout
-
-
-def test_check_idea_portfolio_accepts_substrate_operator_and_feedback_contract():
-    script = ROOT / "skills" / "research" / "scripts" / "check_idea_portfolio.py"
-
-    plan = """# Non-vacuous Plan
+def complete_mechanism_record(decision: str = "park", blocked: bool = False) -> str:
+    block_reason = (
+        "blocked until a matched-market-regime comparison and evaluator exist"
+        if blocked
+        else "allowed because observed failures, baseline behavior, evaluation target, and comparator path are available"
+    )
+    return f"""# Mechanism Record Plan
 
 ## Question / Objective
 
-Find a better short-term reversal signal under existing data constraints.
+Find why a time-series model fails in high-spread market regimes.
 
-## Idea portfolio
+## Mechanism hypothesis record
 
-### Idea substrate
+### Research situation diagnosis
 
-- S1: Empirical observation - reversal edge decays after high spread intervals.
-- S2: Failure observation - volatility filter removes both noise and useful rebound cases.
-- S3: Baseline observation - current close-to-close return explains only the previous bar.
+- Available material: failure logs by spread regime, a simple reversal baseline, standard average-return metric, and candidate matched windows.
+- Missing material: matched non-spike windows and a durable evaluator artifact.
+- Why hypothesis generation is allowed or blocked: {block_reason}.
 
-### Generation operators
+### Analysis lenses considered
 
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Operator: invert gating premise
-  - Changed premise: spread spikes mark rebound inventory pressure rather than only noise.
+- Lens: Failure dynamics lens
+  - What it would inspect: where information flow or state persistence breaks in high-spread windows.
+  - What it may miss: whether the average-return evaluator is hiding tail losses.
+  - Use decision: use as primary because the observed collapse is condition-specific.
+- Lens: Measurement and evaluation lens
+  - What it would inspect: whether average return hides tail failures.
+  - What it may miss: the internal state mechanism that causes the collapse.
+  - Use decision: use as auxiliary because evaluation mismatch is a plausible competing explanation.
 
-### De-anchored candidates
+### Adopted analysis lenses
 
-- Candidate A: Gate reversal only after spread compression following a spike.
+- Primary lens: Failure dynamics lens.
+- Auxiliary lenses: Measurement and evaluation lens.
+- Reason: the main discriminator is whether high-spread windows break state information or merely expose a hidden evaluation target.
 
-### Hypothesis-generation handoff
+### Mechanistic analysis
 
-- Agent: fresh separate-context hypothesis-generation agent.
-- Starting context: anchor-stripped seed brief is the only generation brief; Excluded-anchor ledger is not input.
-- Web/literature retrieval: skipped with reason - substrate is already sufficient for raw hypothesis generation.
-- Output contract: multiple working hypotheses with source observation, mechanism conjecture, predicted effect, counter-hypothesis, minimal disconfirming test, and retrieval notes.
+- Observation: the model wins on average but loses sharply after spread spikes.
+- Analysis lens used: Failure dynamics lens with Measurement and evaluation lens as auxiliary.
+- Mechanistic interpretation: hidden state updates treat spread spikes as noise, suppressing rebound information exactly when inventory pressure may be resolving.
+- Assumptions exposed: spread spikes can encode temporary inventory pressure; matched non-spike windows can separate volatility from inventory effects.
+- What would be different if this interpretation is true: post-spike compression windows should show rebound information that matched low-volatility windows do not.
 
-### Main-agent intake
+### Mechanism hypothesis record
 
-- Authority check: generator output is seed material, not accepted authority, claim, plan, or decision.
-- Observation trace check: Candidate A traces to S1 and S2.
-- Mechanism review: Candidate A explains spread-spike failures rather than merely swapping methods.
-- Decision: advance Candidate A after anti-vacuity and evaluator feedback; regenerate any parameter-sweep-only alternatives.
-- Next-plan action: open ADJACENT evaluator-construction plan before intervention claims.
-
-### Assumption audit
-
-- Reference model challenged: short-term reversal signal treats high spread as pure contamination.
-- Assumptions considered: finite liquidity recovery window; spread spike means noise; close-to-close return is enough.
-- Load-bearing assumption: spread spike means noise.
-- Downstream-check result: not downstream of close-to-close measurement.
-- Inversion candidate: spread spike may mark temporary inventory pressure that resolves into reversal.
-
-### Anti-vacuity gate
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Changed premise: spread spikes can precede rebound, not just contaminate labels.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Predicted measurable effect: reversal IC improves in post-spike compression windows.
-  - Counter-hypothesis: apparent rebound is just lower volatility after filtering.
-  - Minimal disconfirming test: compare post-spike compression windows against matched non-spike windows.
-  - Verdict: survives
-
-### Blind-spot catalog
-
-- Candidate A:
-  - Blind-spot area: market microstructure regimes could hide liquidity-provider inventory rules not in context.
-  - How it could break the mechanism: spread compression may mark quote-stuffing cleanup rather than inventory-pressure relaxation.
-  - Claim-scope effect: narrowed_claim: narrow claims to venues and periods where spread compression follows real liquidity recovery.
-  - Required repair: retrieval: retrieve microstructure references or add venue-regime stratification before making a general claim.
-
-### Hypothesis synthesis
-
-- Candidate A:
-  - Source observation: S1 and S2.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Proposed intervention: condition reversal on spread spike followed by compression.
-  - Predicted effect: higher reversal IC in the conditioned slice.
-  - Counter-hypothesis: the slice merely lowers volatility.
-  - Minimal disconfirming test: matched non-spike window comparison.
-
-### Evaluator feedback
-
-- Status: Skipped: executable evaluator unavailable in current workspace.
-- Required evaluator or artifact: walk-forward CLI that accepts signal definition and emits IC, turnover, variance.
-- Effect on promotion: candidate can only advance to an ADJACENT evaluator-construction plan.
-
-### Grounded pruning
-
-- Advance: Candidate A only as evaluator-construction plan.
-- Parked: None.
-- Killed: None.
-- Merged: None.
-
-### Information-gain scoring
-
-- Candidate A: testability medium; measurement clear; information gain high; cost medium; prior-work distance medium; claim discipline strong.
-
-### Pre-execution divergence review
-
-- Portfolio breadth: one surviving candidate because other candidates failed anti-vacuity.
-- Parameter sweep laundering: none.
-- Anti-anchor check: not literature-first.
-- Required repair before promotion: build evaluator.
-
-### Promotion decision
-
-- Promoted idea: Candidate A to ADJACENT evaluator-construction plan.
-- Non-promoted ideas: none.
+- Hypothesis: post-spike spread compression carries rebound information that the current model suppresses as noise.
+- Competing hypothesis: apparent gains come only from lower realized volatility after filtering, not from inventory-pressure relaxation.
+- Discriminating prediction: a matched post-spike compression slice improves reversal IC while a volatility-matched non-spike slice does not.
+- Minimal test: compare post-spike compression windows against volatility-matched non-spike windows with the same horizon and transaction-cost assumptions.
+- Required evidence: run artifact with slice-level IC, dispersion, sample count, and matching criteria.
+- Decision: {decision}
+- Reason: evaluator and matched-comparison evidence must exist before execution claims advance.
 
 ## Prior-work grounding
 
-Grounding deferred until evaluator-construction plan is opened.
-"""
-
-    with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "plan.md"
-        path.write_text(plan, encoding="utf-8")
-        result = subprocess.run(
-            [sys.executable, str(script), str(path)],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
-
-    assert result.returncode == 0, result.stdout + result.stderr
-    assert "Idea portfolio passes contract checks." in result.stdout
-
-
-def test_check_idea_portfolio_requires_handoff_and_main_intake_sections():
-    plan = """# Missing Handoff Plan
-
-## Question / Objective
-
-Find a better short-term reversal signal under existing data constraints.
-
-## Idea portfolio
-
-### Idea substrate
-
-- S1: Empirical observation - reversal edge decays after high spread intervals.
-- S2: Failure observation - volatility filter removes both noise and useful rebound cases.
-
-### Generation operators
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Operator: invert gating premise
-  - Changed premise: spread spikes mark rebound inventory pressure rather than only noise.
-
-### De-anchored candidates
-
-- Candidate A: Gate reversal only after spread compression following a spike.
-
-### Assumption audit
-
-- Reference model challenged: short-term reversal signal treats high spread as pure contamination.
-- Assumptions considered: finite liquidity recovery window; spread spike means noise; close-to-close return is enough.
-- Load-bearing assumption: spread spike means noise.
-- Downstream-check result: not downstream of close-to-close measurement.
-- Inversion candidate: Candidate A.
-
-### Anti-vacuity gate
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Changed premise: spread spikes can precede rebound, not just contaminate labels.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Predicted measurable effect: reversal IC improves in post-spike compression windows.
-  - Counter-hypothesis: apparent rebound is just lower volatility after filtering.
-  - Minimal disconfirming test: compare post-spike compression windows against matched non-spike windows.
-  - Verdict: survives
-
-### Blind-spot catalog
-
-- Candidate A:
-  - Blind-spot area: market microstructure regimes could hide venue-specific liquidity-provider constraints.
-  - How it could break the mechanism: compression after a spike may reflect quote mechanics rather than rebound inventory pressure.
-  - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
-  - Required repair: narrow_conditions: add venue-regime stratification or park the general claim.
-
-### Hypothesis synthesis
-
-- Candidate A:
-  - Source observation: S1 and S2.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Proposed intervention: condition reversal on spread spike followed by compression.
-  - Predicted effect: higher reversal IC in the conditioned slice.
-  - Counter-hypothesis: the slice merely lowers volatility.
-  - Minimal disconfirming test: matched non-spike window comparison.
-
-### Evaluator feedback
-
-- Status: Skipped: executable evaluator unavailable in current workspace.
-- Required evaluator or artifact: walk-forward CLI.
-- Effect on promotion: Candidate A can advance only after evaluator construction.
-
-### Grounded pruning
-
-- Advance: Candidate A only as evaluator-construction plan.
-- Parked: None.
-- Killed: None.
-- Merged: None.
-
-### Information-gain scoring
-
-- Candidate A: high information gain but blocked.
-
-### Pre-execution divergence review
-
-- Portfolio breadth: limited.
-- Parameter sweep laundering: none.
-- Anti-anchor check: not literature-first.
-- Required repair before promotion: build evaluator.
-
-### Promotion decision
-
-- Promoted idea: Candidate A to ADJACENT evaluator-construction plan.
-- Non-promoted ideas: none.
-
-## Prior-work grounding
-
-Grounding deferred.
-"""
-
-    result = run_idea_portfolio_check(plan)
-
-    assert result.returncode == 1
-    assert "Missing required Idea portfolio subsection: 'Hypothesis-generation handoff'" in result.stdout
-    assert "Missing required Idea portfolio subsection: 'Main-agent intake'" in result.stdout
-
-
-def idea_portfolio_plan_with_blind_spot(blind_spot_block: str) -> str:
-    return f"""# Blind Spot Contract Plan
-
-## Question / Objective
-
-Find a better short-term reversal signal under existing data constraints.
-
-## Idea portfolio
-
-### Idea substrate
-
-- S1: Empirical observation - reversal edge decays after high spread intervals.
-- S2: Failure observation - volatility filter removes both noise and useful rebound cases.
-
-### Generation operators
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Operator: invert gating premise
-  - Changed premise: spread spikes mark rebound inventory pressure rather than only noise.
-
-### De-anchored candidates
-
-- Candidate A: Gate reversal only after spread compression following a spike.
-
-### Hypothesis-generation handoff
-
-- Agent: fresh separate-context hypothesis-generation agent.
-- Starting context: anchor-stripped seed brief is the only generation brief; Excluded-anchor ledger is not input.
-- Web/literature retrieval: skipped with reason - substrate is already sufficient for raw hypothesis generation.
-- Output contract: multiple working hypotheses with source observation, mechanism conjecture, predicted effect, counter-hypothesis, minimal disconfirming test, and retrieval notes.
-
-### Main-agent intake
-
-- Authority check: generator output is seed material, not accepted authority, claim, plan, or decision.
-- Observation trace check: Candidate A traces to S1 and S2.
-- Mechanism review: Candidate A explains spread-spike failures rather than merely swapping methods.
-- Decision: advance Candidate A after anti-vacuity and evaluator feedback.
-- Next-plan action: open ADJACENT evaluator-construction plan before intervention claims.
-
-### Assumption audit
-
-- Reference model challenged: short-term reversal signal treats high spread as pure contamination.
-- Assumptions considered: finite liquidity recovery window; spread spike means noise; close-to-close return is enough.
-- Load-bearing assumption: spread spike means noise.
-- Downstream-check result: not downstream of close-to-close measurement.
-- Inversion candidate: Candidate A.
-
-### Anti-vacuity gate
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Changed premise: spread spikes can precede rebound, not just contaminate labels.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Predicted measurable effect: reversal IC improves in post-spike compression windows.
-  - Counter-hypothesis: apparent rebound is just lower volatility after filtering.
-  - Minimal disconfirming test: compare post-spike compression windows against matched non-spike windows.
-  - Verdict: survives
-
-### Blind-spot catalog
-
-{blind_spot_block.strip()}
-
-### Hypothesis synthesis
-
-- Candidate A:
-  - Source observation: S1 and S2.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Proposed intervention: condition reversal on spread spike followed by compression.
-  - Predicted effect: higher reversal IC in the conditioned slice.
-  - Counter-hypothesis: the slice merely lowers volatility.
-  - Minimal disconfirming test: matched non-spike window comparison.
-
-### Evaluator feedback
-
-- Status: Skipped: executable evaluator unavailable in current workspace.
-- Required evaluator or artifact: walk-forward CLI.
-- Effect on promotion: candidate can only advance to an ADJACENT evaluator-construction plan.
-
-### Grounded pruning
-
-- Advance: Candidate A only as evaluator-construction plan.
-- Parked: None.
-- Killed: None.
-- Merged: None.
-
-### Information-gain scoring
-
-- Candidate A: high information gain but blocked.
-
-### Pre-execution divergence review
-
-- Portfolio breadth: limited.
-- Parameter sweep laundering: none.
-- Anti-anchor check: not literature-first.
-- Required repair before promotion: build evaluator.
-
-### Promotion decision
-
-- Promoted idea: Candidate A to ADJACENT evaluator-construction plan.
-- Non-promoted ideas: none.
-
-## Prior-work grounding
-
-Grounding deferred.
+Grounding starts here.
 """
 
 
-def run_idea_portfolio_check(plan: str):
-    script = ROOT / "skills" / "research" / "scripts" / "check_idea_portfolio.py"
+def run_mechanism_record_check(plan: str):
+    script = ROOT / "skills" / "research" / "scripts" / "check_mechanism_hypothesis_record.py"
 
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "plan.md"
@@ -1980,105 +1687,170 @@ def run_idea_portfolio_check(plan: str):
         )
 
 
-def test_check_idea_portfolio_rejects_empty_or_placeholder_blind_spot_fields():
-    plan = idea_portfolio_plan_with_blind_spot(
-        """
-- Candidate A:
-  - Blind-spot area:
-  - How it could break the mechanism: <failure path>
-  - Claim-scope effect: None
-  - Required repair: None with reason
-"""
-    )
+def test_check_mechanism_hypothesis_record_rejects_candidate_list_without_record():
+    plan = """# Vacuous Mechanism Plan
 
-    result = run_idea_portfolio_check(plan)
+## Question / Objective
+
+Find a better short-term reversal signal.
+
+## Mechanism hypothesis record
+
+- Candidate A: Try a better filter.
+- Candidate B: Use attention.
+
+## Prior-work grounding
+
+Placeholder.
+"""
+
+    result = run_mechanism_record_check(plan)
 
     assert result.returncode == 1
-    assert "blind-spot field 'Blind-spot area' is empty" in result.stdout
-    assert "blind-spot field 'How it could break the mechanism' is empty" in result.stdout
-    assert "blind-spot field 'Claim-scope effect' is empty" in result.stdout
-    assert "blind-spot field 'Required repair' is empty" in result.stdout
+    assert "Missing required Mechanism hypothesis record subsection" in result.stdout
 
 
-def test_check_idea_portfolio_rejects_blind_spot_without_scope_or_repair_effect():
-    plan = idea_portfolio_plan_with_blind_spot(
-        """
-- Candidate A:
-  - Blind-spot area: market microstructure regime.
-  - How it could break the mechanism: spread compression could mean something else.
-  - Claim-scope effect: affects interpretation.
-  - Required repair: think harder.
-"""
+def test_check_mechanism_hypothesis_record_accepts_complete_record():
+    result = run_mechanism_record_check(complete_mechanism_record())
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "Mechanism hypothesis record passes contract checks." in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_requires_discriminating_fields():
+    plan = complete_mechanism_record().replace(
+        "- Competing hypothesis: apparent gains come only from lower realized volatility after filtering, not from inventory-pressure relaxation.\n"
+        "- Discriminating prediction: a matched post-spike compression slice improves reversal IC while a volatility-matched non-spike slice does not.\n"
+        "- Minimal test: compare post-spike compression windows against volatility-matched non-spike windows with the same horizon and transaction-cost assumptions.\n",
+        "",
     )
 
-    result = run_idea_portfolio_check(plan)
+    result = run_mechanism_record_check(plan)
 
     assert result.returncode == 1
-    assert "Claim-scope effect must start with" in result.stdout
-    assert "Required repair must start with" in result.stdout
+    assert "missing required field: 'Competing hypothesis'" in result.stdout
+    assert "missing required field: 'Discriminating prediction'" in result.stdout
+    assert "missing required field: 'Minimal test'" in result.stdout
 
 
-def test_check_idea_portfolio_rejects_negated_or_vague_blind_spot_markers():
-    plan = idea_portfolio_plan_with_blind_spot(
-        """
-- Candidate A:
-  - Blind-spot area: market microstructure regime.
-  - How it could break the mechanism: spread compression could mean something else.
-  - Claim-scope effect: not narrow.
-  - Required repair: reference later.
-"""
+def test_check_mechanism_hypothesis_record_rejects_candidate_preamble_before_diagnosis():
+    plan = complete_mechanism_record().replace(
+        "## Mechanism hypothesis record\n\n### Research situation diagnosis",
+        "## Mechanism hypothesis record\n\n- Candidate A: Try a better filter.\n- Candidate B: Use attention.\n\n### Research situation diagnosis",
     )
 
-    result = run_idea_portfolio_check(plan)
+    result = run_mechanism_record_check(plan)
 
     assert result.returncode == 1
-    assert "Claim-scope effect must start with" in result.stdout
-    assert "Required repair must start with" in result.stdout
+    assert "must start with '### Research situation diagnosis'" in result.stdout
+    assert "candidate-list preamble" in result.stdout
 
 
-def test_check_idea_portfolio_accepts_one_space_or_tab_field_indentation():
-    plan = idea_portfolio_plan_with_blind_spot(
-        """
-- Candidate A:
- - Blind-spot area: market microstructure regime.
-\t- How it could break the mechanism: spread compression could mean quote cleanup rather than inventory pressure.
- - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
-\t- Required repair: narrow_conditions: add venue-regime stratification before broad claims.
-"""
+def test_check_mechanism_hypothesis_record_requires_multiple_lenses_considered():
+    plan = complete_mechanism_record().replace(
+        "- Lens: Measurement and evaluation lens\n"
+        "  - What it would inspect: whether average return hides tail failures.\n"
+        "  - What it may miss: the internal state mechanism that causes the collapse.\n"
+        "  - Use decision: use as auxiliary because evaluation mismatch is a plausible competing explanation.\n",
+        "",
     )
 
-    result = run_idea_portfolio_check(plan)
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 1
+    assert "Analysis lenses considered must include at least two Lens entries" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_rejects_multiple_primary_or_too_many_auxiliary_lenses():
+    plan = (
+        complete_mechanism_record()
+        .replace(
+            "- Primary lens: Failure dynamics lens.",
+            "- Primary lens: Failure dynamics lens; Measurement and evaluation lens.",
+        )
+        .replace(
+            "- Auxiliary lenses: Measurement and evaluation lens.",
+            "- Auxiliary lenses: Measurement and evaluation lens; Success mechanism lens; Constraint relocation lens.",
+        )
+    )
+
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 1
+    assert "Primary lens must name exactly one lens" in result.stdout
+    assert "Auxiliary lenses must name 0-2 lenses" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_rejects_and_joined_adopted_lens_lists():
+    plan = (
+        complete_mechanism_record()
+        .replace(
+            "- Primary lens: Failure dynamics lens.",
+            "- Primary lens: Failure dynamics lens and Measurement and evaluation lens.",
+        )
+        .replace(
+            "- Auxiliary lenses: Measurement and evaluation lens.",
+            "- Auxiliary lenses: Measurement and evaluation lens and Success mechanism lens and Constraint relocation lens.",
+        )
+    )
+
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 1
+    assert "Primary lens must name exactly one lens" in result.stdout
+    assert "Auxiliary lenses must name 0-2 lenses" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_requires_fields_for_each_considered_lens():
+    plan = complete_mechanism_record().replace(
+        "- Lens: Measurement and evaluation lens\n"
+        "  - What it would inspect: whether average return hides tail failures.\n"
+        "  - What it may miss: the internal state mechanism that causes the collapse.\n"
+        "  - Use decision: use as auxiliary because evaluation mismatch is a plausible competing explanation.\n",
+        "- Lens: Measurement and evaluation lens\n",
+    )
+
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 1
+    assert "Lens entry 2 missing required field: 'What it would inspect'" in result.stdout
+    assert "Lens entry 2 missing required field: 'What it may miss'" in result.stdout
+    assert "Lens entry 2 missing required field: 'Use decision'" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_rejects_invalid_decision():
+    result = run_mechanism_record_check(complete_mechanism_record(decision="advance"))
+
+    assert result.returncode == 1
+    assert "Decision must be exactly one of: commit, park, kill" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_blocks_commit_when_generation_is_blocked():
+    result = run_mechanism_record_check(complete_mechanism_record(decision="commit", blocked=True))
+
+    assert result.returncode == 1
+    assert "blocked diagnosis cannot commit" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_allows_commit_when_diagnosis_says_not_blocked():
+    plan = complete_mechanism_record(decision="commit").replace(
+        "Why hypothesis generation is allowed or blocked: allowed because observed failures, baseline behavior, evaluation target, and comparator path are available.",
+        "Why hypothesis generation is allowed or blocked: not blocked; material supports a discriminating prediction.",
+    )
+
+    result = run_mechanism_record_check(plan)
 
     assert result.returncode == 0, result.stdout + result.stderr
 
 
-def test_check_idea_portfolio_ignores_section_notes_when_parsing_candidates():
-    plan = idea_portfolio_plan_with_blind_spot(
-        """
-- Candidate A:
-  - Blind-spot area: market microstructure regime.
-  - How it could break the mechanism: spread compression could mean quote cleanup rather than inventory pressure.
-  - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
-  - Required repair: narrow_conditions: add venue-regime stratification before broad claims.
-"""
-    ).replace(
-        "### Generation operators\n\n- Candidate A:",
-        "### Generation operators\n\n- Note: Portfolio intentionally keeps one candidate after pruning.\n- Candidate A:",
-    )
-
-    result = run_idea_portfolio_check(plan)
-
-    assert result.returncode == 0, result.stdout + result.stderr
-
-
-def test_check_idea_portfolio_accepts_loose_not_applicable_objective_chosen():
+def test_check_mechanism_hypothesis_record_accepts_not_applicable_objective_chosen():
     plan = """# Objective Already Chosen
 
 ## Question / Objective
 
 Use the already selected objective.
 
-## Idea portfolio
+## Mechanism hypothesis record
 
 Not applicable: an objective was already chosen before this plan.
 
@@ -2087,473 +1859,17 @@ Not applicable: an objective was already chosen before this plan.
 Grounding starts here.
 """
 
-    result = run_idea_portfolio_check(plan)
+    result = run_mechanism_record_check(plan)
 
     assert result.returncode == 0, result.stdout + result.stderr
 
 
-def test_check_idea_portfolio_requires_survivors_to_have_blind_spot_records():
-    script = ROOT / "skills" / "research" / "scripts" / "check_idea_portfolio.py"
-
-    plan = """# Missing Blind Spot Plan
-
-## Question / Objective
-
-Find a better short-term reversal signal under existing data constraints.
-
-## Idea portfolio
-
-### Idea substrate
-
-- S1: Empirical observation - reversal edge decays after high spread intervals.
-- S2: Failure observation - volatility filter removes both noise and useful rebound cases.
-
-### Generation operators
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Operator: invert gating premise
-  - Changed premise: spread spikes mark rebound inventory pressure rather than only noise.
-
-### De-anchored candidates
-
-- Candidate A: Gate reversal only after spread compression following a spike.
-
-### Assumption audit
-
-- Reference model challenged: short-term reversal signal treats high spread as pure contamination.
-- Assumptions considered: finite liquidity recovery window; spread spike means noise; close-to-close return is enough.
-- Load-bearing assumption: spread spike means noise.
-- Downstream-check result: not downstream of close-to-close measurement.
-- Inversion candidate: Candidate A.
-
-### Anti-vacuity gate
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Changed premise: spread spikes can precede rebound, not just contaminate labels.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Predicted measurable effect: reversal IC improves in post-spike compression windows.
-  - Counter-hypothesis: apparent rebound is just lower volatility after filtering.
-  - Minimal disconfirming test: compare post-spike compression windows against matched non-spike windows.
-  - Verdict: survives
-
-### Blind-spot catalog
-
-- Catalog source: assumption audit was run, but no candidate-specific blind-spot record was written.
-
-### Hypothesis synthesis
-
-- Candidate A:
-  - Source observation: S1 and S2.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Proposed intervention: condition reversal on spread spike followed by compression.
-  - Predicted effect: higher reversal IC in the conditioned slice.
-  - Counter-hypothesis: the slice merely lowers volatility.
-  - Minimal disconfirming test: matched non-spike window comparison.
-
-### Evaluator feedback
-
-- Status: Skipped: executable evaluator unavailable in current workspace.
-- Required evaluator or artifact: walk-forward CLI.
-- Effect on promotion: candidate can only advance to an ADJACENT evaluator-construction plan.
-
-### Grounded pruning
-
-- Advance: Candidate A only as evaluator-construction plan.
-- Parked: None.
-- Killed: None.
-- Merged: None.
-
-### Information-gain scoring
-
-- Candidate A: high information gain but blocked.
-
-### Pre-execution divergence review
-
-- Portfolio breadth: limited.
-- Parameter sweep laundering: none.
-- Anti-anchor check: not literature-first.
-- Required repair before promotion: build evaluator.
-
-### Promotion decision
-
-- Promoted idea: Candidate A to ADJACENT evaluator-construction plan.
-- Non-promoted ideas: none.
-
-## Prior-work grounding
-
-Grounding deferred.
-"""
-
-    with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "plan.md"
-        path.write_text(plan, encoding="utf-8")
-        result = subprocess.run(
-            [sys.executable, str(script), str(path)],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
-
-    assert result.returncode == 1
-    assert "missing blind-spot catalog block" in result.stdout
-
-
-def test_check_idea_portfolio_rejects_unfilled_template_portfolio():
-    script = ROOT / "skills" / "research" / "scripts" / "check_idea_portfolio.py"
+def test_check_mechanism_hypothesis_record_rejects_unfilled_template_record():
     template = read("skills/research/assets/plan/rd_plan_exploratory.md.template")
-
-    with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "plan.md"
-        path.write_text(template, encoding="utf-8")
-        result = subprocess.run(
-            [sys.executable, str(script), str(path)],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
+    result = run_mechanism_record_check(template)
 
     assert result.returncode == 1
     assert "placeholder-only" in result.stdout or "Missing required" in result.stdout
-
-
-def test_check_idea_portfolio_rejects_inconsistent_candidate_contract():
-    script = ROOT / "skills" / "research" / "scripts" / "check_idea_portfolio.py"
-
-    plan = """# Inconsistent Plan
-
-## Question / Objective
-
-Find a better short-term reversal signal under existing data constraints.
-
-## Idea portfolio
-
-### Idea substrate
-
-- S1: Empirical observation - reversal edge decays after high spread intervals.
-- S2: Failure observation - volatility filter removes both noise and useful rebound cases.
-
-### Generation operators
-
-- Candidate A:
-  - Substrate ids: S1, S999
-  - Operator: invert gating premise
-  - Changed premise: spread spikes mark rebound inventory pressure rather than only noise.
-
-### De-anchored candidates
-
-- Candidate A: Gate reversal only after spread compression following a spike.
-- Candidate B: Try a better filter.
-
-### Assumption audit
-
-- Reference model challenged: short-term reversal signal treats high spread as pure contamination.
-- Assumptions considered: finite liquidity recovery window; spread spike means noise; close-to-close return is enough.
-- Load-bearing assumption: spread spike means noise.
-- Downstream-check result: not downstream of close-to-close measurement.
-- Inversion candidate: Candidate A.
-
-### Anti-vacuity gate
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Changed premise: spread spikes can precede rebound, not just contaminate labels.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Predicted measurable effect: reversal IC improves in post-spike compression windows.
-  - Counter-hypothesis: apparent rebound is just lower volatility after filtering.
-  - Minimal disconfirming test: compare post-spike compression windows against matched non-spike windows.
-  - Verdict: killed
-
-### Blind-spot catalog
-
-- Candidate A:
-  - Blind-spot area: market microstructure regimes could hide venue-specific liquidity-provider constraints.
-  - How it could break the mechanism: compression after a spike may reflect quote mechanics rather than rebound inventory pressure.
-  - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
-  - Required repair: narrow_conditions: add venue-regime stratification or park the general claim.
-
-### Hypothesis synthesis
-
-- Candidate B:
-  - Source observation: S1.
-  - Mechanism conjecture: better filtering might help.
-  - Proposed intervention: use a better filter.
-  - Predicted effect: better results.
-  - Counter-hypothesis: no effect.
-  - Minimal disconfirming test: check results.
-
-### Evaluator feedback
-
-- Status: Skipped: executable evaluator unavailable in current workspace.
-- Required evaluator or artifact: walk-forward CLI.
-- Effect on promotion: no candidate can advance.
-
-### Grounded pruning
-
-- Advance: Candidate B anyway.
-- Parked: None.
-- Killed: Candidate A.
-- Merged: None.
-
-### Information-gain scoring
-
-- Candidate B: vague.
-
-### Pre-execution divergence review
-
-- Portfolio breadth: weak.
-- Parameter sweep laundering: possible.
-- Anti-anchor check: not checked.
-- Required repair before promotion: none.
-
-### Promotion decision
-
-- Promoted idea: Candidate B to plan.
-- Non-promoted ideas: Candidate A killed.
-
-## Prior-work grounding
-
-Grounding deferred.
-"""
-
-    with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "plan.md"
-        path.write_text(plan, encoding="utf-8")
-        result = subprocess.run(
-            [sys.executable, str(script), str(path)],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
-
-    assert result.returncode == 1
-    assert "undefined substrate id" in result.stdout
-    assert "promoted candidate" in result.stdout
-
-
-def test_check_idea_portfolio_requires_promoted_candidate_to_be_advanced():
-    script = ROOT / "skills" / "research" / "scripts" / "check_idea_portfolio.py"
-
-    plan = """# Parked Promotion Plan
-
-## Question / Objective
-
-Find a better short-term reversal signal under existing data constraints.
-
-## Idea portfolio
-
-### Idea substrate
-
-- S1: Empirical observation - reversal edge decays after high spread intervals.
-- S2: Failure observation - volatility filter removes both noise and useful rebound cases.
-
-### Generation operators
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Operator: invert gating premise
-  - Changed premise: spread spikes mark rebound inventory pressure rather than only noise.
-
-### De-anchored candidates
-
-- Candidate A: Gate reversal only after spread compression following a spike.
-
-### Assumption audit
-
-- Reference model challenged: short-term reversal signal treats high spread as pure contamination.
-- Assumptions considered: finite liquidity recovery window; spread spike means noise; close-to-close return is enough.
-- Load-bearing assumption: spread spike means noise.
-- Downstream-check result: not downstream of close-to-close measurement.
-- Inversion candidate: Candidate A.
-
-### Anti-vacuity gate
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Changed premise: spread spikes can precede rebound, not just contaminate labels.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Predicted measurable effect: reversal IC improves in post-spike compression windows.
-  - Counter-hypothesis: apparent rebound is just lower volatility after filtering.
-  - Minimal disconfirming test: compare post-spike compression windows against matched non-spike windows.
-  - Verdict: survives
-
-### Blind-spot catalog
-
-- Candidate A:
-  - Blind-spot area: market microstructure regimes could hide venue-specific liquidity-provider constraints.
-  - How it could break the mechanism: compression after a spike may reflect quote mechanics rather than rebound inventory pressure.
-  - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
-  - Required repair: narrow_conditions: add venue-regime stratification or park the general claim.
-
-### Hypothesis synthesis
-
-- Candidate A:
-  - Source observation: S1 and S2.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Proposed intervention: condition reversal on spread spike followed by compression.
-  - Predicted effect: higher reversal IC in the conditioned slice.
-  - Counter-hypothesis: the slice merely lowers volatility.
-  - Minimal disconfirming test: matched non-spike window comparison.
-
-### Evaluator feedback
-
-- Status: Skipped: executable evaluator unavailable in current workspace.
-- Required evaluator or artifact: walk-forward CLI.
-- Effect on promotion: no candidate can advance.
-
-### Grounded pruning
-
-- Advance: None.
-- Parked: Candidate A until evaluator exists.
-- Killed: None.
-- Merged: None.
-
-### Information-gain scoring
-
-- Candidate A: high information gain but blocked.
-
-### Pre-execution divergence review
-
-- Portfolio breadth: limited by evaluator absence.
-- Parameter sweep laundering: none.
-- Anti-anchor check: not literature-first.
-- Required repair before promotion: build evaluator.
-
-### Promotion decision
-
-- Promoted idea: Candidate A to plan.
-- Non-promoted ideas: none.
-
-## Prior-work grounding
-
-Grounding deferred.
-"""
-
-    with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "plan.md"
-        path.write_text(plan, encoding="utf-8")
-        result = subprocess.run(
-            [sys.executable, str(script), str(path)],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
-
-    assert result.returncode == 1
-    assert "not advanced" in result.stdout
-
-
-def test_check_idea_portfolio_rejects_non_exact_survival_verdict():
-    script = ROOT / "skills" / "research" / "scripts" / "check_idea_portfolio.py"
-
-    plan = """# Bad Verdict Plan
-
-## Question / Objective
-
-Find a better short-term reversal signal under existing data constraints.
-
-## Idea portfolio
-
-### Idea substrate
-
-- S1: Empirical observation - reversal edge decays after high spread intervals.
-- S2: Failure observation - volatility filter removes both noise and useful rebound cases.
-
-### Generation operators
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Operator: invert gating premise
-  - Changed premise: spread spikes mark rebound inventory pressure rather than only noise.
-
-### De-anchored candidates
-
-- Candidate A: Gate reversal only after spread compression following a spike.
-
-### Assumption audit
-
-- Reference model challenged: short-term reversal signal treats high spread as pure contamination.
-- Assumptions considered: finite liquidity recovery window; spread spike means noise; close-to-close return is enough.
-- Load-bearing assumption: spread spike means noise.
-- Downstream-check result: not downstream of close-to-close measurement.
-- Inversion candidate: Candidate A.
-
-### Anti-vacuity gate
-
-- Candidate A:
-  - Substrate ids: S1, S2
-  - Changed premise: spread spikes can precede rebound, not just contaminate labels.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Predicted measurable effect: reversal IC improves in post-spike compression windows.
-  - Counter-hypothesis: apparent rebound is just lower volatility after filtering.
-  - Minimal disconfirming test: compare post-spike compression windows against matched non-spike windows.
-  - Verdict: not survives
-
-### Blind-spot catalog
-
-- Candidate A:
-  - Blind-spot area: market microstructure regimes could hide venue-specific liquidity-provider constraints.
-  - How it could break the mechanism: compression after a spike may reflect quote mechanics rather than rebound inventory pressure.
-  - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
-  - Required repair: narrow_conditions: add venue-regime stratification or park the general claim.
-
-### Hypothesis synthesis
-
-- Candidate A:
-  - Source observation: S1 and S2.
-  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
-  - Proposed intervention: condition reversal on spread spike followed by compression.
-  - Predicted effect: higher reversal IC in the conditioned slice.
-  - Counter-hypothesis: the slice merely lowers volatility.
-  - Minimal disconfirming test: matched non-spike window comparison.
-
-### Evaluator feedback
-
-- Status: Skipped: executable evaluator unavailable in current workspace.
-- Required evaluator or artifact: walk-forward CLI.
-- Effect on promotion: no candidate can advance.
-
-### Grounded pruning
-
-- Advance: Candidate A.
-- Parked: None.
-- Killed: None.
-- Merged: None.
-
-### Information-gain scoring
-
-- Candidate A: high information gain.
-
-### Pre-execution divergence review
-
-- Portfolio breadth: limited.
-- Parameter sweep laundering: none.
-- Anti-anchor check: not literature-first.
-- Required repair before promotion: none.
-
-### Promotion decision
-
-- Promoted idea: Candidate A to plan.
-- Non-promoted ideas: none.
-
-## Prior-work grounding
-
-Grounding deferred.
-"""
-
-    with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "plan.md"
-        path.write_text(plan, encoding="utf-8")
-        result = subprocess.run(
-            [sys.executable, str(script), str(path)],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
-
-    assert result.returncode == 1
-    assert "verdict must be exactly" in result.stdout
 
 
 def test_check_report_rejects_reports_without_background_section():
