@@ -13,6 +13,23 @@ Two flavors:
 
 Both have well-established methodology. The skill enforces structure for claims (see `claim_structure.md`) and decisions (see `iteration_loop.md`), but the analysis step that produces those claims has been left implicit until now. This reference fills that gap.
 
+## Result analysis explanation center
+
+Result analysis asks why the result happened. A validity audit comes first because unreliable artifacts can themselves explain a surprising result, but analysis must not stop at "the run is valid" or "the result can be promoted."
+
+A complete result analysis separates:
+
+1. **Validity audit** — whether artifacts and procedure are trustworthy enough to analyze.
+2. **What happened** — the observed result shape: aggregate movement, slices, seed variability, failures, anomalies, traces, and condition-specific effects.
+3. **Prediction comparison** — whether planned predictions, thresholds, support requirements, and expected conditions were met, missed, reversed, or only partly satisfied.
+4. **Candidate explanations** — candidate causes and alternative explanations, including procedure / artifact explanations such as leakage, split mismatch, broken comparators, script bugs, measurement artifacts, or missing provenance.
+5. **Failed-prediction analysis when prediction missed** — why the result fell short, starting from the observed gap and using live candidate failure explanations. Premise/mechanism, approach/intervention, procedure/artifact/data, and evaluation/power/metric are coverage lenses, not required verdict categories.
+6. **Evidence for and against each explanation** — support and contradiction recorded separately for each candidate mechanism.
+7. **Discriminating analysis** — the ablation, slice, trace, perturbation, failure sample, or theoretical check needed to separate leading candidates.
+8. **Alternatives still live** — the candidate explanations that remain plausible after the current evidence is inspected.
+
+Mechanism claims require discriminating evidence. Association-only patterns can motivate candidates, but they do not by themselves explain why the result happened. Failed predictions require especially careful decomposition: otherwise the record cannot distinguish a wrong premise from a weak intervention, bad data, a broken procedure, or an underpowered evaluation. Those possibilities are search lenses; do not force them into final buckets when the evidence only supports a smaller set of live explanations. Result analysis does not decide promotion readiness; it supplies the decomposition that later claim writing uses.
+
 ## Research script artifact contract
 
 EDA and result-analysis scripts may print progress, but stdout is not evidence. A print-only script run leaves no audit trail for later analysis, review, or report writing. Every completed research script run must write durable artifact files under `experiments/<plan>/runs/<run_id>/`:
@@ -135,7 +152,7 @@ The transition from interpretation to claim is where the disclosure floor applie
 - Alternative explanations have been actively considered (and listed if not excluded)
 - The conditions under which the claim holds are stated precisely
 - A fresh separate-context result-analysis subagent using `research-result-analysis` has returned a `## Result analysis` section from the plan path only
-- Exactly one fresh research-review subagent has recorded `PASS` for both analysis sufficiency and result reliability in `plans/<id>.md` Research review section
+- The claim is written only after candidate explanations, alternatives still live, tested conditions, and missing conditions have been reconciled with `claim_structure.md`
 
 ### Pearl's Ladder applies
 

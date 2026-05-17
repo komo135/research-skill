@@ -31,6 +31,6 @@
 
 ## Working in this project
 
-This project uses the `research` skill. Plans declare a category and mode; results are recorded in `plans/<id>.md` with separate `research-result-analysis`, claim structure, and research review; reports under `reports/<id>/` are the human-facing artifacts.
+This project uses the `research` skill. Plans declare a category and mode; plans are checked before execution with `research-plan-review`, results are analyzed after execution with `research-result-analysis`, and claims / decisions are recorded separately in `plans/<id>.md`; reports under `reports/<id>/` are the human-facing artifacts.
 
 Research scripts should run through `new_run.py` and leave evidence under `experiments/<plan>/runs/<run_id>/`. Print-only output is not a completed result: stdout is not evidence. Each completed run needs `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and at least one manifest-listed durable artifact in `outputs/`, `tables/`, `figures/`, or `intermediate/`. Run `check_run_artifacts.py` before using a run for Result analysis, observations, claims, decisions, or reports.

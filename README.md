@@ -1,9 +1,10 @@
 # research-skill
 
-A Claude Code and Codex plugin providing three skills for **agent-driven R&D**:
+A Claude Code and Codex plugin providing four skills for **agent-driven R&D**:
 
 - **`research`** — protocol skill for R&D work across the three Frascati categories: basic research (new knowledge about underlying foundations without a particular application in view), applied research (new knowledge directed toward a specific practical aim or objective), and experimental development (new or improved products/processes plus additional knowledge). Enforces vocabulary, plan/claim structure, iteration discipline, analysis methodology, and human-readable reports.
-- **`research-result-analysis`** — independent result-analysis skill used by a fresh separate-context result-analysis subagent. It starts from a plan path only, reconstructs evidence from referenced artifacts, and returns observations, interpretations, alternatives, missing context, required analysis, and claim-readiness without writing final claims or decisions.
+- **`research-plan-review`** — independent plan-review skill used before execution. It starts from a plan path only and reviews the research design: mechanism hypothesis or principle, prediction or expected output, discriminating test, controls/comparators or limiting cases, evidence route, and execution blockers.
+- **`research-result-analysis`** — independent result-analysis skill used by a fresh separate-context result-analysis subagent. It starts from a plan path only, reconstructs evidence from referenced artifacts, and explains what happened and why through candidate explanations, evidence for/against, procedure/artifact explanations, live alternatives, and discriminating next analyses without writing final claims or decisions.
 - **`quant-research`** — domain extension layered on `research` for time-series and statistically rigorous quantitative R&D. Adds methodology for time-series cross-validation, multiple-testing corrections, leakage detection, and statistical robustness.
 
 The core rule: **research-level reproducibility (someone can re-implement from your description) is enforced; experiment-level replicability (someone can rerun your exact code) is the agent's discretion.** This separation, following [Drummond (2009)](https://cogprints.org/7691/7/icmle09.pdf) and [Goodman et al. (2016)](https://www.science.org/doi/10.1126/scitranslmed.aaf5027), keeps agents focused on doing good research rather than on producing perfect env.lock files. Reports record material conditions, not environment locks: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date only when those conditions affect interpretation. Research scripts still need evidence: stdout is not evidence, so completed runs keep a manifest with `status: completed`, logs, and at least one manifest-listed durable artifact.
@@ -26,7 +27,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.5.0)
+## Core design (v2.6.0)
 
 ### R&D categories (Frascati 2015)
 
@@ -44,21 +45,22 @@ Categories are not a one-way pipeline ([Kline & Rosenberg 1986](https://fenix.is
 
 Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Theoretical mode is for derivational work where axioms, definitions, and limiting-case checks carry the evidence burden; it is a plan/report mode, not a fourth R&D category.
 
-### Plan-Execution-Result analysis-Research review-Claim cycle
+### Plan-Plan review-Execution-Result analysis-Claim cycle
 
 ```
 1. new_plan.py creates plans/{id}_{slug}.md (mode-specific template)
 2. Write Question / Objective. If ideating, write the Research ideation Idea portfolio before prior-work grounding.
 3. For ideation work, run assumption audit before hypothesis synthesis; use iterative ideation only when its executable-evaluator preconditions hold.
 4. Write Prior-work grounding and the Divergence checkpoint.
-5. Write Plan section. git commit. (Plan is time-anchored.)
-6. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact.
-7. Write Actual section + Planned-vs-Actual comparison.
-8. Result analysis — dispatch a fresh separate-context result-analysis subagent using `research-result-analysis` and pass only the plan path. The subagent reconstructs evidence from referenced runs, manifests, logs, scripts, outputs, tables, and figures. The main research agent must not perform result analysis itself for load-bearing promotion.
-9. Research review — dispatch exactly one research-review subagent (a fresh separate-context analysis agent, not a host-specific Task tool) to evaluate analysis sufficiency and result reliability.
-10. Claim — record load-bearing claims using the Toulmin-derived structure.
-11. Pick one of 5 iteration branches: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE.
-12. If human-facing, draft a report.
+5. Write Plan section.
+6. Plan review — dispatch a fresh separate-context plan-review subagent using `research-plan-review` and pass only the plan path. Repair blockers before execution.
+7. git commit. (Plan plus Plan review are time-anchored.)
+8. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact.
+9. Write Actual section + Planned-vs-Actual comparison.
+10. Result analysis — dispatch a fresh separate-context result-analysis subagent using `research-result-analysis` and pass only the plan path. The subagent reconstructs evidence and decomposes why the result happened.
+11. Claim — record only the load-bearing claims supported by the evidence and alternatives using the Toulmin-derived structure.
+12. Pick one of 5 iteration branches: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE.
+13. If human-facing, draft a report.
 ```
 
 ### Prior-work grounding
@@ -71,7 +73,7 @@ Comprehensive literature survey is required for strong external novelty, publica
 
 ### Research ideation
 
-When a user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," the `research` skill now uses `references/ideation.md` to create an **Idea portfolio** before prior-work grounding. If the main agent has already seen anchors, it prepares a sanitized brief and dispatches a fresh de-anchoring subagent for raw seed generation; this means any host-provided separate-context agent, not a specific Task tool. Raw seeds are not accepted ideas. The portfolio must record substrate ids, generation operators, changed premises, assumption audit, anti-vacuity gate results, blind-spot catalog entries tied to surviving candidates, evaluator feedback, grounded pruning, and information-gain scoring before one candidate can be promoted.
+When a user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," the `research` skill uses `references/ideation.md` to create an **Idea portfolio** before prior-work grounding. If anchors are already visible, it writes an anchor-stripped seed brief and an excluded-anchor ledger before raw seed generation. When anchoring risk is high, ideation may dispatch a fresh separate-context hypothesis-generation agent from that brief; the main agent then records intake instead of accepting the output as authority. Raw seeds are not accepted ideas. The portfolio must record substrate ids, hypothesis-generation handoff or a Not-used reason, main-agent intake, generation operators, changed premises, assumption audit, anti-vacuity gate results, blind-spot catalog entries tied to surviving candidates, evaluator feedback, grounded pruning, and information-gain scoring before one candidate can be promoted.
 
 Only one candidate is promoted into a plan. Non-promoted ideas are recorded as `parked / killed / merged` and are not claims.
 
@@ -95,20 +97,17 @@ Every plan now records a pre-execution checkpoint before committing to a route:
 
 This keeps agents from silently accepting "just improve last time's best approach" as a complete research plan.
 
-### Research review
+### Plan review subagent
 
-Before a result becomes a load-bearing claim, state-changing decision (`REFINE`, `ADJACENT`, `PARK`, or `CLOSE`), or report, the plan must first contain Result analysis from a fresh separate-context result-analysis subagent using `research-result-analysis`. Then the agent dispatches exactly one fresh research-review subagent. That reviewer must record a verdict for both:
+Before execution, the plan-review handoff uses `research-plan-review` and passes only the plan path. The reviewer checks the research design before any results exist: category/mode fit, mechanism hypothesis or principle, prediction or expected output, discriminating test, controls/comparators or limiting cases, evidence route, artifact plan, scope, and constraints. It returns `execute_as_written`, `revise_before_execution`, or `block_execution`.
 
-- Analysis sufficiency: whether the analysis is adequate for the conclusion, because weak analysis can directly produce a wrong close-out.
-- Result reliability: whether the result is trustworthy given the approach, research procedure, data handling, controls/comparators when applicable, robustness checks, and plan deviations.
-
-The review records `PASS`, `REWORK`, or `INVALID` for each judgment in the plan's Research review section. Only two `PASS` judgments allow promotion. `REWORK` requires the named analysis, repair, or rerun before any claim, decision, or report; `INVALID` means the affected result is not evidence until the distorted work is redone.
+This verdict asymmetry is intentional. Plan review happens before execution, so it may recommend whether the design is informative enough to run. Result analysis happens after evidence exists and before claims / decisions, so it explains what happened and why but does not assess claim readiness, deployment, or iteration decisions.
 
 ### Result analysis subagent
 
 The result-analysis handoff uses `skills/research/references/result_analysis_subagent_prompt.md`. The prompt passes only the plan path; the subagent treats the plan as the only starting context and reconstructs necessary evidence from referenced artifacts. Parent-agent summaries, expected conclusions, and private execution notes are not inputs. Missing or ambiguous references are reported as `context_missing`.
 
-The output is a `## Result analysis` section with artifact-grounded observations, interpretations, alternatives not excluded, required additional analysis, and claim-readiness. It is input to Research review, not a claim record and not an iteration decision.
+The output is a `## Result analysis` section with evidence traced, what happened, candidate explanations, evidence for and against each explanation, procedure/artifact explanations, alternatives still live, and discriminating next analyses. It is not a claim record and not an iteration decision.
 
 ### Claim structure (Toulmin-derived, no numeric ladder)
 
@@ -160,9 +159,10 @@ research-skill/
 │   │   │   └── literature_review.md
 │   │   ├── assets/{project,plan,report}/*.template
 │   │   └── scripts/{new_project,new_plan,new_run,check_run_artifacts,check_claims,check_report,draft_report}.py
+│   ├── research-plan-review/
+│   │   └── SKILL.md
 │   ├── research-result-analysis/
 │   │   ├── SKILL.md
-│   │   └── agents/openai.yaml
 │   └── quant-research/
 │       ├── SKILL.md
 │       ├── references/shared/
@@ -180,7 +180,7 @@ research-skill/
 /plugin install research@research-skill
 ```
 
-After installation the skills are available as `research`, `research-result-analysis`, and `quant-research`.
+After installation the skills are available as `research`, `research-plan-review`, `research-result-analysis`, and `quant-research`.
 
 ### Claude Code: local development
 
@@ -232,7 +232,7 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 | `new_plan.py` | Create a plan from mode-specific template, capture git SHA |
 | `new_run.py` | Create a run directory with manifest, logs, and artifact folders |
 | `check_run_artifacts.py` | Reject print-only runs and verify manifest/logs/non-log artifacts |
-| `check_idea_portfolio.py` | Verify Idea portfolio substrate/operator/anti-vacuity/blind-spot/evaluator-feedback contract |
+| `check_idea_portfolio.py` | Verify Idea portfolio substrate/handoff/intake/operator/anti-vacuity/blind-spot/evaluator-feedback contract |
 | `check_claims.py` | Verify claim record structure (5 required fields, vagueness heuristics) |
 | `check_report.py` | Verify report contract (figures resolve, required sections, non-placeholder) |
 | `draft_report.py` | Initialize a report directory from a plan |
@@ -251,22 +251,35 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.5.0** — keeps prior-work grounding as a first-class contract while adding a dedicated result-analysis skill with quality gates, assumption audit, theoretical plan/report support, iterative ideation for executable-evaluator settings, paper-grade report sections, and statistical reporting minimums.
+**Version 2.6.0** — adds independent plan review before execution and refocuses result analysis on why the result happened, while keeping prior-work grounding, assumption audit, theoretical mode, paper-grade reports, and statistical reporting minimums.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.5.0 (current) — independent result analysis quality gates
+### v2.6.0 (current) — plan review and explanation-centered result analysis
 
-Splits result analysis into a dedicated skill and makes analysis quality reviewable before Research review.
+Splits pre-execution design review and post-execution result analysis into the two mandatory fresh separate-context gates around execution. Ideation can also use a fresh hypothesis-generation handoff, but that output is seed material until main-agent intake, pruning, and plan promotion adjudicate it.
+
+**Added / changed**
+
+- Added `research-plan-review` for plan-path-only review before execution.
+- Removed the post-result review gate from the active lifecycle.
+- Removed the Codex-specific result-analysis agent definition; result-analysis is now skill / prompt-template driven across agent runtimes.
+- Refocused `research-result-analysis` from readiness verdicts to explaining why the result happened: candidate explanations, evidence for/against, procedure/artifact explanations, live alternatives, and discriminating next analyses.
+- Kept document checks as regression guards; behavioral quality is validated with pressure scenarios against the skills.
+- Reworked ideation so de-anchored hypothesis generation uses an anchor-stripped seed brief, excluded-anchor ledger, optional fresh hypothesis-generation handoff, and explicit main-agent intake.
+
+### v2.5.0 — independent result analysis quality gates
+
+Split result analysis into a dedicated skill and made analysis quality explicitly reviewable in the previous lifecycle.
 
 **Added / changed**
 
 - Added `research-result-analysis` as a separate skill for fresh separate-context analysis from the plan path only.
-- Added `skills/research/references/result_analysis_subagent_prompt.md` so the parent research skill passes only the plan path and records the returned `## Result analysis` section before Research review.
-- Added claim-readiness verdicts: `ready`, `not_ready`, and `invalid_evidence`.
+- Added `skills/research/references/result_analysis_subagent_prompt.md` so the parent research skill passes only the plan path and records the returned `## Result analysis` section before the previous review gate.
+- Added readiness verdicts: `ready`, `not_ready`, and `invalid_evidence`; superseded in v2.6.0 by explanation-centered analysis.
 - Added an analysis quality gate: artifact-faithful, arithmetically checked, claim-fit checked, depth-calibrated, and reviewable.
-- Clarified that claim-readiness is not a release decision and must not be translated into GO/NO-GO, ship, CLOSE, NEXT_STEP, REFINE, ADJACENT, or PARK.
+- Clarified that readiness is not a release decision and must not be translated into ship, CLOSE, NEXT_STEP, REFINE, ADJACENT, or PARK.
 
 ### v2.4.0 — theoretical, iterative, report, and claim additions
 
@@ -312,7 +325,7 @@ Adds a research ideation protocol that separates candidate generation from groun
 **Added / changed**
 
 - Research ideation now starts with a de-anchored Idea portfolio before prior-work grounding.
-- When anchors are already visible to the main agent, it must prepare a sanitized brief and dispatch a fresh de-anchoring subagent for raw seed generation; later versions require substrate/operator/anti-vacuity checks before a seed is accepted as a candidate.
+- When anchors are already visible, the active protocol now uses an anchor-stripped seed brief and excluded-anchor ledger before raw seed generation; later versions require substrate/operator/anti-vacuity checks before a seed is accepted as a candidate.
 - Prior-work grounding remains mandatory before execution; ideation produces candidates, not execution-ready plans.
 - Only one candidate is promoted into a plan after grounding and information-gain scoring; non-promoted ideas are recorded as `parked / killed / merged` and are not claims.
 
@@ -361,8 +374,8 @@ Strengthens v2 research discipline without changing plugin identity.
 **Added / changed**
 
 - Required Divergence checkpoint before execution: approach portfolio, anchoring audit, research positioning, disconfirming evidence, and commitment decision.
-- Required single research-review subagent before load-bearing claims, state-changing decisions, or reports.
-- Research review verdicts are `PASS` / `REWORK` / `INVALID`; only `PASS` + `PASS` permits promotion.
+- Required a single post-result review before load-bearing claims, state-changing decisions, or reports.
+- Review verdicts were `PASS` / `REWORK` / `INVALID`; only `PASS` + `PASS` permitted promotion in that older lifecycle.
 - `REWORK` requires named reanalysis, repair, or rerun before any claim, decision, or report.
 - `INVALID` makes affected results unusable as evidence until repair, rerun, or research-plan redo.
 - Quant time-series test-set reuse is treated as a reliability failure requiring protocol reopening and fresh evaluation, not a weaker writeup.
@@ -377,7 +390,7 @@ Complete redesign. No backward compatibility with v1.x.
 - Plan modes initially: `exploratory`, `confirmatory`, `milestone`; v2.4.0 adds `theoretical`
 - Iteration FSA with 5 explicit branches: `NEXT_STEP` / `REFINE` / `ADJACENT` / `PARK` / `CLOSE`
 - Divergence checkpoint before execution to expose alternatives, anchoring risk, research positioning, and disconfirming evidence before committing to a plan
-- Single research-review subagent before claim/decision/report promotion, covering analysis sufficiency and result reliability
+- Single post-result review before claim/decision/report promotion, covering analysis sufficiency and result reliability
 - Toulmin-derived claim structure (5 required fields, no numeric ladder)
 - `references/analysis.md` covering EDA, result analysis, depth stop conditions, and Observation→Interpretation→Claim staging — backed by Tukey 1977, Wickham, Mitchell 2019 Model Cards, Gebru 2021 Datasheets, Ribeiro 2020 CheckList, Guo 2017 calibration, Bouthillier 2021 variance, Pearl Ladder of Causation, Gelman-Loken forking paths, Toulmin 1958
 - Lightweight Amendment pattern: `REFINE` appends an Amendment rather than rewriting the Plan

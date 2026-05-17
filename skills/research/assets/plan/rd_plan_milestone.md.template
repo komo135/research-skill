@@ -17,7 +17,7 @@ last_updated: YYYY-MM-DD
 
 ## Idea portfolio
 
-<Not applicable: objective already chosen. If this plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," use `references/ideation.md` and record the full generation contract below. Raw subagent seeds are not accepted candidates until substrate, generation operator, and anti-vacuity checks pass.>
+<Not applicable: objective already chosen. If this plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," use `references/ideation.md` and record the full generation contract below. Raw seeds are not accepted candidates until substrate, generation operator, and anti-vacuity checks pass.>
 
 ### Idea substrate
 
@@ -34,8 +34,24 @@ last_updated: YYYY-MM-DD
 
 ### De-anchored candidates
 
-- Generator: <fresh de-anchoring subagent identifier; sanitized brief with substrate ids only>
+- Seed brief: <anchor-stripped brief with substrate ids only>
+- Excluded-anchor ledger: <prior-work names, SOTA systems, previous best approaches, user-preferred methods, convenient datasets, or None>
 - <candidate>: <raw seed generated before prior-work grounding; not accepted until operator + anti-vacuity gate pass>
+
+### Hypothesis-generation handoff
+
+- Agent: <fresh separate-context hypothesis-generation agent, or Not used with reason>
+- Starting context: <anchor-stripped seed brief is the only generation brief; Excluded-anchor ledger is not input>
+- Web/literature retrieval: <used for abstract observations or cross-domain mechanisms / skipped with reason>
+- Output contract: <multiple working hypotheses with source observation, mechanism conjecture, predicted effect, counter-hypothesis, minimal disconfirming test, and retrieval notes>
+
+### Main-agent intake
+
+- Authority check: <generator output is seed material, not accepted authority, claim, plan, or decision>
+- Observation trace check: <which substrate ids each hypothesis truly traces to, or missing-substrate constraint>
+- Mechanism review: <whether each mechanism explains observations, merely swaps methods, or is post-hoc prose>
+- Decision: <advance / park / kill / merge / regenerate for each hypothesis>
+- Next-plan action: <promote toward current plan / open ADJACENT evaluator-construction plan / gather substrate / run grounded pruning / no plan>
 
 ### Assumption audit
 
@@ -130,7 +146,7 @@ last_updated: YYYY-MM-DD
 
 - Primary route: <the system/design route selected for this milestone>
 - Alternative A: <meaningfully different route; not just a small implementation variant>
-- Alternative B: <meaningfully different route; not just a larger version; if a hard constraint permits only one route, state that constraint and narrow later claims only if Research review records PASS for both judgments>
+- Alternative B: <meaningfully different route; not just a larger version; if a hard constraint permits only one route, state that constraint and narrow later claims to that constraint>
 
 ### Anchoring audit
 
@@ -179,6 +195,36 @@ last_updated: YYYY-MM-DD
 
 - <resource envelope: runs, hardware time, deadline, or other execution constraint>
 
+## Plan review
+
+### Reviewer
+
+- Agent: <fresh separate-context plan-review subagent>
+- Skill: research-plan-review
+- Plan reviewed: <this plan path>
+- Reviewed at: <YYYY-MM-DD>
+
+### Design summary
+
+<Research design summary: question/objective, mechanism hypothesis or principle under investigation, prediction or expected output, and evidence route.>
+
+### Research-design checks
+
+- Category/mode fit: <adequate / revise / block>: <reason>
+- Mechanism hypothesis or principle: <adequate / revise / block>: <reason>
+- Prediction or expected output: <adequate / revise / block>: <reason>
+- Discriminating test: <adequate / revise / block>: <reason>
+- Controls, comparators, or limiting cases: <adequate / revise / block / not applicable>: <reason>
+- Evidence route and artifact plan: <adequate / revise / block>: <reason>
+- Scope and constraints: <adequate / revise / block>: <reason>
+
+### Required repairs before execution
+
+<None, or concrete plan repairs.>
+
+### Execution recommendation
+
+<execute_as_written / revise_before_execution / block_execution>: <rationale>
 ## Actual execution
 
 ### Runs
@@ -212,50 +258,46 @@ last_updated: YYYY-MM-DD
 - Runs and artifacts: <run_manifest.json, logs/stdout.log, logs/stderr.log, scripts, outputs, tables, figures, reports, or literature entries inspected>
 - context_missing: <None, or missing/ambiguous references that block or narrow analysis>
 
-### Observations
+### What happened
 
-<Artifact-grounded facts only.>
+<Artifact-grounded result summary, including values and deviations from the plan.>
 
-### Interpretations
+### Prediction comparison
 
-<Possible explanations, separated from observations.>
+<Planned prediction / threshold / expected condition versus observed value; note whether the prediction was met, missed, reversed, or only partly satisfied.>
 
-### Alternatives not excluded
+### Candidate explanations
 
-<Plausible explanations, confounds, leakage paths, comparator issues, missing controls, or untested conditions.>
+- <explanation 1 for why the result happened>
+  - Evidence for: <supporting artifacts, metrics, logs, or plan facts>
+  - Evidence against: <contradicting artifacts, missing diagnostics, or observations that do not fit>
+- <explanation 2>
+  - Evidence for: <supporting evidence>
+  - Evidence against: <contradicting evidence or missing evidence>
 
-### Required additional analysis
+### Failed prediction analysis
 
-<None, or named analysis/rerun/repair required before any claim, decision, or report.>
+- Observed gap: <prediction, threshold, or expected condition versus observed result>
+- Candidate failure explanations:
+  - <candidate explanation for why the prediction missed>
+    - Why this could explain the miss: <mechanism connecting evidence to the missed prediction>
+    - Evidence for: <artifact-grounded support>
+    - Evidence against: <artifact-grounded contradiction or weakness>
+    - What would be true if this explanation is correct: <testable implication>
+    - Missing discriminator: <smallest analysis that would separate this explanation from alternatives>
+- Coverage check: <which lenses were considered: premise/mechanism, approach/intervention, procedure/artifact/data/comparator/implementation/measurement, evaluation/power/metric/scope. Do not force a category; record only live explanations above.>
 
-### Claim-readiness assessment
+### Procedure / artifact explanations
 
-<ready / not_ready / invalid_evidence>: <rationale tied to evidence and missing context.>
+<Procedure defect, leakage path, broken comparator, missing artifact, data issue, plan deviation, or None with reason.>
 
-## Research review
+### Alternatives still live
 
-### Reviewer
+<Plausible explanations, confounds, comparator issues, missing controls, untested conditions, or theoretical gaps still compatible with the evidence.>
 
-- Agent: <one fresh research-review subagent>
-- Reviewed at: <YYYY-MM-DD>
-- Scope: <claim / CLOSE / REFINE / ADJACENT / PARK / report>
+### Discriminating next analyses
 
-### Analysis sufficiency
-
-- Verdict: <PASS / REWORK / INVALID>
-- Rationale: <why the analysis is sufficient, requires rework, or invalidates the current conclusion path>
-- Required reanalysis: <None / named analyses to run before any claim, decision, or report>
-
-### Result reliability
-
-- Verdict: <PASS / REWORK / INVALID>
-- Rationale: <whether approach, procedure, data, controls/comparators, and robustness support trusting the result>
-- Required repair or rerun: <None / script fix, data repair, comparator/control repair, rerun, or plan-level redo>
-
-### Required action
-
-- <Proceed only if both judgments are PASS / run named analysis / fix and rerun affected work / reopen plan>
-
+<Smallest analysis, check, rerun, or artifact reconstruction that would distinguish among explanations.>
 ## Claims
 
 <Load-bearing claims about functional behavior and performance, using claim_structure.md.>

@@ -79,7 +79,7 @@ next out-of-sample block once.
 - Until val determines the model, hyperparameters, and thresholds, do not touch test.
 - A bad test result is not a reason to rewrite the model on test — that is selection bias.
 
-If test has been touched more than once, do not recast the finding as a reportable claim. Treat the affected evaluation as a reliability failure: record `REWORK` or `INVALID` in the Research review, re-open the protocol, and redo the final evaluation on a fresh untouched holdout, a future block, or a predeclared walk-forward design before any claim, decision, or report.
+If test has been touched more than once, do not recast the finding as a reportable claim. Treat the affected evaluation as a reliability failure: record the leakage in Result analysis, re-open the protocol, and redo the final evaluation on a fresh untouched holdout, a future block, or a predeclared walk-forward design before any claim, decision, or report.
 
 ## Extra care for ML
 

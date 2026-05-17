@@ -18,7 +18,7 @@ L3-L4 paradigm-shift generation remains outside any markdown-only guarantee. Thi
 
 Invoked between `Observation discovery pass` and `Hypothesis synthesis pass`.
 
-Prompt the agent (or its de-anchoring subagent):
+Prompt the agent during the de-anchoring pass:
 
 > "List the assumptions you are treating as background — the things you assume must be true for the current framing to even make sense. For each, ask: what happens if I foreground it and try the opposite? Which assumption, if false, would force the largest revision?
 >
@@ -55,13 +55,13 @@ Invoked **manually**, not on every cycle. Invocation triggers:
 
 - The main agent self-assesses overconfidence in a candidate (subjective)
 - The user requests it explicitly
-- The `research-review` subagent flags the candidate's claim as overconfident in its `Analysis sufficiency` rationale
+- Result analysis or claim drafting exposes that the candidate's explanation is overconfident relative to the evidence
 
 Prompt:
 
 > "Name 3 historical attempts to solve a problem of similar shape. For each, note success/failure outcome and one named reason. State a calibrated base rate before committing the current candidate."
 
-No separate subagent for reference-class forecasting itself. No durable state file. Output is conversational and ephemeral.
+No separate agent for reference-class forecasting itself. No durable state file. Output is conversational and ephemeral.
 
 Rationale: empirical evidence (Si 2024, Si 2025 Ideation-Execution Gap, Kadavath 2022, Lin 2022) shows reference-class forecasting and calibration discipline can suppress innovation when applied during generation. Use as overconfidence check, not as forced filter.
 

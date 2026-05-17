@@ -305,9 +305,8 @@ def test_research_skill_routes_research_idea_generation_to_ideation_reference():
         "hypothesis candidate",
         "what should we try next",
         "references/ideation.md",
-        "fresh de-anchoring subagent",
-        "sanitized brief",
-        "must not generate raw candidates itself",
+        "anchor-stripped seed brief",
+        "excluded anchors",
         "before Prior-work grounding",
     )
     assert_ordered_fragments(
@@ -340,6 +339,34 @@ def test_ideation_reference_defines_deanchoring_before_grounded_pruning():
         "failed idea",
         "not a claim",
         "parked / killed / merged",
+    )
+
+
+def test_ideation_reference_defines_hypothesis_generation_handoff_and_main_intake():
+    ideation = read("skills/research/references/ideation.md")
+
+    assert_ordered_fragments(
+        ideation,
+        "De-anchoring pass",
+        "Hypothesis-generation handoff",
+        "Main-agent intake",
+        "Assumption audit pass",
+        "Anti-vacuity gate",
+        "Grounded pruning pass",
+        "Plan promotion",
+    )
+    assert_mentions(
+        ideation,
+        "fresh separate-context",
+        "anchor-stripped seed brief is the only generation brief",
+        "Excluded-anchor ledger is not input",
+        "multiple working hypotheses",
+        "current observations",
+        "web or literature retrieval notes",
+        "If the user requests web or literature",
+        "Do not accept generator output as authority",
+        "advance / park / kill / merge / regenerate",
+        "next-plan action",
     )
 
 
@@ -399,7 +426,6 @@ def test_ideation_reference_defines_observation_discovery_before_hypothesis_synt
         ideation,
         "De-anchoring pass",
         "Raw candidate generation",
-        "Main-agent handoff",
         "Transformation pass",
         "Observation discovery pass",
         "Observation is not yet a hypothesis",
@@ -445,7 +471,7 @@ def test_research_skill_orders_lifecycle_from_observation_to_decision():
     )
 
 
-def test_research_skill_requires_fresh_result_analysis_subagent_before_review():
+def test_research_lifecycle_uses_only_plan_review_and_result_analysis_subagents():
     skill = read("skills/research/SKILL.md")
     rd_plan = read("skills/research/references/rd_plan.md")
     readme = read("README.md")
@@ -453,15 +479,17 @@ def test_research_skill_requires_fresh_result_analysis_subagent_before_review():
     for text in [skill, rd_plan, readme]:
         assert_ordered_fragments(
             text,
+            "Plan",
+            "Plan review",
             "Execution",
             "Result analysis",
-            "Research review",
             "Claim",
+            "Decision",
         )
-        assert_mentions(
+        assert_mentions(text, "research-plan-review", "research-result-analysis")
+        assert_absent(
             text,
-            "research-result-analysis",
-            "fresh separate-context result-analysis subagent",
+            "research-review subagent",
             "main research agent must not perform result analysis itself",
         )
 
@@ -488,109 +516,87 @@ def test_result_analysis_subagent_prompt_uses_plan_as_only_starting_context():
         "tables",
         "figures",
         "context_missing",
-        "Do not write final claims, decisions, or human-facing reports.",
+        "why the result happened",
     )
 
 
-def test_result_analysis_skill_exists_and_stages_outputs_without_claim_authority():
-    skill = read("skills/research-result-analysis/SKILL.md")
+def test_plan_review_and_result_analysis_skill_boundaries_are_documented():
+    plan_review = read("skills/research-plan-review/SKILL.md")
+    result_analysis = read("skills/research-result-analysis/SKILL.md")
 
     assert_mentions(
-        skill,
+        plan_review,
+        "research-plan-review",
+        "plan path",
+        "research design",
+        "before execution",
+        "mechanism hypothesis",
+        "prediction",
+        "discriminating test",
+    )
+    assert_mentions(
+        plan_review,
+        "Do not execute",
+        "Do not analyze results",
+        "Do not write final claims",
+    )
+    assert_mentions(
+        plan_review,
+        "execution recommendation",
+        "pre-execution",
+        "not a claim-readiness verdict",
+        "theoretical mode",
+        "derivation question",
+        "limiting-case checks",
+    )
+    assert_absent(
+        plan_review,
+        "Claim-readiness verdicts",
+        "Claim-readiness assessment",
+        "`ready`",
+        "`not_ready`",
+        "`invalid_evidence`",
+        "GO/NO-GO",
+    )
+    assert_mentions(
+        result_analysis,
         "research-result-analysis",
         "plan path",
         "only starting context",
-        "Observation",
-        "Interpretation",
-        "claim-readiness",
+        "why the result happened",
+        "What happened",
+        "Candidate explanations",
+        "Evidence for / against",
+        "Procedure / artifact explanations",
+        "Discriminating next analyses",
         "context_missing",
-    )
-    assert_ordered_fragments(
-        skill,
-        "Read the plan",
-        "Reconstruct evidence",
-        "Analyze",
-        "Return",
+        "artifact contract",
+        "stdout is not evidence",
     )
     assert_mentions(
-        skill,
+        result_analysis,
         "Do not write final claims",
         "Do not choose iteration decisions",
         "Do not rely on parent-agent summaries",
     )
-
-
-def test_result_analysis_skill_requires_analysis_reference_and_artifact_contract():
-    skill = read("skills/research-result-analysis/SKILL.md")
-
-    assert_mentions(
-        skill,
-        "skills/research/references/analysis.md",
-        "artifact contract",
-        "stdout is not evidence",
-        "manifest-listed non-log durable artifact",
-        "disclosure floor",
-        "analysis depth",
-        "Observation → Interpretation → Claim",
-        "Pearl",
-    )
-
-
-def test_result_analysis_skill_defines_claim_readiness_verdicts():
-    skill = read("skills/research-result-analysis/SKILL.md")
-
-    assert_ordered_fragments(
-        skill,
+    assert_absent(
+        result_analysis,
         "Claim-readiness verdicts",
+        "Claim-readiness assessment",
         "`ready`",
         "`not_ready`",
         "`invalid_evidence`",
-    )
-    assert_mentions(
-        skill,
-        "applicable disclosure floor is met",
-        "repairable",
-        "script bug",
-        "data defect",
-        "leakage",
-        "invalid procedure",
-        "broken comparator",
-    )
-
-
-def test_result_analysis_skill_defines_quality_and_depth_gate():
-    skill = read("skills/research-result-analysis/SKILL.md")
-
-    assert_ordered_fragments(
-        skill,
-        "Analysis quality gate",
-        "artifact-faithful",
-        "arithmetically checked",
-        "claim-fit checked",
-        "depth-calibrated",
-        "reviewable",
-    )
-    assert_mentions(
-        skill,
-        "Do not score depth by length",
-        "claim strength",
-        "forbidden conclusion",
-        "required observation",
-        "required missing context",
-        "over-analysis",
         "GO/NO-GO",
-        "claim-readiness is not a release decision",
     )
 
 
-def test_result_analysis_prompt_preserves_subagent_output_before_review():
+def test_result_analysis_prompt_preserves_subagent_output_before_claims():
     prompt = read("skills/research/references/result_analysis_subagent_prompt.md")
-    analysis = read("skills/research/references/analysis.md")
 
     assert_ordered_fragments(
         prompt,
         "records the returned `## Result analysis` section",
-        "before dispatching the research-review subagent",
+        "before writing claims, decisions, or reports",
     )
     assert_mentions(
         prompt,
@@ -598,34 +604,28 @@ def test_result_analysis_prompt_preserves_subagent_output_before_review():
         "rewrite",
         "collapse the subagent's findings",
     )
-    assert_ordered_fragments(
-        analysis,
-        "An interpretation becomes a claim only when:",
-        "research-result-analysis",
-        "Exactly one fresh research-review subagent",
-    )
 
 
-def test_plan_templates_record_result_analysis_before_research_review():
+def test_plan_templates_record_plan_review_and_result_analysis_without_research_review():
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     for template in template_dir.glob("*.template"):
         text = template.read_text(encoding="utf-8")
         assert_ordered_fragments(
             text,
+            "## Plan",
+            "## Plan review",
             "## Actual execution",
             "## Planned vs Actual",
             "## Result analysis",
-            "## Research review",
             "## Claims",
         )
-        assert_mentions(
+        assert_mentions(text, "research-plan-review", "research-result-analysis")
+        assert_absent(
             text,
-            "fresh separate-context result-analysis subagent",
-            "research-result-analysis",
-            "only starting context",
-            "context_missing",
-            "claim-readiness",
+            "## Research review",
+            "research-review subagent",
+            "Claim-readiness assessment",
         )
 
 
@@ -654,6 +654,8 @@ def test_plan_schema_records_hypothesis_synthesis_in_idea_portfolio():
         "### Idea substrate",
         "### Generation operators",
         "### De-anchored candidates",
+        "### Hypothesis-generation handoff",
+        "### Main-agent intake",
         "### Anti-vacuity gate",
         "### Hypothesis synthesis",
         "Source observation",
@@ -665,6 +667,35 @@ def test_plan_schema_records_hypothesis_synthesis_in_idea_portfolio():
         "### Evaluator feedback",
         "### Grounded pruning",
     )
+
+
+def test_plan_schema_and_templates_record_handoff_and_main_intake_contract():
+    rd_plan = read("skills/research/references/rd_plan.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
+        assert_ordered_fragments(
+            text,
+            "## Idea portfolio",
+            "### De-anchored candidates",
+            "### Hypothesis-generation handoff",
+            "Agent",
+            "Starting context",
+            "Output contract",
+            "### Main-agent intake",
+            "Authority check",
+            "Observation trace check",
+            "Mechanism review",
+            "Decision",
+            "Next-plan action",
+            "### Anti-vacuity gate",
+        )
+        assert_mentions(
+            text,
+            "fresh separate-context hypothesis-generation agent",
+            "generator output is seed material",
+            "regenerate",
+        )
 
 
 def test_iteration_loop_defines_approach_transition_criteria():
@@ -707,23 +738,23 @@ def test_research_skill_docs_are_english_only():
     assert not offenders, f"Japanese/CJK text found in skill docs: {offenders}"
 
 
-def test_ideation_uses_fresh_subagent_for_deanchored_raw_candidates():
+def test_ideation_uses_anchor_stripped_seed_brief_for_deanchored_raw_candidates():
     ideation = read("skills/research/references/ideation.md")
 
     assert_ordered_fragments(
         ideation,
-        "Sanitized brief",
-        "Fresh de-anchoring subagent",
+        "Anchor-stripped seed brief",
+        "Excluded-anchor ledger",
         "Raw candidate generation",
         "Grounded pruning pass",
     )
     assert_mentions(
         ideation,
-        "The main agent must not generate raw candidates itself after seeing anchors.",
+        "do not let them define the raw seed space",
         "prior work names",
         "SOTA",
         "previous best approaches",
-        "user-preferred method",
+        "user's preferred method",
         "convenient dataset details",
     )
 
@@ -748,8 +779,8 @@ def test_plan_templates_include_idea_portfolio_before_prior_work_grounding():
             "hypothesis candidates",
             "what should we try next",
             "references/ideation.md",
-            "sanitized brief",
-            "fresh de-anchoring subagent",
+            "anchor-stripped brief",
+            "Excluded-anchor ledger",
         )
 
 
@@ -769,16 +800,19 @@ def test_new_plan_guidance_mentions_idea_portfolio_before_prior_work_grounding()
 
 def test_idea_portfolio_records_pre_execution_divergence_review():
     rd_plan = read("skills/research/references/rd_plan.md")
+    ideation = read("skills/research/references/ideation.md")
 
     assert_ordered_fragments(
         rd_plan,
-        "fresh de-anchoring subagent",
+        "anchor-stripped seed brief",
+        "excluded-anchor ledger",
         "### Pre-execution divergence review",
         "parameter sweep",
         "literature-first",
         "prior-work",
         "not claims",
     )
+    assert_absent(ideation, "research review")
 
 
 def test_readme_documents_research_ideation_before_prior_work_grounding():
@@ -836,6 +870,7 @@ def test_research_skill_and_project_seed_positioning_not_differentiation():
     for text in [skill, new_project, project_readme]:
         assert_mentions(text, "literature/positioning.md")
         assert_absent(text, "literature/differentiation.md")
+    assert_absent(project_readme, "research review")
 
     assert_mentions(
         new_project,
@@ -1321,6 +1356,21 @@ Find a better short-term reversal signal under existing data constraints.
 
 - Candidate A: Gate reversal only after spread compression following a spike.
 
+### Hypothesis-generation handoff
+
+- Agent: fresh separate-context hypothesis-generation agent.
+- Starting context: anchor-stripped seed brief is the only generation brief; Excluded-anchor ledger is not input.
+- Web/literature retrieval: skipped with reason - substrate is already sufficient for raw hypothesis generation.
+- Output contract: multiple working hypotheses with source observation, mechanism conjecture, predicted effect, counter-hypothesis, minimal disconfirming test, and retrieval notes.
+
+### Main-agent intake
+
+- Authority check: generator output is seed material, not accepted authority, claim, plan, or decision.
+- Observation trace check: Candidate A traces to S1 and S2.
+- Mechanism review: Candidate A explains spread-spike failures rather than merely swapping methods.
+- Decision: advance Candidate A after anti-vacuity and evaluator feedback; regenerate any parameter-sweep-only alternatives.
+- Next-plan action: open ADJACENT evaluator-construction plan before intervention claims.
+
 ### Assumption audit
 
 - Reference model challenged: short-term reversal signal treats high spread as pure contamination.
@@ -1406,6 +1456,109 @@ Grounding deferred until evaluator-construction plan is opened.
     assert "Idea portfolio passes contract checks." in result.stdout
 
 
+def test_check_idea_portfolio_requires_handoff_and_main_intake_sections():
+    plan = """# Missing Handoff Plan
+
+## Question / Objective
+
+Find a better short-term reversal signal under existing data constraints.
+
+## Idea portfolio
+
+### Idea substrate
+
+- S1: Empirical observation - reversal edge decays after high spread intervals.
+- S2: Failure observation - volatility filter removes both noise and useful rebound cases.
+
+### Generation operators
+
+- Candidate A:
+  - Substrate ids: S1, S2
+  - Operator: invert gating premise
+  - Changed premise: spread spikes mark rebound inventory pressure rather than only noise.
+
+### De-anchored candidates
+
+- Candidate A: Gate reversal only after spread compression following a spike.
+
+### Assumption audit
+
+- Reference model challenged: short-term reversal signal treats high spread as pure contamination.
+- Assumptions considered: finite liquidity recovery window; spread spike means noise; close-to-close return is enough.
+- Load-bearing assumption: spread spike means noise.
+- Downstream-check result: not downstream of close-to-close measurement.
+- Inversion candidate: Candidate A.
+
+### Anti-vacuity gate
+
+- Candidate A:
+  - Substrate ids: S1, S2
+  - Changed premise: spread spikes can precede rebound, not just contaminate labels.
+  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
+  - Predicted measurable effect: reversal IC improves in post-spike compression windows.
+  - Counter-hypothesis: apparent rebound is just lower volatility after filtering.
+  - Minimal disconfirming test: compare post-spike compression windows against matched non-spike windows.
+  - Verdict: survives
+
+### Blind-spot catalog
+
+- Candidate A:
+  - Blind-spot area: market microstructure regimes could hide venue-specific liquidity-provider constraints.
+  - How it could break the mechanism: compression after a spike may reflect quote mechanics rather than rebound inventory pressure.
+  - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
+  - Required repair: narrow_conditions: add venue-regime stratification or park the general claim.
+
+### Hypothesis synthesis
+
+- Candidate A:
+  - Source observation: S1 and S2.
+  - Mechanism conjecture: transient inventory pressure relaxes after spread compression.
+  - Proposed intervention: condition reversal on spread spike followed by compression.
+  - Predicted effect: higher reversal IC in the conditioned slice.
+  - Counter-hypothesis: the slice merely lowers volatility.
+  - Minimal disconfirming test: matched non-spike window comparison.
+
+### Evaluator feedback
+
+- Status: Skipped: executable evaluator unavailable in current workspace.
+- Required evaluator or artifact: walk-forward CLI.
+- Effect on promotion: Candidate A can advance only after evaluator construction.
+
+### Grounded pruning
+
+- Advance: Candidate A only as evaluator-construction plan.
+- Parked: None.
+- Killed: None.
+- Merged: None.
+
+### Information-gain scoring
+
+- Candidate A: high information gain but blocked.
+
+### Pre-execution divergence review
+
+- Portfolio breadth: limited.
+- Parameter sweep laundering: none.
+- Anti-anchor check: not literature-first.
+- Required repair before promotion: build evaluator.
+
+### Promotion decision
+
+- Promoted idea: Candidate A to ADJACENT evaluator-construction plan.
+- Non-promoted ideas: none.
+
+## Prior-work grounding
+
+Grounding deferred.
+"""
+
+    result = run_idea_portfolio_check(plan)
+
+    assert result.returncode == 1
+    assert "Missing required Idea portfolio subsection: 'Hypothesis-generation handoff'" in result.stdout
+    assert "Missing required Idea portfolio subsection: 'Main-agent intake'" in result.stdout
+
+
 def idea_portfolio_plan_with_blind_spot(blind_spot_block: str) -> str:
     return f"""# Blind Spot Contract Plan
 
@@ -1430,6 +1583,21 @@ Find a better short-term reversal signal under existing data constraints.
 ### De-anchored candidates
 
 - Candidate A: Gate reversal only after spread compression following a spike.
+
+### Hypothesis-generation handoff
+
+- Agent: fresh separate-context hypothesis-generation agent.
+- Starting context: anchor-stripped seed brief is the only generation brief; Excluded-anchor ledger is not input.
+- Web/literature retrieval: skipped with reason - substrate is already sufficient for raw hypothesis generation.
+- Output contract: multiple working hypotheses with source observation, mechanism conjecture, predicted effect, counter-hypothesis, minimal disconfirming test, and retrieval notes.
+
+### Main-agent intake
+
+- Authority check: generator output is seed material, not accepted authority, claim, plan, or decision.
+- Observation trace check: Candidate A traces to S1 and S2.
+- Mechanism review: Candidate A explains spread-spike failures rather than merely swapping methods.
+- Decision: advance Candidate A after anti-vacuity and evaluator feedback.
+- Next-plan action: open ADJACENT evaluator-construction plan before intervention claims.
 
 ### Assumption audit
 
@@ -1567,6 +1735,62 @@ def test_check_idea_portfolio_rejects_negated_or_vague_blind_spot_markers():
     assert result.returncode == 1
     assert "Claim-scope effect must start with" in result.stdout
     assert "Required repair must start with" in result.stdout
+
+
+def test_check_idea_portfolio_accepts_one_space_or_tab_field_indentation():
+    plan = idea_portfolio_plan_with_blind_spot(
+        """
+- Candidate A:
+ - Blind-spot area: market microstructure regime.
+\t- How it could break the mechanism: spread compression could mean quote cleanup rather than inventory pressure.
+ - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
+\t- Required repair: narrow_conditions: add venue-regime stratification before broad claims.
+"""
+    )
+
+    result = run_idea_portfolio_check(plan)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_check_idea_portfolio_ignores_section_notes_when_parsing_candidates():
+    plan = idea_portfolio_plan_with_blind_spot(
+        """
+- Candidate A:
+  - Blind-spot area: market microstructure regime.
+  - How it could break the mechanism: spread compression could mean quote cleanup rather than inventory pressure.
+  - Claim-scope effect: narrowed_claim: narrow claims to tested venues and periods.
+  - Required repair: narrow_conditions: add venue-regime stratification before broad claims.
+"""
+    ).replace(
+        "### Generation operators\n\n- Candidate A:",
+        "### Generation operators\n\n- Note: Portfolio intentionally keeps one candidate after pruning.\n- Candidate A:",
+    )
+
+    result = run_idea_portfolio_check(plan)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_check_idea_portfolio_accepts_loose_not_applicable_objective_chosen():
+    plan = """# Objective Already Chosen
+
+## Question / Objective
+
+Use the already selected objective.
+
+## Idea portfolio
+
+Not applicable: an objective was already chosen before this plan.
+
+## Prior-work grounding
+
+Grounding starts here.
+"""
+
+    result = run_idea_portfolio_check(plan)
+
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_check_idea_portfolio_requires_survivors_to_have_blind_spot_records():

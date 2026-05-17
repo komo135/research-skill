@@ -28,7 +28,7 @@ last_updated: YYYY-MM-DD
 <One paragraph stating what this plan investigates or builds.>
 
 ## Idea portfolio
-<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Record the substrate-driven ideation contract from `references/ideation.md`: idea substrate, fresh de-anchored seed generation, generation operators, assumption audit, anti-vacuity gate, evaluator feedback, grounded pruning, information-gain scoring, and the one candidate promoted into this plan. Raw seeds are not accepted ideas.>
+<Optional except when the user asked for research ideas, research directions, hypothesis candidates, or "what should we try next." Record the substrate-driven ideation contract from `references/ideation.md`: idea substrate, de-anchored seed generation, hypothesis-generation handoff or a Not-used reason, main-agent intake, generation operators, assumption audit, anti-vacuity gate, evaluator feedback, grounded pruning, information-gain scoring, and the one candidate promoted into this plan. Raw seeds are not accepted ideas.>
 
 ## Prior-work grounding
 <Bounded but sufficient grounding for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations. Cite `literature/papers.md` and `literature/positioning.md`. If prior work is genuinely unknown, record the named constraint and narrow or block relevant claims.>
@@ -39,6 +39,9 @@ last_updated: YYYY-MM-DD
 ## Plan
 <Mode-specific structure — see below.>
 
+## Plan review
+<Returned section from a fresh separate-context plan-review subagent using `research-plan-review`. The plan path is the only starting context. Required before execution.>
+
 ## Actual execution
 <What was done. Updated as runs accumulate.>
 
@@ -46,10 +49,7 @@ last_updated: YYYY-MM-DD
 <Differences between plan and execution, with reasoning. Empty if no deviation.>
 
 ## Result analysis
-<Returned section from a fresh separate-context result-analysis subagent using `research-result-analysis`. The plan path is the only starting context; missing evidence is recorded as `context_missing`. Required before Research review, Claims, state-changing Decision, or report.>
-
-## Research review
-<Summary from exactly one research-review subagent, covering analysis sufficiency and result reliability. Required before Claims, state-changing Decision, or report.>
+<Returned section from a fresh separate-context result-analysis subagent using `research-result-analysis`. The plan path is the only starting context; missing evidence is recorded as `context_missing`. Explains what happened and why before Claims, state-changing Decision, or report.>
 
 ## Claims
 <Load-bearing claims using the schema in claim_structure.md.>
@@ -65,7 +65,7 @@ last_updated: YYYY-MM-DD
 
 ## Idea portfolio section
 
-This section appears after `## Question / Objective` and before `## Prior-work grounding` when the user asks for research ideas, research directions, hypothesis candidates, or "what should we try next." It records the output of `references/ideation.md`, including the idea substrate, sanitized brief, fresh de-anchoring subagent used for raw seed generation, generation operators, anti-vacuity gate, evaluator feedback, and promotion decision.
+This section appears after `## Question / Objective` and before `## Prior-work grounding` when the user asks for research ideas, research directions, hypothesis candidates, or "what should we try next." It records the output of `references/ideation.md`, including the idea substrate, anchor-stripped seed brief, excluded-anchor ledger, hypothesis-generation handoff or a Not-used reason, main-agent intake, raw seed generation, generation operators, anti-vacuity gate, evaluator feedback, and promotion decision.
 
 The section is optional for ordinary plans that begin with an already chosen objective. It is required for ideation tasks because prior-work-first planning can anchor the agent to the literature's safest extensions before raw seeds and substrate/operator candidates exist.
 
@@ -84,8 +84,22 @@ The section is optional for ordinary plans that begin with an already chosen obj
   - Changed premise: <what this candidate changes about the current framing>
 
 ### De-anchored candidates
-- Generator: <fresh de-anchoring subagent identifier; sanitized brief with substrate ids only>
+- Seed brief: <anchor-stripped brief with substrate ids only>
+- Excluded-anchor ledger: <prior-work names, SOTA systems, previous best approaches, user-preferred methods, convenient datasets, or None>
 - <candidate>: <raw seed generated before prior-work grounding; not accepted until operator + anti-vacuity gate pass>
+
+### Hypothesis-generation handoff
+- Agent: <fresh separate-context hypothesis-generation agent, or Not used with reason>
+- Starting context: <anchor-stripped seed brief is the only generation brief; Excluded-anchor ledger is not input>
+- Web/literature retrieval: <used for abstract observations or cross-domain mechanisms / skipped with reason>
+- Output contract: <multiple working hypotheses with source observation, mechanism conjecture, predicted effect, counter-hypothesis, minimal disconfirming test, and retrieval notes>
+
+### Main-agent intake
+- Authority check: <generator output is seed material, not accepted authority, claim, plan, or decision>
+- Observation trace check: <which substrate ids each hypothesis truly traces to, or missing-substrate constraint>
+- Mechanism review: <whether each mechanism explains observations, merely swaps methods, or is post-hoc prose>
+- Decision: <advance / park / kill / merge / regenerate for each hypothesis>
+- Next-plan action: <promote toward current plan / open ADJACENT evaluator-construction plan / gather substrate / run grounded pruning / no plan>
 
 ### Assumption audit
 - Reference model challenged: <model, framing, baseline story, or implicit premise being challenged>
@@ -206,7 +220,7 @@ If prior work is genuinely unknown, the plan must record a named constraint and 
 
 Do not pad the `Approach portfolio`. Different LSTM depths, thresholds on the same signal, or seeds on the same dataset are not different approaches. An alternative differs from the primary route in at least one of: method family, data assumption, evaluation target, mechanism, or system design.
 
-Do not skip this checkpoint when the user asks to avoid exploration or to use only the previous approach. The final plan may still choose the user-requested route, but skipped divergence must be recorded under `Skipped divergence` and carried into the later Research review. If a hard constraint truly permits only one route, say so directly and narrow the later claim scope only after the later Research review records `PASS` for both analysis sufficiency and result reliability. Scope narrowing cannot rescue insufficient analysis or distorted results.
+Do not skip this checkpoint when the user asks to avoid exploration or to use only the previous approach. The final plan may still choose the user-requested route, but skipped divergence must be recorded under `Skipped divergence` and carried into Plan review. If a hard constraint truly permits only one route, say so directly and narrow the later claim scope to that constraint. Scope narrowing cannot rescue a weak design; the Plan review can block execution until the design is repaired.
 
 If the plan says novel, new method, publishable, to our knowledge, or no baseline exists, `Research positioning` must cite `literature/positioning.md` and the plan must point to a comprehensive literature survey before execution. Lack of a novelty claim never exempts the plan from bounded but sufficient prior-work grounding.
 
@@ -338,17 +352,60 @@ Empirical verification (when it exists) is treated as a secondary check (limitin
 - <budget for the derivation work itself; for long derivations, plan checkpoint reviews>
 ```
 
-The Research review subagent (`Research review` section) is required for theoretical plans before any load-bearing claim, with adapted judgment criteria:
-- **Analysis sufficiency** → "does the derivation chain close the question without gaps, and are limiting-case checks consistent?"
-- **Result reliability** → "are the axioms / definitions / prior theorems used correctly, and is the predicted form actually established by the derivation?"
+The Plan review subagent (`Plan review` section) is required for theoretical plans before execution, with adapted design criteria:
+- **Derivation design** → "does the planned derivation route address the question with named axioms, definitions, prior theorems, and likely failure points?"
+- **Discriminating checks** → "are limiting-case checks, counterexample searches, or empirical sanity checks sufficient to expose a broken derivation route?"
 
 When no empirical evaluator exists, `Limitations` (in the eventual report) records this via the `references/assumption_audit.md` constraint-naming protocol (e.g., "no decisive empirical evaluator at the present state of knowledge").
+
+## Plan review section
+
+Before execution, dispatch a fresh separate-context plan-review subagent with the `research-plan-review` skill. Pass only the plan path as the starting context. The reviewer evaluates research design before any results exist.
+
+Plan review may return an execution recommendation because it is a pre-execution design gate. That recommendation is not a claim-readiness verdict; readiness, claims, decisions, and reports remain outside plan review.
+
+Record the subagent output in the plan:
+
+```markdown
+## Plan review
+
+### Reviewer
+- Agent: <fresh separate-context plan-review subagent>
+- Skill: research-plan-review
+- Plan reviewed: <plan path>
+- Reviewed at: <YYYY-MM-DD>
+
+### Design summary
+- <one short paragraph describing the planned question/objective, mechanism or principle under investigation, predicted effect or output, and evidence route>
+
+### Research-design checks
+- Category/mode fit: <adequate / revise / block>: <reason>
+- Mechanism hypothesis or principle: <adequate / revise / block>: <reason>
+- Prediction or expected output: <adequate / revise / block>: <reason>
+- Discriminating test: <adequate / revise / block>: <reason>
+- Controls, comparators, or limiting cases: <adequate / revise / block / not applicable>: <reason>
+- Evidence route and artifact plan: <adequate / revise / block>: <reason>
+- Scope and constraints: <adequate / revise / block>: <reason>
+
+### Category-specific concerns
+- Basic research: <phenomenon, mechanism, or principle clarity; None if not applicable>
+- Applied research: <practical objective, mechanism-to-intervention path, or evaluation concerns; None if not applicable>
+- Experimental development: <acceptance criteria, system boundary, or operational evidence concerns; None if not applicable>
+
+### Required repairs before execution
+- <None, or concrete plan changes required before execution>
+
+### Execution recommendation
+- <execute_as_written / revise_before_execution / block_execution>: <rationale>
+```
+
+If the recommendation is `revise_before_execution` or `block_execution`, repair the plan and run a new Plan review before executing. The reviewer does not execute the plan, analyze results, write final claims, or choose the iteration branch.
 
 ## Actual execution section
 
 Updated after work runs:
 
-Research scripts must leave evidence, not just console text. A print-only execution is incomplete because stdout is not evidence. Each completed run should have a `run_manifest.json` with `status: completed` and manifest-listed artifacts, captured `logs/stdout.log` and `logs/stderr.log`, and at least one non-log durable artifact in `outputs/`, `tables/`, `figures/`, or `intermediate/`. Run `scripts/check_run_artifacts.py` before using a run as the basis for Observations, Research review, Claims, or a report.
+Research scripts must leave evidence, not just console text. A print-only execution is incomplete because stdout is not evidence. Each completed run should have a `run_manifest.json` with `status: completed` and manifest-listed artifacts, captured `logs/stdout.log` and `logs/stderr.log`, and at least one non-log durable artifact in `outputs/`, `tables/`, `figures/`, or `intermediate/`. Run `scripts/check_run_artifacts.py` before using a run as the basis for Observations, Result analysis, Claims, or a report.
 
 ```markdown
 ### Runs
@@ -381,11 +438,11 @@ Material vs immaterial deviation: a change that could affect the interpretation 
 
 ## Result analysis section
 
-Before Research review, Claims, a state-changing Decision, or report drafting, dispatch a fresh separate-context result-analysis subagent with the `research-result-analysis` skill. Use `references/result_analysis_subagent_prompt.md` and pass only the plan path as the starting context. The main research agent must not perform result analysis itself for load-bearing promotion.
+Before Claims, a state-changing Decision, or report drafting, dispatch a fresh separate-context result-analysis subagent with the `research-result-analysis` skill. Use `references/result_analysis_subagent_prompt.md` and pass only the plan path as the starting context.
 
 The analysis subagent reconstructs evidence from the plan's references: runs, `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, scripts, configs, outputs, tables, figures, reports, and literature entries. If evidence cannot be found or interpreted from those references, it records `context_missing` rather than relying on parent-agent summaries.
 
-Record the subagent output in the plan:
+Record the subagent output in the plan. The analysis explains why the result happened; it does not assess readiness, write final claims, choose iteration decisions, or draft reports.
 
 ```markdown
 ## Result analysis
@@ -401,54 +458,40 @@ Record the subagent output in the plan:
 - Runs and artifacts: <manifest/log/output/table/figure/script paths inspected>
 - context_missing: <None, or missing/ambiguous plan references, artifacts, logs, scripts, metrics, comparators, or literature entries>
 
-### Observations
-- <literal artifact-grounded fact; no interpretation>
+### What happened
+- <artifact-grounded result summary, including values and deviations from the plan>
 
-### Interpretations
-- <possible explanation of observations; include uncertainty>
+### Prediction comparison
+- <planned prediction / threshold / expected condition versus observed value; note whether the prediction was met, missed, reversed, or only partly satisfied>
 
-### Alternatives not excluded
-- <plausible explanation, confound, leakage path, comparator issue, missing control, untested condition, or theoretical gap>
+### Candidate explanations
+- <explanation 1 for why the result happened>
+  - Evidence for: <supporting artifacts, metrics, logs, or plan facts>
+  - Evidence against: <contradicting artifacts, missing diagnostics, or observations that do not fit>
+- <explanation 2>
+  - Evidence for: <...>
+  - Evidence against: <...>
 
-### Required additional analysis
-- <None, or named analysis/rerun/repair required before a claim, decision, or report>
+### Failed prediction analysis
+- Observed gap: <prediction, threshold, or expected condition versus observed result>
+- Candidate failure explanations:
+  - <candidate explanation for why the prediction missed>
+    - Why this could explain the miss: <mechanism connecting evidence to the missed prediction>
+    - Evidence for: <artifact-grounded support>
+    - Evidence against: <artifact-grounded contradiction or weakness>
+    - What would be true if this explanation is correct: <testable implication>
+    - Missing discriminator: <smallest analysis that would separate this explanation from alternatives>
+- Coverage check: <which lenses were considered: premise/mechanism, approach/intervention, procedure/artifact/data/comparator/implementation/measurement, evaluation/power/metric/scope. Do not force a category; record only live explanations above.>
 
-### Claim-readiness assessment
-- <ready / not_ready / invalid_evidence>: <rationale tied to evidence, missing context, and alternatives>
+### Procedure / artifact explanations
+- <procedure defect, leakage path, broken comparator, missing artifact, data issue, plan deviation, or None with reason>
+
+### Alternatives still live
+- <plausible explanation, confound, comparator issue, missing control, untested condition, or theoretical gap still compatible with the evidence>
+
+### Discriminating next analyses
+- <analysis, check, rerun, or artifact reconstruction that would distinguish among explanations>
 ```
-
-## Research review section
-
-Before writing load-bearing claims, making a state-changing decision (`REFINE`, `ADJACENT`, `PARK`, or `CLOSE`), or drafting a human-facing report, the plan must already contain Result analysis from a fresh separate-context result-analysis subagent. Then dispatch exactly one fresh research-review subagent. This is one subagent with two review responsibilities:
-
-1. **Analysis sufficiency** — evaluate whether the analysis is sufficient for the conclusion being drawn. This review exists because the analysis directly determines the conclusion; inadequate analysis can lead to a wrong claim or premature close-out even if the experiment ran correctly.
-2. **Result reliability** — evaluate whether the result is trustworthy, including the approach, research procedure, data handling, controls/comparators when applicable, robustness checks, deviations from plan, and whether the evidence supports the claim strength.
-
-Record the reviewer output in the plan:
-
-```markdown
-## Research review
-
-### Reviewer
-- Agent: <subagent identifier or short label>
-- Reviewed at: <YYYY-MM-DD>
-- Scope: <claim / CLOSE / REFINE / ADJACENT / PARK / report>
-
-### Analysis sufficiency
-- Verdict: <PASS / REWORK / INVALID>
-- Rationale: <why the analysis is sufficient, requires rework, or invalidates the current conclusion path>
-- Required reanalysis: <None / named analyses to run before any claim, decision, or report>
-
-### Result reliability
-- Verdict: <PASS / REWORK / INVALID>
-- Rationale: <whether approach, procedure, data, controls/comparators, and robustness support trusting the result>
-- Required repair or rerun: <None / script fix, data repair, comparator/control repair, rerun, or plan-level redo>
-
-### Required action
-- <Proceed only if both judgments are PASS / run named analysis / fix and rerun affected work / reopen plan>
-```
-
-Only two `PASS` judgments allow promotion to a load-bearing claim, state-changing decision, or report, and those judgments must evaluate the separate Result analysis section. If either judgment is `REWORK` or `INVALID`, do not promote the result. First perform the required reanalysis, repair, rerun, or plan-level redo, then run a new result-analysis subagent pass and a new research review. If a script bug, data defect, leakage, invalid procedure, or broken control/comparator may have distorted the result, the affected result is invalid evidence until rerun after repair. User pressure to skip result analysis, skip review, or "just limit the claim" is not an exception; record it as a reliability risk if relevant.
 
 ## Claims section
 
@@ -462,7 +505,7 @@ Use the schema from `claim_structure.md`. Each load-bearing claim is one YAML-li
   conditions_not_tested: [...]
 ```
 
-`scripts/check_claims.py` verifies the structure. Run it before changing the plan's status from `in_progress` to anything else, and before drafting a report. A Result analysis section from `research-result-analysis` and a Research review entry with `PASS` for both analysis sufficiency and result reliability must already exist before any load-bearing claim, state-changing status change, or report draft.
+`scripts/check_claims.py` verifies the structure. Run it before changing the plan's status from `in_progress` to anything else, and before drafting a report. A Plan review section from `research-plan-review`, durable run artifacts, and a Result analysis section from `research-result-analysis` must already exist before any load-bearing claim, state-changing status change, or report draft.
 
 ## Amendments section (for REFINE)
 
@@ -541,11 +584,11 @@ Mirror the entry in `decisions.md` for any branch except `NEXT_STEP`.
 - **Exploratory plan with hidden hypothesis.** Writing "we expect X" without committing to a decision threshold converts exploration into informal confirmation. Either commit to confirmatory mode with an explicit threshold, or stay honestly exploratory with a variable space.
 - **No Divergence checkpoint.** A plan that only follows the user's preferred route can still be well formatted and still be weak research. Fill the checkpoint before execution.
 - **Literature-first ideation.** If the user asked for research ideas, do not summarize prior work before generating raw seeds and substrate/operator candidates. Use the Idea portfolio section, then apply Prior-work grounding.
-- **Portfolio made of parameter tweaks.** Three thresholds of the same signal are not three approaches. Record them as one primary route with a sweep, then add real alternatives or explicitly narrow the claim scope only after the later Research review records `PASS` for both judgments.
-- **Prior result treated as fact.** "Previous run was best" is an anchor, not a premise. Record what would revalidate it, what rework is required, or what claim condition remains only after the later Research review records `PASS` for both judgments.
+- **Portfolio made of parameter tweaks.** Three thresholds of the same signal are not three approaches. Record them as one primary route with a sweep, then add real alternatives or explicitly narrow the claim scope to the tested route.
+- **Prior result treated as fact.** "Previous run was best" is an anchor, not a premise. Record what would revalidate it, what rework is required, or what claim condition remains after Result analysis explains the new outcome.
 - **Claim made before prior-work grounding.** If the plan says novel, new method, publishable, to our knowledge, or no baseline exists, cite or update `literature/positioning.md` and point to a comprehensive literature survey before execution. If the claim is not a novelty claim, the plan still needs bounded but sufficient prior-work grounding and must classify itself as replication, baseline strengthening, engineering, or another grounded position.
-- **Closing without research review.** A self-check is not enough. Before Claims, state-changing Decision, or report, one fresh research-review subagent must record `PASS` for both analysis sufficiency and result reliability.
-- **Main-agent result analysis.** The main research agent must not perform result analysis itself for load-bearing promotion. It records Actual execution and Planned vs Actual, then dispatches a fresh separate-context result-analysis subagent using `research-result-analysis`.
-- **Splitting the two review questions across agents.** The requirement is one research-review subagent with both judgments, so the reviewer can connect analysis gaps to reliability and claim strength.
+- **Executing without Plan review.** A plan can be well formatted and still be a bad research design. Before execution, a fresh separate-context plan-review subagent using `research-plan-review` must review the plan path.
+- **Closing without Result analysis.** Before Claims, state-changing Decision, or report, a fresh separate-context result-analysis subagent using `research-result-analysis` must explain what happened and why from the plan path and artifacts.
+- **Treating result analysis as a decision gate.** Result analysis decomposes explanations; it does not write final claims, assess readiness, or choose the iteration branch.
 - **Updating the Plan section after execution.** Plans get amended prospectively via `REFINE`. After-the-fact plan rewriting destroys the time-anchor — git diff will show the rewrite and any reviewer will catch it. Use the Planned vs Actual section instead.
 - **Methodology description too thin.** "We ran the experiments" is not a Methodology subsection. State the procedure, the parameters, the protocol.

@@ -3,9 +3,9 @@
 
 Checks:
 - If an Idea portfolio is present and applicable, it contains the generation
-  substrate, generation operators, assumption audit, anti-vacuity gate,
-  blind-spot catalog, evaluator feedback, pruning, scoring, divergence review,
-  and promotion record.
+  substrate, hypothesis-generation handoff, main-agent intake, generation
+  operators, assumption audit, anti-vacuity gate, blind-spot catalog,
+  evaluator feedback, pruning, scoring, divergence review, and promotion record.
 - The substrate contains at least two named substrate ids.
 - Generation operators and the anti-vacuity gate contain the fields that keep
   candidates from being accepted as post-hoc prose.
@@ -29,6 +29,8 @@ REQUIRED_SUBSECTIONS = [
     "Idea substrate",
     "Generation operators",
     "De-anchored candidates",
+    "Hypothesis-generation handoff",
+    "Main-agent intake",
     "Assumption audit",
     "Anti-vacuity gate",
     "Blind-spot catalog",
@@ -44,6 +46,21 @@ GENERATION_FIELDS = [
     "Substrate ids",
     "Operator",
     "Changed premise",
+]
+
+HANDOFF_FIELDS = [
+    "Agent",
+    "Starting context",
+    "Web/literature retrieval",
+    "Output contract",
+]
+
+MAIN_INTAKE_FIELDS = [
+    "Authority check",
+    "Observation trace check",
+    "Mechanism review",
+    "Decision",
+    "Next-plan action",
 ]
 
 ANTI_VACUITY_FIELDS = [
@@ -86,6 +103,12 @@ PLACEHOLDER_PATTERNS = [
     re.compile(r"\bTBD\b", re.IGNORECASE),
     re.compile(r"\{\{"),
 ]
+
+NON_CANDIDATE_BULLET_LABELS = {
+    "catalog source",
+    "note",
+    "notes",
+}
 
 
 def extract_idea_portfolio(text: str) -> str | None:
@@ -215,13 +238,16 @@ def parse_candidate_blocks(body: str) -> dict[str, dict[str, str]]:
         candidate = re.match(r"^-\s*([^:]+?)\s*:\s*(.*)$", line)
         if candidate:
             current = candidate.group(1).strip()
+            if current.lower() in NON_CANDIDATE_BULLET_LABELS:
+                current = None
+                continue
             candidates.setdefault(current, {})
             rest = candidate.group(2).strip()
             if rest:
                 candidates[current]["_summary"] = rest
             continue
 
-        field = re.match(r"^\s{2,}-\s*([^:]+?)\s*:\s*(.*?)\s*$", line)
+        field = re.match(r"^[ \t]+-\s*([^:]+?)\s*:\s*(.*?)\s*$", line)
         if field and current is not None:
             candidates[current][field.group(1).strip().lower()] = field.group(2).strip()
 
@@ -424,7 +450,7 @@ def check_portfolio(text: str) -> list[str]:
     if portfolio is None:
         return []
 
-    if "not applicable: objective already chosen" in portfolio.lower() and "###" not in portfolio:
+    if re.search(r"not applicable\b.*\bobjective\b.*\balready\b.*\bchosen\b", portfolio.lower(), flags=re.DOTALL) and "###" not in portfolio:
         return []
 
     sections = extract_subsections(portfolio)
@@ -432,6 +458,8 @@ def check_portfolio(text: str) -> list[str]:
     issues.extend(check_required_subsections(sections))
     issues.extend(check_substrate(sections))
     issues.extend(check_fields(sections, "Generation operators", GENERATION_FIELDS))
+    issues.extend(check_fields(sections, "Hypothesis-generation handoff", HANDOFF_FIELDS))
+    issues.extend(check_fields(sections, "Main-agent intake", MAIN_INTAKE_FIELDS))
     issues.extend(check_fields(sections, "Anti-vacuity gate", ANTI_VACUITY_FIELDS))
     issues.extend(check_candidate_contract(sections))
     issues.extend(check_anti_vacuity_verdict(sections))
