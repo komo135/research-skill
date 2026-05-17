@@ -55,7 +55,7 @@ Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Th
 5. Write Plan section.
 6. Plan review — dispatch a fresh separate-context plan-review subagent using `research-plan-review` and pass only the plan path. Repair blockers before execution.
 7. git commit. (Plan plus Plan review are time-anchored.)
-8. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact.
+8. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact. Record a mid-execution literature update if an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears.
 9. Write Actual section + Planned-vs-Actual comparison.
 10. Result analysis — dispatch a fresh separate-context result-analysis subagent using `research-result-analysis` and pass only the plan path. The subagent reconstructs evidence and decomposes why the result happened.
 11. Claim — record only the load-bearing claims supported by the evidence and alternatives using the Toulmin-derived structure.
@@ -70,6 +70,8 @@ Every new plan records first-class prior-work grounding before the Plan section.
 Prior-work grounding starts with a plan-scoped literature survey before the Plan section. The plan records survey evidence: search date, queries or source names, selection rationale, negative findings, and any retrieval-unavailable constraint. Unknown prior work is a post-survey constraint, not a reason to skip search.
 
 Projects use `literature/{papers.md,positioning.md}`. `positioning.md` records how the work stands on prior work: grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
+
+Plans also record a citation-use map: each cited work must name how it is used in the plan, such as question framing, mechanism prior, baseline, comparator, metric, evaluation protocol, theoretical foundation, limitation, contradictory evidence, or claim-scope boundary.
 
 Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. That is separate from the plan-scoped prior-work grounding every plan needs.
 

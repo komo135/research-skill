@@ -944,6 +944,64 @@ def test_plan_templates_record_survey_evidence_before_plan():
         )
 
 
+def test_prior_work_grounding_requires_citation_use_map():
+    literature = read("skills/research/references/literature_review.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    assert_mentions(
+        literature,
+        "citation-use map",
+        "how each cited work is used",
+        "not enough to list papers",
+    )
+
+    for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
+        assert_ordered_fragments(
+            text,
+            "### Survey evidence",
+            "### Citation-use map",
+            "### Grounding scope",
+        )
+        assert_mentions(
+            text,
+            "Used for",
+            "Plan dependency",
+            "How it is used",
+            "Claim-scope effect",
+        )
+
+
+def test_research_docs_require_mid_execution_literature_updates():
+    literature = read("skills/research/references/literature_review.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    readme = read("README.md")
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    for text in [literature, rd_plan, readme]:
+        assert_mentions(
+            text,
+            "mid-execution literature update",
+            "unfamiliar method",
+            "unexpected result",
+            "new comparator",
+        )
+
+    for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
+        assert_ordered_fragments(
+            text,
+            "## Actual execution",
+            "### Mid-execution literature updates",
+            "## Planned vs Actual",
+        )
+        assert_mentions(
+            text,
+            "survey trigger",
+            "effect on plan",
+            "rerun Plan review",
+        )
+
+
 def test_research_skill_and_new_plan_guidance_require_literature_survey_before_plan():
     skill = read("skills/research/SKILL.md")
     new_plan = read("skills/research/scripts/new_plan.py")
@@ -963,9 +1021,11 @@ def test_plan_review_blocks_missing_literature_survey_evidence():
     assert_mentions(
         plan_review,
         "Survey evidence",
+        "Citation-use map",
         "literature/papers.md",
         "literature/positioning.md",
         "block_execution",
+        "bibliography without use mapping",
     )
     assert_ordered_fragments(
         plan_review,
@@ -1064,6 +1124,7 @@ def test_new_project_seeds_positioning_with_required_fields():
     script = ROOT / "skills" / "research" / "scripts" / "new_project.py"
     required_fields = [
         "What it establishes",
+        "Used in plan as",
         "Inherited assumption",
         "Baseline / protocol use",
         "Known limitation",

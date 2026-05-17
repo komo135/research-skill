@@ -134,6 +134,14 @@ last_updated: YYYY-MM-DD
 - Negative findings: <missing baselines, failed comparator searches, contradictions not found, or None>
 - Retrieval-unavailable constraint: <tool/access/connectivity failure and affected grounding or claims; None if survey ran>
 
+### Citation-use map
+
+- <literature/papers.md entry>:
+  - Used for: <question framing / mechanism prior / baseline / comparator / metric / data / evaluation protocol / theoretical foundation / limitation / contradictory evidence / claim-scope boundary>
+  - Plan dependency: <Question / Objective / Hypothesis rationale / Controls / Data setup / Decision threshold / Limitations / Claim scope>
+  - How it is used: <specific sentence explaining what the plan borrows, tests, contrasts, or bounds>
+  - Claim-scope effect: <supports / narrows / blocks which claims>
+
 ### Grounding scope
 
 - Question/objective supported by: <literature/papers.md entries and why they are relevant>
@@ -257,6 +265,15 @@ last_updated: YYYY-MM-DD
 ### Runs
 
 <List as runs accumulate.>
+
+### Mid-execution literature updates
+
+- <YYYY-MM-DD or None>:
+  - Survey trigger: <unfamiliar method / unexpected result / new comparator / contradiction with prior work / missing-baseline signal / other>
+  - Sources checked: <queries, papers, databases, or retrieval-unavailable constraint>
+  - Literature files updated: <literature/papers.md and literature/positioning.md entries, or None with reason>
+  - Effect on plan: <none / update limitations / change comparator / change metric / change evaluation protocol / amend plan / open ADJACENT plan>
+  - Plan review: <not needed with reason / rerun Plan review before continuing claim-bearing execution>
 
 ### Methodology used
 

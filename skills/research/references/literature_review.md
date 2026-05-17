@@ -21,6 +21,8 @@ Record survey evidence in the plan:
 - Negative findings, such as missing baselines, failed comparator searches, or contradictions not found
 - Retrieval-unavailable constraint when tools, access, or connectivity prevent the survey
 
+Also record a citation-use map. It is not enough to list papers in `literature/papers.md`; the plan must say how each cited work is used. Use citations only when they support a specific role in the plan: question framing, mechanism prior, baseline, comparator, metric, dataset, evaluation protocol, theoretical foundation, known limitation, contradictory evidence, or claim-scope boundary.
+
 ## When to do this
 
 - At the start of any new plan, before writing the Plan section
@@ -28,6 +30,7 @@ Record survey evidence in the plan:
 - Before claiming a method is novel
 - Before claiming a baseline does not exist
 - When the agent encounters an unfamiliar method during execution
+- As a mid-execution literature update when an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears during execution
 
 Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. That is separate from the bounded but sufficient plan-scoped paper survey and prior-work grounding every plan needs.
 
@@ -46,6 +49,7 @@ If prior work is genuinely unknown after the plan-scoped paper survey, record th
 - Citation: <full bib reference or URL>
 - Method / Finding: <one-paragraph summary, in your own words>
 - Relevance: <why this matters for the current plan>
+- Used in plan as: <question framing / mechanism prior / baseline / comparator / metric / data / evaluation protocol / theoretical foundation / limitation / contradictory evidence / claim-scope boundary>
 - Used as baseline: yes / no
 ```
 
@@ -58,6 +62,7 @@ Two paragraphs per entry maximum. Longer summaries belong in the agent's session
 
 ## <Prior approach A — cite papers.md entry>
 - What it establishes: <summary>
+- Used in plan as: <specific role this source plays in the current plan>
 - Inherited assumption: <what this plan carries forward>
 - Baseline / protocol use: <whether this informs a baseline, control, metric, or evaluation setup>
 - Known limitation: <limitation relevant to this plan>
@@ -70,9 +75,14 @@ Two paragraphs per entry maximum. Longer summaries belong in the agent's session
 
 Differences or novelty can be recorded in `literature/positioning.md` when claimed, but the primary purpose is grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. If the work does not differ from prior approaches in a meaningful way, this is itself an important finding. Basic-research replication is valuable, but the report should be honest about being a replication.
 
+## During execution
+
+A mid-execution literature update is required when execution reveals an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal. Update `literature/papers.md`, update `literature/positioning.md`, and record the update in the plan's `Actual execution` section. If the update changes the method, comparator, metric, evaluation protocol, hypothesis, or claim scope, record the effect on plan and rerun Plan review before continuing claim-bearing execution.
+
 ## Common failures
 
 - **Claiming novelty without literature search.** "To our knowledge" is not a search; it is an absence of search. If the agent has not actually searched, the claim of novelty is unsupported.
+- **Bibliography without a citation-use map.** A list of papers is not grounding. Record how each cited work is used in the plan.
 - **Listing tangentially related papers to look thorough.** Each entry should connect to the current plan, not pad a citation count.
 - **Comparing against the wrong comparator.** If you compare to a weak or outdated comparator because stronger ones are hard to run, the comparison is biased; say so explicitly in `literature/positioning.md` and in the report.
 - **Not updating papers.md mid-investigation.** When a new relevant paper appears during execution (e.g., the agent finds it while debugging), add it to `literature/papers.md` and update `literature/positioning.md` if relevant.

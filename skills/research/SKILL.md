@@ -129,7 +129,7 @@ Boundaries that matter:
 5. Write the Plan section.
 6. PLAN REVIEW — dispatch a fresh separate-context plan-review subagent using `research-plan-review`. Pass only the plan path. Record the returned `## Plan review` section, repair blockers, and review again if execution is blocked.
 7. git commit. (Plan plus Plan review are now time-anchored by git.)
-8. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/. A print-only script run is incomplete: stdout is not evidence, and `scripts/check_run_artifacts.py` should pass before observations are promoted.
+8. Execute. Save artifacts under experiments/<plan>/runs/<run_id>/. A print-only script run is incomplete: stdout is not evidence, and `scripts/check_run_artifacts.py` should pass before observations are promoted. If an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears, record a mid-execution literature update before claim-bearing execution continues.
 9. Write Actual section in plans/<id>.md. Compare planned vs actual.
 10. RESULT ANALYSIS — dispatch a fresh separate-context result-analysis subagent using the `research-result-analysis` skill and the template in `references/result_analysis_subagent_prompt.md`. Pass the plan path as the only starting context; the subagent reconstructs evidence from referenced runs, manifests, logs, scripts, outputs, tables, and figures and decomposes why the result happened.
 11. Record load-bearing claims using the structure in references/claim_structure.md.
@@ -170,6 +170,8 @@ Every plan records prior-work grounding before the Plan section. This is plan-sc
 Prior-work grounding starts with a plan-scoped literature survey before the Plan section. Record the survey evidence in the plan: search date, queries or source names, selection rationale, negative findings, and any retrieval-unavailable constraint. Unknown prior work is allowed only after the survey has been attempted or retrieval is unavailable and explicitly constrained; it is not a shortcut around search.
 
 Use `literature/papers.md` for annotated prior work and `literature/positioning.md` for how the work stands on prior work. `positioning.md` records grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
+
+The plan must include a citation-use map. For each cited work, state how it is used in the plan: question framing, mechanism prior, baseline, comparator, metric, data, evaluation protocol, theoretical foundation, limitation, contradictory evidence, or claim-scope boundary. A bibliography without use mapping is not grounding.
 
 If prior work is genuinely unknown after the plan-scoped literature survey, record the named constraint in the plan and narrow or block relevant claims until the grounding is repaired. For strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, do a comprehensive literature survey; that is separate from the plan-scoped grounding every plan needs.
 
