@@ -459,6 +459,9 @@ Record the subagent output in the plan. The analysis explains why the result hap
 ### What happened
 - <artifact-grounded result summary, including values and deviations from the plan>
 
+### Prediction comparison
+- <planned prediction / threshold / expected condition versus observed value; note whether the prediction was met, missed, reversed, or only partly satisfied>
+
 ### Candidate explanations
 - <explanation 1 for why the result happened>
   - Evidence for: <supporting artifacts, metrics, logs, or plan facts>
@@ -466,6 +469,12 @@ Record the subagent output in the plan. The analysis explains why the result hap
 - <explanation 2>
   - Evidence for: <...>
   - Evidence against: <...>
+
+### Failure analysis
+- Premise / mechanism hypothesis: <if the result missed prediction, whether evidence suggests the premise was wrong; otherwise Not applicable with reason>
+- Approach / intervention: <whether the chosen method was ineffective or harmful under tested conditions>
+- Procedure / artifact / data: <whether execution, implementation, comparator, data, metric, or artifact problems could explain the failure>
+- Evaluation / power / scope: <whether sample size, support, variance, metric choice, or tested conditions made the prediction untestable or unstable>
 
 ### Procedure / artifact explanations
 - <procedure defect, leakage path, broken comparator, missing artifact, data issue, plan deviation, or None with reason>

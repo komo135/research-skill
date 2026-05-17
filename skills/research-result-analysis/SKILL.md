@@ -1,13 +1,13 @@
 ---
 name: research-result-analysis
-description: Use when analyzing completed R&D plan results from a plan path, especially when an independent agent must reconstruct evidence and explain why the observed result happened without writing claims or decisions.
+description: Use when analyzing completed R&D plan results from a plan path, especially when an independent agent must reconstruct evidence, explain why the observed result happened, or analyze why a prediction failed without writing claims or decisions.
 ---
 
 # Research Result Analysis
 
 ## Overview
 
-Independent result analysis for a completed research plan. The plan path is the only starting context; the agent reconstructs evidence from referenced artifacts and decomposes why the result happened.
+Independent result analysis for a completed research plan. The plan path is the only starting context; the agent reconstructs evidence from referenced artifacts and decomposes why the result happened. When the result missed the plan's prediction or threshold, the analysis must also explain why it failed.
 
 This skill does not decide what can be claimed, whether to ship, or which iteration branch to choose.
 
@@ -15,7 +15,7 @@ This skill does not decide what can be claimed, whether to ship, or which iterat
 
 Treat the plan as the only starting context. Do not rely on parent-agent summaries, expected conclusions, private notes, or unstated expectations. If the plan does not identify enough evidence to explain the result, report `context_missing` and narrow the analysis.
 
-Result analysis is not only a validity audit. Procedure defects, leakage, broken comparators, missing artifacts, and script bugs are candidate explanations for the observed result, not separate verdict labels.
+Result analysis is not only a validity audit. Procedure defects, leakage, broken comparators, missing artifacts, and script bugs are candidate explanations for the observed result, not separate verdict labels. Failed predictions require failure analysis, not just a note that the threshold was missed.
 
 This skill owns analysis only. Do not write final claims, do not choose iteration decisions, do not assess readiness for promotion, and do not draft human-facing reports.
 
@@ -39,6 +39,12 @@ Minimum evidence rule: stdout is not evidence. A completed run needs `run_manife
 4. **Decompose why**
    Generate candidate explanations for why the result happened. Include procedure / artifact explanations when relevant: leakage, split mismatch, broken comparator, script bug, measurement artifact, missing provenance, or stdout-only evidence. For each candidate explanation, record supporting evidence, contradicting evidence, and the missing discriminator.
 
+   If the observed result missed the plan's prediction, threshold, or expected effect, explicitly separate failure causes:
+   - premise / mechanism hypothesis was wrong
+   - approach / intervention was ineffective or harmful under the tested conditions
+   - procedure, artifact, data, comparator, implementation, or measurement issue distorted the result
+   - evaluation was underpowered, noisy, mis-specified, or missing the condition needed to test the hypothesis
+
 5. **Return**
    Return a plan-ready `## Result analysis` section. Use artifact paths, numeric values, table/figure references, and missing-context entries that the parent research agent can inspect before writing claims or decisions.
 
@@ -60,6 +66,7 @@ For pressure-test and review scenarios, compare the output against an answer key
 
 - required observation: artifact facts that must appear for the analysis to be correct
 - candidate explanations: plausible causes for the observed result, including procedure / artifact explanations
+- failure analysis when prediction missed: separate premise failure, approach failure, procedure/artifact/data failure, and evaluation/power/metric failure
 - evidence for / against each explanation: supporting evidence and contradicting evidence listed separately
 - required missing context: absent artifacts, comparators, logs, scripts, controls, slices, traces, or failure samples
 - discriminating analysis: tests, ablations, slices, trace checks, perturbations, failure samples, or theoretical checks that would separate live explanations
@@ -70,11 +77,13 @@ For pressure-test and review scenarios, compare the output against an answer key
 Result analysis is not only a validity audit. After evidence is reconstructed, explain why the result happened using this sequence:
 
 1. **What happened**: aggregate movement, slice differences, seed variability, failures, anomalies, traces, and condition-specific effects.
-2. **Candidate explanations**: at least two plausible causes when artifacts permit them. Include null, procedure, or artifact explanations when relevant.
-3. **Evidence for / against each explanation**: cite support and contradiction separately. Do not hide contradicting evidence in generic limitations.
-4. **Procedure / artifact explanations**: explicitly consider whether the observed result could come from research execution mistakes, evaluation defects, leakage, broken comparators, or missing evidence.
-5. **Alternatives still live**: explanations not yet excluded.
-6. **Discriminating next analyses**: the smallest additional analysis that would separate the leading explanations.
+2. **Prediction comparison**: compare observed values to planned predictions, thresholds, support requirements, and expected conditions.
+3. **Candidate explanations**: at least two plausible causes when artifacts permit them. Include null, procedure, or artifact explanations when relevant.
+4. **Failure analysis when prediction missed**: explain why the result fell short by separating premise/mechanism failure, approach/intervention failure, procedure/artifact/data failure, and evaluation/power/metric failure.
+5. **Evidence for / against each explanation**: cite support and contradiction separately. Do not hide contradicting evidence in generic limitations.
+6. **Procedure / artifact explanations**: explicitly consider whether the observed result could come from research execution mistakes, evaluation defects, leakage, broken comparators, or missing evidence.
+7. **Alternatives still live**: explanations not yet excluded.
+8. **Discriminating next analyses**: the smallest additional analysis that would separate the leading explanations.
 
 Association-only evidence can motivate an explanation candidate, but it does not establish a mechanism. Pearl ladder applies: diagnostic correlation is not enough for intervention or counterfactual explanation.
 
@@ -97,11 +106,20 @@ Association-only evidence can motivate an explanation candidate, but it does not
 ### What happened
 - <literal artifact-grounded fact about aggregate result, slices, seeds, failures, traces, anomalies, or conditions>
 
+### Prediction comparison
+- <planned prediction / threshold / expected condition versus observed value; note whether the prediction was met, missed, reversed, or only partly satisfied>
+
 ### Candidate explanations
 - <candidate cause>
   - Evidence for: <artifact-grounded support>
   - Evidence against: <artifact-grounded contradiction or weakness>
   - Missing discriminator: <what would separate this from alternatives>
+
+### Failure analysis
+- Premise / mechanism hypothesis: <if the result missed prediction, whether evidence suggests the premise was wrong; otherwise Not applicable with reason>
+- Approach / intervention: <whether the chosen method was ineffective or harmful under tested conditions>
+- Procedure / artifact / data: <whether execution, implementation, comparator, data, metric, or artifact problems could explain the failure>
+- Evaluation / power / scope: <whether sample size, support, variance, metric choice, or tested conditions made the prediction untestable or unstable>
 
 ### Procedure / artifact explanations
 - <whether leakage, split mismatch, broken comparator, script bug, measurement artifact, missing provenance, or stdout-only evidence could explain the result>
@@ -123,4 +141,5 @@ Association-only evidence can motivate an explanation candidate, but it does not
 | Choosing `NEXT_STEP`, `REFINE`, `ADJACENT`, `PARK`, or `CLOSE` | Leave iteration decisions to the parent research skill. |
 | Translating analysis into deployment action | Do not choose ship, block, or rollout actions. |
 | Stopping at "the result is valid" | Continue to what happened, candidate explanations, evidence for/against, and discriminating next analyses. |
+| Stopping at "the prediction failed" | Explain why it failed: premise wrong, approach ineffective, procedure/data issue, or evaluation/power problem. |
 | Putting all why-analysis into generic limitations | Evaluate candidate explanations explicitly; limitations are not a substitute for decomposition. |

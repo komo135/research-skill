@@ -12,12 +12,14 @@ Treat the plan as the only starting context. Reconstruct necessary evidence your
 
 Return a `## Result analysis` section containing:
 1. what happened, grounded in artifacts
-2. candidate explanations for why the result happened
-3. evidence for and against each explanation
-4. procedure or artifact explanations, including execution mistakes, leakage, broken comparators, script defects, measurement artifacts, or missing evidence when relevant
-5. alternatives still live
-6. discriminating next analyses
-7. context_missing entries for missing or insufficient context
+2. prediction comparison against planned thresholds, expected effects, and support requirements
+3. candidate explanations for why the result happened
+4. failure analysis when the prediction missed or underperformed, separating premise/mechanism failure, approach/intervention failure, procedure/artifact/data failure, and evaluation/power/metric failure
+5. evidence for and against each explanation
+6. procedure or artifact explanations, including execution mistakes, leakage, broken comparators, script defects, measurement artifacts, or missing evidence when relevant
+7. alternatives still live
+8. discriminating next analyses
+9. context_missing entries for missing or insufficient context
 
 Do not assess promotion readiness. Do not write final claims, decisions, iteration branches, deployment recommendations, or human-facing reports.
 ```
