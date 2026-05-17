@@ -246,6 +246,12 @@ Do not skip this checkpoint when the user asks to avoid exploration or to use on
 
 If the plan says novel, new method, publishable, to our knowledge, or no baseline exists, `Research positioning` must cite `literature/positioning.md` and the plan must point to a comprehensive literature survey before execution. Lack of a novelty claim never exempts the plan from bounded but sufficient prior-work grounding.
 
+## Pre-result and post-result boundary
+
+Plan sections record **pre-result commitments**: the research question or objective, mechanism conjecture or principle, prediction or expected observation, primary measure, controls/comparators, planned discriminating test, evidence route, artifact plan, and stop / branch criteria. Do not explain why an unobserved result happened. That is not available before execution.
+
+Result analysis records **post-result explanations** after evidence exists: what happened, candidate explanations for the observed result, evidence for and against those explanations, procedure / artifact explanations, alternatives still live, and discriminating next analyses. Keep these out of the pre-execution Plan and Plan review.
+
 ## Plan section by mode
 
 ### Mode: exploratory
@@ -473,7 +479,7 @@ Before Claims, a state-changing Decision, or report drafting, dispatch a fresh s
 
 The analysis subagent reconstructs evidence from the plan's references: runs, `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, scripts, configs, outputs, tables, figures, reports, and literature entries. If evidence cannot be found or interpreted from those references, it records `context_missing` rather than relying on parent-agent summaries.
 
-Record the subagent output in the plan. The analysis explains why the result happened; it does not assess readiness, write final claims, choose iteration decisions, or draft reports.
+Record the subagent output in the plan after evidence exists. The analysis explains why the result happened; it does not assess readiness, write final claims, choose iteration decisions, or draft reports. It is a post-result explanations section, not a source of pre-result commitments.
 
 ```markdown
 ## Result analysis

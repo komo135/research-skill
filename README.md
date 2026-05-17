@@ -27,7 +27,7 @@ Examples of work that triggers the skill:
 
 It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
 
-## Core design (v2.6.1)
+## Core design (v2.6.2)
 
 ### R&D categories (Frascati 2015)
 
@@ -62,6 +62,8 @@ Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Th
 12. Pick one of 5 iteration branches: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE.
 13. If human-facing, draft a report.
 ```
+
+The timing boundary is explicit: Plan and Plan review record pre-result commitments such as predictions, measures, controls/comparators, planned discriminating test, evidence route, artifacts, and stop / branch criteria. They do not explain why an unobserved result happened. Result analysis records post-result explanations only after evidence exists.
 
 ### Prior-work grounding
 
@@ -103,7 +105,7 @@ This keeps agents from silently accepting "just improve last time's best approac
 
 ### Plan review subagent
 
-Before execution, the plan-review handoff uses `research-plan-review` and passes only the plan path. The reviewer checks the research design before any results exist: category/mode fit, mechanism hypothesis or principle, prediction or expected output, discriminating test, controls/comparators or limiting cases, evidence route, artifact plan, scope, and constraints. It returns `execute_as_written`, `revise_before_execution`, or `block_execution`.
+Before execution, the plan-review handoff uses `research-plan-review` and passes only the plan path. The reviewer checks the research design before any results exist: category/mode fit, mechanism hypothesis or principle, prediction or expected output, planned discriminating test, controls/comparators or limiting cases, evidence route, artifact plan, scope, and constraints. It returns `execute_as_written`, `revise_before_execution`, or `block_execution`.
 
 This verdict asymmetry is intentional. Plan review happens before execution, so it may recommend whether the design is informative enough to run. Result analysis happens after evidence exists and before claims / decisions, so it explains what happened and why but does not assess claim readiness, deployment, or iteration decisions.
 
@@ -255,12 +257,23 @@ When an agent runs `scripts/new_project.py` to initialize an R&D project:
 
 ## Status
 
-**Version 2.6.1** — requires plan-scoped literature survey evidence, citation-use mapping, verifiable retrieval-unavailable constraints, and mid-execution literature updates, while keeping independent plan review, explanation-centered result analysis, assumption audit, theoretical mode, paper-grade reports, and statistical reporting minimums.
+**Version 2.6.2** — clarifies the boundary between pre-result planning commitments and post-result explanations, while keeping prior-work grounding, plan-scoped literature survey evidence, citation-use mapping, independent plan review, explanation-centered result analysis, assumption audit, theoretical mode, paper-grade reports, and statistical reporting minimums.
 
 <details>
 <summary>Changelog</summary>
 
-### v2.6.1 (current) — plan-scoped literature survey evidence
+### v2.6.2 (current) — pre-result planning boundary
+
+Clarifies that plans and plan review contain commitments made before results exist, while Result analysis contains explanations made after evidence exists.
+
+**Added / changed**
+
+- Defined pre-result commitments: question/objective, mechanism conjecture or principle, prediction or expected observation, primary measure, controls/comparators, planned discriminating test, evidence route, artifact plan, and stop / branch criteria.
+- Defined post-result explanations: what happened, candidate explanations, evidence for/against, procedure / artifact explanations, alternatives still live, and discriminating next analyses.
+- Replaced the detailed Result analysis form in plan templates with an explicit post-execution placeholder so agents do not fill why-analysis before results exist.
+- Updated Plan review language to check whether a planned discriminating test can separate plausible alternatives without explaining an unobserved result.
+
+### v2.6.1 — plan-scoped literature survey evidence
 
 Makes prior-work grounding first-class in every research plan before execution.
 

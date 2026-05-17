@@ -670,6 +670,61 @@ def test_plan_templates_record_plan_review_and_result_analysis_without_research_
         )
 
 
+def test_plans_separate_pre_result_commitments_from_post_result_explanations():
+    skill = read("skills/research/SKILL.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    plan_review = read("skills/research-plan-review/SKILL.md")
+    result_analysis = read("skills/research-result-analysis/SKILL.md")
+
+    for text in [skill, rd_plan, plan_review]:
+        assert_mentions(
+            text,
+            "pre-result commitments",
+            "post-result explanations",
+            "do not explain why an unobserved result happened",
+            "planned discriminating test",
+        )
+        assert_absent(
+            text,
+            "explain why the result happened before execution",
+            "pre-execution result explanation",
+        )
+
+    assert_mentions(
+        result_analysis,
+        "post-result explanations",
+        "after evidence exists",
+        "candidate explanations",
+        "not pre-result commitments",
+    )
+
+
+def test_plan_templates_do_not_invite_pre_result_result_analysis():
+    template_dir = ROOT / "skills" / "research" / "assets" / "plan"
+
+    for template in template_dir.glob("*.template"):
+        text = template.read_text(encoding="utf-8")
+        assert_ordered_fragments(
+            text,
+            "## Result analysis",
+            "Do not fill this section before execution",
+            "After evidence exists",
+            "record the returned `## Result analysis` section here",
+            "## Claims",
+        )
+        result_analysis_section = text.split("## Result analysis", 1)[1].split("## Claims", 1)[0]
+        assert_absent(
+            result_analysis_section,
+            "### Candidate explanations",
+            "### Failed prediction analysis",
+            "### Procedure / artifact explanations",
+            "### Alternatives still live",
+            "### Discriminating next analyses",
+            "<explanation 1 for why the result happened>",
+            "<candidate explanation for why the prediction missed>",
+        )
+
+
 def test_confirmatory_plan_template_requires_hypothesis_rationale_chain():
     template = read("skills/research/assets/plan/rd_plan_confirmatory.md.template")
 

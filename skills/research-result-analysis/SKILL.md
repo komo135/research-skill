@@ -11,6 +11,8 @@ Independent result analysis for a completed research plan. The plan path is the 
 
 This skill does not decide what can be claimed, whether to ship, or which iteration branch to choose.
 
+Result analysis produces **post-result explanations** after evidence exists. It is not a continuation of planning and not a place to create **pre-result commitments** retroactively; result-analysis outputs are not pre-result commitments. The plan should already contain the question, prediction or expected observation, primary measure, planned discriminating test, evidence route, and artifact expectations.
+
 ## Core Rule
 
 Treat the plan as the only starting context. Do not rely on parent-agent summaries, expected conclusions, private notes, or unstated expectations. If the plan does not identify enough evidence to explain the result, report `context_missing` and narrow the analysis.

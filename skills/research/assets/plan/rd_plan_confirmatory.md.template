@@ -291,59 +291,7 @@ last_updated: YYYY-MM-DD
 
 ## Result analysis
 
-### Analyzer
-
-- Agent: <fresh separate-context result-analysis subagent>
-- Skill: research-result-analysis
-- Only starting context: <this plan path>
-- Analyzed at: <YYYY-MM-DD>
-
-### Evidence traced
-
-- Plan: <this plan path>
-- Runs and artifacts: <run_manifest.json, logs/stdout.log, logs/stderr.log, scripts, outputs, tables, figures, reports, or literature entries inspected>
-- context_missing: <None, or missing/ambiguous references that block or narrow analysis>
-
-### What happened
-
-<Artifact-grounded result summary, including values and deviations from the plan.>
-
-### Prediction comparison
-
-<Planned prediction / threshold / expected condition versus observed value; note whether the prediction was met, missed, reversed, or only partly satisfied.>
-
-### Candidate explanations
-
-- <explanation 1 for why the result happened>
-  - Evidence for: <supporting artifacts, metrics, logs, or plan facts>
-  - Evidence against: <contradicting artifacts, missing diagnostics, or observations that do not fit>
-- <explanation 2>
-  - Evidence for: <supporting evidence>
-  - Evidence against: <contradicting evidence or missing evidence>
-
-### Failed prediction analysis
-
-- Observed gap: <prediction, threshold, or expected condition versus observed result>
-- Candidate failure explanations:
-  - <candidate explanation for why the prediction missed>
-    - Why this could explain the miss: <mechanism connecting evidence to the missed prediction>
-    - Evidence for: <artifact-grounded support>
-    - Evidence against: <artifact-grounded contradiction or weakness>
-    - What would be true if this explanation is correct: <testable implication>
-    - Missing discriminator: <smallest analysis that would separate this explanation from alternatives>
-- Coverage check: <which lenses were considered: premise/mechanism, approach/intervention, procedure/artifact/data/comparator/implementation/measurement, evaluation/power/metric/scope. Do not force a category; record only live explanations above.>
-
-### Procedure / artifact explanations
-
-<Procedure defect, leakage path, broken comparator, missing artifact, data issue, plan deviation, or None with reason.>
-
-### Alternatives still live
-
-<Plausible explanations, confounds, comparator issues, missing controls, untested conditions, or theoretical gaps still compatible with the evidence.>
-
-### Discriminating next analyses
-
-<Smallest analysis, check, rerun, or artifact reconstruction that would distinguish among explanations.>
+Do not fill this section before execution. After evidence exists, dispatch a fresh separate-context result-analysis subagent with `research-result-analysis`; record the returned `## Result analysis` section here without rewriting it.
 ## Claims
 
 <Load-bearing claims using the schema in claim_structure.md.>

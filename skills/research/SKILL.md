@@ -75,6 +75,8 @@ Research state moves through this lifecycle:
 
 `Observation discovery` → `Hypothesis synthesis` → `Intervention idea` → `Prior-work grounding` → `Plan` → `Plan review` → `Execution` → `Result analysis` → `Claim` → `Decision`
 
+Keep the timing boundary explicit. The Plan and Plan review contain **pre-result commitments**: the question, mechanism conjecture or principle, prediction or expected observation, primary measure, controls/comparators, planned discriminating test, evidence route, artifacts to preserve, and stop / branch criteria. They do not explain why an unobserved result happened. Result analysis contains **post-result explanations** after evidence exists: what happened, why it may have happened, what alternatives remain live, and what additional discriminator would separate those alternatives.
+
 An observation is not yet a hypothesis. Observations name phenomena, failures, tensions, baseline limits, or problem facts that may motivate a hypothesis later; they do not by themselves explain the mechanism or justify an intervention.
 
 Prior work has two roles. First, it can be material for observations: references may expose empirical patterns, baseline limits, historical failures, theoretical tensions, or problem facts that feed observation discovery. Second, it provides grounding after candidates exist: prior work checks whether candidates duplicate known work, inherit assumptions, require controls or comparators, need different evaluation, or should be advanced, merged, parked, or killed. The second role must not collapse the candidate space before raw candidates exist.
@@ -199,7 +201,7 @@ This checkpoint does not replace prior-work grounding. Every plan needs bounded 
 
 After the Plan section is drafted and before execution, dispatch a fresh separate-context plan-review subagent. Use `research-plan-review` and pass only the plan path as starting context.
 
-The plan reviewer evaluates research design, not results. It checks whether the plan has a category-appropriate question/objective, mechanism hypothesis or principle-under-investigation, prediction or expected output, discriminating test, controls/comparators or limiting-case checks when applicable, evidence route, and constraints. Record the returned `## Plan review` section in the plan. If the recommendation is `revise_before_execution` or `block_execution`, repair the plan and run Plan review again before executing.
+The plan reviewer evaluates research design, not results. It checks whether the plan has a category-appropriate question/objective, mechanism hypothesis or principle-under-investigation, prediction or expected output, planned discriminating test, controls/comparators or limiting-case checks when applicable, evidence route, and constraints. It reviews pre-result commitments only; it does not produce post-result explanations or explain why an unobserved result happened. Record the returned `## Plan review` section in the plan. If the recommendation is `revise_before_execution` or `block_execution`, repair the plan and run Plan review again before executing.
 
 ## Result analysis
 
@@ -208,6 +210,8 @@ After execution and the Planned vs Actual comparison, but before Claims, state-c
 The subagent receives only the plan path as starting context. It must reconstruct necessary evidence from the plan's references and report missing evidence as `context_missing`. Parent-agent summaries, expected conclusions, and private execution notes are not inputs.
 
 Record the returned `## Result analysis` section in the plan. This section explains what happened, candidate explanations for why it happened, evidence for and against each explanation, procedure/artifact explanations, alternatives still live, and discriminating next analyses. It is not a claim record, not a readiness judgment, and not an iteration decision.
+
+Result analysis starts only after evidence exists. It records post-result explanations, not pre-result commitments.
 
 ## Claims
 
