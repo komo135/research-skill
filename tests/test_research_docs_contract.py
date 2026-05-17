@@ -1733,6 +1733,91 @@ def test_check_mechanism_hypothesis_record_requires_discriminating_fields():
     assert "missing required field: 'Minimal test'" in result.stdout
 
 
+def test_check_mechanism_hypothesis_record_rejects_candidate_preamble_before_diagnosis():
+    plan = complete_mechanism_record().replace(
+        "## Mechanism hypothesis record\n\n### Research situation diagnosis",
+        "## Mechanism hypothesis record\n\n- Candidate A: Try a better filter.\n- Candidate B: Use attention.\n\n### Research situation diagnosis",
+    )
+
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 1
+    assert "must start with '### Research situation diagnosis'" in result.stdout
+    assert "candidate-list preamble" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_requires_multiple_lenses_considered():
+    plan = complete_mechanism_record().replace(
+        "- Lens: Measurement and evaluation lens\n"
+        "  - What it would inspect: whether average return hides tail failures.\n"
+        "  - What it may miss: the internal state mechanism that causes the collapse.\n"
+        "  - Use decision: use as auxiliary because evaluation mismatch is a plausible competing explanation.\n",
+        "",
+    )
+
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 1
+    assert "Analysis lenses considered must include at least two Lens entries" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_rejects_multiple_primary_or_too_many_auxiliary_lenses():
+    plan = (
+        complete_mechanism_record()
+        .replace(
+            "- Primary lens: Failure dynamics lens.",
+            "- Primary lens: Failure dynamics lens; Measurement and evaluation lens.",
+        )
+        .replace(
+            "- Auxiliary lenses: Measurement and evaluation lens.",
+            "- Auxiliary lenses: Measurement and evaluation lens; Success mechanism lens; Constraint relocation lens.",
+        )
+    )
+
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 1
+    assert "Primary lens must name exactly one lens" in result.stdout
+    assert "Auxiliary lenses must name 0-2 lenses" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_rejects_and_joined_adopted_lens_lists():
+    plan = (
+        complete_mechanism_record()
+        .replace(
+            "- Primary lens: Failure dynamics lens.",
+            "- Primary lens: Failure dynamics lens and Measurement and evaluation lens.",
+        )
+        .replace(
+            "- Auxiliary lenses: Measurement and evaluation lens.",
+            "- Auxiliary lenses: Measurement and evaluation lens and Success mechanism lens and Constraint relocation lens.",
+        )
+    )
+
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 1
+    assert "Primary lens must name exactly one lens" in result.stdout
+    assert "Auxiliary lenses must name 0-2 lenses" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_requires_fields_for_each_considered_lens():
+    plan = complete_mechanism_record().replace(
+        "- Lens: Measurement and evaluation lens\n"
+        "  - What it would inspect: whether average return hides tail failures.\n"
+        "  - What it may miss: the internal state mechanism that causes the collapse.\n"
+        "  - Use decision: use as auxiliary because evaluation mismatch is a plausible competing explanation.\n",
+        "- Lens: Measurement and evaluation lens\n",
+    )
+
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 1
+    assert "Lens entry 2 missing required field: 'What it would inspect'" in result.stdout
+    assert "Lens entry 2 missing required field: 'What it may miss'" in result.stdout
+    assert "Lens entry 2 missing required field: 'Use decision'" in result.stdout
+
+
 def test_check_mechanism_hypothesis_record_rejects_invalid_decision():
     result = run_mechanism_record_check(complete_mechanism_record(decision="advance"))
 
@@ -1745,6 +1830,17 @@ def test_check_mechanism_hypothesis_record_blocks_commit_when_generation_is_bloc
 
     assert result.returncode == 1
     assert "blocked diagnosis cannot commit" in result.stdout
+
+
+def test_check_mechanism_hypothesis_record_allows_commit_when_diagnosis_says_not_blocked():
+    plan = complete_mechanism_record(decision="commit").replace(
+        "Why hypothesis generation is allowed or blocked: allowed because observed failures, baseline behavior, evaluation target, and comparator path are available.",
+        "Why hypothesis generation is allowed or blocked: not blocked; material supports a discriminating prediction.",
+    )
+
+    result = run_mechanism_record_check(plan)
+
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_check_mechanism_hypothesis_record_accepts_not_applicable_objective_chosen():

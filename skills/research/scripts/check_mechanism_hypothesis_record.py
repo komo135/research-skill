@@ -73,6 +73,26 @@ PLACEHOLDER_PATTERNS = [
 
 DECISIONS = {"commit", "park", "kill"}
 
+KNOWN_LENSES = [
+    "Success mechanism lens",
+    "Failure dynamics lens",
+    "Lineage-difference lens",
+    "Center-auxiliary inversion lens",
+    "Problem-form transformation lens",
+    "Measurement and evaluation lens",
+    "Constraint relocation lens",
+    "Sparse-information lens",
+    "Cross-domain mechanism transfer lens",
+]
+
+
+def first_nonempty_line(text: str) -> str:
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped:
+            return stripped
+    return ""
+
 
 def extract_mechanism_section(text: str) -> str | None:
     lines = text.splitlines()
@@ -159,6 +179,15 @@ def check_required_subsections(sections: dict[str, str]) -> list[str]:
     return issues
 
 
+def check_section_starts_with_diagnosis(section: str) -> list[str]:
+    first = first_nonempty_line(section)
+    if re.match(r"^###\s+Research situation diagnosis\s*$", first, flags=re.IGNORECASE):
+        return []
+
+    detail = "candidate-list preamble" if re.search(r"^\s*-\s*Candidate\b", section, flags=re.IGNORECASE | re.MULTILINE) else "unexpected preamble"
+    return [f"  Mechanism hypothesis record must start with '### Research situation diagnosis' ({detail})"]
+
+
 def check_fields(sections: dict[str, str]) -> list[str]:
     issues: list[str] = []
     for section, fields in SECTION_FIELDS.items():
@@ -172,6 +201,68 @@ def check_fields(sections: dict[str, str]) -> list[str]:
                 issues.append(f"  Section '{key}' missing required field: '{field}'")
             elif not is_meaningful(value):
                 issues.append(f"  Section '{key}' field '{field}' is empty or placeholder-only")
+    return issues
+
+
+def lens_count(value: str | None) -> int:
+    if not is_meaningful(value):
+        return 0
+    normalized = value.strip().lower().strip(" .;:-")
+    if normalized.startswith("none"):
+        return 0
+    known_count = sum(
+        1 for lens in KNOWN_LENSES
+        if re.search(rf"\b{re.escape(lens.lower())}\b", normalized)
+    )
+    if known_count:
+        return known_count
+    parts = [part.strip() for part in re.split(r"\s*(?:;|,|/)\s*", value) if part.strip()]
+    return len(parts) if parts else 1
+
+
+def parse_lens_blocks(body: str) -> list[dict[str, str]]:
+    blocks: list[dict[str, str]] = []
+    current: dict[str, str] | None = None
+
+    for line in body.splitlines():
+        lens = re.match(r"^\s*-\s*Lens\s*:\s*(.*?)\s*$", line, flags=re.IGNORECASE)
+        if lens:
+            current = {"Lens": lens.group(1).strip()}
+            blocks.append(current)
+            continue
+
+        field = re.match(r"^\s*-\s*(What it would inspect|What it may miss|Use decision)\s*:\s*(.*?)\s*$", line, flags=re.IGNORECASE)
+        if field and current is not None:
+            current[field.group(1)] = field.group(2).strip()
+
+    return blocks
+
+
+def check_lens_contract(sections: dict[str, str]) -> list[str]:
+    issues: list[str] = []
+
+    considered_key = section_key(sections, "Analysis lenses considered")
+    if considered_key is not None:
+        body = sections[considered_key]
+        lens_blocks = parse_lens_blocks(body)
+        if len(lens_blocks) < 2:
+            issues.append("  Analysis lenses considered must include at least two Lens entries")
+        for index, block in enumerate(lens_blocks, start=1):
+            for field in ["What it would inspect", "What it may miss", "Use decision"]:
+                if not is_meaningful(block.get(field)):
+                    issues.append(f"  Lens entry {index} missing required field: '{field}'")
+
+    adopted_key = section_key(sections, "Adopted analysis lenses")
+    if adopted_key is not None:
+        body = sections[adopted_key]
+        primary = value_for_field(body, "Primary lens")
+        auxiliary = value_for_field(body, "Auxiliary lenses")
+        if is_meaningful(primary) and lens_count(primary) != 1:
+            issues.append("  Primary lens must name exactly one lens")
+        auxiliary_count = lens_count(auxiliary)
+        if auxiliary_count > 2:
+            issues.append("  Auxiliary lenses must name 0-2 lenses")
+
     return issues
 
 
@@ -196,11 +287,23 @@ def check_blocked_commit(sections: dict[str, str]) -> list[str]:
     if diagnosis_key is None or record_key is None:
         return []
 
-    diagnosis = sections[diagnosis_key].lower()
+    diagnosis = value_for_field(
+        sections[diagnosis_key],
+        "Why hypothesis generation is allowed or blocked",
+    )
     decision = value_for_field(sections[record_key], "Decision")
-    if decision and decision.strip().lower().strip(" .;") == "commit" and "blocked" in diagnosis:
+    if decision and decision.strip().lower().strip(" .;") == "commit" and is_blocked_diagnosis(diagnosis):
         return ["  blocked diagnosis cannot commit"]
     return []
+
+
+def is_blocked_diagnosis(value: str | None) -> bool:
+    if not value:
+        return False
+    normalized = value.strip().lower().strip(" .;:-")
+    if normalized.startswith("not blocked"):
+        return False
+    return normalized.startswith("blocked") or "hypothesis generation is blocked" in normalized
 
 
 def check_record(text: str) -> list[str]:
@@ -214,8 +317,10 @@ def check_record(text: str) -> list[str]:
 
     sections = extract_subsections(section)
     issues: list[str] = []
+    issues.extend(check_section_starts_with_diagnosis(section))
     issues.extend(check_required_subsections(sections))
     issues.extend(check_fields(sections))
+    issues.extend(check_lens_contract(sections))
     issues.extend(check_decision(sections))
     issues.extend(check_blocked_commit(sections))
     return issues

@@ -146,7 +146,7 @@ Use this shape in plans when the plan began from research ideas, research direct
 
 Decision meanings:
 
-- `commit`: the mechanism hypothesis, competing hypothesis, discriminating prediction, minimal test, required evidence, and survey-backed grounding are sufficient to proceed into planning.
+- `commit`: provisional decision that the mechanism hypothesis, competing hypothesis, discriminating prediction, minimal test, and required evidence are sufficient to proceed into survey-backed grounding and planning.
 - `park`: observations, measurements, assumptions, comparators, evaluator, prior-work grounding, or required evidence are missing.
 - `kill`: the mechanism is circular, unmeasurable, indistinguishable from a competing hypothesis, or only a restatement of known work.
 
