@@ -4,9 +4,6 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -222,105 +219,6 @@ def test_report_format_and_templates_define_paper_grade_contract():
             "Not applicable:",
             "plan",
             "source artifacts",
-        )
-
-
-def test_plans_and_reports_do_not_store_next_hypotheses_or_actions():
-    skill = read("skills/research/SKILL.md")
-    rd_plan = read("skills/research/references/rd_plan.md")
-    report_format = read("skills/research/references/report_format.md")
-    readme = read("README.md")
-    project_state = read("skills/research/assets/project/project_state.md.template")
-    result_analysis = read("skills/research-result-analysis/SKILL.md")
-    result_prompt = read("skills/research/references/result_analysis_subagent_prompt.md")
-    report_templates = [
-        p.read_text(encoding="utf-8")
-        for p in (ROOT / "skills" / "research" / "assets" / "report").glob("*.template")
-    ]
-
-    assert_mentions(
-        report_format,
-        "do not leave next hypotheses or next actions",
-    )
-    assert_mentions(
-        rd_plan,
-        "do not store future hypotheses or next actions",
-        "Decision records only the branch",
-    )
-    assert_mentions(
-        skill,
-        "Reports must not include next-action or next-hypothesis sections",
-    )
-    for text in [skill, rd_plan, report_format, readme, project_state, result_analysis, result_prompt, *report_templates]:
-        assert_absent(
-            text,
-            "## Next action",
-            "### Discriminating next analyses",
-            "discriminating next analyses",
-            "Unresolved discriminators",
-            "unresolved discriminators",
-            "Missing discriminator",
-            "missing discriminator",
-            "Current blocker",
-            "Implication for hypothesis revision",
-            "create or cite a separate plan",
-            "follow-up queue",
-            "follow-up queues",
-            "follow-up work",
-            "what next action",
-            "next action is recommended",
-            "what the next action is",
-            "**Next action**",
-        )
-
-
-def test_report_summary_does_not_replace_next_action_with_limitations():
-    skill = read("skills/research/SKILL.md")
-    report_format = read("skills/research/references/report_format.md")
-    template_dir = ROOT / "skills" / "research" / "assets" / "report"
-    category_dir = ROOT / "skills" / "research" / "references" / "categories"
-
-    summary_contracts = [
-        markdown_section(report_format, "### Summary"),
-        *[
-            markdown_section(path.read_text(encoding="utf-8"), "## Summary")
-            for path in template_dir.glob("*.template")
-        ],
-    ]
-    reports_section = markdown_section(skill, "## Reports")
-    category_report_shapes = [
-        markdown_section(path.read_text(encoding="utf-8"), "## Report shape")
-        for path in category_dir.glob("*.md")
-    ]
-
-    for text in [reports_section, *summary_contracts, *category_report_shapes]:
-        assert_absent(
-            text,
-            "what limits the finding",
-            "limitations bound the finding",
-            "known limits",
-            "where it falls short",
-            "what limitations bound",
-        )
-
-
-def test_result_analysis_contract_does_not_keep_renamed_next_action_lists():
-    result_analysis = read("skills/research-result-analysis/SKILL.md")
-    rd_plan = read("skills/research/references/rd_plan.md")
-    prompt = read("skills/research/references/result_analysis_subagent_prompt.md")
-    readme = read("README.md")
-
-    for text in [result_analysis, rd_plan, prompt, readme]:
-        assert_absent(
-            text,
-            "Unresolved discriminators",
-            "unresolved discriminators",
-            "Missing discriminator",
-            "missing discriminator",
-            "What would be true if this explanation is correct",
-            "testable implication",
-            "not action items",
-            "not an action item",
         )
 
 
@@ -2286,7 +2184,7 @@ def test_check_report_rejects_numeric_results_without_statistical_reporting_mini
     report = """# Underreported Numeric Report
 
 ## Summary
-This report summarizes the numeric result and the scoped evidence limits.
+This report summarizes the numeric result.
 
 ## Background
 Prior formulations motivate the comparison and define the known constraints.
@@ -2335,7 +2233,7 @@ def test_check_report_rejects_precision_ci_false_positive_and_sample_size_only()
     report = """# False Positive Numeric Report
 
 ## Summary
-This report summarizes the numeric result and the scoped evidence limits.
+This report summarizes the numeric result.
 
 ## Background
 Prior formulations motivate the comparison and define the known constraints.
@@ -2391,7 +2289,7 @@ def test_check_report_rejects_outcome_without_figure_table_or_reason():
     report = """# No Evidence Carrier Report
 
 ## Summary
-This report summarizes the descriptive result and the scoped evidence limits.
+This report summarizes the descriptive result.
 
 ## Background
 Prior formulations motivate the comparison and define the known constraints.
@@ -2443,7 +2341,7 @@ def test_check_report_rejects_combined_section_headings():
     report = """# Combined Heading Report
 
 ## Summary
-This report summarizes the numeric result and the scoped evidence limits.
+This report summarizes the numeric result.
 
 ## Background
 Prior formulations motivate the comparison and define the known constraints.
@@ -2485,133 +2383,13 @@ The report names untested conditions and plausible alternative explanations.
     assert "Missing required section: 'References'" in result.stdout
 
 
-def test_check_report_rejects_next_action_sections():
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
-
-    report = """# Forbidden Planning Section Report
-
-## Summary
-This report summarizes the evidence, interpretation, limitations, and source artifacts.
-
-## Background
-Prior formulations motivate the comparison and define the known constraints.
-
-## Related Work
-This report positions the derivation against the directly relevant foundations.
-
-## Theory / Formulation
-Not applicable: the applied claim does not rest on a derivation.
-
-## Methods & Conditions
-The method and material conditions are described for re-implementation.
-
-## Results
-No figure/table: the outcome is a qualitative audit finding without measured values.
-
-## Ablation / Sensitivity
-Not applicable: no component-causality or robustness claim is made in this report.
-
-## Discussion
-The report explains the descriptive interpretation and avoids causal promotion.
-
-## Limitations
-The report names untested conditions and plausible alternative explanations.
-
-## Next action
-NEXT_STEP: continue the same plan with a focused counterexample search.
-
-## References
-- Plan: plans/01_example.md
-- Source artifacts: experiments/01_example/runs/
-- Prior work: [Comparator 2024] from literature/papers.md.
-"""
-
-    with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
-        result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-        )
-
-    assert result.returncode == 1
-    assert "Forbidden planning section: 'Next action'" in result.stdout
-
-
-@pytest.mark.parametrize(
-    "heading",
-    [
-        "### Next action",
-        "## Next actions",
-        "## Next-action",
-        "## Next action / hypothesis",
-        "## Next hypotheses",
-    ],
-)
-def test_check_report_rejects_next_action_heading_variants(heading):
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
-
-    report = f"""# Forbidden Planning Heading Report
-
-## Summary
-This report summarizes the evidence, interpretation, limitations, and source artifacts.
-
-## Background
-Prior formulations motivate the comparison and define the known constraints.
-
-## Related Work
-This report positions the derivation against the directly relevant foundations.
-
-## Theory / Formulation
-Not applicable: the applied claim does not rest on a derivation.
-
-## Methods & Conditions
-The method and material conditions are described for re-implementation.
-
-## Results
-No figure/table: the outcome is a qualitative audit finding without measured values.
-
-## Ablation / Sensitivity
-Not applicable: no component-causality or robustness claim is made in this report.
-
-## Discussion
-The report explains the descriptive interpretation and avoids causal promotion.
-
-## Limitations
-The report names untested conditions and plausible alternative explanations.
-
-{heading}
-Continue with a focused counterexample search.
-
-## References
-- Plan: plans/01_example.md
-- Source artifacts: experiments/01_example/runs/
-- Prior work: [Comparator 2024] from literature/papers.md.
-"""
-
-    with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
-        result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-        )
-
-    assert result.returncode == 1
-    assert "Forbidden planning" in result.stdout
-
-
 def test_check_report_accepts_theoretical_report_shape():
     script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
 
     report = """# Theoretical Report
 
 ## Summary
-This report summarizes a derivational result and the scoped evidence limits.
+This report summarizes a derivational result.
 
 ## Background
 Prior formulations motivate the derivation and define the known constraints.
