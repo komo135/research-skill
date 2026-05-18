@@ -8,12 +8,13 @@ A report is a snapshot. Once written, it does not get retroactively rewritten wh
 
 ## Paper-grade reports, not venue manuscripts
 
-The skill requires a **paper-grade report**: the evidence standard should be high enough that a non-author can evaluate the question, method, result, limitations, and next action from the report alone. It is not a venue manuscript: no LaTeX, venue-specific formatting, exhaustive survey, or publication packaging is required.
+The skill requires a **paper-grade report**: the evidence standard should be high enough that a non-author can evaluate the question, method, result, limitations, and source artifacts from the report alone. It is not a venue manuscript: no LaTeX, venue-specific formatting, exhaustive survey, or publication packaging is required.
 
 Two design consequences follow:
 
 - **No environment locks or commit hashes in the prose.** Reports should describe material conditions, not environment locks: data identity, evaluation protocol, major tool/model versions, hardware class, external API/model version, or collection date only when those conditions could change the interpretation. A one-line pointer to `experiments/<plan>/runs/` is enough if a reader wants to dig into raw artifacts. This is methods reproducibility, not computational replicability.
 - **No exhaustive citation lists.** Cite the directly relevant prior work (methods, resources, controls, comparators, or foundations used) — typically a handful, not dozens. The Related Work section must position the work, not pad a bibliography.
+- **No follow-up queue in reports.** Do not leave next hypotheses or next actions in report prose or sections. If the result implies additional work, create or cite a separate plan; the report records evidence, interpretation, limitations, and sources.
 
 ## Required structure
 
@@ -28,8 +29,7 @@ Every report has these sections, in this order. Category-specific shapes adjust 
 7. **Ablation / Sensitivity**
 8. **Discussion**
 9. **Limitations**
-10. **Next action**
-11. **References**
+10. **References**
 
 ## Section requirements
 
@@ -39,7 +39,7 @@ One or two paragraphs. A reader who reads only this section should understand:
 
 - What was investigated, built, or proposed
 - What was found (the headline finding or numbers)
-- What the next action is
+- What limitations bound the finding
 
 If the report is for a decision, the recommended decision goes here.
 
@@ -70,7 +70,7 @@ Content:
 - **Assumptions**: axioms or modeling assumptions the derivation depends on (cross-reference any assumption_audit findings from `references/assumption_audit.md`)
 - **Derivation / theorem statement**: the formal result, with proof sketch or full proof depending on length; for long proofs, summarize in the report and place the full proof in `experiments/<plan>/notebooks/proof_<n>.md` or an appendix
 - **Limiting cases**: what known result the formulation reduces to in stated limits (this is the basic-theoretical analog of the applied "comparator" — show that the new formulation recovers known correct behavior)
-- **Predictions**: what observable consequences follow (these become the Results section's tested claims for theoretical-applied reports; for pure-theoretical reports they become Observations or Future-work predictions)
+- **Predictions**: what observable consequences follow (these become the Results section's tested claims for theoretical-applied reports; for pure-theoretical reports they become Observations when established by the derivation)
 
 For pure-theoretical work without empirical evaluator, this section IS the load-bearing evidence. The assumption_audit-derived constraint-naming (no decisive empirical evaluator at the present state of knowledge) belongs in Limitations, not here.
 
@@ -134,16 +134,6 @@ What alternatives remain plausible, what conditions were not tested, what could 
 
 Do not hide limitations in an appendix. If a finding has a serious caveat, the reader needs to see it on first read. Limitations honestly stated do not weaken a report — they make it usable.
 
-### Next action
-
-One of:
-
-- The agent's chosen iteration decision (`NEXT_STEP` / `REFINE` / `ADJACENT` / `PARK` / `CLOSE`)
-- A specific request to the human reader (a decision they need to make, or input they need to provide)
-- Both
-
-A report without a next action is incomplete. Even `CLOSE: completed` is a next action ("no further work on this plan").
-
 ### References
 
 Required in every paper-grade report. Include at minimum the source plan and source artifacts; include one entry per prior work cited anywhere in the report body.
@@ -171,7 +161,7 @@ Do NOT pad. If only 3 works are actually cited, list 3 entries — not a "compre
 
 **Observations** (rename Results to Observations for basic research): emphasizes patterns and characterizations, not point achievements.
 
-A basic-research report often ends with a refined question, not a yes/no answer. That is normal — state the refined question clearly in Summary and Next action.
+A basic-research report often ends with a refined question, not a yes/no answer. That is normal — state the refined question clearly as the result or limitation, then open a separate plan if it should be investigated.
 
 ### Applied research
 
@@ -225,7 +215,7 @@ For `basic_research` plans with `mode: theoretical` (pure conceptual / derivatio
 
 **Limitations** carries any assumption-audit-derived constraint (e.g., "no decisive empirical evaluator at the present state of knowledge" recorded via `references/assumption_audit.md` constraint-naming protocol).
 
-**Next action** for pure-theoretical reports often takes the form of a predicted observation or a derivation extension, not an executable next step.
+For pure-theoretical reports, predicted observations or derivation extensions belong in Observations or Limitations only when they are part of the result boundary. Do not turn them into a follow-up queue inside the report.
 
 ## Figures and tables
 

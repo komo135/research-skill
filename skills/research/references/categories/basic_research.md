@@ -66,7 +66,6 @@ Basic research reports emphasize what was learned, not what was decided. Structu
 4. **Observations** — what the data showed, with actual figures
 5. **Mechanism / Interpretation** — what explains the observations (and what does not)
 6. **Limitations** — what alternatives remain plausible, what conditions were not tested
-7. **Next action** — refined question, planned investigation, or `CLOSE: completed`
 
 Use `assets/report/basic_research_report.md.template`.
 

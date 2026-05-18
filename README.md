@@ -4,7 +4,7 @@ A Claude Code and Codex plugin providing four skills for **agent-driven R&D**:
 
 - **`research`** — protocol skill for R&D work across the three Frascati categories: basic research (new knowledge about underlying foundations without a particular application in view), applied research (new knowledge directed toward a specific practical aim or objective), and experimental development (new or improved products/processes plus additional knowledge). Enforces vocabulary, plan/claim structure, iteration discipline, analysis methodology, and human-readable reports.
 - **`research-plan-review`** — independent plan-review skill used before execution. It starts from a plan path only and reviews the research design: mechanism hypothesis or principle, prediction or expected output, discriminating test, controls/comparators or limiting cases, evidence route, and execution blockers.
-- **`research-result-analysis`** — independent result-analysis skill used by a fresh separate-context result-analysis subagent. It starts from a plan path only, reconstructs evidence from referenced artifacts, and explains what happened and why through candidate explanations, evidence for/against, procedure/artifact explanations, live alternatives, and discriminating next analyses without writing final claims or decisions.
+- **`research-result-analysis`** — independent result-analysis skill used by a fresh separate-context result-analysis subagent. It starts from a plan path only, reconstructs evidence from referenced artifacts, and explains what happened and why through candidate explanations, evidence for/against, procedure/artifact explanations, live alternatives, and unresolved discriminators without writing final claims or decisions.
 - **`quant-research`** — domain extension layered on `research` for time-series and statistically rigorous quantitative R&D. Adds methodology for time-series cross-validation, multiple-testing corrections, leakage detection, and statistical robustness.
 
 The core rule: **research-level reproducibility (someone can re-implement from your description) is enforced; experiment-level replicability (someone can rerun your exact code) is the agent's discretion.** This separation, following [Drummond (2009)](https://cogprints.org/7691/7/icmle09.pdf) and [Goodman et al. (2016)](https://www.science.org/doi/10.1126/scitranslmed.aaf5027), keeps agents focused on doing good research rather than on producing perfect env.lock files. Reports record material conditions, not environment locks: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date only when those conditions affect interpretation. Research scripts still need evidence: stdout is not evidence, so completed runs keep a manifest with `status: completed`, logs, and at least one manifest-listed durable artifact.
@@ -115,7 +115,7 @@ This verdict asymmetry is intentional. Plan review happens before execution, so 
 
 The result-analysis handoff uses `skills/research/references/result_analysis_subagent_prompt.md`. The prompt passes only the plan path; the subagent treats the plan as the only starting context and reconstructs necessary evidence from referenced artifacts. Parent-agent summaries, expected conclusions, and private execution notes are not inputs. Missing or ambiguous references are reported as `context_missing`.
 
-The output is a `## Result analysis` section with evidence traced, what happened, candidate explanations, evidence for and against each explanation, procedure/artifact explanations, alternatives still live, and discriminating next analyses. It is not a claim record and not an iteration decision.
+The output is a `## Result analysis` section with evidence traced, what happened, candidate explanations, evidence for and against each explanation, procedure/artifact explanations, alternatives still live, and unresolved discriminators. It is not a claim record and not an iteration decision.
 
 ### Claim structure (Toulmin-derived, no numeric ladder)
 
@@ -143,7 +143,7 @@ For stochastic work, seed variability matters more than a single fixed seed. The
 
 ### Reports for humans
 
-Z39.18-derived, paper-grade report structure with required Summary, Background, Related Work, Methods & Conditions or System description, Results/Observations/Performance, Ablation / Sensitivity, Discussion, Limitations, Next action, and References sections. Sections that do not apply still appear with a short `Not applicable:` rationale. v2.4.0 adds Figure-as-argument guidance and a Statistical reporting minimum for numeric evidence. Figures must actually exist — `scripts/check_report.py` verifies references resolve and rejects numeric outcome sections that omit sample size, variance/dispersion, CI, effect size, significance, or an explicit non-applicability reason. Reports cite the plan for full re-implementation detail rather than duplicating Methods content.
+Z39.18-derived, paper-grade report structure with required Summary, Background, Related Work, Methods & Conditions or System description, Results/Observations/Performance, Ablation / Sensitivity, Discussion, Limitations, and References sections. Sections that do not apply still appear with a short `Not applicable:` rationale. Reports do not carry follow-up queues; if more work is implied, create or cite a separate plan instead of adding next-action or next-hypothesis sections. v2.4.0 adds Figure-as-argument guidance and a Statistical reporting minimum for numeric evidence. Figures must actually exist — `scripts/check_report.py` verifies references resolve and rejects numeric outcome sections that omit sample size, variance/dispersion, CI, effect size, significance, or an explicit non-applicability reason. Reports cite the plan for full re-implementation detail rather than duplicating Methods content.
 
 ## Repository Layout
 
@@ -309,7 +309,7 @@ Clarifies that plans and plan review contain commitments made before results exi
 **Added / changed**
 
 - Defined pre-result commitments: question/objective, mechanism conjecture or principle, prediction or expected observation, primary measure, controls/comparators, planned discriminating test, evidence route, artifact plan, and stop / branch criteria.
-- Defined post-result explanations: what happened, candidate explanations, evidence for/against, procedure / artifact explanations, alternatives still live, and discriminating next analyses.
+- Defined post-result explanations: what happened, candidate explanations, evidence for/against, procedure / artifact explanations, alternatives still live, and unresolved discriminators.
 - Replaced the detailed Result analysis form in plan templates with an explicit post-execution placeholder so agents do not fill why-analysis before results exist.
 - Updated Plan review language to check whether a planned discriminating test can separate plausible alternatives without explaining an unobserved result.
 
@@ -335,7 +335,7 @@ Splits pre-execution design review and post-execution result analysis into the t
 - Added `research-plan-review` for plan-path-only review before execution.
 - Removed the older completion gate from the active lifecycle.
 - Removed the Codex-specific result-analysis agent definition; result-analysis is now skill / prompt-template driven across agent runtimes.
-- Refocused `research-result-analysis` from readiness verdicts to explaining why the result happened: candidate explanations, evidence for/against, procedure/artifact explanations, live alternatives, and discriminating next analyses.
+- Refocused `research-result-analysis` from readiness verdicts to explaining why the result happened: candidate explanations, evidence for/against, procedure/artifact explanations, live alternatives, and unresolved discriminators.
 - Kept document checks as regression guards; behavioral quality is validated with pressure scenarios against the skills.
 - Reworked the older generation flow; this has since been superseded by mechanistic hypothesis generation.
 

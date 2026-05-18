@@ -218,7 +218,7 @@ After execution and the Planned vs Actual comparison, but before Claims, state-c
 
 The subagent receives only the plan path as starting context. It must reconstruct necessary evidence from the plan's references and report missing evidence as `context_missing`. Parent-agent summaries, expected conclusions, and private execution notes are not inputs.
 
-Record the returned `## Result analysis` section in the plan. This section explains what happened, candidate explanations for why it happened, evidence for and against each explanation, procedure/artifact explanations, alternatives still live, and discriminating next analyses. It is not a claim record, not a readiness judgment, and not an iteration decision.
+Record the returned `## Result analysis` section in the plan. This section explains what happened, candidate explanations for why it happened, evidence for and against each explanation, procedure/artifact explanations, alternatives still live, and unresolved discriminators. It is not a claim record, not a readiness judgment, and not an iteration decision.
 
 Result analysis starts only after evidence exists. It records post-result explanations, not pre-result commitments.
 
@@ -244,7 +244,7 @@ Reports are for humans. They live under `reports/<id>_<slug>/`. Each report is a
 
 Reports are paper-grade evidence artifacts, not lightweight status notes. Required sections are defined in `references/report_format.md`; sections that do not apply still appear with a short `Not applicable:` rationale. The common required sections are:
 
-1. **Summary** — 1–2 paragraphs. A reader who reads only this should understand what was done, what was found, and what is next.
+1. **Summary** — 1–2 paragraphs. A reader who reads only this should understand what was done, what was found, and what limits the finding.
 2. **Background** — what was known before, what motivated the work.
 3. **Related Work** — how the work stands on directly relevant prior work, or `Not applicable:` with a reason.
 4. **Theory / Formulation** — derivation/formulation when load-bearing, or `Not applicable:` with a reason.
@@ -253,10 +253,11 @@ Reports are paper-grade evidence artifacts, not lightweight status notes. Requir
 7. **Ablation / Sensitivity** — component, robustness, limiting-case, or controlled-variation evidence, or `Not applicable:` with a reason.
 8. **Discussion** — interpretation distinct from Limitations.
 9. **Limitations** — what alternatives remain plausible, what conditions were not tested.
-10. **Next action** — one of the 5 iteration decisions, or a specific request to the human reader.
-11. **References** — source plan, artifacts, and one entry per cited work.
+10. **References** — source plan, artifacts, and one entry per cited work.
 
 `scripts/check_report.py` enforces the paper-grade section contract, figure integrity, and the statistical reporting minimum for numeric outcome sections.
+
+Reports must not include next-action or next-hypothesis sections. If the result implies more work, record the branch in the plan Decision and create or cite a separate plan; keep the report as an evidence artifact.
 
 Reports do not need env locks, commit hashes, or seed lists in the prose. Include material execution conditions when they affect interpretation, and treat seed information as a variability disclosure: stochastic claims should report variance, failures, and the number of seeds rather than relying on one fixed seed. One line pointing to `experiments/<plan>/runs/` is enough if a reader wants to dig into raw artifacts.
 

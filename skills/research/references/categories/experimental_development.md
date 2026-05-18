@@ -68,8 +68,7 @@ Use `assets/report/experimental_development_report.md.template`.
 3. **System description** — architecture, key design decisions, deployment shape, dependencies (conceptual, not env-lock)
 4. **Performance** — measured behavior under stated conditions, with figures
 5. **Operational limits** — known failure modes, edge cases, resource boundaries
-6. **Limitations** — conditions not tested, future-iteration items
-7. **Next action** — iteration decision
+6. **Limitations** — conditions not tested, known failure modes, and resource boundaries
 
 The "Methods" section of applied research becomes "System description" here. The artifact itself is the deliverable; design decisions get documented because anyone using or extending the artifact needs them.
 

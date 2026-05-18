@@ -81,7 +81,7 @@ Result analysis is not only a validity audit. After evidence is reconstructed, e
 5. **Evidence for / against each explanation**: cite support and contradiction separately. Do not hide contradicting evidence in generic limitations.
 6. **Procedure / artifact explanations**: explicitly consider whether the observed result could come from research execution mistakes, evaluation defects, leakage, broken comparators, or missing evidence.
 7. **Alternatives still live**: explanations not yet excluded.
-8. **Discriminating next analyses**: the smallest additional analysis that would separate the leading explanations.
+8. **Unresolved discriminators**: the missing evidence, analysis, check, or artifact that would separate the leading explanations. Record these as unresolved discriminators, not action items.
 
 Association-only evidence can motivate an explanation candidate, but it does not establish a mechanism. Pearl ladder applies: diagnostic correlation is not enough for intervention or counterfactual explanation.
 
@@ -130,8 +130,8 @@ Association-only evidence can motivate an explanation candidate, but it does not
 ### Alternatives still live
 - <plausible explanation, confound, missing control, untested condition, or theoretical gap not yet excluded>
 
-### Discriminating next analyses
-- <smallest analysis, ablation, slice, trace check, perturbation, failure sample, theoretical check, repair, or rerun that would separate live explanations>
+### Unresolved discriminators
+- <smallest missing evidence, analysis, ablation, slice, trace check, perturbation, failure sample, theoretical check, repair, or rerun that would separate live explanations; not an action item>
 ```
 
 ## Common Mistakes
@@ -143,6 +143,6 @@ Association-only evidence can motivate an explanation candidate, but it does not
 | Writing final claims | Return why-analysis only; the parent research protocol records claims. |
 | Choosing `NEXT_STEP`, `REFINE`, `ADJACENT`, `PARK`, or `CLOSE` | Leave iteration decisions to the parent research skill. |
 | Translating analysis into deployment action | Do not choose ship, block, or rollout actions. |
-| Stopping at "the result is valid" | Continue to what happened, candidate explanations, evidence for/against, and discriminating next analyses. |
+| Stopping at "the result is valid" | Continue to what happened, candidate explanations, evidence for/against, and unresolved discriminators. |
 | Stopping at "the prediction failed" | Explain why it failed with live candidate explanations and discriminators; use failure lenses for coverage, not as forced verdict categories. |
 | Putting all why-analysis into generic limitations | Evaluate candidate explanations explicitly; limitations are not a substitute for decomposition. |

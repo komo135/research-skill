@@ -141,7 +141,7 @@ next discriminating test only when success and failure would change a specific
 state entry; otherwise record a robustness finding, merged variant, rejected
 direction, stale row, or parked dependency.
 
-| Failed check | Direction for the next hypothesis |
+| Failed check | Implication for hypothesis revision |
 |---|---|
 | 2D threshold has only a single peak | Strong parameter dependence — diversify the signal |
 | Break-even fee < 0.3 bp | Not viable at retail; look at futures venue or spread reduction |

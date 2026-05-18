@@ -4,7 +4,7 @@
 Checks:
 - Paper-grade required sections are present: Summary, Background, Related Work,
   Theory / Formulation, Ablation / Sensitivity, Discussion, Limitations,
-  Next action, and References.
+  and References.
 - At least one evidence-bearing outcome section is present: Results,
   Observations, or Performance.
 - At least one methods, system, or derivation-context section is present.
@@ -13,7 +13,8 @@ Checks:
 - Outcome sections include a figure, table, or explicit `No figure/table:` reason.
 - Figure references (![...](figures/X) or relative paths) resolve to actual files.
 - Limitations section is non-empty (not just placeholder text).
-- Next action section is non-empty and ideally references an iteration decision.
+- Next-action / next-hypothesis planning sections are rejected; reports are
+  evidence artifacts, not follow-up work queues.
 - Numeric outcome sections include a statistical reporting minimum: sample size,
   variance/dispersion, CI, effect size, significance, or an explicit non-applicability reason.
 
@@ -36,9 +37,10 @@ COMMON_REQUIRED = [
     "Ablation / Sensitivity",
     "Discussion",
     "Limitations",
-    "Next action",
     "References",
 ]
+FORBIDDEN_SECTIONS = ["Next action", "Next hypothesis", "Next hypotheses"]
+FORBIDDEN_PLANNING_TERMS = {"action", "actions", "hypothesis", "hypotheses"}
 CONTEXT_SECTION_OPTIONS = [
     "Methods & Conditions",
     "Methods",
@@ -63,7 +65,6 @@ NONEMPTY_IF_PRESENT = [
     "Ablation / Sensitivity",
     "Discussion",
     "Limitations",
-    "Next action",
     "References",
 ]
 
@@ -100,6 +101,15 @@ def normalize_heading(value: str) -> str:
     return re.sub(r"\s+", " ", value.strip().lower())
 
 
+def heading_tokens(value: str) -> set:
+    return set(re.sub(r"[^a-z0-9]+", " ", value.lower()).split())
+
+
+def is_forbidden_planning_heading(value: str) -> bool:
+    tokens = heading_tokens(value)
+    return "next" in tokens and bool(tokens & FORBIDDEN_PLANNING_TERMS)
+
+
 def section_key(sections: dict, expected: str) -> str | None:
     expected_normalized = normalize_heading(expected)
     for key in sections:
@@ -124,6 +134,27 @@ def check_section_present(sections: dict, expected: list) -> list:
     for required in expected:
         if section_key(sections, required) is None:
             issues.append(f"  Missing required section: '{required}'")
+    return issues
+
+
+def check_forbidden_sections(sections: dict, forbidden: list) -> list:
+    issues = []
+    for section in forbidden:
+        key = section_key(sections, section)
+        if key is not None:
+            issues.append(f"  Forbidden planning section: '{key}'")
+    return issues
+
+
+def check_forbidden_planning_headings(text: str) -> list:
+    issues = []
+    for line_no, line in enumerate(text.splitlines(), start=1):
+        match = re.match(r"^#{1,6}\s+(.+?)\s*#*\s*$", line)
+        if not match:
+            continue
+        heading = match.group(1).strip()
+        if is_forbidden_planning_heading(heading):
+            issues.append(f"  Line {line_no}: Forbidden planning heading: '{heading}'")
     return issues
 
 
@@ -165,23 +196,6 @@ def check_figures_exist(report_path: Path, refs: list) -> list:
         fig_path = (report_dir / ref).resolve()
         if not fig_path.exists():
             issues.append(f"  Line {line_no}: figure reference does not resolve: '{ref}' (looked for {fig_path})")
-    return issues
-
-
-def check_next_action_decision(sections: dict) -> list:
-    """The Next action section should reference one of the 5 iteration decisions or a clear human-facing request."""
-    issues = []
-    key = section_key(sections, "Next action")
-    if key is None:
-        return issues
-    body = sections[key].upper()
-    if any(d in body for d in ["NEXT_STEP", "REFINE", "ADJACENT", "PARK", "CLOSE"]):
-        return []
-    # Not an iteration decision — must contain a clear request or directive.
-    if len(body.strip()) > 50:
-        # Long enough to plausibly be a meaningful request.
-        return []
-    issues.append(f"  'Next action' section does not reference an iteration decision (NEXT_STEP/REFINE/ADJACENT/PARK/CLOSE) and is too short to be a clear request")
     return issues
 
 
@@ -291,18 +305,18 @@ def main():
 
     all_issues = []
 
+    all_issues.extend(check_forbidden_planning_headings(text))
+
     # Common sections required regardless of category. Category- and
     # mode-specific sections are intentionally conditional in v2.4.
     all_issues.extend(check_section_present(sections, COMMON_REQUIRED))
+    all_issues.extend(check_forbidden_sections(sections, FORBIDDEN_SECTIONS))
     all_issues.extend(check_any_section_present(sections, CONTEXT_SECTION_OPTIONS, "method/system/theory section"))
     all_issues.extend(check_any_section_present(sections, OUTCOME_SECTION_OPTIONS, "outcome section"))
 
     # Non-empty checks for common and recognized paper-grade sections.
     for sec in NONEMPTY_IF_PRESENT:
         all_issues.extend(check_section_nonempty(sections, sec))
-
-    # Next action discipline.
-    all_issues.extend(check_next_action_decision(sections))
 
     # Statistical reporting minimum for numeric evidence.
     all_issues.extend(check_numeric_outcome_reporting(sections))

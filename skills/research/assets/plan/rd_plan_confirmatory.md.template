@@ -240,7 +240,7 @@ flowchart LR
   - Survey trigger: <unfamiliar method / unexpected result / new comparator / contradiction with prior work / missing-baseline signal / other>
   - Sources checked: <queries, papers, databases, or retrieval-unavailable constraint with attempted source/tool and failure evidence>
   - Literature files updated: <literature/papers.md and literature/positioning.md entries, or None with reason>
-  - Effect on plan: <none / update limitations / change comparator / change metric / change evaluation protocol / amend plan / open ADJACENT plan>
+  - Effect on plan: <none / update limitations / change comparator / change metric / change evaluation protocol / amend plan / ADJACENT dependency recorded>
   - Plan review: <not needed with reason / rerun Plan review before continuing claim-bearing execution>
 
 ### Methodology used
@@ -264,7 +264,7 @@ Do not fill this section before execution. After evidence exists, dispatch a fre
 
 ## Decision
 
-<One of NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE — see iteration_loop.md.>
+<One of NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE — see iteration_loop.md. Decision records only the branch and evidence-backed reason. Do not store future hypotheses or next actions here; create or cite a separate plan when follow-up work is needed.>
 
 ## References
 

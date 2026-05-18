@@ -69,7 +69,6 @@ Applied research reports describe the practical objective, the method/procedure 
 5. **Results** — evidence with figures or tables; include uncertainty/variance when it affects interpretation
 6. **Component or mechanism checks** — required when the claim attributes an effect to a component
 7. **Limitations** — conditions not tested, failure modes, possible confounds
-8. **Next action** — iteration decision, or a request to the human reader
 
 Methods description must be substantive. "We used a Transformer" is not a methods description. For ML/quant methods, architecture choices (heads, layers, hidden dim, position encoding), training details (optimizer, schedule, regularization), and evaluation protocol (beam size, length penalty, test set) must be specific enough that another researcher could re-implement and roughly reproduce. For non-ML applied work, describe the procedure, materials, conditions, and evaluation route at the same level of re-implementable detail.
 

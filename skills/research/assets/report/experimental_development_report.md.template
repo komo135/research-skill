@@ -7,7 +7,7 @@
 
 ## Summary
 
-<One or two paragraphs: what was built, what it does with headline performance or acceptance evidence, known limits, and next action.>
+<One or two paragraphs: what was built, what it does with headline performance or acceptance evidence, and known limits.>
 
 ## Background
 
@@ -66,7 +66,7 @@ Not applicable: <state why no component-causality or robustness claim is made.>
 
 ## Discussion
 
-<Interpretation of measured behavior, surprises, design tradeoffs, and implications for deployment or next iteration.>
+<Interpretation of measured behavior, surprises, design tradeoffs, and implications for deployment scope.>
 
 ## Limitations
 
@@ -74,13 +74,6 @@ Not applicable: <state why no component-causality or robustness claim is made.>
 <- Known failure modes>
 <- Edge cases observed>
 <- Resource boundaries>
-<- Future-iteration items>
-
-## Next action
-
-<- Iteration decision: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE>
-<- Or specific request to the human reader>
-
 ## References
 
 - Plan: plans/<plan-id>_<slug>.md

@@ -7,7 +7,7 @@
 
 ## Summary
 
-<One or two paragraphs: what was proposed and tried, what was found with headline evidence, and what next action is recommended.>
+<One or two paragraphs: what was proposed and tried, what was found with headline evidence, and what limitations bound the finding.>
 
 ## Background
 
@@ -81,18 +81,13 @@ Not applicable: <state why no component-causality or robustness claim is made.>
 
 ## Discussion
 
-<Mechanism interpretation, surprises, contradicted expectations, implications for the next plan or decision, and Pearl's-ladder honesty for any causal language.>
+<Mechanism interpretation, surprises, contradicted expectations, implications for the evidence boundary or decision, and Pearl's-ladder honesty for any causal language.>
 
 ## Limitations
 
 <- Conditions not tested>
 <- Possible confounds, such as hyperparameter asymmetry, single dataset, or comparator weakness>
 <- Failure modes observed>
-
-## Next action
-
-<- Iteration decision: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE>
-<- Or specific request to the human reader>
 
 ## References
 

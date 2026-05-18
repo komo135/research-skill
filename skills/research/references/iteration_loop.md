@@ -151,7 +151,7 @@ Sessions that change durable state (any branch except `NEXT_STEP`) must update `
 - Next: <what the next session does>
 ```
 
-The `Next` line is required. A decision without a next action is incomplete — the point of logging is that the next session can pick up.
+The `Next` line is required. A decision without a pickup state is incomplete — the point of logging is that the next session can orient without inferring state from stale notes.
 
 Sessions with no durable change need no entry. Smoke tests, environment setup, orientation, debugging a script that did not affect any claim — these are not durable changes.
 

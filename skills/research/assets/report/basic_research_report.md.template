@@ -7,7 +7,7 @@
 
 ## Summary
 
-<One or two paragraphs. A reader who reads only this should know what phenomenon was investigated, what was learned or refined, and what the next action is.>
+<One or two paragraphs. A reader who reads only this should know what phenomenon was investigated, what was learned or refined, and what limitations bound the finding.>
 
 ## Background
 
@@ -73,12 +73,6 @@ Not applicable: <state why no component-causality or robustness claim is made.>
 <- What alternatives remain plausible>
 <- What conditions were not tested>
 <- What would change the conclusions>
-
-## Next action
-
-<- A specific iteration decision: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE>
-<- Or a request to the human reader>
-<- Or both>
 
 ## References
 
