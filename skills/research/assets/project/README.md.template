@@ -1,36 +1,41 @@
 # <Project Name>
 
-<One-paragraph project description: what is this project for, what does it ultimately serve.>
+<One-paragraph project description: what this project is for and what decision, understanding, or artifact it ultimately serves.>
 
 ## Status
 
-<Current state of the project — one paragraph or a few bullets.>
+<Current state of the project: active propositions, live derived hypotheses, blockers, and latest result state.>
 
 ## Navigate
 
-- `project_state.md` — current plans, blockers, priorities
-- `decisions.md` — durable state transitions log
-- `plans/` — per-investigation plans (the research narrative for each open thread)
-- `experiments/` — per-plan code, configs, and run artifacts
-- `lib/` — shared, curated code (data loaders, eval, viz utilities)
-- `reports/` — human-facing deliverables (snapshots)
-- `literature/` — prior work and `literature/positioning.md`, how the work stands on prior work
+- `project_state.md` — active propositions, live derived hypotheses, blockers, priorities
+- `decisions.md` — project-wide structure, scope, and protocol decisions only
+- `propositions/` — proposition-first research state
+- `propositions/Pxxx_slug/proposition.md` — long-lived proposition ledger
+- `propositions/Pxxx_slug/observations.md` — material used to generate or update the proposition
+- `propositions/Pxxx_slug/analyses.md` — generated doubt, working proposition, expected consequence, proposition status, and derived hypothesis candidates
+- `propositions/Pxxx_slug/hypotheses/Hxxx_slug/` — one derived hypothesis, its plan, experiments, reports, and decisions
+- `lib/` — shared, curated code when the project has reusable implementation
+- `literature/` — prior work and `literature/positioning.md`, when project-level prior-work state is useful
 
 ## Getting started
 
-<How a new contributor (or future-you) gets oriented:>
-<- which plan to look at first>
-<- which entry point in `lib/` or `experiments/` to read>
-<- any environment setup notes (this is the only place env setup belongs)>
+<How a new contributor or future agent gets oriented:>
+<- which proposition to look at first>
+<- which derived hypothesis or hypothesis plan to read>
+<- which entry point in `lib/` or proposition-local `experiments/` to read>
+<- any environment setup notes; this is the only place env setup belongs>
 
 ## R&D Categories used in this project
 
 <List the categories active here, e.g.:>
-<- basic_research: plan 01_phase-transition>
-<- applied_research: plan 02_proposed-method>
+<- basic_research: P001/H001 phase-transition>
+<- applied_research: P002/H001 proposed-method>
 
 ## Working in this project
 
-This project uses the `research` skill. Plans declare a category and mode; plans are checked before execution with `research-plan-review`, results are analyzed after execution with `research-result-analysis`, and claims / decisions are recorded separately in `plans/<id>.md`; reports under `reports/<id>/` are the human-facing artifacts.
+This project uses the `research` skill in proposition-first mode. Hypothesis generation state lives under `propositions/Pxxx_slug/`: observations create generated doubts, generated doubts create working propositions, working propositions create expected consequences, proposition status determines whether a derived hypothesis is allowed, and each derived hypothesis owns one hypothesis plan under `hypotheses/Hxxx_slug/plan.md`.
 
-Research scripts should run through `new_run.py` and leave evidence under `experiments/<plan>/runs/<run_id>/`. Print-only output is not a completed result: stdout is not evidence. Each completed run needs `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and at least one manifest-listed durable artifact in `outputs/`, `tables/`, `figures/`, or `intermediate/`. Run `check_run_artifacts.py` before using a run for Result analysis, observations, claims, decisions, or reports.
+Plans declare a category and mode; plans are checked before execution with `research-plan-review`, results are analyzed after execution with `research-result-analysis`, and claims are recorded in the hypothesis plan. State-changing decisions are not global iteration notes: project-wide decisions stay in top-level `decisions.md`, proposition decisions stay in `propositions/Pxxx_slug/decisions.md`, and hypothesis decisions stay in `propositions/Pxxx_slug/hypotheses/Hxxx_slug/decisions.md`.
+
+Research scripts should run through `new_run.py` and leave evidence under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/`. Print-only output is not a completed result: stdout is not evidence. Each completed run needs `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and at least one manifest-listed durable artifact in `outputs/`, `tables/`, `figures/`, or `intermediate/`. Run `check_run_artifacts.py` before using a run for Result analysis, observations, claims, decisions, or reports.

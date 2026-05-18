@@ -2,202 +2,170 @@
 
 A Claude Code and Codex plugin providing four skills for **agent-driven R&D**:
 
-- **`research`** — protocol skill for R&D work across the three Frascati categories: basic research (new knowledge about underlying foundations without a particular application in view), applied research (new knowledge directed toward a specific practical aim or objective), and experimental development (new or improved products/processes plus additional knowledge). Enforces vocabulary, plan/claim structure, iteration discipline, analysis methodology, and human-readable reports.
-- **`research-plan-review`** — independent plan-review skill used before execution. It starts from a plan path only and reviews the research design: mechanism hypothesis or principle, prediction or expected output, discriminating test, controls/comparators or limiting cases, evidence route, and execution blockers.
-- **`research-result-analysis`** — independent result-analysis skill used by a fresh separate-context result-analysis subagent. It starts from a plan path only, reconstructs evidence from referenced artifacts, and explains what happened and why through candidate explanations, evidence for/against, procedure/artifact explanations, and live alternatives without writing final claims or decisions.
-- **`quant-research`** — domain extension layered on `research` for time-series and statistically rigorous quantitative R&D. Adds methodology for time-series cross-validation, multiple-testing corrections, leakage detection, and statistical robustness.
+- **`research`** — proposition-first protocol for R&D work across Frascati categories. It manages observations, analyses, Generated doubt, Working proposition, Expected consequence, Proposition status, Derived hypothesis, hypothesis plans, claims, decisions, and reports.
+- **`research-plan-review`** — independent pre-execution review. It starts from a hypothesis plan path only and checks premise, proposition trace, validation method, plan visual, prior-work grounding, and blockers.
+- **`research-result-analysis`** — independent post-execution analysis. It starts from a hypothesis plan path only, reconstructs evidence, explains what happened and why, and returns state-update inputs without writing final claims or decisions.
+- **`quant-research`** — domain extension layered on `research` for time-series and statistically rigorous quantitative R&D.
 
-The core rule: **research-level reproducibility (someone can re-implement from your description) is enforced; experiment-level replicability (someone can rerun your exact code) is the agent's discretion.** This separation, following [Drummond (2009)](https://cogprints.org/7691/7/icmle09.pdf) and [Goodman et al. (2016)](https://www.science.org/doi/10.1126/scitranslmed.aaf5027), keeps agents focused on doing good research rather than on producing perfect env.lock files. Reports record material conditions, not environment locks: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, or collection date only when those conditions affect interpretation. Research scripts still need evidence: stdout is not evidence, so completed runs keep a manifest with `status: completed`, logs, and at least one manifest-listed durable artifact.
+The core rule: **research-level reproducibility is enforced; experiment-level replicability is the agent's discretion.** Reports record material conditions, not environment locks: data identity, split dates, evaluation protocol, major model/tool versions, hardware class, external API/model version, collection date, formal assumptions, and seed variability when they affect interpretation. Research scripts still need evidence: print-only output is incomplete and stdout is not evidence, so completed runs keep a manifest with `status: completed`, logs, and at least one manifest-listed durable artifact. Claim-to-artifact consistency checks are evidence-integrity checks rather than a replacement for methods reproducibility; experiment-level replicability infrastructure is not skill-enforced. Provenance or variability logs are useful but not substitutes for methods reproducibility.
 
-## Who this is for
+## Core design
 
-This plugin is for agents doing R&D work where:
+### Proposition-first lifecycle
 
-- A claim needs to survive scrutiny — alternatives addressed, conditions stated, evidence cited
-- Multiple sessions or agents will share project state — needs interoperable vocabulary
-- A human will read the output and make a decision — needs Z39.18-style structured reports with real figures
-
-Examples of work that triggers the skill:
-
-- ML method research (architecture, training-procedure, evaluation studies)
-- Phenomenon investigations in computational science (chaos systems, simulation experiments)
-- Foundational measurement or resource characterization (datasets, metrics, reference implementations, or other reusable research objects)
-- System/prototype development with quantitative acceptance criteria
-- Quantitative-rigor extensions (time-series statistical evaluation, multiple-testing-aware claims)
-
-It is NOT a backtest engine, experiment tracker, notebook framework, or env-lock manager. It is a **protocol layer** that enforces structure on the narrative — plans, claims, decisions, reports — while leaving the implementation to the agent.
-
-## Core design (v2.7.3)
-
-### R&D categories (Frascati 2015)
-
-Every plan declares one of:
-
-Agent-side R&D eligibility is a lightweight research-recording check. Work should be novel, creative, uncertain, systematic, and transferable and/or reproducible enough that another agent can understand and reuse the record.
-
-| Category | When | Default plan mode | Report shape |
-|---|---|---|---|
-| `basic_research` | New knowledge about underlying foundations, without a particular application or use in view | `exploratory` | Phenomenon → Mechanism → Refined question |
-| `applied_research` | New knowledge directed toward a specific practical aim or objective | `confirmatory` | Objective → Method/procedure → Evidence → Limits |
-| `experimental_development` | Systematic work producing additional knowledge while creating or improving a product/process | `milestone` | System/process → Performance → Limits |
-
-Categories are not a one-way pipeline ([Kline & Rosenberg 1986](https://fenix.iseg.ulisboa.pt/downloadFile/1407508027548318/Kline%20and%20Rosenberg%20(1986)%20An%20overview%20of%20innovation.pdf); [Stokes 1997](https://www.brookings.edu/books/pasteurs-quadrant/)). Cycling between them is normal.
-
-Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`. Theoretical mode is for derivational work where axioms, definitions, and limiting-case checks carry the evidence burden; it is a plan/report mode, not a fourth R&D category.
-
-### Plan-Plan review-Execution-Result analysis-Claim cycle
-
-```
-1. new_plan.py creates plans/{id}_{slug}.md (mode-specific template)
-2. Write Question / Objective. If ideating, use `references/mechanistic_hypothesis_generation.md` to diagnose the situation and choose the hypothesis type before prior-work grounding.
-3. For mechanistic hypothesis-generation work, write the Mechanism hypothesis record and run `check_mechanism_hypothesis_record.py` before planning from the record.
-4. Run a plan-scoped literature survey, then write Prior-work grounding and the Divergence checkpoint before the Plan section.
-5. Write Plan section, starting with a Plan visual so architecture, data/evaluation flow, mechanism, system boundary, variable space, decision flow, or derivation structure is inspectable.
-6. Plan review — dispatch a fresh separate-context plan-review subagent using `research-plan-review` and pass only the plan path. Repair blockers before execution.
-7. git commit. (Plan plus Plan review are time-anchored.)
-8. Execute. Save artifacts under experiments/{plan}/runs/{run_id}/, including run_manifest.json, logs, and at least one manifest-listed non-log durable artifact. Record a mid-execution literature update if an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears.
-9. Write Actual section + Planned-vs-Actual comparison.
-10. Result analysis — dispatch a fresh separate-context result-analysis subagent using `research-result-analysis` and pass only the plan path. The subagent reconstructs evidence and decomposes why the result happened.
-11. Claim — record only the load-bearing claims supported by the evidence and alternatives using the Toulmin-derived structure.
-12. Pick one of 5 iteration branches: NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE.
-13. If human-facing, draft a report.
+```text
+Situation question
+→ observation / analysis
+→ proposition P
+→ expected observation E if P is true
+→ compare observed O with E
+→ decide whether P is contradicted or whether P's required condition is unrealized
+→ derive hypothesis H that preserves, revises, splits, rejects, or realizes a condition of P
+→ predict what should happen if H is true
+→ Hypothesis plan
+→ Plan review
+→ Execution
+→ Result analysis
+→ hypothesis status update
+→ proposition status update
 ```
 
-The timing boundary is explicit: Plan and Plan review record pre-result commitments such as predictions, measures, controls/comparators, planned discriminating test, evidence route, artifacts, and stop / branch criteria. They do not explain why an unobserved result happened. Result analysis records post-result explanations only after evidence exists.
+Question generation is not free-form ideation. It starts from material and a contrast:
 
-### Prior-work grounding
+- `expectation-break`
+- `constraint-joint-fit`
+- `required-component-doubt`
+- `trace-meaning`
+- `static-to-process`
+- `analogy-transfer`
+- `search-or-evaluation-bottleneck`
+- `representation-change`
 
-Every new plan records first-class prior-work grounding before the Plan section. The required depth is bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol when applicable, and known limitations. It is not optional just because no novelty claim is made.
+Each analysis records the Generated doubt, Working proposition, Expected consequence, observed match/break/missing condition, Proposition status, and only then a Derived hypothesis candidate. Material absence means no proposition or hypothesis: collect observations, measurements, constraints, comparators, traces, prior-work facts, theoretical tensions, or bottleneck evidence first.
 
-Prior-work grounding starts with a plan-scoped literature survey before the Plan section. The plan records survey evidence: search date, queries or source names, selection rationale, negative findings, and any retrieval-unavailable constraint. Retrieval-unavailable is not a survey bypass; it needs attempted source/tool, failure evidence, and claim-scope narrowing. Unknown prior work is a post-survey constraint, not a reason to skip search.
+Hypothesis candidates are typed; a derived hypothesis may be predictive / performance, mechanistic, causal / intervention, descriptive / characterization, theoretical, or mixed.
 
-Projects use `literature/{papers.md,positioning.md}`. `positioning.md` records how the work stands on prior work: grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. Differences or novelty can be recorded there when claimed, but novelty is not the default purpose.
+### Proposition status
 
-Plans also record a citation-use map: each cited work must name how it is used in the plan, such as question framing, mechanism prior, baseline, comparator, metric, evaluation protocol, theoretical foundation, limitation, contradictory evidence, or claim-scope boundary. The literature files keep the project-level role union; the plan's citation-use map is the plan-specific source of truth.
+Propositions are not claims. They are long-lived research state.
 
-Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. That is separate from the plan-scoped prior-work grounding every plan needs.
+Statuses:
 
-### Hypothesis generation and typed records
+- `open`
+- `supported`
+- `contradicted`
+- `unrealized-condition`
+- `under-specified`
+- `split-needed`
+- `split`
+- `closed`
 
-When a user asks for research ideas, research directions, hypothesis candidates, or "what should we try next," the `research` skill uses `references/mechanistic_hypothesis_generation.md` before prior-work grounding. The reference starts with research situation diagnosis, separates available and missing material, and chooses the hypothesis type: predictive / performance, mechanistic, causal / intervention, descriptive / characterization, theoretical, or mixed with a declared primary type.
+Derived hypotheses use:
 
-The verification frame is hypothetico-deductive: state a grounded hypothesis, derive observable predictions or expected effects, then compare those predictions with evidence. Mechanistic hypotheses are narrower: they claim why or how a phenomenon occurs through entities, activities, process, organization, or mechanism of action. They use a Mechanism hypothesis record with mechanistic analysis, competing mechanism, discriminating prediction, minimal test, required evidence, and `commit / park / kill`.
+- `candidate`
+- `ready-for-plan`
+- `tested-supported`
+- `tested-contradicted`
+- `tested-partial`
+- `tested-inconclusive`
+- `parked`
+- `killed`
 
-Information gaps normally force `park`, not a more confident idea. Method names, paper names, analogies, metric swaps, and model-size changes are intervention fragments until they become a grounded typed hypothesis with predictions or expected observations.
+## Project layout the skill produces
 
-### Assumption audit and evaluator-grounded refinement
+When an agent runs `scripts/new_project.py`:
 
-v2.3.0 adds `references/assumption_audit.md` between observation discovery and hypothesis synthesis. It surfaces background assumptions of the reference model being challenged, separate from the Divergence checkpoint's anchoring audit on imported prior work. The audit records load-bearing assumptions, downstream checks, blind-spot catalog entries tied to candidate mechanisms and claim scope, reference-class forecasts, and named constraints for hypotheses that cannot currently be evaluated.
-
-Evaluator-grounded refinement now lives in `references/mechanistic_hypothesis_generation.md`. After a failed test, evaluator, derivation, or observation result, the result becomes a new observation: record which explanation, prediction, comparator, threshold, or mechanism was ruled out, which alternatives remain live, and update the typed hypothesis-generation record instead of returning to a new idea list. Update a Mechanism hypothesis record only when the selected hypothesis type is mechanistic.
-
-Executable feedback must persist to run artifacts. A command that only prints a fitness number is not valid evaluator feedback until the run directory contains `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and a durable artifact such as `outputs/fitness.json`, `tables/fitness.csv`, or an `intermediate/` diagnostic.
-
-### Divergence checkpoint
-
-Every plan now records a pre-execution checkpoint before committing to a route:
-
-- Approach portfolio: the chosen approach plus meaningfully different alternatives
-- Anchoring audit: prior results, prior approaches, or convenient datasets being imported as assumptions
-- Research positioning: whether the work stands as a new question, mechanism, data, metric, evaluation protocol, method, system, replication, or baseline strengthening
-- Disconfirming evidence: observations that would trigger REFINE / ADJACENT / PARK / CLOSE
-- Commitment decision: why this route is selected now, and what skipped divergence limits later claims
-
-This keeps agents from silently accepting "just improve last time's best approach" as a complete research plan.
-
-### Plan review subagent
-
-Before execution, the plan-review handoff uses `research-plan-review` and passes only the plan path. The reviewer is a stop gate for plans that should not run: it first checks whether the hypothesis rests on a wrong, unsupported, or unverified premise, then checks whether the hypothesis validation method can actually test the hypothesis and distinguish it from plausible alternatives. Mechanically runnable, cheap, deadline-driven, or demo-visible plans still receive `block_execution` when the premise or validation route is broken. It returns `execute_as_written`, `revise_before_execution`, or `block_execution`.
-
-This verdict asymmetry is intentional. Plan review happens before execution, so it may recommend whether the design is informative enough to run. Result analysis happens after evidence exists and before claims / decisions, so it explains what happened and why but does not assess claim readiness, deployment, or iteration decisions.
-
-### Result analysis subagent
-
-The result-analysis handoff uses `skills/research/references/result_analysis_subagent_prompt.md`. The prompt passes only the plan path; the subagent treats the plan as the only starting context and reconstructs necessary evidence from referenced artifacts. Parent-agent summaries, expected conclusions, and private execution notes are not inputs. Missing or ambiguous references are reported as `context_missing`.
-
-The output is a `## Result analysis` section with evidence traced, what happened, candidate explanations, evidence for and against each explanation, procedure/artifact explanations, and alternatives still live. It is not a claim record and not an iteration decision.
-
-### Claim structure (Toulmin-derived, no numeric ladder)
-
-```yaml
-- claim: (specific assertion with metric, magnitude, conditions)
-  evidence: (file:line / value / artifact / citation)
-  alternatives_not_excluded: [...]    # empty list claims exhaustion
-  conditions_tested: (ranges, datasets, parameters)
-  conditions_not_tested: [...]        # empty list claims full coverage
-```
-
-Strength is read off the contents of `alternatives_not_excluded` and `conditions_not_tested`. There is no A0-A5, no TRL, no GRADE — those single-number ladders conflate causal strength, scope, and replication into one digit and invite overclaim by self-rating.
-
-### Analysis discipline (EDA + result analysis + depth stops)
-
-`references/analysis.md` provides:
-
-- The modern EDA standard pass (Tukey 1977 + Wickham): tidy → distribution → covariation → leakage probe
-- The claim disclosure floor for ML/quant method claims: leakage / ≥3 seeds for stochastic comparisons / ablation for component-causality claims / slice / calibration / perturbation / error analysis when applicable (per [Mitchell et al. 2019 Model Cards](https://arxiv.org/abs/1810.03993), [Bouthillier 2021](https://proceedings.mlsys.org/paper_files/paper/2021/file/0184b0cd3cfb185989f858a1d9f5c1eb-Paper.pdf), [Ribeiro 2020 CheckList](https://aclanthology.org/2020.acl-main.442.pdf))
-- Depth stop conditions (Tukey's compromise, depth-to-defend-claim, disclosure floor)
-- Observation → Interpretation → Claim staging with [Pearl's Ladder of Causation](https://causalai.net/r60.pdf)
-- HARKing prevention via [Gelman-Loken Garden of Forking Paths](https://sites.stat.columbia.edu/gelman/research/unpublished/p_hacking.pdf)
-
-For stochastic work, seed variability matters more than a single fixed seed. The skill asks agents to report seed count, dispersion, and failures when a claim depends on stochastic execution. Claim-to-artifact consistency checks are evidence-integrity checks: reported values must match the cited artifacts, but that is an audit of evidence honesty rather than a replacement for methods reproducibility.
-
-### Reports for humans
-
-Z39.18-derived, paper-grade report structure with required Summary, Background, Related Work, Methods & Conditions or System description, Results/Observations/Performance, Ablation / Sensitivity, Discussion, Limitations, and References sections. Sections that do not apply still appear with a short `Not applicable:` rationale. Reports must not include next-action or next-hypothesis sections. v2.4.0 adds Figure-as-argument guidance and a Statistical reporting minimum for numeric evidence. Figures must actually exist — `scripts/check_report.py` verifies references resolve and rejects numeric outcome sections that omit sample size, variance/dispersion, CI, effect size, significance, or an explicit non-applicability reason. Reports cite the plan for full re-implementation detail rather than duplicating Methods content.
-
-## Repository Layout
-
-```
-research-skill/
-├── .agents/plugins/marketplace.json
-├── .claude-plugin/{plugin.json,marketplace.json}
-├── .codex-plugin/plugin.json
-├── skills/
-│   ├── research/
-│   │   ├── SKILL.md
-│   │   ├── references/
-│   │   │   ├── categories/{basic_research,applied_research,experimental_development}.md
-│   │   │   ├── analysis.md
-│   │   │   ├── claim_structure.md
-│   │   │   ├── mechanistic_hypothesis_generation.md
-│   │   │   ├── ideation.md                 # deprecated stub
-│   │   │   ├── iteration_loop.md
-│   │   │   ├── result_analysis_subagent_prompt.md
-│   │   │   ├── rd_plan.md
-│   │   │   ├── report_format.md
-│   │   │   └── literature_review.md
-│   │   ├── assets/{project,plan,report}/*.template
-│   │   └── scripts/{new_project,new_plan,new_run,check_run_artifacts,check_claims,check_report,draft_report}.py
-│   ├── research-plan-review/
-│   │   └── SKILL.md
-│   ├── research-result-analysis/
-│   │   ├── SKILL.md
-│   └── quant-research/
-│       ├── SKILL.md
-│       ├── references/shared/
-│       └── scripts/
+```text
+{project-root}/
 ├── README.md
-└── LICENSE
+├── project_state.md
+├── decisions.md                         # project-wide decisions only
+└── propositions/
+    └── P001_slug/
+        ├── proposition.md
+        ├── observations.md
+        ├── analyses.md
+        ├── decisions.md                 # proposition decisions
+        └── hypotheses/
+            └── H001_slug/
+                ├── hypothesis.md
+                ├── plan.md              # hypothesis plan
+                ├── experiments/
+                │   ├── code/
+                │   ├── configs/
+                │   ├── notebooks/
+                │   └── runs/
+                ├── reports/
+                └── decisions.md         # hypothesis decisions
 ```
+
+`lib/`, `data/`, and `literature/` may exist when the project needs shared code, data, or project-level prior-work state, but the research lifecycle is organized by propositions and derived hypotheses.
+
+## Bundled scripts
+
+`skills/research/scripts/`:
+
+| script | purpose |
+|---|---|
+| `new_project.py` | Initialize proposition-first project structure |
+| `new_proposition.py` | Create `propositions/Pxxx_slug/` with proposition, observations, analyses, decisions, and hypotheses directory |
+| `new_hypothesis.py` | Create `hypotheses/Hxxx_slug/` with hypothesis ledger, hypothesis plan, experiments, reports, and decisions |
+| `new_run.py` | Create durable run evidence scaffold under a derived hypothesis |
+| `check_run_artifacts.py` | Reject print-only runs and verify manifest/logs/non-log artifacts |
+| `check_mechanism_hypothesis_record.py` | Legacy checker for older mechanism-record plans; current flow uses proposition analyses and hypothesis ledgers |
+| `check_claims.py` | Verify claim record structure |
+| `check_report.py` | Verify report contract |
+| `draft_report.py` | Initialize a report under a derived hypothesis |
+
+There is no standalone `new_plan.py`; top-level plans are the old lifecycle.
+
+## Hypothesis plan
+
+`propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md` contains:
+
+- Proposition and hypothesis trace
+- Prior-work grounding
+- Divergence checkpoint
+- Plan visual for architecture, data/evaluation flow, mechanism, system boundary, decision flow, or derivation structure
+- Method and evidence route
+- Plan review
+- Actual execution
+- Planned vs Actual
+- Result analysis
+- Claims
+- Result feedback
+
+The trace must include Situation question context, Generated doubt, Working proposition, Expected consequence, Proposition status, Derived hypothesis, and Hypothesis plan link. The plan may summarize proposition history but must not rewrite it.
+
+Prior-work grounding uses `literature/{papers.md,positioning.md}` when project-level prior-work state is useful.
+
+Mid-execution literature update: if an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears, record the update before claim-bearing execution continues.
+
+## Review and result gates
+
+Before execution, `research-plan-review` checks wrong, unsupported, or unverified premise risk, the hypothesis validation method, and whether the plan actually tests the derived hypothesis produced by source analysis or drifted into a convenient different question. Broken premise or invalid validation method returns `block_execution`.
+
+After execution, `research-result-analysis` explains what happened and why from the plan path and artifacts. It does not choose proposition decisions. The parent agent then updates:
+
+1. `hypothesis.md`
+2. hypothesis `decisions.md`
+3. parent `proposition.md`
+4. proposition `decisions.md`
+
+## Reports
+
+Reports are paper-grade standalone evidence artifacts under each derived hypothesis. They include Related Work, Theory / Formulation, Methods & Conditions, Results or Observations, Ablation / Sensitivity, Discussion, Limitations, and References. Sections that do not apply still appear with `Not applicable:` and a reason.
 
 ## Installation
 
-### Claude Code: from a Git repository
+### Claude Code
 
 ```text
 /plugin marketplace add https://github.com/komo135/research-skill
 /plugin install research@research-skill
 ```
 
-After installation the skills are available as `research`, `research-plan-review`, `research-result-analysis`, and `quant-research`.
-
-### Claude Code: local development
-
-```bash
-claude --plugin-dir /path/to/research-skill
-```
-
-### Codex: from GitHub
+### Codex
 
 ```bash
 codex plugin marketplace add https://github.com/komo135/research-skill
@@ -209,291 +177,6 @@ Enable in `~/.codex/config.toml`:
 [plugins."research@research-skill"]
 enabled = true
 ```
-
-## Project layout the skill produces
-
-When an agent runs `scripts/new_project.py` to initialize an R&D project:
-
-```
-{project-root}/
-├── README.md, project_state.md, decisions.md
-├── plans/{id}_{slug}.md            # research narrative (plan + actual + claims + decision)
-├── literature/{papers.md,positioning.md}
-├── lib/                             # shared curated code (tests required)
-├── experiments/{plan}/              # per-plan isolation
-│   ├── code/ configs/ notebooks/
-│   └── runs/{plan}__{n}__seed{N}/   # run_manifest, logs, and durable artifacts
-├── data/{raw,processed}/
-└── reports/{id}_{slug}/             # human-facing snapshots
-    ├── report.md
-    ├── figures/ tables/
-```
-
-`lib/` is curated and shared; `experiments/{plan}/code/` is the plan's free zone. Cross-plan imports are forbidden — promote to `lib/` with a `decisions.md` entry first.
-
-## Bundled scripts
-
-`skills/research/scripts/`:
-
-| script | purpose |
-|---|---|
-| `new_project.py` | Initialize project directory with canonical layout |
-| `new_plan.py` | Create a plan from mode-specific template, capture git SHA |
-| `new_run.py` | Create a run directory with manifest, logs, and artifact folders |
-| `check_run_artifacts.py` | Reject print-only runs and verify manifest/logs/non-log artifacts |
-| `check_mechanism_hypothesis_record.py` | Verify the Mechanism hypothesis record diagnosis/lens/analysis/discriminator/decision contract |
-| `check_claims.py` | Verify claim record structure (5 required fields, vagueness heuristics) |
-| `check_report.py` | Verify report contract (figures resolve, required sections, non-placeholder) |
-| `draft_report.py` | Initialize a report directory from a plan |
-
-`skills/quant-research/scripts/`:
-
-| script | purpose |
-|---|---|
-| `purged_kfold.py` | Purged k-fold CV for time-series with overlapping labels |
-| `cpcv.py` | Combinatorial Purged Cross-Validation |
-| `walk_forward.py` | Walk-forward time-series validation |
-| `multiple_testing.py` | Bonferroni / Benjamini-Hochberg / Romano-Wolf corrections |
-| `leakage_check.py` | Detect train/test feature leakage and look-ahead bias |
-| `sanity_checks.py` | Standard pre-claim sanity tests |
-| `sensitivity_grid.py` | Parameter sensitivity grid for robustness battery |
-
-## Status
-
-**Version 2.7.3** — removes next-action / next-hypothesis queues from plan/report-facing outputs so reports stay evidence artifacts.
-
-<details>
-<summary>Changelog</summary>
-
-### v2.7.3 (current) — no report-side next-work queues
-
-Removes next-action and next-hypothesis queues from plan/report-facing outputs. Reports should preserve what was done, what was found, the interpretation, limitations, and sources; they should not carry future-work queues that pollute later hypothesis generation.
-
-**Added / changed**
-
-- Removed `Next action` from report templates and report contract documentation.
-- Removed renamed next-work queues such as unresolved discriminator/current-blocker style report output.
-- Updated metadata so the installed plugin description no longer advertises next-analysis queues.
-
-### v2.7.2 — typed-record and plan-visual hardening
-
-Fixes review blockers in the v2.7 protocol so predictive / performance, causal / intervention, descriptive, and theoretical hypotheses stay typed records unless they explicitly make why/how mechanism claims.
-
-**Added / changed**
-
-- Updated the hypothesis-generation checker to accept valid non-mechanistic typed records and require fair comparators for predictive / performance records.
-- Aligned README, skill instructions, plan schema, templates, and `new_plan.py` around typed hypothesis-generation records instead of Mechanism-record-only wording.
-- Required `### Plan visual` as the first Plan subsection and added a `Plan visual` research-design check to plan reviews.
-- Reframed evaluator-grounded refinement as typed-record refinement after failed tests, evaluators, derivations, or observations.
-- Narrowed component-contribution classification so only why/how contribution claims are mechanistic.
-
-### v2.7.1 — premise-gated plan review
-
-Tightens `research-plan-review` so reviewers stop plans built on wrong, unsupported, or unverified premises, or on validation methods that cannot test the stated hypothesis.
-
-**Added / changed**
-
-- Reframed plan review as a pre-execution stop gate for broken premises and invalid hypothesis validation methods.
-- Updated plan review output templates to center `Premise check`, `Hypothesis validation method`, and `Stop decision`.
-- Preserved narrowed observation, measurement-construction, and exploratory plans when their claim scope is explicit.
-- Clarified that not every hypothesis is mechanistic. Hypothesis generation now chooses a hypothesis type before requiring a Mechanism hypothesis record, and uses hypothetico-deductive prediction/evidence structure for verification.
-- Required `Plan visual` in research plans so structured designs are not left as prose-only descriptions.
-
-### v2.7.0 — typed hypothesis generation and mechanistic hypothesis records
-
-Replaces active research idea generation with a typed hypothesis-generation record. Mechanistic hypotheses use a mechanism record that makes assumptions, analysis lenses, competing mechanisms, predictions, tests, evidence needs, and commit / park / kill decisions explicit before planning.
-
-**Added / changed**
-
-- Replaced the active `Idea portfolio` workflow with the hypothesis-generation workflow.
-- Added `skills/research/references/mechanistic_hypothesis_generation.md` as the primary idea-generation reference. The filename is historical; the reference now distinguishes predictive / performance, mechanistic, causal / intervention, descriptive / characterization, and theoretical hypotheses.
-- Added `skills/research/scripts/check_mechanism_hypothesis_record.py` and removed the old idea-portfolio checker.
-- Deprecated the old ideation references as compatibility stubs that redirect to mechanistic hypothesis generation.
-- Updated the skill instructions, plan templates, and README contract to require hypothesis type selection before planning from research ideas, with Mechanism hypothesis records only for mechanistic hypotheses.
-- Hardened the checker for candidate-list preambles, per-lens fields, primary/auxiliary lens counts, and blocked/commit consistency.
-
-### v2.6.2 — pre-result planning boundary
-
-Clarifies that plans and plan review contain commitments made before results exist, while Result analysis contains explanations made after evidence exists.
-
-**Added / changed**
-
-- Defined pre-result commitments: question/objective, mechanism conjecture or principle, prediction or expected observation, primary measure, controls/comparators, planned discriminating test, evidence route, artifact plan, and stop / branch criteria.
-- Defined post-result explanations: what happened, candidate explanations, evidence for/against, procedure / artifact explanations, and alternatives still live.
-- Replaced the detailed Result analysis form in plan templates with an explicit post-execution placeholder so agents do not fill why-analysis before results exist.
-- Updated Plan review language to check whether a planned discriminating test can separate plausible alternatives without explaining an unobserved result.
-
-### v2.6.1 — plan-scoped literature survey evidence
-
-Makes prior-work grounding first-class in every research plan before execution.
-
-**Added / changed**
-
-- Required Survey evidence before the Plan section: search date, queries/sources, selection rationale, negative findings, and retrieval-unavailable constraints.
-- Added a Citation-use map so each cited work states its concrete role in the plan, instead of appearing only in a bibliography.
-- Defined `literature/papers.md` and `literature/positioning.md` `Used in plan as` fields as a project-level role union; the plan's Citation-use map is the plan-specific source of truth.
-- Made retrieval-unavailable constraints verifiable: attempted source/tool, failure evidence, and claim-scope narrowing are required.
-- Added Mid-execution literature updates for unfamiliar methods, unexpected results, new comparators, contradictions, or missing-baseline signals.
-- Made missing or merely formal Survey evidence / Citation-use mapping a Plan review blocker.
-
-### v2.6.0 — plan review and explanation-centered result analysis
-
-Splits pre-execution design review and post-execution result analysis into the two mandatory fresh separate-context gates around execution. The older generation handoff has since been superseded by mechanistic hypothesis generation.
-
-**Added / changed**
-
-- Added `research-plan-review` for plan-path-only review before execution.
-- Removed the older completion gate from the active lifecycle.
-- Removed the Codex-specific result-analysis agent definition; result-analysis is now skill / prompt-template driven across agent runtimes.
-- Refocused `research-result-analysis` from readiness verdicts to explaining why the result happened: candidate explanations, evidence for/against, procedure/artifact explanations, and live alternatives.
-- Kept document checks as regression guards; behavioral quality is validated with pressure scenarios against the skills.
-- Reworked the older generation flow; this has since been superseded by mechanistic hypothesis generation.
-
-### v2.5.0 — independent result analysis quality gates
-
-Split result analysis into a dedicated skill and made analysis quality explicitly reviewable in the previous lifecycle.
-
-**Added / changed**
-
-- Added `research-result-analysis` as a separate skill for fresh separate-context analysis from the plan path only.
-- Added `skills/research/references/result_analysis_subagent_prompt.md` so the parent research skill passes only the plan path and records the returned `## Result analysis` section before the previous review gate.
-- Added readiness verdicts: `ready`, `not_ready`, and `invalid_evidence`; superseded in v2.6.0 by explanation-centered analysis.
-- Added an analysis quality gate: artifact-faithful, arithmetically checked, claim-fit checked, depth-calibrated, and reviewable.
-- Clarified that readiness is not a release decision and must not be translated into ship, CLOSE, NEXT_STEP, REFINE, ADJACENT, or PARK.
-
-### v2.4.0 — theoretical, iterative, report, and claim additions
-
-Extends the v2 research protocol without adding new R&D categories.
-
-**Added / changed**
-
-- Added `theoretical` plan mode for derivational work using axioms, definitions, and limiting-case checks.
-- Added the now-deprecated substrate-driven generation contract, later replaced by mechanistic hypothesis generation.
-- Added the now-deprecated evaluator-ranked generation loop, later replaced by evaluator-grounded refinement in the mechanism record protocol.
-- Expanded report format with paper-grade Theory / Formulation, Related Work, Ablation / Sensitivity, Discussion, and References sections.
-- Added Figure-as-argument guidance and a Statistical reporting minimum for numeric evidence.
-- Clarified that theoretical support is a mode/report shape under the existing `basic_research`, `applied_research`, and `experimental_development` categories.
-
-### v2.3.0 — assumption audit for challenged reference models
-
-Adds a pre-synthesis audit for assumptions behind the reference model being challenged.
-
-**Added / changed**
-
-- Added `references/assumption_audit.md` between observation discovery and hypothesis synthesis.
-- Distinguished background assumption audit from the Divergence checkpoint's anchoring audit on imported prior work.
-- Added load-bearing assumption selection with downstream-check discipline.
-- Added blind-spot catalog entries, manual reference-class forecasting, and constraint-naming for hypotheses with no current evaluator.
-
-### v2.2.0 — Frascati definitions and research lifecycle
-
-Clarifies R&D category definitions and makes hypothesis generation explicit.
-
-**Added / changed**
-
-- R&D category definitions now follow OECD Frascati Manual 2015 wording while remaining scoped to agent research work, not corporate activity.
-- Added a research lifecycle from `Observation discovery` through `Decision`.
-- Added `Observation discovery pass` before hypothesis synthesis, with observation sources including empirical, literature, failure-mode, tension, baseline, and user/problem observations.
-- Split prior work into two roles: references can supply observations, then later ground hypothesis-generation records after hypothesis rationales exist.
-- Added a hypothesis synthesis chain: source observation, mechanism conjecture, proposed intervention, predicted effect, counter-hypothesis, and minimal disconfirming test.
-- Added approach transition criteria for staying with the current approach, `REFINE`, `ADJACENT`, `PARK`, and `CLOSE`.
-
-### v2.1.0 — superseded research ideation protocol
-
-Added a research ideation protocol that separated generation from grounding and execution. This protocol is now superseded by mechanistic hypothesis generation.
-
-**Added / changed**
-
-- Earlier versions started with de-anchored candidate generation before prior-work grounding.
-- Later versions replaced this with research situation diagnosis, analysis lenses, competing hypotheses, discriminating predictions, minimal tests, and `commit / park / kill`.
-- Prior-work grounding remains mandatory before execution.
-
-### v2.0.4 — prior-work grounding and positioning
-
-Reframes literature review from novelty/differentiation toward prior-work grounding for every plan.
-
-**Changed**
-
-- Every new plan now requires a Prior-work grounding section before the Plan section.
-- Required grounding depth is bounded but sufficient for the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations.
-- Replaced the project-level differentiation file with `literature/positioning.md`, focused on how the work stands on prior work.
-- Comprehensive literature survey remains required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims, separate from plan-scoped grounding.
-- Removed the no-novelty loophole for unknown prior work; unknown prior work must be recorded as a named constraint that narrows or blocks relevant claims.
-
-### v2.0.3 — reproducibility vocabulary and multiple-testing fixes
-
-Separates methods reproducibility from audit provenance and evidence-integrity checks, and fixes multiple-testing correction behavior in the quant-research extension.
-
-**Changed**
-
-- Reports and plans now describe material conditions that affect interpretation, not environment locks or commit hashes in prose.
-- Provenance pointers and claim-to-artifact checks are framed as audit/evidence-integrity controls rather than sources of methods reproducibility.
-- Fixed seeds are treated as debugging/audit aids; stochastic claims should report seed count, dispersion, and failed seeds when material.
-
-**Fixed**
-
-- Holm adjusted p-values are now monotone step-down values.
-- Bonferroni, Holm, and Benjamini-Hochberg reject adjusted p-values equal to `alpha`.
-
-### v2.0.2 — category boundary clarification
-
-Clarifies how agents choose Frascati R&D categories without changing plugin identity.
-
-**Changed**
-
-- R&D categories are chosen by a plan's primary purpose, intended use, expected output, and uncertainty type, not by source or origin alone.
-- `Innovation` is not treated as a primary R&D category label; publication-time contribution is separated from later adoption, diffusion, or social value.
-- Project/program category mixing remains valid, while each plan still declares exactly one category and one mode.
-- Experimental-development guidance now directs load-bearing methods claims to an `ADJACENT` applied-research plan with `confirmatory` mode.
-
-### v2.0.1 — divergence and review gate hardening
-
-Strengthens v2 research discipline without changing plugin identity.
-
-**Added / changed**
-
-- Required Divergence checkpoint before execution: approach portfolio, anchoring audit, research positioning, disconfirming evidence, and commitment decision.
-- Added stricter result-promotion discipline in the older lifecycle; this mechanism was later replaced by result analysis plus claim-structure checks.
-- Quant time-series test-set reuse is treated as a reliability failure requiring protocol reopening and fresh evaluation, not a weaker writeup.
-
-### v2.0.0 — agent-driven R&D redesign
-
-Complete redesign. No backward compatibility with v1.x.
-
-**Added**
-
-- 3 Frascati categories first-class: `basic_research`, `applied_research`, `experimental_development`
-- Plan modes initially: `exploratory`, `confirmatory`, `milestone`; v2.4.0 adds `theoretical`
-- Iteration FSA with 5 explicit branches: `NEXT_STEP` / `REFINE` / `ADJACENT` / `PARK` / `CLOSE`
-- Divergence checkpoint before execution to expose alternatives, anchoring risk, research positioning, and disconfirming evidence before committing to a plan
-- Result-promotion discipline before claim/decision/report promotion, later superseded by result analysis plus claim-structure checks
-- Toulmin-derived claim structure (5 required fields, no numeric ladder)
-- `references/analysis.md` covering EDA, result analysis, depth stop conditions, and Observation→Interpretation→Claim staging — backed by Tukey 1977, Wickham, Mitchell 2019 Model Cards, Gebru 2021 Datasheets, Ribeiro 2020 CheckList, Guo 2017 calibration, Bouthillier 2021 variance, Pearl Ladder of Causation, Gelman-Loken forking paths, Toulmin 1958
-- Lightweight Amendment pattern: `REFINE` appends an Amendment rather than rewriting the Plan
-- Plan-canonical Methods: report's Methods section summarizes and cites the plan rather than duplicating
-- `scripts/check_report.py` verifying figure references resolve and required sections exist
-- `lib/` vs `experiments/{plan}/code/` separation with explicit promotion contract
-- Quant-research repositioned as time-series/statistical-rigor extension over `research`, applicable beyond finance
-
-**Removed**
-
-- Pure Research workstream (PR/FAQ, IMRAD, explanation_ledger) — Amazon-style business artifact not aligned with Frascati basic-research practice
-- A0-A5 analysis depth ladder — homemade, not standard, conflated dimensions
-- L2/L3 report classification — non-standard vocabulary
-- Separate `prereg/` directory — preregistration internalized into `plans/{id}.md` with git as time-anchor
-- Heavy `review/` pipeline — replaced by `check_claims.py` + `check_report.py` plus the iteration_loop FSA
-- Finance-specific quant-research surface (Sharpe-derivative scripts, portfolio construction, trading-specific references)
-- Experiment-level replicability infrastructure (env locks, commit pinning, seed databases) — explicitly the agent's discretion, not skill-enforced. When present, these are provenance or variability logs, not substitutes for methods reproducibility.
-
-**Design rationale**
-
-This release is the result of a TDD pass on the skill: pressure scenarios run against baseline (no skill) revealed systemic gaps in vocabulary use, claim structuring, and state-file maintenance; the new skill closes those gaps with minimum machinery. External methodology survey informed every non-trivial design choice — see citations throughout `references/`.
-
-### v1.1.10 and earlier
-
-See git history for the prior workstream-based design (`pure_research`, `review/`, `A0-A5`, etc.) — replaced wholesale in v2.0.0.
-
-</details>
 
 ## License
 

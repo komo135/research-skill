@@ -1,83 +1,40 @@
 ---
 plan_id: <id>
 slug: <slug>
+parent_proposition: <parent_proposition_id>
+parent_proposition_path: propositions/<parent_proposition_slug>/proposition.md
+source_analysis: <source_analysis>
+hypothesis_id: <hypothesis_id>
+hypothesis_path: propositions/<parent_proposition_slug>/hypotheses/<hypothesis_id>_<hypothesis_slug>/hypothesis.md
 category: <category>
 mode: theoretical
 status: planned
 created_at: YYYY-MM-DD
-created_commit: <git sha — auto-filled by new_plan.py>
+created_commit: <git sha — auto-filled by new_hypothesis.py>
 last_updated: YYYY-MM-DD
 ---
 
 # <Plan title>
 
-## Question / Objective
+## Proposition and hypothesis trace
 
-<One paragraph stating what is to be proved, derived, bounded, or characterized, and why the result matters.>
-
-## Hypothesis generation
-
-<If the plan began with an already chosen objective, write `Not applicable: objective already chosen.` If the plan began from research ideas, research directions, hypothesis candidates, or "what should we try next," use `references/mechanistic_hypothesis_generation.md`, fill the diagnosis, choose the hypothesis type, and fill the type-specific record. The mechanism-only subsections are required when the plan began from research ideas and the chosen hypothesis type is mechanistic; otherwise write `Omitted: hypothesis type is <type>; no mechanism claim is being made.` This does not replace Survey evidence.>
-
-### Research situation diagnosis
-
-- Available material: <successes, failures or limits, lineage, evaluation or measurement, constraints, unknowns, observable quantities, comparators, and counterfactuals>
-- Missing material: <observations, reproduced failures, baselines, evaluator, measurement definitions, counterfactuals, prior-work grounding, or minimal model>
-- Why hypothesis generation is allowed or blocked: <allowed because material supports an observable prediction or expected observation / hypothesis generation is blocked because named material is missing>
-- Hypothesis type: <predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical | mixed with primary type>
-
-### Type-specific hypothesis record
-
-- Hypothesis type: <predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical | mixed with primary type>
-- Situation-grounding: <observations, analysis, prior result, failure trace, constraint, theory, or prior work that produced the hypothesis>
-- Hypothesis statement: <one falsifiable or supportable statement>
+- Parent proposition: <parent_proposition_id> — <parent_proposition_title>
+- Source observations: propositions/<parent_proposition_slug>/observations.md
+- Source analysis: propositions/<parent_proposition_slug>/analyses.md#<source_analysis>
+- Generated doubt: <copy the generated doubt from the source analysis>
+- Working proposition: <copy the working proposition from the source analysis>
+- Expected consequence: <copy the expected consequence from the source analysis>
+- Proposition status: <source_status>
+- Derived hypothesis: <hypothesis_statement>
 - Prediction / expected observation: <observable result expected if the hypothesis is useful>
-- Primary evidence route: <metric, evaluator, comparison, measurement, derivation, or observation route>
-- Fair comparator or baseline: <required for predictive / performance claims; otherwise `Not applicable` with reason>
-- Support threshold: <what evidence would support proceeding>
-- Rejection / park condition: <what evidence or missing material would reject or park the hypothesis>
-- Mechanism claim included: <yes only if the final claim asks why/how through entities, activities, process, organization, or mechanism of action; otherwise no>
-
-### Analysis lenses considered
-
-<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; analysis lenses are not required because no mechanism claim is being made.`>
-
-- Lens: <Success mechanism / Failure dynamics / Lineage-difference / Center-auxiliary inversion / Problem-form transformation / Measurement and evaluation / Constraint relocation / Sparse-information / Cross-domain mechanism transfer>
-  - What it would inspect: <process, evidence, or constraint inspected>
-  - What it may miss: <blind spot of this lens>
-  - Use decision: <primary / auxiliary / not used with reason>
-
-### Adopted analysis lenses
-
-<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; no mechanism lenses adopted.`>
-
-- Primary lens: <exactly one lens>
-- Auxiliary lenses: <0-2 lenses, or None with reason>
-- Reason: <why these lenses best separate the live explanations>
-
-### Mechanistic analysis
-
-<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; no mechanism explanation is being tested.`>
-
-- Observation: <success, failure, limit, constraint, or measurement mismatch>
-- Analysis lens used: <primary lens plus auxiliaries when used>
-- Mechanistic interpretation: <information flow, gradient flow, search, measurement, representation, constraint, state transition, or decision-coupling explanation>
-- Assumptions exposed: <load-bearing assumptions required for this interpretation>
-- What would be different if this interpretation is true: <observable contrast>
-
-### Mechanism hypothesis record
-
-<Mechanistic only. For non-mechanistic hypotheses, write `Omitted: hypothesis type is <type>; no Mechanism hypothesis record.`>
-
-- Hypothesis: <cause, condition, and expected change>
-- Competing hypothesis: <another mechanism explaining the same observation>
-- Discriminating prediction: <how outcomes differ between hypothesis and competing hypothesis>
-- Minimal test: <smallest experiment, analysis, counterexample, simplified model, measurement, evaluator, or derivation check>
-- Required evidence: <artifact, comparison, measurement, survey evidence, or observation required before plan execution claims advance>
-- Decision: <commit / park / kill>
-- Reason: <why this decision follows; not final until Survey evidence exists; section order is not permission to finalize commit before Survey evidence>
+- Hypothesis type: <hypothesis_type>
+- Decision threshold: <if confirmatory, support/reject threshold; otherwise update criterion>
+- Proposition status options: supported | contradicted | unrealized-condition | under-specified | split-needed
+- Hypothesis ledger: hypothesis.md
 
 ## Prior-work grounding
+
+Bounded but sufficient prior-work grounding for the parent proposition, question/objective, inherited assumptions, method choice, controls/comparators, baselines/evaluation protocol, and known limitations. This section does not replace Survey evidence. Section order is not permission; a commit is not final until Survey evidence exists.
 
 ### Survey evidence
 
@@ -86,61 +43,30 @@ last_updated: YYYY-MM-DD
 - Selection rationale: <why included papers matter and what near misses were excluded>
 - Negative findings: <missing baselines, failed comparator searches, contradictions not found, or None>
 - Retrieval-unavailable constraint: <tool/access/connectivity failure and affected grounding or claims; None if survey ran>
-- Retrieval-unavailable evidence: <attempted source/tool, query/source id when available, and failure evidence such as tool error, access denial, connectivity output, or blocked database access; None if survey ran>
+- Retrieval-unavailable evidence: <attempted source/tool, query/source id when available, and failure evidence; None if survey ran>
 - Claim-scope narrowing: <claims narrowed or blocked because retrieval was unavailable; None if survey ran>
 
 ### Citation-use map
 
 - <literature/papers.md entry>:
-  - Used for: <question framing / mechanism prior / baseline / comparator / metric / data / evaluation protocol / theoretical foundation / limitation / contradictory evidence / claim-scope boundary>
-  - Plan dependency: <Question / Objective / Hypothesis rationale / Controls / Data setup / Decision threshold / Limitations / Claim scope>
+  - Used for: <question framing / theoretical foundation / limitation / contradictory evidence / claim-scope boundary>
+  - Plan dependency: <Proposition trace / Definitions / Axioms / Limiting-case checks / Claim scope>
   - How it is used: <specific sentence explaining what the plan borrows, tests, contrasts, or bounds>
   - Claim-scope effect: <supports / narrows / blocks which claims>
 
 ### Grounding scope
 
 - Question/objective supported by: <literature/papers.md entries and why they are relevant>
-- Inherited assumptions: <assumptions carried from prior formulations, definitions, theorems, or systems>
-- Method choice: <prior work or constraint motivating the selected derivational route>
-- Controls/comparators/evaluation protocol: <known limiting case, prior theorem, equivalence result, counterexample class, or empirical sanity-check route>
-- Known limitations: <limitations from prior work that constrain interpretation>
-
-### Research positioning
-
-- Positioning entry: <literature/positioning.md entry showing how this work stands on prior work>
-- Claim scope: <what this bounded but sufficient grounding supports, narrows, or blocks for the question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations>
-- Unknown prior-work constraint: <named constraint and affected claims; None if none>
+- Inherited assumptions:
+- Method choice:
+- Controls/comparators/evaluation protocol:
+- Known limitations:
 
 ## Divergence checkpoint
 
-### Approach portfolio
-
-- Primary route: <the derivational route selected for this theoretical plan>
-- Alternative A: <meaningfully different route; not just a notation change>
-- Alternative B: <meaningfully different route; not just a longer proof; if a hard constraint permits only one route, state that constraint and narrow later claims to that constraint>
-
-### Anchoring audit
-
-- Prior result / approach / dataset being imported: <what this plan may be anchored on>
-- Risk if the anchor is wrong: <what theorem, definition, or interpretation would break>
-- Revalidation or control: <limiting case / counterexample / alternative derivation / sanity check>
-
-### Research positioning
-
-- Contribution type: <question / mechanism / data / metric / evaluation protocol / method / system / replication / baseline strengthening>
-- Positioning status: <literature/positioning.md entry and claim scope>
-- External novelty / no-baseline claim: <None, or comprehensive literature survey reference before execution>
-
-### Disconfirming evidence
-
-- Stop, narrow, or pivot if: <derivation gap, counterexample, incompatible limiting case, or observation that would force a narrower question, a different route, a pause, or closure>
-- Branch if observed: <REFINE / ADJACENT / PARK / CLOSE>
-
-### Commitment decision
-
-- Chosen route and reason: <why commit to this derivational route now>
-- Skipped divergence: <what alternatives are not explored because of time/resource limits; None if none>
-- Effect on later claims: <how this limits later claims>
+- Approach portfolio: <primary derivation route and alternatives such as counterexample search, limiting-case analysis, or alternative formulation>
+- Anchoring audit: <imported theorem, definition, or formulation; risk; check>
+- Disconfirming evidence: <counterexample, limiting-case failure, or proof obstacle that would force split, park, or closure>
 
 ## Plan
 
@@ -148,12 +74,14 @@ last_updated: YYYY-MM-DD
 
 - Visual format: <Mermaid | PlantUML | ASCII | linked figure/table | No diagram: <specific reason>>
 - What it shows: <definitions, theorem dependency graph, derivation structure, limiting-case map, or proof strategy>
-- Reader check: <what the reader can verify about assumptions, dependencies, or proof route>
+- Reader check: <what assumptions, dependencies, or proof route are inspectable>
 
 ```mermaid
 flowchart LR
-    A["<definitions / assumptions>"] --> B["<lemma or transformation>"] --> C["<predicted result form>"]
-    C --> D["<limiting-case check>"]
+    P["Parent proposition"] --> H["Derived theoretical hypothesis"]
+    H --> D["Definitions and axioms"]
+    D --> L["Lemmas / derivation"]
+    L --> C["Limiting-case checks"]
 ```
 
 ### Derivation question
@@ -162,96 +90,62 @@ flowchart LR
 
 ### Axioms / definitions / prior theorems used
 
-- <axiom or definition 1>: <statement, source if from external work>
-- <axiom or definition 2>: ...
+- <axiom or definition 1>: <statement, source if external>
 - <prior theorem 1>: <statement, source>
-- <prior theorem 2>: ...
 
 ### Proposed derivation sketch
 
-- <high-level chain of reasoning the derivation will follow>
+- <high-level chain of reasoning>
 - <key lemmas or sub-results expected>
-- <techniques the derivation will rely on (e.g., induction on N, change of variables, fixed-point argument)>
+- <techniques the derivation will rely on>
 
 ### Predicted form of result
 
-- <expected shape of the result: closed-form expression, asymptotic bound, equivalence statement, etc.>
-- <units and scope where applicable>
+- <expected shape: closed-form expression, asymptotic bound, equivalence statement, etc.>
 
 ### Limiting-case checks
 
 - <known case 1 the result must reduce to>: <expected reduction>
-- <known case 2>: ...
-- These are the analog of "controls/comparators" for theoretical work; the derivation must recover known correct behavior in stated limits.
+- <known case 2>: <expected reduction>
 
-### Empirical sanity check (if applicable)
+### Empirical sanity check
 
-- <one observable consequence the derivation predicts that could be checked against existing data or simulation>
-- <state explicitly if no such check is available; this triggers the assumption_audit constraint-naming protocol for the resulting claim>
+- <observable consequence if applicable, or state no current empirical evaluator and name the assumption-audit constraint>
 
-### Failure modes to watch
+### Hypothesis rationale
 
-- <derivation step where an assumption could silently fail>
-- <known pathological case where the result might break>
-- <symmetry or invariance that must be preserved and how it will be checked>
+- Source analysis: <source_analysis>
+- Proposition status that produced the hypothesis: <source_status>
+- Hypothesis statement: <hypothesis_statement>
+- Competing hypothesis: <alternative formulation, theorem shape, or counterexample route>
+- Minimal discriminator: <smallest derivation check, counterexample, limiting-case check, or model that separates them>
 
-### Time / page envelope
+### Material conditions
 
-- <budget for the derivation work itself; for long derivations, plan checkpoint reviews>
+- material conditions: <formal assumptions, definitions, theorem scope, symbolic conventions, software algebra systems, or simulation conditions when they affect interpretation>
 
 ## Plan review
 
-### Reviewer
+<Returned section from a fresh separate-context plan-review subagent using `research-plan-review`. Include Premise check, Proposition trace, Hypothesis validation method, Plan visual, Prior-work survey evidence, and required repairs.>
 
-- Agent: <fresh separate-context plan-review subagent>
-- Skill: research-plan-review
-- Plan reviewed: <this plan path>
-- Reviewed at: <YYYY-MM-DD>
-
-### Design summary
-
-<Research design summary: question/objective, mechanism hypothesis or principle under investigation, prediction or expected output, and evidence route.>
-
-### Research-design checks
-
-- Premise check: <adequate / revise / block>: <whether the hypothesis rests on a wrong / unsupported / unverified premise, contradicted project state, discredited proxy, or ungrounded prior-work claim>
-- Hypothesis validation method: <adequate / revise / block>: <whether the planned validation can test the hypothesis and distinguish it from plausible alternatives>
-- Plan visual: <adequate / revise / block>: <whether architecture, data flow, evaluation flow, mechanism, system boundary, variable space, decision flow, or derivation dependency is inspectable>
-- Controls, comparators, or limiting cases: <adequate / revise / block / not applicable>: <reason>
-- Evidence route and artifact plan: <adequate / revise / block>: <reason>
-- Prior-work survey evidence: <adequate / revise / block>: <block if missing, placeholder-only, unsupported by Survey evidence, or unsupported by a verifiable retrieval-unavailable constraint with claim-scope narrowing>
-- Scope and constraints: <adequate / revise / block>: <reason>
-- Stop decision: <continue / repair_before_execution / stop_execution>: <why the plan may run, must be repaired, or must stop>
-
-### Required repairs before execution
-
-<None, or concrete plan repairs.>
-
-### Execution recommendation
-
-<execute_as_written / revise_before_execution / block_execution>: <rationale>
 ## Actual execution
 
 ### Runs
 
-<List as derivation notes, proof attempts, simulations, or checks accumulate. Link to experiments/<plan_id>_<slug>/runs/<run_id>/ when applicable.>
+<List as derivation notes, proof attempts, simulations, or checks accumulate. Link to experiments/runs/<run_id>/ when applicable. Print-only execution is incomplete: stdout is not evidence.>
 
 ### Mid-execution literature updates
 
-- <YYYY-MM-DD or None>:
-  - Survey trigger: <unfamiliar method / unexpected result / new comparator / contradiction with prior work / missing-baseline signal / other>
-  - Sources checked: <queries, papers, databases, or retrieval-unavailable constraint with attempted source/tool and failure evidence>
-  - Literature files updated: <literature/papers.md and literature/positioning.md entries, or None with reason>
-  - Effect on plan: <none / update limitations / change comparator / change metric / change evaluation protocol / amend plan / ADJACENT dependency recorded>
-  - Plan review: <not needed with reason / rerun Plan review before continuing claim-bearing execution>
+- Survey trigger: <unfamiliar method / unexpected result / new comparator / contradiction with prior work / missing-baseline signal / None>
+- Effect on plan: <none / update limitations / change comparator / change metric / rerun Plan review>
 
 ### Methodology used
 
-<Substantive description of the derivation procedure, definitions, proof route, limiting-case checks, and material conditions that affect interpretation. Enough for re-implementation; env locks and commit hashes are provenance pointers, not methodology.>
+<Substantive description, enough for another researcher to inspect or re-implement the derivation route.>
 
 ### Observations
 
-<What was derived, which limiting cases were checked, what empirical sanity checks showed if any, and what gaps or counterexamples were found.>
+<Derivational observations, limiting-case outcomes, counterexamples, or proof obstacles.>
 
 ## Planned vs Actual
 
@@ -260,16 +154,19 @@ flowchart LR
 ## Result analysis
 
 Do not fill this section before execution. After evidence exists, dispatch a fresh separate-context result-analysis subagent with `research-result-analysis`; record the returned `## Result analysis` section here without rewriting it.
+
 ## Claims
 
 <Load-bearing claims using the schema in claim_structure.md.>
 
-## Decision
+## Result feedback
 
-<One of NEXT_STEP / REFINE / ADJACENT / PARK / CLOSE — see iteration_loop.md. Decision records only the branch and evidence-backed reason. Do not store future hypotheses or next actions here.>
+After Result analysis, update `hypothesis.md`, hypothesis `decisions.md`, parent `proposition.md`, and proposition `decisions.md` when status changes. Hypothesis states are `tested-supported`, `tested-contradicted`, `tested-partial`, or `tested-inconclusive`.
 
 ## References
 
-- Runs: experiments/<plan_id>_<slug>/runs/
-- Related plans: <other plan IDs and their relationship>
-- Related literature: <papers.md entries>
+- Parent proposition: propositions/<parent_proposition_slug>/proposition.md
+- Source observations: propositions/<parent_proposition_slug>/observations.md
+- Source analysis: propositions/<parent_proposition_slug>/analyses.md#<source_analysis>
+- Hypothesis: hypothesis.md
+- Runs: experiments/runs/

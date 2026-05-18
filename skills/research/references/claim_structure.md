@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Every load-bearing claim in `plans/<id>.md` and `reports/<id>/report.md` uses an explicit, structured record. The structure does two jobs:
+Every load-bearing claim in `propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md` and `reports/<id>/report.md` uses an explicit, structured record. The structure does two jobs:
 
 1. **It forces the agent to articulate what the claim actually rests on and what it does not exclude** — preventing claims that read confidently but are actually thin on evidence.
 2. **It makes claims machine-checkable.** `scripts/check_claims.py` parses the structure and verifies required fields are present and non-empty where required.
@@ -127,8 +127,8 @@ The skill does not assign labels like "A4" or "supported." The structure itself 
 
 A claim is load-bearing — and therefore requires this structure — when:
 
-- It appears in a `reports/<id>/report.md` Summary, Results, or Conclusions section
-- It triggers a `decisions.md` entry (a state transition depends on it)
+- It appears in a derived-hypothesis report Summary, Results, or Conclusions section
+- It triggers a proposition or hypothesis `decisions.md` entry when a state transition depends on it
 - It is cited by another claim
 - It is communicated externally (to a collaborator, a publication, a deployment decision)
 
@@ -145,11 +145,11 @@ Casual observations during exploratory work do not need the structure. The agent
 
 ## Verification
 
-`scripts/check_claims.py` parses the structure from `plans/<id>.md` and `reports/<id>/report.md` and reports:
+`scripts/check_claims.py` parses the structure from hypothesis `plan.md` and report `report.md` files and reports:
 
 - Missing fields
 - Claim text that is vague (no metric, no specifics, no condition reference)
 - Evidence pointers that don't resolve to existing files
 - Suspicious patterns — e.g., empty `alternatives_not_excluded` for a claim that mentions "better than baseline" without an ablation citation
 
-Run it before any external sharing or `decisions.md` entry that depends on the claim. Run it before drafting a report.
+Run it before any external sharing or proposition/hypothesis `decisions.md` entry that depends on the claim. Run it before drafting a report.

@@ -6,28 +6,33 @@ Updated: YYYY-MM-DD
 
 <What this project is ultimately for. What decision, understanding, or artifact it serves.>
 
-## Active plans
+## Active propositions
 
-| Plan ID | Slug | Category | Mode | Status |
-|---|---|---|---|---|
-
-## Parked plans
-
-| Plan ID | Slug | Parked at | Unblock condition |
+| Proposition | Status | Current expected consequence | Live derived hypotheses |
 |---|---|---|---|
 
-## Recently closed plans
+## Live derived hypotheses
 
-| Plan ID | Slug | Outcome | Report |
+| Hypothesis | Parent proposition | Status | Plan |
 |---|---|---|---|
 
-## Cross-plan dependencies
+## Parked propositions or hypotheses
 
-<Plans that block, feed into, or depend on each other. Optional. Empty if all plans are independent.>
+| ID | Parked at | Unblock condition | Location |
+|---|---|---|---|
+
+## Recently closed propositions or hypotheses
+
+| ID | Outcome | Report |
+|---|---|---|
+
+## Cross-proposition dependencies
+
+<Propositions or hypotheses that block, feed into, split from, or depend on each other. Optional. Empty if all are independent.>
 
 ## Current uncertainties
 
-<What is not yet known that blocks decisions about which plans to prioritize. Optional.>
+<What is not yet known that blocks decisions about which propositions or hypotheses to prioritize. Optional.>
 
 ## Notes
 

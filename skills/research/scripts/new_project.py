@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Initialize a new R&D project directory structure.
+"""Initialize a proposition-first R&D project directory structure.
 
 Usage:
     python new_project.py <target_dir> --name "<Project Name>"
 
-Creates the canonical project layout. Does NOT create env locks, data versioning,
-or any computational-replicability infrastructure — those are the agent's discretion.
+Creates the canonical proposition-first project layout. Does NOT create env locks,
+data versioning, or any computational-replicability infrastructure — those are the
+agent's discretion.
 """
 import argparse
 import shutil
@@ -35,17 +36,15 @@ approach.
 
 
 DIRECTORIES = [
-    "plans",
+    "propositions",
     "literature",
     "lib/data",
     "lib/eval",
     "lib/viz",
     "lib/utils",
     "lib/tests",
-    "experiments",
     "data/raw",
     "data/processed",
-    "reports",
 ]
 
 
@@ -80,18 +79,18 @@ def main():
     )
 
     # .gitkeep markers for empty directories.
-    for d in ["plans", "experiments", "reports", "data/raw", "data/processed"]:
+    for d in ["propositions", "data/raw", "data/processed"]:
         keep = target / d / ".gitkeep"
         if not any((target / d).iterdir()):
             keep.touch()
 
-    print(f"Initialized R&D project at {target}")
+    print(f"Initialized proposition-first R&D project at {target}")
     print()
     print("Next steps:")
     print(f"  cd {target}")
     print("  git init && git add -A && git commit -m 'Initial project structure'")
-    print(f"  python {SKILL_ROOT}/scripts/new_plan.py {target} \\")
-    print("    --id 01 --slug <slug> --category <basic_research|applied_research|experimental_development> --mode <exploratory|confirmatory|milestone|theoretical>")
+    print(f"  python {SKILL_ROOT}/scripts/new_proposition.py {target} \\")
+    print("    --id P001 --slug <slug> --title \"<title>\" --proposition \"<proposition>\" --expected \"<expected consequence>\"")
 
 
 if __name__ == "__main__":

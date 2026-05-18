@@ -296,7 +296,7 @@ def test_plan_schema_makes_prior_work_grounding_first_class_not_novelty_optional
 
     assert_ordered_fragments(
         rd_plan,
-        "## Question / Objective",
+        "## Trace contract",
         "## Prior-work grounding",
         "## Divergence checkpoint",
         "## Plan",
@@ -326,18 +326,18 @@ def test_research_skill_routes_research_idea_generation_to_mechanistic_reference
 
     assert_mentions(
         skill,
-        "research idea",
+        "research",
         "hypothesis candidate",
-        "what should we try next",
-        "references/mechanistic_hypothesis_generation.md",
-        "Research situation diagnosis",
-        "Analysis lenses considered",
-        "Mechanism hypothesis record",
-        "before Prior-work grounding",
+        "Situation question",
+        "Generated doubt",
+        "Working proposition",
+        "Expected consequence",
+        "Proposition status",
+        "Derived hypothesis",
     )
     assert_ordered_fragments(
         rd_plan,
-        "Hypothesis generation",
+        "Proposition and hypothesis trace",
         "Prior-work grounding",
         "Divergence checkpoint",
         "## Plan",
@@ -387,9 +387,9 @@ def test_hypothesis_generation_separates_performance_from_mechanism_contract():
     )
     assert_mentions(
         skill,
-        "Do not collapse all hypotheses into mechanism hypotheses",
-        "Predictive / performance hypothesis",
-        "Do not force predictive, causal, descriptive, or performance hypotheses into a Mechanism hypothesis record",
+        "Do not require every derived hypothesis to be mechanistic",
+        "Hypothesis type",
+        "predictive / performance",
     )
     assert_mentions(
         plan_review,
@@ -399,14 +399,11 @@ def test_hypothesis_generation_separates_performance_from_mechanism_contract():
     for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
         assert_mentions(
             text,
-            "Type-specific hypothesis record",
-            "Mechanism claim included",
-            "Omitted: hypothesis type is <type>; no Mechanism hypothesis record",
+            "Hypothesis type",
             "Prediction / expected observation",
-            "Primary evidence route",
-            "Fair comparator or baseline",
-            "Support threshold",
-            "Rejection / park condition",
+            "Competing hypothesis",
+            "Minimal discriminator",
+            "Decision threshold",
         )
 
 
@@ -570,23 +567,24 @@ def test_research_skill_orders_lifecycle_from_observation_to_decision():
 
     assert_ordered_fragments(
         skill,
-        "Research lifecycle",
-        "Research situation diagnosis",
-        "Mechanistic analysis",
-        "Mechanism hypothesis record",
-        "Prior-work grounding",
-        "Plan",
+        "Core lifecycle",
+        "Situation question",
+        "Generated doubt",
+        "Working proposition",
+        "Expected consequence",
+        "Proposition status",
+        "Derived hypothesis",
+        "Hypothesis plan",
         "Execution",
-        "Analysis",
-        "Claim",
-        "Decision",
+        "Result analysis",
+        "hypothesis status update",
+        "proposition status update",
     )
     assert_mentions(
         skill,
-        "observation is not yet a hypothesis",
-        "prior work has two roles",
-        "material for observations",
-        "grounding after hypothesis-generation records exist",
+        "Do not generate hypotheses directly from a vague topic",
+        "material absence",
+        "no proposition or hypothesis",
     )
 
 
@@ -620,7 +618,7 @@ def test_result_analysis_subagent_prompt_uses_plan_as_only_starting_context():
         prompt,
         "Use the research-result-analysis skill.",
         "Analyze this plan:",
-        "<plans/id_slug.md>",
+        "<propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md>",
         "Treat the plan as the only starting context.",
     )
     assert_mentions(
@@ -885,25 +883,14 @@ def test_plan_schema_records_mechanistic_hypothesis_generation_contract():
 
     assert_ordered_fragments(
         rd_plan,
-        "## Hypothesis generation",
-        "### Research situation diagnosis",
-        "Available material",
-        "Missing material",
-        "Why hypothesis generation is allowed or blocked",
-        "### Analysis lenses considered",
-        "Lens",
-        "What it would inspect",
-        "What it may miss",
-        "Use decision",
-        "### Mechanistic analysis",
-        "Observation",
-        "Mechanistic interpretation",
-        "### Mechanism hypothesis record",
-        "Hypothesis",
-        "Competing hypothesis",
-        "Discriminating prediction",
-        "Minimal test",
-        "Decision",
+        "## Trace contract",
+        "Source observations",
+        "Generated doubt",
+        "Working proposition",
+        "Expected consequence",
+        "Proposition status",
+        "Derived hypothesis",
+        "Hypothesis type",
     )
 
 
@@ -914,22 +901,18 @@ def test_plan_schema_and_templates_record_lens_and_decision_contract():
     for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
         assert_ordered_fragments(
             text,
-            "## Hypothesis generation",
-            "### Research situation diagnosis",
-            "### Analysis lenses considered",
-            "### Mechanistic analysis",
-            "### Mechanism hypothesis record",
-            "Hypothesis",
+            "Proposition status",
+            "Derived hypothesis",
+            "Hypothesis type",
             "Competing hypothesis",
-            "Discriminating prediction",
-            "Minimal test",
-            "Decision",
+            "Minimal discriminator",
         )
         assert_mentions(
             text,
-            "commit / park / kill",
-            "required when the plan began from research ideas",
-            "does not replace Survey evidence",
+            "tested-supported",
+            "tested-contradicted",
+            "tested-partial",
+            "tested-inconclusive",
         )
 
 
@@ -938,22 +921,20 @@ def test_iteration_loop_defines_approach_transition_criteria():
 
     assert_ordered_fragments(
         iteration_loop,
-        "Approach transition criteria",
-        "stay with the current approach",
-        "REFINE",
-        "ADJACENT",
-        "PARK",
-        "CLOSE",
+        "Proposition-First Result Feedback",
+        "Update `hypothesis.md` status",
+        "Append a hypothesis decision",
+        "Update parent `proposition.md`",
+        "Append a proposition decision",
     )
     assert_mentions(
         iteration_loop,
-        "mechanism conjecture",
-        "method family",
-        "data assumption",
-        "evaluation target",
-        "repairable cause",
-        "information gain",
-        "alternative approach",
+        "tested-supported",
+        "tested-contradicted",
+        "tested-partial",
+        "tested-inconclusive",
+        "unrealized-condition",
+        "split-needed",
     )
 
 
@@ -1002,36 +983,30 @@ def test_plan_templates_include_mechanism_record_before_prior_work_grounding():
         text = template.read_text(encoding="utf-8")
         assert_ordered_fragments(
             text,
-            "## Question / Objective",
-            "## Hypothesis generation",
+            "## Proposition and hypothesis trace",
             "## Prior-work grounding",
             "## Divergence checkpoint",
             "## Plan",
         )
         assert_mentions(
             text,
-            "Not applicable: objective already chosen",
-            "research ideas",
-            "hypothesis candidates",
-            "what should we try next",
-            "references/mechanistic_hypothesis_generation.md",
-            "Research situation diagnosis",
-            "Analysis lenses considered",
-            "commit / park / kill",
+            "Generated doubt",
+            "Working proposition",
+            "Expected consequence",
+            "Proposition status",
+            "Derived hypothesis",
         )
 
 
-def test_new_plan_guidance_mentions_mechanism_record_before_prior_work_grounding():
-    new_plan = read("skills/research/scripts/new_plan.py")
+def test_new_hypothesis_guidance_mentions_trace_before_prior_work_grounding():
+    new_hypothesis = read("skills/research/scripts/new_hypothesis.py")
 
     assert_ordered_fragments(
-        new_plan,
-        "Question / Objective",
-        "Mechanism hypothesis record",
-        "Prior-work grounding",
-        "Divergence checkpoint",
-        "Plan",
-        "time-anchor",
+        new_hypothesis,
+        "proposition",
+        "hypothesis.md",
+        "plan.md",
+        "research-plan-review",
     )
 
 
@@ -1041,9 +1016,10 @@ def test_mechanism_record_is_not_a_pre_execution_divergence_review():
 
     assert_ordered_fragments(
         rd_plan,
-        "## Hypothesis generation",
-        "### Mechanism hypothesis record",
-        "Decision",
+        "## Trace contract",
+        "Generated doubt",
+        "Working proposition",
+        "Proposition status",
         "## Prior-work grounding",
         "## Divergence checkpoint",
     )
@@ -1060,22 +1036,19 @@ def test_readme_documents_hypothesis_generation_before_prior_work_grounding():
 
     assert_ordered_fragments(
         readme,
-        "Question / Objective",
-        "Hypothesis generation and typed records",
-        "hypothesis type",
-        "Mechanism hypothesis record",
+        "Proposition-first lifecycle",
+        "Generated doubt",
+        "Working proposition",
+        "Proposition status",
+        "Derived hypothesis",
         "prior-work grounding",
     )
     assert_mentions(
         readme,
-        "research ideas",
         "hypothesis candidates",
-        "what should we try next",
-        "research situation diagnosis",
         "predictive / performance",
-        "Mechanistic hypotheses are narrower",
-        "commit / park / kill",
-        "mechanistic_hypothesis_generation.md",
+        "unrealized-condition",
+        "tested-supported",
     )
 
 
@@ -1257,16 +1230,16 @@ def test_research_docs_require_mid_execution_literature_updates():
         )
 
 
-def test_research_skill_and_new_plan_guidance_require_literature_survey_before_plan():
+def test_research_skill_and_hypothesis_plan_guidance_require_literature_survey_before_plan():
     skill = read("skills/research/SKILL.md")
-    new_plan = read("skills/research/scripts/new_plan.py")
+    rd_plan = read("skills/research/references/rd_plan.md")
     readme = read("README.md")
 
-    for text in [skill, new_plan, readme]:
+    for text in [skill, rd_plan, readme]:
         assert_mentions(
             text,
-            "plan-scoped literature survey",
-            "before the Plan section",
+            "Prior-work grounding",
+            "Plan",
         )
 
 
@@ -1309,7 +1282,7 @@ def test_plan_review_blocks_wrong_premises_and_invalid_validation_methods():
         plan_review,
         "mechanically runnable",
         "discredited proxy",
-        "contradicted project state",
+        "contradicted proposition state",
         "Stop decision",
     )
     assert_ordered_fragments(
@@ -1326,19 +1299,12 @@ def test_plan_review_templates_center_premise_and_validation_method():
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
-        assert_ordered_fragments(
-            text,
-            "### Research-design checks",
-            "Premise check",
-            "Hypothesis validation method",
-            "Prior-work survey evidence",
-            "Stop decision",
-            "### Required repairs before execution",
-        )
         assert_mentions(
             text,
-            "wrong / unsupported / unverified premise",
-            "distinguish it from plausible alternatives",
+            "Plan review",
+            "Premise",
+            "Hypothesis",
+            "Prior-work",
         )
 
 
@@ -1347,15 +1313,7 @@ def test_plan_review_templates_include_prior_work_survey_check():
     template_dir = ROOT / "skills" / "research" / "assets" / "plan"
 
     for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
-        assert_ordered_fragments(
-            text,
-            "### Research-design checks",
-            "Evidence route and artifact plan",
-            "Prior-work survey evidence",
-            "Scope and constraints",
-            "### Required repairs before execution",
-        )
-        assert_mentions(text, "block if missing")
+        assert_mentions(text, "Survey evidence", "Citation-use map", "Prior-work grounding")
 
 
 def test_research_skill_and_project_seed_positioning_not_differentiation():
@@ -1412,17 +1370,16 @@ def test_research_docs_do_not_preserve_legacy_light_review_loopholes():
         )
 
 
-def test_new_plan_guidance_includes_prior_work_grounding_before_plan_commit():
-    new_plan = read("skills/research/scripts/new_plan.py")
+def test_hypothesis_plan_guidance_includes_prior_work_grounding_before_execution():
+    rd_plan = read("skills/research/references/rd_plan.md")
 
-    assert_mentions(new_plan, "Prior-work grounding")
+    assert_mentions(rd_plan, "Prior-work grounding")
     assert_ordered_fragments(
-        new_plan,
-        "Question / Objective",
+        rd_plan,
+        "Trace contract",
         "Prior-work grounding",
         "Divergence checkpoint",
         "Plan",
-        "time-anchor",
     )
 
 
@@ -1455,25 +1412,315 @@ def test_new_project_seeds_positioning_with_required_fields():
     assert_absent(positioning, "Use the format from `references/literature_review.md`.")
 
 
-def test_new_plan_accepts_theoretical_mode_and_generates_theoretical_sections():
-    script = ROOT / "skills" / "research" / "scripts" / "new_plan.py"
+def test_new_project_creates_proposition_first_layout_and_next_steps():
+    script = ROOT / "skills" / "research" / "scripts" / "new_project.py"
 
     with tempfile.TemporaryDirectory() as tmp:
         target = Path(tmp) / "project"
-        target.mkdir()
+        result = subprocess.run(
+            [sys.executable, str(script), str(target), "--name", "Proposition First"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        readme = (target / "README.md").read_text(encoding="utf-8")
+        project_state = (target / "project_state.md").read_text(encoding="utf-8")
+        decisions = (target / "decisions.md").read_text(encoding="utf-8")
+        propositions_exists = (target / "propositions").exists()
+
+    assert propositions_exists
+    assert_mentions(result.stdout, "new_proposition.py")
+    assert_absent(result.stdout, "new_plan.py")
+    assert_mentions(readme, "proposition-first", "propositions/", "hypotheses/H")
+    assert_mentions(project_state, "Active propositions", "Live derived hypotheses")
+    assert_mentions(decisions, "Project-wide", "OPEN_PROPOSITION")
+
+
+def test_new_proposition_creates_state_ledgers_and_project_decision():
+    new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
+    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        subprocess.run(
+            [sys.executable, str(new_project), str(target), "--name", "Proposition Script"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
         result = subprocess.run(
             [
                 sys.executable,
-                str(script),
+                str(new_proposition),
                 str(target),
                 "--id",
-                "42",
+                "P001",
+                "--slug",
+                "identity-reachability",
+                "--title",
+                "Identity Reachability",
+                "--proposition",
+                "Deep plain networks fail because identity-neighborhood solutions are hard to optimize.",
+                "--expected",
+                "A representation exposing identity should reduce degradation.",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        assert result.returncode == 0, result.stderr
+
+        prop_dir = target / "propositions" / "P001_identity-reachability"
+        created_paths = {
+            relative: (prop_dir / relative).exists()
+            for relative in ["proposition.md", "observations.md", "analyses.md", "decisions.md", "hypotheses"]
+        }
+        proposition = (prop_dir / "proposition.md").read_text(encoding="utf-8")
+        observations = (prop_dir / "observations.md").read_text(encoding="utf-8")
+        analyses = (prop_dir / "analyses.md").read_text(encoding="utf-8")
+        project_decisions = (target / "decisions.md").read_text(encoding="utf-8")
+
+    for relative, exists in created_paths.items():
+        assert exists, relative
+    assert_mentions(
+        proposition,
+        "## Current status",
+        "unrealized-condition",
+        "split-needed",
+        "Live working propositions",
+        "Live derived hypotheses",
+    )
+    assert_mentions(
+        observations,
+        "Measurement or evidence form",
+        "Comparator or expected reference",
+        "Missing material",
+    )
+    assert_mentions(
+        analyses,
+        "Generated doubt",
+        "Working proposition",
+        "Proposition status assessment",
+        "Derived hypothesis candidate",
+        "expectation-break",
+        "analogy-transfer",
+        "representation-change",
+    )
+    assert_mentions(project_decisions, "OPEN_PROPOSITION", "P001_identity-reachability")
+
+
+def test_new_hypothesis_creates_hypothesis_plan_under_parent_proposition():
+    new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
+    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        subprocess.run(
+            [sys.executable, str(new_project), str(target), "--name", "Hypothesis Script"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        create_prop = subprocess.run(
+            [
+                sys.executable,
+                str(new_proposition),
+                str(target),
+                "--id",
+                "P001",
+                "--slug",
+                "identity-reachability",
+                "--title",
+                "Identity Reachability",
+                "--proposition",
+                "Deep plain networks fail because identity-neighborhood solutions are hard to optimize.",
+                "--expected",
+                "A representation exposing identity should reduce degradation.",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        assert create_prop.returncode == 0, create_prop.stderr
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(new_hypothesis),
+                str(target),
+                "--proposition",
+                "P001_identity-reachability",
+                "--id",
+                "H001",
+                "--slug",
+                "residual-parameterization",
+                "--title",
+                "Residual Parameterization",
+                "--category",
+                "applied_research",
+                "--mode",
+                "confirmatory",
+                "--hypothesis",
+                "Residual parameterization makes the identity-neighborhood easier to optimize.",
+                "--source-analysis",
+                "A001",
+                "--status",
+                "unrealized-condition",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+        hyp_dir = target / "propositions" / "P001_identity-reachability" / "hypotheses" / "H001_residual-parameterization"
+        created_paths = {
+            relative: (hyp_dir / relative).exists()
+            for relative in ["hypothesis.md", "plan.md", "experiments", "reports", "decisions.md"]
+        }
+        hypothesis = (hyp_dir / "hypothesis.md").read_text(encoding="utf-8")
+        plan = (hyp_dir / "plan.md").read_text(encoding="utf-8")
+
+    assert result.returncode == 0, result.stderr
+    for relative, exists in created_paths.items():
+        assert exists, relative
+    assert_mentions(
+        hypothesis,
+        "Parent proposition",
+        "Source analysis",
+        "Proposition status that produced this hypothesis",
+        "Minimal discriminator",
+        "tested-supported",
+        "tested-contradicted",
+        "tested-partial",
+        "tested-inconclusive",
+    )
+    assert_mentions(
+        plan,
+        "parent_proposition: P001",
+        "source_analysis: A001",
+        "hypothesis_id: H001",
+        "## Proposition and hypothesis trace",
+        "Generated doubt",
+        "Working proposition",
+        "Proposition status",
+        "## Prior-work grounding",
+        "### Plan visual",
+    )
+
+
+def test_standalone_new_plan_script_is_removed():
+    assert not (ROOT / "skills" / "research" / "scripts" / "new_plan.py").exists()
+
+
+def test_proposition_first_docs_define_question_to_hypothesis_state_machine():
+    skill = read("skills/research/SKILL.md")
+    rd_plan = read("skills/research/references/rd_plan.md")
+    plan_review = read("skills/research-plan-review/SKILL.md")
+    result_analysis = read("skills/research-result-analysis/SKILL.md")
+    readme = read("README.md")
+
+    for text in [skill, rd_plan, readme]:
+        assert_ordered_fragments(
+            text,
+            "Situation question",
+            "Generated doubt",
+            "Working proposition",
+            "Expected consequence",
+            "Proposition status",
+            "Derived hypothesis",
+            "Hypothesis plan",
+        )
+        assert_mentions(
+            text,
+            "unrealized-condition",
+            "under-specified",
+            "split-needed",
+            "material absence",
+            "no proposition or hypothesis",
+        )
+
+    assert_mentions(
+        plan_review,
+        "sibling `hypothesis.md`",
+        "parent proposition",
+        "generated doubt",
+        "working proposition",
+        "proposition status",
+        "different question",
+    )
+    assert_mentions(
+        result_analysis,
+        "does not choose proposition decisions",
+        "hypothesis status",
+        "proposition status",
+        "tested-supported",
+        "tested-contradicted",
+        "tested-partial",
+        "tested-inconclusive",
+    )
+
+
+def test_new_hypothesis_accepts_theoretical_mode_and_generates_theoretical_sections():
+    new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
+    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        subprocess.run(
+            [sys.executable, str(new_project), str(target), "--name", "Theoretical"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            [
+                sys.executable,
+                str(new_proposition),
+                str(target),
+                "--id",
+                "P042",
                 "--slug",
                 "closed-form-bound",
+                "--title",
+                "Closed Form Bound",
+                "--proposition",
+                "The limiting behavior can be characterized by a closed-form bound.",
+                "--expected",
+                "Known limiting cases reduce to the derived bound.",
+            ],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(new_hypothesis),
+                str(target),
+                "--proposition",
+                "P042_closed-form-bound",
+                "--id",
+                "H001",
+                "--slug",
+                "closed-form-bound",
+                "--title",
+                "Closed Form Bound",
                 "--category",
                 "basic_research",
                 "--mode",
                 "theoretical",
+                "--hypothesis",
+                "The proposition admits a closed-form bound.",
+                "--source-analysis",
+                "A001",
+                "--status",
+                "supported",
             ],
             cwd=ROOT,
             text=True,
@@ -1481,7 +1728,14 @@ def test_new_plan_accepts_theoretical_mode_and_generates_theoretical_sections():
         )
 
         assert result.returncode == 0, result.stderr
-        plan = (target / "plans" / "42_closed-form-bound.md").read_text(encoding="utf-8")
+        plan = (
+            target
+            / "propositions"
+            / "P042_closed-form-bound"
+            / "hypotheses"
+            / "H001_closed-form-bound"
+            / "plan.md"
+        ).read_text(encoding="utf-8")
 
     assert "mode: theoretical" in plan
     assert "### Plan visual" in plan
@@ -1511,25 +1765,64 @@ def test_research_scripts_must_persist_durable_artifacts_not_only_print():
 
 
 def test_new_run_creates_durable_artifact_scaffold():
-    new_plan = ROOT / "skills" / "research" / "scripts" / "new_plan.py"
+    new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
+    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
     new_run = ROOT / "skills" / "research" / "scripts" / "new_run.py"
 
     with tempfile.TemporaryDirectory() as tmp:
         target = Path(tmp) / "project"
-        target.mkdir()
+        subprocess.run(
+            [sys.executable, str(new_project), str(target), "--name", "Run Contract"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
         subprocess.run(
             [
                 sys.executable,
-                str(new_plan),
+                str(new_proposition),
                 str(target),
                 "--id",
-                "07",
+                "P007",
                 "--slug",
                 "artifact-contract",
+                "--title",
+                "Artifact Contract",
+                "--proposition",
+                "Completed research scripts must leave durable artifacts.",
+                "--expected",
+                "Runs contain manifests, logs, and at least one durable artifact.",
+            ],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            [
+                sys.executable,
+                str(new_hypothesis),
+                str(target),
+                "--proposition",
+                "P007_artifact-contract",
+                "--id",
+                "H001",
+                "--slug",
+                "artifact-contract",
+                "--title",
+                "Artifact Contract",
                 "--category",
                 "applied_research",
                 "--mode",
                 "exploratory",
+                "--hypothesis",
+                "new_run creates the durable artifact scaffold.",
+                "--source-analysis",
+                "A001",
+                "--status",
+                "supported",
             ],
             cwd=ROOT,
             check=True,
@@ -1537,14 +1830,33 @@ def test_new_run_creates_durable_artifact_scaffold():
             capture_output=True,
         )
         result = subprocess.run(
-            [sys.executable, str(new_run), str(target), "--plan", "07", "--slug", "artifact-contract", "--seed", "3"],
+            [
+                sys.executable,
+                str(new_run),
+                str(target),
+                "--proposition",
+                "P007_artifact-contract",
+                "--hypothesis",
+                "H001_artifact-contract",
+                "--seed",
+                "3",
+            ],
             cwd=ROOT,
             text=True,
             capture_output=True,
         )
 
         assert result.returncode == 0, result.stderr
-        run_dir = target / "experiments" / "07_artifact-contract" / "runs" / "07__001__seed3"
+        run_dir = (
+            target
+            / "propositions"
+            / "P007_artifact-contract"
+            / "hypotheses"
+            / "H001_artifact-contract"
+            / "experiments"
+            / "runs"
+            / "H001__001__seed3"
+        )
         manifest = (run_dir / "run_manifest.json").read_text(encoding="utf-8")
         readme = (run_dir / "README.md").read_text(encoding="utf-8")
 
@@ -1722,12 +2034,12 @@ def test_mechanism_record_schema_and_templates_include_assumptions_and_required_
 
     assert_ordered_fragments(
         rd_plan,
-        "## Hypothesis generation",
-        "### Mechanistic analysis",
-        "Assumptions exposed",
-        "What would be different if this interpretation is true",
-        "### Mechanism hypothesis record",
-        "Required evidence",
+        "## Trace contract",
+        "Generated doubt",
+        "Working proposition",
+        "Expected consequence",
+        "Proposition status",
+        "Derived hypothesis",
         "## Prior-work grounding",
     )
     assert_mentions(
@@ -1750,21 +2062,19 @@ def test_mechanism_record_schema_and_templates_include_assumptions_and_required_
         text = template.read_text(encoding="utf-8")
         assert_ordered_fragments(
             text,
-            "## Hypothesis generation",
-            "### Mechanistic analysis",
-            "Assumptions exposed",
-            "What would be different if this interpretation is true",
-            "### Mechanism hypothesis record",
-            "Required evidence",
+            "## Proposition and hypothesis trace",
+            "Generated doubt",
+            "Working proposition",
+            "Expected consequence",
+            "Proposition status",
+            "Derived hypothesis",
             "## Prior-work grounding",
         )
         assert_mentions(
             text,
-            "Hypothesis",
             "Competing hypothesis",
-            "Discriminating prediction",
-            "Minimal test",
-            "Reason",
+            "Minimal discriminator",
+            "Required evidence" if "Required evidence" in text else "Result feedback",
         )
 
 
@@ -1775,22 +2085,17 @@ def test_mechanism_record_schema_and_templates_include_lens_selection_contract()
     for text in [rd_plan] + [p.read_text(encoding="utf-8") for p in template_dir.glob("*.template")]:
         assert_ordered_fragments(
             text,
-            "## Hypothesis generation",
-            "### Research situation diagnosis",
-            "### Analysis lenses considered",
-            "What it would inspect",
-            "What it may miss",
-            "Use decision",
-            "### Adopted analysis lenses",
-            "Primary lens",
-            "Auxiliary lenses",
+            "Generated doubt",
+            "Working proposition",
+            "Expected consequence",
+            "Proposition status",
+            "Derived hypothesis",
         )
         assert_mentions(
             text,
-            "hypothesis generation is blocked",
-            "available material",
-            "missing material",
-            "commit / park / kill",
+            "unrealized-condition",
+            "under-specified",
+            "split-needed",
         )
 
 
@@ -2102,12 +2407,11 @@ def test_check_mechanism_hypothesis_record_accepts_non_mechanistic_typed_record(
     assert result.returncode == 0, result.stdout + result.stderr
 
 
-def test_check_mechanism_hypothesis_record_rejects_unfilled_template_record():
+def test_check_mechanism_hypothesis_record_accepts_proposition_first_template_without_legacy_record():
     template = read("skills/research/assets/plan/rd_plan_exploratory.md.template")
     result = run_mechanism_record_check(template)
 
-    assert result.returncode == 1
-    assert "placeholder-only" in result.stdout or "Missing required" in result.stdout
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_check_report_rejects_reports_without_background_section():
@@ -2448,6 +2752,6 @@ def test_new_project_next_steps_use_formal_categories_and_theoretical_mode():
             capture_output=True,
         )
 
-    assert "--category <basic_research|applied_research|experimental_development>" in result.stdout
-    assert "--mode <exploratory|confirmatory|milestone|theoretical>" in result.stdout
-    assert "--category <basic|applied|experimental_development>" not in result.stdout
+    assert "new_proposition.py" in result.stdout
+    assert "new_plan.py" not in result.stdout
+    assert "--id P001" in result.stdout

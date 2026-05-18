@@ -126,5 +126,5 @@ in each notebook and re-run downstream when upstream changes.
 
 Record upstream and downstream dependencies in the selected workstream state
 object: use `rd_plan.md` for an `R&D Workstream`, or `explanation_ledger.md`
-for a phenomenon / mechanism workstream. Use `decisions.md` only for durable
+for a proposition / hypothesis workstream. Use the relevant `decisions.md` only for durable
 state transitions, not as a duplicate model notebook index.

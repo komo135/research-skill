@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Create a run directory for a plan execution.
+"""Create a run directory for a derived hypothesis execution.
 
-Naming: <plan_id>__<n>__seed<N>, where n is auto-incremented.
+Naming: <hypothesis_id>__<n>__seed<N>, where n is auto-incremented.
 
-The scaffold is intentionally small but not schema-free: every research run
-needs a manifest, captured logs, and durable artifact locations so print-only
-execution does not become unreviewable evidence.
+Every research run needs a manifest, captured logs, and durable artifact
+locations so print-only execution does not become unreviewable evidence.
 
 Usage:
-    python new_run.py <project_root> --plan <id> --slug <slug> [--seed <N>]
+    python new_run.py <project_root> \
+        --proposition P001_slug --hypothesis H001_slug [--seed <N>]
 """
 import argparse
 import json
@@ -17,31 +17,28 @@ from datetime import datetime
 from pathlib import Path
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Create a run directory for a plan.")
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Create a run directory for a derived hypothesis.")
     parser.add_argument("project", help="Project root path")
-    parser.add_argument("--plan", required=True, help="Plan ID, e.g., 01")
-    parser.add_argument("--slug", required=True, help="Plan slug")
+    parser.add_argument("--proposition", required=True, help="Parent proposition directory, e.g. P001_slug")
+    parser.add_argument("--hypothesis", required=True, help="Hypothesis directory, e.g. H001_slug")
     parser.add_argument("--seed", type=int, default=0, help="Random seed for this run")
     args = parser.parse_args()
 
     project = Path(args.project).resolve()
-    plan_name = f"{args.plan}_{args.slug}"
-    runs_dir = project / "experiments" / plan_name / "runs"
-    if not runs_dir.parent.exists():
-        print(
-            f"Error: plan experiments directory does not exist: {runs_dir.parent}",
-            file=sys.stderr,
-        )
-        print(f"Run new_plan.py first to create the plan.", file=sys.stderr)
+    hyp_dir = project / "propositions" / args.proposition / "hypotheses" / args.hypothesis
+    runs_dir = hyp_dir / "experiments" / "runs"
+    if not hyp_dir.exists():
+        print(f"Error: hypothesis directory does not exist: {hyp_dir}", file=sys.stderr)
+        print("Run new_hypothesis.py first to create the derived hypothesis.", file=sys.stderr)
         sys.exit(1)
     runs_dir.mkdir(parents=True, exist_ok=True)
 
-    # Count existing run directories to auto-increment.
     existing = [d for d in runs_dir.iterdir() if d.is_dir()]
     n = len(existing) + 1
+    hyp_id = args.hypothesis.split("_", 1)[0]
 
-    run_name = f"{args.plan}__{n:03d}__seed{args.seed}"
+    run_name = f"{hyp_id}__{n:03d}__seed{args.seed}"
     run_dir = runs_dir / run_name
     if run_dir.exists():
         print(f"Error: run directory already exists: {run_dir}", file=sys.stderr)
@@ -56,7 +53,8 @@ def main():
     created_at = datetime.now().isoformat(timespec="seconds")
     manifest = {
         "run_id": run_name,
-        "plan": plan_name,
+        "proposition": args.proposition,
+        "hypothesis": args.hypothesis,
         "seed": args.seed,
         "created_at": created_at,
         "status": "initialized",
@@ -76,7 +74,8 @@ def main():
     (run_dir / "README.md").write_text(
         f"# Run {run_name}\n\n"
         f"Created: {created_at}\n"
-        f"Plan: {plan_name}\n"
+        f"Proposition: {args.proposition}\n"
+        f"Hypothesis: {args.hypothesis}\n"
         f"Seed: {args.seed}\n\n"
         f"Print-only execution is not a completed research run: stdout is not evidence.\n"
         f"Use stdout for progress display, then persist the values, tables, figures, diagnostics, or intermediate data that support later analysis.\n\n"

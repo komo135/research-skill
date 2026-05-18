@@ -1,7 +1,7 @@
 # <Report Title>
 
 **Report ID:** <report-id>
-**Source plan:** plans/<plan-id>_<slug>.md
+**Source plan:** propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/plan.md
 **Date:** YYYY-MM-DD
 **Category:** experimental_development
 
@@ -27,7 +27,7 @@ Not applicable: <state why the development claim does not rest on a derivation o
 
 ## System description
 
-<System-level description sufficient for a non-author to understand and re-implement the design. See plans/<plan-id>_<slug>.md Methodology for full re-implementation detail.>
+<System-level description sufficient for a non-author to understand and re-implement the design. See propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/plan.md Methodology for full re-implementation detail.>
 
 ### Architecture
 
@@ -76,6 +76,6 @@ Not applicable: <state why no component-causality or robustness claim is made.>
 <- Resource boundaries>
 ## References
 
-- Plan: plans/<plan-id>_<slug>.md
-- Source artifacts: experiments/<plan-id>_<slug>/runs/
+- Plan: propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/plan.md
+- Source artifacts: propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/experiments/runs/
 - Prior work: literature/papers.md entries cited above

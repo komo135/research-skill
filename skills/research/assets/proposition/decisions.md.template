@@ -1,0 +1,14 @@
+# Decisions for <proposition_id>: <Proposition title>
+
+Proposition-level state transitions only. Routine analysis notes belong in `analyses.md`.
+
+Allowed labels: `SUPPORT`, `CONTRADICT`, `UNREALIZED_CONDITION`, `UNDER_SPECIFY`, `SPLIT_NEEDED`, `SPLIT`, `CLOSE`, `REOPEN`.
+
+## <YYYY-MM-DD> - <DECISION_LABEL>: <short title>
+
+- Scope: proposition <proposition_id>
+- Previous status:
+- New status:
+- Evidence or analysis pointer:
+- Rationale:
+- Follow-up state change:

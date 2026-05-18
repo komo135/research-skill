@@ -55,7 +55,7 @@ Domain-neutral implementations of common statistical tools:
 | `sanity_checks.py` | Standard pre-claim sanity tests |
 | `sensitivity_grid.py` | Parameter sensitivity grid for robustness battery |
 
-These are utilities, not framework code. They produce neutral outputs (numbers, JSON, csv) that the agent records as artifacts under `experiments/<plan>/runs/<run_id>/`. The base `research` skill governs how those artifacts become claims and reports.
+These are utilities, not framework code. They produce neutral outputs (numbers, JSON, csv) that the agent records as artifacts under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/`. The base `research` skill governs how those artifacts become claims and reports.
 
 ## When to use this skill
 

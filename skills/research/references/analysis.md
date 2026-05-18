@@ -32,7 +32,7 @@ Mechanism claims require discriminating evidence. Association-only patterns can 
 
 ## Research script artifact contract
 
-EDA and result-analysis scripts may print progress, but stdout is not evidence. A print-only script run leaves no audit trail for later analysis, review, or report writing. Every completed research script run must write durable artifact files under `experiments/<plan>/runs/<run_id>/`:
+EDA and result-analysis scripts may print progress, but stdout is not evidence. A print-only script run leaves no audit trail for later analysis, review, or report writing. Every completed research script run must write durable artifact files under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/`:
 
 - `run_manifest.json` records the command, `status: completed`, seed or material run condition, and manifest-listed artifact paths.
 - `logs/stdout.log` and `logs/stderr.log` capture console output for debugging and provenance.
@@ -53,7 +53,7 @@ The modern EDA pipeline derives from Tukey's *Exploratory Data Analysis* (1977) 
 6. **Leakage probe** — actively look for train-test contamination, target proxies, future-information leak. [Kapoor & Narayanan 2023](https://www.cell.com/patterns/fulltext/S2666-3899(23)00159-9) catalogue 8 leakage types across 294 affected papers. This is non-optional for any claim-bearing ML work
 7. **Time-series additions** — for temporal data: stationarity (visual run-sequence plot, Augmented Dickey-Fuller), autocorrelation (ACF/PACF). See `skills/quant-research/references/shared/time_series_validation.md` for design implications
 
-The output of EDA is a **revised understanding of the variable space** that informs the Plan section of `plans/<id>.md`. Findings that look like results should be treated as exploratory and not claimed as confirmatory — see depth stop conditions below.
+The output of EDA is a **revised understanding of the variable space** that informs `observations.md`, `analyses.md`, and then the derived hypothesis plan under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md`. Findings that look like results should be treated as exploratory and not claimed as confirmatory — see depth stop conditions below.
 
 ## Result analysis — claim disclosure floor
 
@@ -131,7 +131,7 @@ A literal fact extracted from raw data or a run artifact. No interpretation.
 - ✗ "The model is unstable." ← This is already interpretation.
 - ✗ "The method works better." ← Comparative interpretation.
 
-Observations go into `plans/<id>.md` Observations section or into notebooks. They do not need claim_structure formatting.
+Observations go into `propositions/Pxxx_slug/observations.md`, into the hypothesis plan's Actual execution section, or into notebooks. They do not need claim_structure formatting.
 
 ### Stage 2: Interpretation
 
@@ -181,13 +181,13 @@ In the iteration_loop, this maps to:
 
 | Artifact | Where |
 |---|---|
-| EDA notebooks (before plan exists) | `experiments/<plan>/notebooks/eda_<n>.ipynb` once plan is created. If EDA precedes any plan, create a basic_research exploratory plan first — that is what EDA is |
-| Result-analysis notebooks (after runs) | `experiments/<plan>/notebooks/analysis_<n>.ipynb` |
-| Diagnostic plots used in reports | `reports/<id>/figures/` (copy/regenerate, not symlink — reports are self-contained snapshots) |
-| Raw outputs analyzed | `experiments/<plan>/runs/<run_id>/outputs/` |
-| Intermediate EDA/result-analysis evidence | `experiments/<plan>/runs/<run_id>/intermediate/` |
-| Run manifest and logs | `experiments/<plan>/runs/<run_id>/run_manifest.json`, `experiments/<plan>/runs/<run_id>/logs/stdout.log`, `experiments/<plan>/runs/<run_id>/logs/stderr.log` |
-| Analysis summary that informs the plan | `plans/<id>.md` Observations section + Methodology section |
+| EDA notebooks (before plan exists) | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/notebooks/eda_<n>.ipynb` once a derived hypothesis exists; if EDA precedes a hypothesis, record material in `observations.md` and `analyses.md` first |
+| Result-analysis notebooks (after runs) | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/notebooks/analysis_<n>.ipynb` |
+| Diagnostic plots used in reports | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/reports/<id>/figures/` (copy/regenerate, not symlink — reports are self-contained snapshots) |
+| Raw outputs analyzed | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/outputs/` |
+| Intermediate EDA/result-analysis evidence | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/intermediate/` |
+| Run manifest and logs | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/run_manifest.json`, `logs/stdout.log`, `logs/stderr.log` |
+| Analysis summary that informs the plan | `observations.md` + `analyses.md` + hypothesis plan Methodology section |
 
 ## Common failures
 

@@ -7,13 +7,13 @@ description: Use when reviewing an R&D plan before execution, especially when a 
 
 ## Overview
 
-Independent review for a drafted research plan before execution. The plan path is the starting context; the reviewer checks whether execution should stop because the hypothesis rests on a broken premise or because the validation method cannot test the hypothesis.
+Independent review for a drafted hypothesis plan before execution. The plan path is the starting context; the reviewer checks whether execution should stop because the derived hypothesis rests on a broken premise, because the validation method cannot test it, or because the plan drifted away from the parent proposition analysis.
 
 This skill reviews research design only. Do not execute the plan, do not analyze results, and do not write final claims.
 
 The `Execution recommendation` is a pre-execution design recommendation: whether the plan is safe to run as written, needs repair, or should be blocked before execution. It is not a claim-readiness verdict and must not use result-analysis readiness labels.
 
-Plan review covers **pre-result commitments** only: question/objective, hypothesis type, hypothesis statement, prediction or expected observation, plan visual, evidence route, artifacts, planned discriminating test when the claim requires one, and stop / branch criteria. Mechanistic fields are required only when the hypothesis is mechanistic. Do not explain why an unobserved result happened. **Post-result explanations** belong to `research-result-analysis` after evidence exists.
+Plan review covers **pre-result commitments** only: parent proposition trace, Generated doubt, Working proposition, Expected consequence, Proposition status, derived hypothesis, hypothesis type, prediction or expected observation, plan visual, evidence route, artifacts, planned discriminator when the claim requires one, and stop/status criteria. Mechanistic fields are required only when the hypothesis is mechanistic. Do not explain why an unobserved result happened. **Post-result explanations** belong to `research-result-analysis` after evidence exists.
 
 ## Review purpose
 
@@ -21,29 +21,33 @@ The purpose is to stop execution before research time is spent on a plan that sh
 
 Review only two load-bearing questions:
 
-1. **Premise check**: is the hypothesis built on a wrong premise, unsupported premise, unverified premise, contradicted project state, missing observation, or prior-work claim that is not actually grounded?
+1. **Premise check**: is the derived hypothesis built on a wrong premise, unsupported premise, unverified premise, contradicted proposition state, missing observation, or prior-work claim that is not actually grounded?
 2. **Hypothesis validation method**: can the planned experiment, analysis, derivation, evaluator, comparator, or limiting-case check really validate the stated hypothesis type?
+3. **Trace check**: does the plan actually test the derived hypothesis produced by the source analysis, or did it drift into testing a convenient different question?
 
 If either answer is no, return `block_execution`. Do not downgrade to `revise_before_execution` because the plan is mechanically runnable, cheap, deadline-driven, demo-visible, or easy to patch later.
 
 ## Workflow
 
 1. **Read the plan**  
-   Identify category, mode, Question / Objective, Idea portfolio when present, Prior-work grounding, Survey evidence, Citation-use map, Divergence checkpoint, and Plan. Prior-work grounding must cite `literature/papers.md` and `literature/positioning.md`, or record a retrieval-unavailable constraint with evidence.
+   Identify category, mode, `## Proposition and hypothesis trace`, Prior-work grounding, Survey evidence, Citation-use map, Divergence checkpoint, and Plan. Read sibling `hypothesis.md` and the referenced parent proposition files (`proposition.md`, `observations.md`, `analyses.md`) when available from the plan path. Prior-work grounding must cite prior work through `literature/papers.md` and `literature/positioning.md` when those files exist, or record a retrieval-unavailable constraint with evidence.
 
 2. **Check the premise first**  
-   Ask whether the question/objective and hypothesis follow from the recorded observations, project state, known failures, constraints, prior work, and Divergence checkpoint. If the plan contradicts recorded project state or revives a closed/replaced route without new evidence, block execution. If a proxy metric has already been discredited for the stated objective, a plan using only that proxy is a wrong-premise plan.
+   Ask whether the derived hypothesis follows from the recorded observations, Generated doubt, Working proposition, Expected consequence, Proposition status, known failures, constraints, prior work, and Divergence checkpoint. If the plan contradicts parent proposition state or revives a closed/replaced route without new evidence, block execution. If a proxy metric has already been discredited for the stated objective, a plan using only that proxy is a wrong-premise plan.
 
-3. **Check the hypothesis validation method**  
+3. **Check the proposition trace**
+   Require a trace to Generated doubt, Working proposition, Expected consequence, Proposition status, and derived hypothesis. If any of these are missing, placeholder-only, or inconsistent with sibling `hypothesis.md` or parent `analyses.md`, return `block_execution` when the missing trace affects the premise or validation method; otherwise return `revise_before_execution`.
+
+4. **Check the hypothesis validation method**
    Ask whether the plan can validate the stated hypothesis type, not merely measure a convenient proxy. Use the type decision procedure in `references/mechanistic_hypothesis_generation.md`: if the intended claim is only "A improves metric B over baseline C," the type is predictive / performance. Predictive / performance hypotheses need a fair comparator, evaluation protocol, primary measure, threshold, and leakage / variance / split policy when relevant. A mechanism hypothesis needs evidence that can bear on the proposed entities, activities, process, organization, or mechanism of action; its plan should include a planned discriminating test when the mechanism claim requires one. Causal / intervention hypotheses need an intervention, outcome, control/comparator, assumptions, and evidence route. Descriptive hypotheses need a defined variable space and measurement. The review must not turn a predictive / performance hypothesis into a mechanism study. For theoretical mode, check the derivation question, axioms / definitions / prior theorems, proposed derivation route, limiting-case checks, empirical sanity check if present, and named failure modes.
 
-4. **Check the Plan visual**
+5. **Check the Plan visual**
    Plan must start with `### Plan visual`. If the section is missing, return `revise_before_execution` or `block_execution` depending on whether the missing visual affects the premise or validation method. If the plan contains an architecture, data flow, evaluation flow, mechanism, causal relation, system boundary, variable space, decision flow, or derivation dependency, require a Mermaid, PlantUML, ASCII, or durable linked figure/table visual that makes that structure inspectable. If it says `No diagram:`, accept it only when the reason explains why no visual would help.
 
-5. **Check prior-work survey evidence**
+6. **Check prior-work survey evidence**
    Block execution when Survey evidence is missing, left as `TBD`, or replaced by an unknown-prior-work constraint without search evidence or a retrieval-unavailable constraint. Retrieval-unavailable is not a survey bypass: block execution unless the plan records a verifiable signal with attempted source/tool, query or source ID when available, failure evidence, and claim-scope narrowing. Also block a bibliography without use mapping: each cited work must appear in the Citation-use map with a concrete role in the plan. A plan can use `revise_before_execution` for incomplete summaries, but absence of survey evidence or citation-use mapping is a pre-execution blocker because controls, comparators, baselines, claim scope, and often the premise itself are not grounded. Sub-field completion is not grounding sufficiency; filled fields must still substantively connect the cited work to the question, method, controls/comparators, evidence route, limitations, and claim scope.
 
-6. **Return**
+7. **Return**
    Return a `## Plan review` section that names premise blockers, validation-method blockers, required repairs, and whether the plan should execute as written.
 
 ## Block Rules
@@ -51,7 +55,8 @@ If either answer is no, return `block_execution`. Do not downgrade to `revise_be
 Return `block_execution` when any of these are true:
 
 - The hypothesis rests on a wrong, unsupported, or unverified premise.
-- The question/objective does not follow from the recorded project state, observations, constraints, or prior-work grounding.
+- The derived hypothesis does not follow from the recorded parent proposition, observations, Generated doubt, Working proposition, Expected consequence, Proposition status, constraints, or prior-work grounding.
+- The plan drifted into testing a different question than the one produced by the source analysis.
 - The plan contradicts a previous `CLOSE: replaced`, `PARK`, or disconfirmed route without recording new evidence that reopens it.
 - The stated objective depends on a proxy that the plan does not justify, or that prior project state has already discredited for that objective.
 - The planned validation cannot test the stated hypothesis type, or it uses a proxy/comparator/evidence route that cannot support the claim.
@@ -76,6 +81,7 @@ Return `revise_before_execution` only when the premise and validation route are 
 
 ### Research-design checks
 - Premise check: <adequate / revise / block>: <whether the hypothesis rests on a wrong / unsupported / unverified premise, contradicted project state, discredited proxy, or ungrounded prior-work claim>
+- Proposition trace: <adequate / revise / block>: <whether the plan traces to sibling `hypothesis.md`, parent proposition, generated doubt, working proposition, expected consequence, and proposition status without drifting to a different question>
 - Hypothesis validation method: <adequate / revise / block>: <whether the planned validation can test the stated hypothesis type without turning it into a different research question>
 - Plan visual: <adequate / revise / block>: <whether architecture, data flow, evaluation flow, mechanism, system boundary, variable space, decision flow, or derivation dependency is inspectable>
 - Prior-work survey evidence: <adequate / revise / block>: <missing Survey evidence or Citation-use map means block_execution unless a retrieval-unavailable constraint has a verifiable signal, attempted source/tool, failure evidence, and claim-scope narrowing>

@@ -1,0 +1,14 @@
+# Decisions for <hypothesis_id>: <Hypothesis title>
+
+Derived-hypothesis state transitions only. Result interpretation lives in `plan.md` Result analysis; state changes are summarized here.
+
+Allowed labels: `COMMIT`, `PARK`, `KILL`, `TESTED_SUPPORTED`, `TESTED_CONTRADICTED`, `TESTED_PARTIAL`, `TESTED_INCONCLUSIVE`, `REVISE`.
+
+## <YYYY-MM-DD> - <DECISION_LABEL>: <short title>
+
+- Scope: hypothesis <hypothesis_id>
+- Previous status:
+- New status:
+- Evidence or analysis pointer:
+- Rationale:
+- Follow-up state change:

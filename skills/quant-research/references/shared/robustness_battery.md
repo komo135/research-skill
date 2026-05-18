@@ -147,5 +147,5 @@ phenomenon / mechanism workstream updates `explanation_ledger.md`.
 | DSR < 0.95 | Too many hyperparameter trials; redesign and reduce trials |
 | Only one regime works | Adopt a conditional strategy |
 
-Log durable state transitions in `decisions.md` when the finding changes plan
+Log durable state transitions in the proposition or hypothesis `decisions.md` when the finding changes state
 state.

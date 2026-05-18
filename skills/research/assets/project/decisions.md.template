@@ -1,19 +1,21 @@
-# Decisions Log
+# Project Decisions Log
 
-Durable state transitions only. Routine `NEXT_STEP` entries are not recorded here. Smoke tests, environment setup, and orientation are not durable changes.
+Project-wide structure, scope, and operating decisions only. Proposition-level state transitions live in `propositions/Pxxx_slug/decisions.md`. Derived-hypothesis state transitions live in `propositions/Pxxx_slug/hypotheses/Hxxx_slug/decisions.md`.
+
+Allowed labels: `OPEN_PROPOSITION`, `SPLIT_PROPOSITION`, `MERGE_PROPOSITION`, `CHANGE_SCOPE`, `CHANGE_PROTOCOL`.
 
 Each entry uses this shape:
 
 ```markdown
-## YYYY-MM-DD HH:MM <plan_id> <BRANCH>
-- From: <previous state — question, scope, status>
-- To: <new state>
-- Trigger: <what evidence prompted this>
-- Evidence: <file:line / claim ID / run reference>
-- Next: <what the next session does>
-```
+## YYYY-MM-DD - <DECISION_LABEL>: <short title>
 
-Branches: `REFINE`, `ADJACENT`, `PARK`, `CLOSE`. (`NEXT_STEP` does not require an entry.)
+- Scope: project
+- Previous status:
+- New status:
+- Evidence or analysis pointer:
+- Rationale:
+- Follow-up state change:
+```
 
 ---
 

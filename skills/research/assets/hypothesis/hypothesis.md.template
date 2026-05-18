@@ -1,0 +1,44 @@
+# <hypothesis_id>: <Hypothesis title>
+
+## Parent proposition
+
+- Proposition: <proposition_id>
+- Source analysis: analyses.md#<source_analysis>
+
+## Hypothesis
+
+<hypothesis_statement>
+
+## Type
+
+predictive / performance | mechanistic | causal / intervention | descriptive / characterization | theoretical | mixed
+
+## Derivation
+
+- Working proposition: <working proposition from the source analysis>
+- Proposition status that produced this hypothesis: <source_status>
+- Why this hypothesis follows: <why this hypothesis preserves, revises, splits, rejects, or realizes a condition of the parent proposition>
+
+## Expected observation
+
+<what should be observed if the hypothesis is useful>
+
+## Competing hypothesis
+
+<plausible alternative that could explain the same material>
+
+## Minimal discriminator
+
+<smallest experiment, analysis, derivation check, or observation that separates this hypothesis from the competitor>
+
+## Required evidence
+
+- <evidence needed before planning or before claiming support>
+
+## Current status
+
+candidate | ready-for-plan | tested-supported | tested-contradicted | tested-partial | tested-inconclusive | parked | killed
+
+## Plan
+
+plan.md

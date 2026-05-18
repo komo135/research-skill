@@ -95,14 +95,14 @@ For regression problems, examine prediction residuals:
 ## What to do when assumptions fail
 
 Either drop the offending instruments / periods / regimes as **model-not-applicable**, or
-change the model. Record the decision in `decisions.md`.
+change the model. Record the decision in the proposition or hypothesis `decisions.md`.
 
 Example:
 
 ```
 pur_004 OU parameter estimation: 30% of instruments have κ < 1/0.5 (mean-reversion time
 > 6 months). Decision: classify those instruments as OU-not-applicable and proceed with
-the remaining 70%. Logged in decisions.md.
+the remaining 70%. Logged in the relevant proposition or hypothesis decisions.md.
 ```
 
 Without this, noise from mis-fit instruments contaminates the result.

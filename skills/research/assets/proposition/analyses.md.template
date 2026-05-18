@@ -1,0 +1,28 @@
+# Analyses for <proposition_id>: <Proposition title>
+
+Analysis is where questions are born. Each entry must name the contrast that produces the generated doubt, then derive a working proposition, expected consequence, proposition status, and only then a derived hypothesis candidate.
+
+## A001: <short analysis title>
+
+- Analysis question: <situation question or focused research question>
+- Material used: <O ids and prior analyses>
+- Contrast type: expectation-break | constraint-joint-fit | required-component-doubt | trace-meaning | static-to-process | analogy-transfer | search-or-evaluation-bottleneck | representation-change | other
+- Contrast: <what the material is contrasted against: expectation, constraint, theory, component necessity, trace, static interpretation, or search/evaluation bottleneck>
+- Generated doubt: <precise doubt produced by the contrast>
+- Working proposition: <proposition that would make the generated doubt meaningful>
+- Expected consequence if the working proposition is true: <what should be observed under stated conditions>
+- Observed match, break, or missing condition: <comparison between expected consequence and observed material>
+- Proposition status assessment: supported | contradicted | unrealized-condition | under-specified | split-needed
+- Derived hypothesis candidate: <testable hypothesis, or `None: <reason>` if material is too early>
+- What evidence would update this analysis: <observation, measurement, comparator, discriminator, or formulation needed>
+
+## Question-generation operations
+
+- expectation-break: expected relation and observation diverge.
+- constraint-joint-fit: several constraints need one structure or process.
+- required-component-doubt: an assumed necessary component may not be necessary if its function can be supplied differently.
+- trace-meaning: repeated, symmetric, ratio-like, or leftover traces may record a process.
+- static-to-process: a static pattern may be a historical record of generation, movement, update, or decay.
+- analogy-transfer: transfer a mechanism or constraint pattern, not a name.
+- search-or-evaluation-bottleneck: move a bottleneck from direct search/evaluation into an indirect, learned, or constrained process.
+- representation-change: change variables so a proposition becomes realizable or testable.

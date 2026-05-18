@@ -1,0 +1,13 @@
+# Observations for <proposition_id>: <Proposition title>
+
+Observation entries are material for proposition analysis. If there is no observation, failure, success case, constraint, measurement, comparator, trace, prior-work fact, theoretical tension, or bottleneck, do not create a proposition or hypothesis; create a material-acquisition task first.
+
+## O001: <short observation title>
+
+- Source: <artifact, paper, user-provided fact, experiment log, benchmark, dataset, failure trace, or analysis output>
+- Observation: <what was observed>
+- Measurement or evidence form: <metric, qualitative trace, structural constraint, example, counterexample, citation, or Not defined>
+- Comparator or expected reference: <baseline, prior result, theory, constraint, or None>
+- Reliability: <direct / indirect / preliminary / uncertain>
+- Missing material: <what must be collected before stronger analysis>
+- Why it matters for the proposition: <how it creates or updates a proposition-level question>

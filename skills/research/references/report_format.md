@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Reports are for humans. They live under `reports/<id>_<slug>/` and are the standalone evidence artifact a reader uses to make a decision or understand what was done — without opening the agent's plans, runs, or code.
+Reports are for humans. They live under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/reports/<id>_<slug>/` and are the standalone evidence artifact a reader uses to make a decision or understand what was done without opening the agent's plans, runs, or code.
 
 A report is a snapshot. Once written, it does not get retroactively rewritten when later work changes the picture. Subsequent work produces subsequent reports. Each report stands on its own.
 
@@ -12,7 +12,7 @@ The skill requires a **paper-grade report**: the evidence standard should be hig
 
 Two design consequences follow:
 
-- **No environment locks or commit hashes in the prose.** Reports should describe material conditions, not environment locks: data identity, evaluation protocol, major tool/model versions, hardware class, external API/model version, or collection date only when those conditions could change the interpretation. A one-line pointer to `experiments/<plan>/runs/` is enough if a reader wants to dig into raw artifacts. This is methods reproducibility, not computational replicability.
+- **No environment locks or commit hashes in the prose.** Reports should describe material conditions, not environment locks: data identity, evaluation protocol, major tool/model versions, hardware class, external API/model version, or collection date only when those conditions could change the interpretation. A one-line pointer to `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/` is enough if a reader wants to dig into raw artifacts. This is methods reproducibility, not computational replicability.
 - **No exhaustive citation lists.** Cite the directly relevant prior work (methods, resources, controls, comparators, or foundations used) — typically a handful, not dozens. The Related Work section must position the work, not pad a bibliography.
 - **No next-work sections in reports.** Do not leave next hypotheses or next actions in report prose or sections. The report records evidence, interpretation, limitations, and sources.
 
@@ -67,7 +67,7 @@ Required for `basic_research` with `mode: theoretical` and for applied / experim
 Content:
 - **Definitions**: notation, key objects, scope of validity
 - **Assumptions**: axioms or modeling assumptions the derivation depends on (cross-reference any assumption_audit findings from `references/assumption_audit.md`)
-- **Derivation / theorem statement**: the formal result, with proof sketch or full proof depending on length; for long proofs, summarize in the report and place the full proof in `experiments/<plan>/notebooks/proof_<n>.md` or an appendix
+- **Derivation / theorem statement**: the formal result, with proof sketch or full proof depending on length; for long proofs, summarize in the report and place the full proof in hypothesis-local `experiments/notebooks/proof_<n>.md` or an appendix
 - **Limiting cases**: what known result the formulation reduces to in stated limits (this is the basic-theoretical analog of the applied "comparator" — show that the new formulation recovers known correct behavior)
 - **Predictions**: what observable consequences follow (these become the Results section's tested claims for theoretical-applied reports; for pure-theoretical reports they become Observations when established by the derivation)
 
@@ -81,10 +81,10 @@ This is where research-level reproducibility lives. Methods reproducibility, in 
 
 **The plan is the canonical methods description; the report's Methods section is a human-readable summary, not a duplicate.**
 
-The `plans/<id>.md` Methodology subsection holds the full re-implementation-level detail. The report's Methods & Conditions section should:
+The hypothesis plan's Methodology subsection holds the full re-implementation-level detail. The report's Methods & Conditions section should:
 
 - Summarize the essence in a human-readable narrative
-- Cite the plan for full detail: `See plans/<plan_id>.md (Methodology section) for full re-implementation detail`
+- Cite the plan for full detail: `See propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md (Methodology section) for full re-implementation detail`
 - Cover the elements a non-author needs on first read (what was done, on what data, under what conditions)
 - Not duplicate hyperparameter tables, full configuration listings, or per-run details that already live in the plan
 
@@ -218,13 +218,13 @@ For pure-theoretical reports, predicted observations or derivation extensions be
 
 ## Figures and tables
 
-Each report is self-contained. Figures live under `reports/<id>_<slug>/figures/`. Tables under `reports/<id>_<slug>/tables/`. The report references them by relative path:
+Each report is self-contained. Figures live under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/reports/<id>_<slug>/figures/`. Tables under `reports/<id>_<slug>/tables/`. The report references them by relative path:
 
 ```markdown
 ![Convergence trajectories per seed](figures/convergence_curves.png)
 ```
 
-The figures **must actually exist**. Generating a real figure may require code that lives in `experiments/<plan>/code/` or `lib/viz/`. The skill does not specify how figures are generated — only that they exist when the report references them.
+The figures **must actually exist**. Generating a real figure may require code that lives in hypothesis-local `experiments/code/` or `lib/viz/`. The skill does not specify how figures are generated — only that they exist when the report references them.
 
 `scripts/check_report.py` verifies that referenced figures exist.
 
@@ -245,7 +245,7 @@ When the figure is the primary evidence (not a decoration), the Results section'
 If the report's load-bearing numbers should be auditable to specific runs:
 
 ```markdown
-Source artifacts: experiments/01_phase_transition/runs/, plan: plans/01_phase_transition.md
+Source artifacts: propositions/P001_phase-transition/hypotheses/H001_example/experiments/runs/, plan: propositions/P001_phase-transition/hypotheses/H001_example/plan.md
 ```
 
 This is a pointer, not a reproducibility section. It tells the reader where to look if they want to dig into the underlying artifacts. Reproducibility comes from the methods and conditions being clear enough to re-implement; provenance points help audit what the agent actually ran.

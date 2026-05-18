@@ -130,7 +130,7 @@ def check_run(run_dir: Path) -> list[str]:
 
 def main():
     parser = argparse.ArgumentParser(description="Verify a research run directory has durable artifacts.")
-    parser.add_argument("run_dir", help="Path to experiments/<plan>/runs/<run_id>")
+    parser.add_argument("run_dir", help="Path to propositions/<P>/hypotheses/<H>/experiments/runs/<run_id>")
     args = parser.parse_args()
 
     run_dir = Path(args.run_dir).resolve()

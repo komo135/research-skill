@@ -1,7 +1,7 @@
 # <Report Title>
 
 **Report ID:** <report-id>
-**Source plan:** plans/<plan-id>_<slug>.md
+**Source plan:** propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/plan.md
 **Date:** YYYY-MM-DD
 **Category:** basic_research
 
@@ -27,7 +27,7 @@ Not applicable: <state why this basic-research report is observational rather th
 
 ## Methods & Conditions
 
-<Substantive description of how the phenomenon was probed. Enough for re-implementation. See plans/<plan-id>_<slug>.md Methodology for full re-implementation detail.>
+<Substantive description of how the phenomenon was probed. Enough for re-implementation. See propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/plan.md Methodology for full re-implementation detail.>
 
 ### What was probed
 
@@ -76,6 +76,6 @@ Not applicable: <state why no component-causality or robustness claim is made.>
 
 ## References
 
-- Plan: plans/<plan-id>_<slug>.md
-- Source artifacts: experiments/<plan-id>_<slug>/runs/
+- Plan: propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/plan.md
+- Source artifacts: propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/experiments/runs/
 - Prior work: literature/papers.md entries cited above

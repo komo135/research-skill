@@ -7,9 +7,9 @@ description: Use when analyzing completed R&D plan results from a plan path, esp
 
 ## Overview
 
-Independent result analysis for a completed research plan. The plan path is the only starting context; the agent reconstructs evidence from referenced artifacts and decomposes why the result happened. When the result missed the plan's prediction or threshold, the analysis must also explain why it failed.
+Independent result analysis for a completed hypothesis plan. The plan path is the only starting context; the agent reconstructs evidence from referenced artifacts and decomposes why the result happened. When the result missed the plan's prediction or threshold, the analysis must also explain why it failed.
 
-This skill does not decide what can be claimed, whether to ship, or which iteration branch to choose.
+This skill does not decide what can be claimed, whether to ship, which iteration branch to choose, which proposition decision to record, or which hypothesis decision to record.
 
 Result analysis produces **post-result explanations** after evidence exists. It is not a continuation of planning and not a place to create **pre-result commitments** retroactively; result-analysis outputs are not pre-result commitments. The plan should already contain the question, prediction or expected observation, primary measure, planned discriminating test, evidence route, and artifact expectations.
 
@@ -19,7 +19,7 @@ Treat the plan as the only starting context. Do not rely on parent-agent summari
 
 Result analysis is not only a validity audit. Procedure defects, leakage, broken comparators, missing artifacts, and script bugs are candidate explanations for the observed result, not separate verdict labels. Failed predictions require failed-prediction analysis: observed gap plus live candidate explanations, not a note that the threshold was missed and not forced category labels.
 
-This skill owns analysis only. Do not write final claims, do not choose iteration decisions, do not assess readiness for promotion, and do not draft human-facing reports.
+This skill owns analysis only. Do not write final claims, do not choose iteration decisions, do not assess readiness for promotion, do not choose proposition decisions, do not choose hypothesis decisions, and do not draft human-facing reports.
 
 ## Required Reference
 
@@ -30,7 +30,7 @@ Minimum evidence rule: stdout is not evidence. A completed run needs `run_manife
 ## Workflow
 
 1. **Read the plan**
-   Identify the question/objective, Plan, Actual execution, Planned vs Actual, References, and any existing observations. Note material deviations and any pressure to produce a claim or decision.
+   Identify the Proposition and hypothesis trace, sibling `hypothesis.md`, parent proposition references, Plan, Actual execution, Planned vs Actual, References, and any existing observations. Note material deviations and any pressure to produce a claim or decision.
 
 2. **Reconstruct evidence**
    Follow plan references to runs, `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, scripts, configs, outputs, tables, figures, reports, and literature entries. Verify that cited artifact paths exist when filesystem access is available. If a referenced item is missing or ambiguous, record it under `context_missing`.
@@ -45,6 +45,8 @@ Minimum evidence rule: stdout is not evidence. A completed run needs `run_manife
 
 5. **Return**
    Return a plan-ready `## Result analysis` section. Use artifact paths, numeric values, table/figure references, and missing-context entries that the parent research agent can inspect before writing claims or decisions.
+
+The parent research agent updates state after this analysis. This skill does not choose proposition decisions. It may describe how evidence bears on hypothesis status (`tested-supported`, `tested-contradicted`, `tested-partial`, `tested-inconclusive`) and proposition status (`supported`, `contradicted`, `unrealized-condition`, `under-specified`, `split-needed`) as analysis input, but final ledger updates belong to the parent.
 
 ## Analysis Quality Gate
 
@@ -96,6 +98,8 @@ Association-only evidence can motivate an explanation candidate, but it does not
 
 ### Evidence traced
 - Plan: <plan path>
+- Hypothesis: <sibling hypothesis.md or context_missing>
+- Parent proposition state: <proposition.md / observations.md / analyses.md references inspected, or context_missing>
 - Runs and artifacts: <manifest/log/output/table/figure/script paths inspected>
 - context_missing: <None, or missing/ambiguous plan references, artifacts, logs, scripts, metrics, comparators, controls, slices, traces, or failure samples>
 
@@ -125,6 +129,10 @@ Association-only evidence can motivate an explanation candidate, but it does not
 ### Alternatives still live
 - <plausible explanation, confound, missing control, untested condition, or theoretical gap not yet excluded>
 
+### State-update inputs
+- Hypothesis status evidence: <support / contradiction / partial / inconclusive evidence the parent can use; not a decision>
+- Proposition status evidence: <support / contradiction / unrealized-condition / under-specified / split-needed evidence the parent can use; not a decision>
+
 ```
 
 ## Common Mistakes
@@ -134,6 +142,8 @@ Association-only evidence can motivate an explanation candidate, but it does not
 | Using a parent-agent summary as evidence | Ignore it; trace the plan and artifacts directly. |
 | Treating missing references as harmless | Record `context_missing` and include missing evidence as a procedure / artifact explanation when it can explain the observation. |
 | Writing final claims | Return why-analysis only; the parent research protocol records claims. |
+| Choosing proposition decisions | Result analysis does not update `proposition.md` or proposition `decisions.md`; the parent agent does that after reviewing the analysis. |
+| Choosing hypothesis decisions | Result analysis does not update `hypothesis.md` or hypothesis `decisions.md`; the parent agent does that after reviewing the analysis. |
 | Choosing `NEXT_STEP`, `REFINE`, `ADJACENT`, `PARK`, or `CLOSE` | Leave iteration decisions to the parent research skill. |
 | Translating analysis into deployment action | Do not choose ship, block, or rollout actions. |
 | Stopping at "the result is valid" | Continue to what happened, candidate explanations, and evidence for/against. |
