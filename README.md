@@ -3,7 +3,7 @@
 [![CI](https://github.com/komo135/research-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/komo135/research-skill/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-`research-skill` is a Claude Code and Codex plugin for **agent-driven R&D**. It gives agents a proposition-first research lifecycle, independent plan review, independent result analysis, and a quantitative research extension for time-series and statistically fragile evaluations.
+`research-skill` is a Claude Code and Codex plugin for **agent-driven R&D**. It gives agents upstream parent-proposition creation, a proposition-first research lifecycle, independent plan review, independent result analysis, and a quantitative research extension for time-series and statistically fragile evaluations.
 
 The central idea is simple: the top-level research unit is a **proposition**, not a standalone plan. Plans test one derived hypothesis traced to a live parent proposition.
 
@@ -13,6 +13,7 @@ Agentic research often fails in predictable ways: it jumps from vague topics to 
 
 This plugin makes those transitions explicit:
 
+- create parent propositions from observations and questions before choosing direct solutions;
 - collect material before proposing hypotheses;
 - record the generated doubt, working proposition, expected consequence, observed match or break, and proposition status;
 - derive one plan-ready hypothesis from a live proposition;
@@ -42,6 +43,7 @@ Poor fits:
 
 | Skill | Role |
 |---|---|
+| `creating-propositions` | Lens-based upstream skill for creating parent propositions from observations and questions. It turns research material into expectation-break, mechanism, representation, constraint, responsibility, failure, invariant, regime, or measurement propositions before direct-solution prioritization or planning. |
 | `research` | Proposition-first protocol for R&D work across Frascati categories. Owns observations, analyses, proposition state, derived hypotheses, plans, claims, decisions, and reports. |
 | `research-plan-review` | Independent pre-execution review. Starts from a hypothesis plan path and checks premise, proposition trace, validation method, plan visual, prior-work grounding, and blockers. |
 | `research-result-analysis` | Independent post-execution analysis. Starts from a hypothesis plan path, reconstructs evidence, explains what happened and why, and returns state-update inputs without writing final claims or decisions. |
@@ -74,6 +76,14 @@ enabled = true
 This is an agent skill, not a human-operated command-line framework. After installing the plugin, ask your agent to use the skill and give it the research context, material, and desired project location.
 
 Example prompts:
+
+```text
+Use the creating-propositions skill to turn these observations into parent propositions.
+Do not choose direct solutions or write a plan yet; return observations, questions,
+the proposition-generation lens pass, parent propositions, direct-solution
+hypothesis slots, expected observations, falsifiers, competing propositions,
+and conclusion states.
+```
 
 ```text
 Use the research skill to start a proposition-first R&D project in ./my-research.

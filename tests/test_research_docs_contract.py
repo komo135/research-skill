@@ -397,11 +397,38 @@ def test_plan_schema_and_templates_record_lens_and_decision_contract():
             "tested-inconclusive",
         )
 
+def test_creating_propositions_skill_has_public_contract_metadata():
+    skill_path = ROOT / "skills" / "creating-propositions" / "SKILL.md"
+    assert skill_path.exists()
+
+    text = skill_path.read_text(encoding="utf-8")
+    assert text.startswith("---\n")
+    frontmatter = text.split("---", 2)[1]
+    assert re.search(r"^name:\s*creating-propositions\s*$", frontmatter, flags=re.MULTILINE)
+    assert re.search(r"^description:\s*\S.+$", frontmatter, flags=re.MULTILINE)
+
+
+def test_creating_propositions_is_publicly_documented():
+    readme = read("README.md")
+    codex_plugin = json.loads(read(".codex-plugin/plugin.json"))
+    claude_plugin = json.loads(read(".claude-plugin/plugin.json"))
+    claude_marketplace = json.loads(read(".claude-plugin/marketplace.json"))
+
+    assert "`creating-propositions`" in readme
+    assert "creating-propositions" in codex_plugin["interface"]["longDescription"]
+    assert "creating-propositions" in claude_plugin["description"]
+    assert any(
+        "creating-propositions" in plugin["description"]
+        for plugin in claude_marketplace["plugins"]
+    )
+
+
 def test_research_skill_docs_are_english_only():
     checked_paths = [
         ROOT / "skills" / "research" / "SKILL.md",
         *sorted((ROOT / "skills" / "research" / "references").rglob("*.md")),
         *sorted((ROOT / "skills" / "research" / "assets").rglob("*.template")),
+        ROOT / "skills" / "creating-propositions" / "SKILL.md",
     ]
 
     offenders = []
