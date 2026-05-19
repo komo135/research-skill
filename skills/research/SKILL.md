@@ -81,14 +81,14 @@ Every hypothesis-generating analysis must write this sequence:
 6. Expected consequence if the working proposition is true.
 7. Observed match, break, or missing condition.
 8. Proposition status.
-9. Derived hypothesis candidate only after status is known.
+9. Derived hypothesis candidate only when the status permits one. If the status blocks hypothesis creation, write `None: <reason>` instead of a candidate.
 
 Proposition status values:
 
 - `supported`: material matches the expected consequence enough to derive or continue a hypothesis.
 - `contradicted`: material breaks the proposition itself.
-- `unrealized-condition`: the proposition may hold, but the current method, representation, measurement, evaluator, or system does not realize a required condition.
-- `under-specified`: the proposition cannot yet produce a discriminating expected consequence.
+- `unrealized-condition`: the proposition may hold, but the current method, representation, measurement, evaluator, or system does not realize a required condition. If the material is theoretical only and the expected consequence can be written but has not yet been empirically realized, this is `unrealized-condition`, not `under-specified`.
+- `under-specified`: the proposition cannot yet produce a discriminating expected consequence. If you were able to write the expected consequence, the proposition is not `under-specified`.
 - `split-needed`: one proposition hides multiple separable propositions.
 - `split`: child propositions have been opened; continue through children.
 - `closed`: the proposition is resolved, superseded, killed, or no longer useful.
@@ -100,12 +100,12 @@ Routing:
 | `supported` | Create or continue a derived hypothesis |
 | `contradicted` | Record the contradiction, then revise, split, or close the proposition before deriving a hypothesis under the updated proposition |
 | `unrealized-condition` | Derive a hypothesis that makes the condition realizable |
-| `under-specified` | Add observation, measurement, comparator, or formulation before planning |
+| `under-specified` | Add observation, measurement, comparator, or formulation before planning; do not create a formal derived hypothesis or plan |
 | `split-needed` | Split before planning |
 | `split` | Continue through child propositions, not the old parent |
 | `closed` | Do not derive new hypotheses from this proposition |
 
-This is the anti-handwave rule: a derived hypothesis is not produced until the agent can say which proposition status produced it.
+This is the anti-handwave rule: a derived hypothesis is not produced until the agent can say which proposition status produced it. When the status is `under-specified`, the analysis may record the missing discriminator but must not smuggle a plausible hypothesis into the Derived hypothesis field.
 
 ## Project structure
 
