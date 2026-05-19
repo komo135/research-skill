@@ -20,7 +20,7 @@ Situation question
 → expected observation E if P is true
 → compare observed O with E
 → decide whether P is contradicted or whether P's required condition is unrealized
-→ derive hypothesis H that preserves, revises, splits, rejects, or realizes a condition of P
+→ if P remains live, derive hypothesis H that preserves, revises, splits from, or realizes a condition of P
 → predict what should happen if H is true
 → Hypothesis plan
 → Plan review
@@ -42,6 +42,10 @@ Question generation is not free-form ideation. It starts from material and a con
 - `representation-change`
 
 Each analysis records the Generated doubt, Working proposition, Expected consequence, observed match/break/missing condition, Proposition status, and only then a Derived hypothesis candidate. Material absence means no proposition or hypothesis: collect observations, measurements, constraints, comparators, traces, prior-work facts, theoretical tensions, or bottleneck evidence first.
+
+The material-acquisition task should name the missing observation, comparator or expected reference, measurement or evidence form, minimal reproduction or trace, and next artifact to collect.
+
+A contradicted proposition is not a plannable parent: record the contradiction, revise, split, or close the proposition, then derive the next hypothesis under the updated proposition.
 
 Hypothesis candidates are typed; a derived hypothesis may be predictive / performance, mechanistic, causal / intervention, descriptive / characterization, theoretical, or mixed.
 

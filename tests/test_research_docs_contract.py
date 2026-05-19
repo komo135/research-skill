@@ -1907,6 +1907,89 @@ def test_new_hypothesis_rejects_non_plannable_proposition_statuses():
         assert "does not permit creating a hypothesis plan" in result.stderr
 
 
+def test_new_hypothesis_rejects_contradicted_parent_current_status():
+    new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
+    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        subprocess.run(
+            [sys.executable, str(new_project), str(target), "--name", "Parent Status Gate"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            [
+                sys.executable,
+                str(new_proposition),
+                str(target),
+                "--id",
+                "P001",
+                "--slug",
+                "contradicted-parent",
+                "--title",
+                "Contradicted Parent",
+                "--proposition",
+                "A contradicted current proposition must not parent a new hypothesis plan.",
+                "--expected",
+                "Only a live updated proposition can parent the next hypothesis.",
+            ],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        fill_analysis(
+            target,
+            "P001_contradicted-parent",
+            status="supported",
+            derived_hypothesis="This older supported analysis should not override the parent current status.",
+        )
+        proposition_md = target / "propositions" / "P001_contradicted-parent" / "proposition.md"
+        proposition_md.write_text(
+            proposition_md.read_text(encoding="utf-8").replace(
+                "## Current status\n\nopen\n",
+                "## Current status\n\ncontradicted\n",
+            ),
+            encoding="utf-8",
+        )
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(new_hypothesis),
+                str(target),
+                "--proposition",
+                "P001_contradicted-parent",
+                "--id",
+                "H001",
+                "--slug",
+                "blocked-by-parent",
+                "--title",
+                "Blocked by Parent",
+                "--category",
+                "applied_research",
+                "--mode",
+                "confirmatory",
+                "--hypothesis",
+                "This should be rejected because the parent proposition is currently contradicted.",
+                "--source-analysis",
+                "A001",
+                "--status",
+                "supported",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+    assert result.returncode == 1
+    assert "parent proposition current status 'contradicted' does not permit creating a hypothesis plan" in result.stderr
+
+
 def test_research_scripts_reject_path_traversal_components():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
     new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"

@@ -18,7 +18,7 @@ Situation question
 → expected observation E if P is true
 → compare observed O with E
 → decide whether P is contradicted or whether P's required condition is unrealized
-→ derive hypothesis H that preserves, revises, splits, rejects, or realizes a condition of P
+→ if P remains live, derive hypothesis H that preserves, revises, splits from, or realizes a condition of P
 → predict what should happen if H is true
 → Hypothesis plan
 → Plan review
@@ -29,6 +29,10 @@ Situation question
 ```
 
 Do not generate hypotheses directly from a vague topic. If there is no observation, failure, success case, constraint, measurement, comparator, repeated trace, prior-work fact, theoretical tension, or search/evaluation bottleneck, there is material absence: create a material-acquisition task, no proposition or hypothesis.
+
+The material-acquisition task should name the missing observation, comparator or expected reference, measurement or evidence form, minimal reproduction or trace, and next artifact to collect. This keeps the agent moving without inventing a proposition.
+
+A contradicted proposition is not a plannable parent: record the contradiction, revise, split, or close the proposition, then derive the next hypothesis under the updated proposition. Do not create a hypothesis plan under a proposition whose current state says the proposition itself is broken.
 
 ## Proposition-first objects
 
@@ -87,17 +91,19 @@ Proposition status values:
 - `under-specified`: the proposition cannot yet produce a discriminating expected consequence.
 - `split-needed`: one proposition hides multiple separable propositions.
 - `split`: child propositions have been opened; continue through children.
+- `closed`: the proposition is resolved, superseded, killed, or no longer useful.
 
 Routing:
 
 | Status | Next state action |
 |---|---|
 | `supported` | Create or continue a derived hypothesis |
-| `contradicted` | Kill, revise, or split the proposition before deriving a hypothesis |
+| `contradicted` | Record the contradiction, then revise, split, or close the proposition before deriving a hypothesis under the updated proposition |
 | `unrealized-condition` | Derive a hypothesis that makes the condition realizable |
 | `under-specified` | Add observation, measurement, comparator, or formulation before planning |
 | `split-needed` | Split before planning |
 | `split` | Continue through child propositions, not the old parent |
+| `closed` | Do not derive new hypotheses from this proposition |
 
 This is the anti-handwave rule: a derived hypothesis is not produced until the agent can say which proposition status produced it.
 
@@ -252,4 +258,4 @@ It must not become restrictive bureaucracy:
 - Do not turn observation collection into a claim that a proposition exists.
 - Do not make labels more important than contrast, Generated doubt, Working proposition, Expected consequence, Proposition status, and Derived hypothesis trace.
 
-The only hard stop is material absence.
+Hard stops for hypothesis or plan creation are material absence and a parent proposition whose current state is `contradicted`, `under-specified`, `split-needed`, `split`, or `closed`. These are not dead ends: they route to material acquisition, contradiction recording, revision, split, child propositions, or closure before the next hypothesis is generated.

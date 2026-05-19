@@ -32,6 +32,7 @@ HYP_ID_RE = re.compile(r"^H\d{3}$")
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ANALYSIS_ID_RE = re.compile(r"^A\d{3}$")
 PLANNABLE_STATUSES = {"supported", "unrealized-condition"}
+PARENT_PLANNABLE_STATUSES = {"open", "supported", "unrealized-condition"}
 
 
 def fail(message: str) -> None:
@@ -146,11 +147,39 @@ def load_source_analysis(prop_dir: Path, analysis_id: str, requested_status: str
     if status not in PLANNABLE_STATUSES:
         fail(
             f"proposition status '{status}' does not permit creating a hypothesis plan; "
-            "add material, revise, or split the proposition first"
+            "add material, record the contradiction, revise, split, or close the proposition first"
         )
     if is_placeholder(analysis["Derived hypothesis candidate"]):
         fail("source analysis has no derived hypothesis candidate")
     return analysis
+
+
+def read_current_status(proposition_md: Path) -> str:
+    lines = proposition_md.read_text(encoding="utf-8").splitlines()
+    start = None
+    for index, line in enumerate(lines):
+        if line.strip() == "## Current status":
+            start = index + 1
+            break
+    if start is None:
+        fail(f"proposition.md missing Current status section: {proposition_md}")
+
+    for line in lines[start:]:
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            break
+        if stripped:
+            return stripped
+    fail(f"proposition.md has empty Current status section: {proposition_md}")
+
+
+def ensure_parent_status_plannable(proposition_md: Path) -> None:
+    status = read_current_status(proposition_md)
+    if status not in PARENT_PLANNABLE_STATUSES:
+        fail(
+            f"parent proposition current status '{status}' does not permit creating a hypothesis plan; "
+            "record the contradiction, revise, split, or close the proposition first"
+        )
 
 
 def get_git_sha(project_root: Path) -> str:
@@ -202,7 +231,7 @@ def main() -> None:
         "--status",
         required=True,
         choices=["supported", "contradicted", "unrealized-condition", "under-specified", "split-needed"],
-        help="Proposition status assessment that produced this hypothesis",
+        help="Source analysis proposition status; only supported and unrealized-condition can create a plan",
     )
     parser.add_argument(
         "--type",
@@ -230,8 +259,10 @@ def main() -> None:
     ensure_inside(prop_dir, propositions_root, "proposition path")
     if not prop_dir.exists():
         fail(f"parent proposition does not exist: {prop_dir}")
-    if not (prop_dir / "proposition.md").exists():
+    proposition_md = prop_dir / "proposition.md"
+    if not proposition_md.exists():
         fail(f"proposition.md missing under: {prop_dir}")
+    ensure_parent_status_plannable(proposition_md)
     analysis = load_source_analysis(prop_dir, args.source_analysis, args.status)
 
     prop_id = args.proposition.split("_", 1)[0]
@@ -249,7 +280,7 @@ def main() -> None:
         (hyp_dir / "experiments" / sub / ".gitkeep").touch()
     (hyp_dir / "reports" / ".gitkeep").touch()
 
-    prop_title = read_title(prop_dir / "proposition.md")
+    prop_title = read_title(proposition_md)
     expected_observation = args.expected or analysis["Expected consequence if the working proposition is true"]
     competing = args.competing or (
         "The same material is explained by a competing condition, comparator, or measurement effect rather than this hypothesis."
@@ -265,7 +296,7 @@ def main() -> None:
         "<hypothesis_type>": args.type,
         "<working proposition from the source analysis>": analysis["Working proposition"],
         "<source_status>": args.status,
-        "<why this hypothesis preserves, revises, splits, rejects, or realizes a condition of the parent proposition>": (
+        "<why this hypothesis preserves, revises, splits from, or realizes a condition of the parent proposition>": (
             f"{analysis['Generated doubt']} Status: {args.status}."
         ),
         "<what should be observed if the hypothesis is useful>": expected_observation,

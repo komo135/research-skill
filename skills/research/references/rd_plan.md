@@ -14,7 +14,7 @@ Situation question
 → Hypothesis plan
 ```
 
-The plan tests the derived hypothesis. It cites proposition state but does not rewrite it. Git history is an audit trail, not a substitute for methodology; methods reproducibility comes from the method, data, evaluation protocol, material conditions, and material execution conditions, not env locks or commit hashes.
+The plan tests the derived hypothesis. It cites proposition state but does not rewrite it. A contradicted proposition is not a plannable parent: record the contradiction, revise, split, or close the proposition, then derive the next hypothesis under the updated proposition. Git history is an audit trail, not a substitute for methodology; methods reproducibility comes from the method, data, evaluation protocol, material conditions, and material execution conditions, not env locks or commit hashes.
 
 ## File template
 
@@ -82,6 +82,8 @@ The `## Proposition and hypothesis trace` section is mandatory. It prevents a pl
 - Decision threshold when the mode is confirmatory.
 
 If the plan cannot trace its hypothesis to a Generated doubt, Working proposition, Expected consequence, and Proposition status, do not execute. Repair the proposition or hypothesis state first.
+
+If the trace shows `contradicted`, the plan is invalid as written. Repair means revising, splitting, or closing the parent proposition first; only the updated proposition can become the parent for a next hypothesis plan.
 
 ## Prior-work grounding
 
