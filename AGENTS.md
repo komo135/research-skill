@@ -1,17 +1,38 @@
 # AGENTS.md
 
-このリポジトリでは、明示的な指示がない限り日本語で回答し、ドキュメントも日本語で書く。
+This repository contains the `research` Codex/Claude Code plugin and its related skills. Keep this file practical and update it when repeated agent mistakes reveal a durable project rule.
 
-## 作業と Git
+Always use the OpenAI developer documentation MCP server if you need to work with the OpenAI API, ChatGPT Apps SDK, Codex, or related docs without me having to explicitly ask.
 
-- 作業は作業ブランチで行う。
-- 作業完了時は、変更一式を確認し、コミット、push、必要なら PR 更新まで行う。
-- 作業者が自分で触ったかどうかだけを理由に、既存の未コミット変更を放置しない。現在の作業対象としてユーザーが求めている差分はまとめて扱う。
-- ただし、明確に無関係な変更や衝突しそうな変更がある場合は、勝手に戻さず、差分を確認してから扱う。
+## Repository Layout
 
-## テスト追加の判断
+- `.codex-plugin/plugin.json` is the plugin manifest. Update it when the public plugin protocol, version, or user-facing description changes.
+- `skills/research/` owns the proposition-first research lifecycle.
+- `skills/research-plan-review/` owns independent pre-execution plan review.
+- `skills/research-result-analysis/` owns independent post-execution result analysis.
+- `skills/quant-research/` extends `research` for time-series and quantitative R&D.
+- `tests/test_research_docs_contract.py` protects stable repository and script contracts.
+- `tests/test_multiple_testing.py` covers the quant multiple-testing implementation.
 
-テストを追加または変更する前に、作業を分類する。
+## Working Agreements
+
+- Work on a feature branch.
+- When work is complete, inspect the full diff, run relevant checks, commit, push, and update the PR.
+- Do not refuse to commit or push just because some requested changes were made by another tool or agent. If the user asks to ship the current task scope, treat the relevant working tree state as the task output.
+- Do not revert unrelated user or agent changes unless explicitly asked. If unrelated changes make the task ambiguous, inspect the diff and explain the boundary before proceeding.
+- Prefer concise, factual English in repository documentation unless the user explicitly requests another language.
+
+## Build And Test Commands
+
+- Run all tests: `python -m pytest`
+- Run research contract tests only: `python -m pytest tests/test_research_docs_contract.py`
+- Run quant multiple-testing tests only: `python -m pytest tests/test_multiple_testing.py`
+- Validate plugin manifest JSON: `python -m json.tool .codex-plugin/plugin.json`
+- Check staged or unstaged whitespace issues: `git diff --check`
+
+## Test Admission Gate
+
+Before adding or changing tests, classify the work:
 
 - Behavior / public contract change
 - Bug regression
@@ -20,54 +41,75 @@
 - Release / packaging / cache operation
 - Refactor only
 
-新しいリポジトリテストは、将来のバージョンでも守るべき外部から観測可能な契約を保護する場合だけ許可する。
+Add repository tests only when they protect externally observable contracts that should remain true across future versions.
 
-追加してよい例:
+Good repository-test targets:
 
-- 公開スクリプトの入出力、失敗条件、生成ファイル構造
-- テンプレートの必須構造
-- 生成されるプロジェクトレイアウト
-- CJK 文字混入チェックなど、配布物として機械的に検出できる品質ゲート
-- 削除済みコマンドが復活しないことなど、安定した公開面の確認
+- Public script inputs, outputs, generated files, and failure modes.
+- Required template structure.
+- Generated project layouts.
+- Mechanical release-quality gates such as CJK text checks for distributed English skill docs.
+- Stable public surface checks, such as ensuring removed commands do not reappear.
 
-追加しない例:
+Do not add repository tests for:
 
-- 現在のバージョン番号
-- リリースチェックリスト状態
-- キャッシュやインストール状態
-- PR / push / merge 状態
-- 実装パスの好み
-- 安定契約ではない文言の有無
-- `SKILL.md` の望ましい文章を文字列検索で固定するテスト
+- Current version numbers.
+- Release checklist state.
+- Cache or installation state.
+- PR, push, or merge state.
+- Implementation path preferences.
+- Non-contractual wording.
+- Preferred `SKILL.md` phrasing enforced through string-search tests.
 
-スキルの判断力や運用規律を確認したい場合は、リポジトリテストではなく、サブエージェント圧力テストで確認する。
+For release, packaging, cache, or plugin metadata work, use verification commands and report evidence instead of adding tests.
 
-## TDD と圧力テスト
+## Skill Documentation Testing
 
-TDD は「先に赤いテストを書くこと」自体が目的ではない。先に、要求、ユーザーから見えるふるまい、観測可能な仕様を明確にする。
+Do not confuse skill pressure testing with repository unit tests.
 
-スキル文書の改善では、リポジトリテストを濫用しない。特に、文章そのものを固定するための文字列検索テストは避ける。代わりに、失敗しやすい状況をサブエージェントに与え、スキルだけを読ませて期待する判断になるかを確認する。
+For `SKILL.md` behavior, use subagent pressure scenarios:
 
-RED / GREEN / REFACTOR を報告する場合は、何を RED と見なしたかを明示する。
+- Give the subagent only the skill content and the scenario.
+- Hide the SPEC and expected answer.
+- Check whether the agent makes the intended judgment under pressure.
+- Record the observed failure or rationalization as the RED evidence.
+- Tighten the skill text only after the failure mode is clear.
 
-- コードや公開スクリプトの変更: 失敗する自動テストや再現手順を RED とする。
-- スキル文書の変更: 圧力シナリオでの逸脱、曖昧さ、合理化を RED とする。
-- release / packaging / cache 作業: テスト追加ではなく、検証コマンドと証跡を報告する。
+Examples of skill-pressure failures:
 
-## research-skill 固有の注意
+- The agent jumps from a vague topic directly to hypotheses.
+- The agent creates a hypothesis plan from an `under-specified`, `split-needed`, `split`, `closed`, or `contradicted` proposition.
+- The agent writes a plausible candidate where the lifecycle should require `None: <reason>` or material acquisition.
 
-このプラグインは proposition-first の研究ライフサイクルを扱う。
+Do not add brittle repository tests that merely assert a sentence exists in `SKILL.md`.
 
-- トップレベルの研究単位は plan ではなく proposition。
-- hypothesis plan は、親 proposition と source analysis から導かれた 1 つの derived hypothesis を検証する。
-- vague topic から直接 hypothesis / plan に進まない。material absence の場合は material-acquisition task に戻す。
-- `under-specified`, `split-needed`, `split`, `closed`, `contradicted` の親から plan を作らない。
-- `research-plan-review` と `research-result-analysis` は plan path から独立に再構成する前提を守る。
+## Research Lifecycle Rules
 
-## プラグインバージョン更新
+The plugin is proposition-first.
 
-プラグインの公開プロトコルやライフサイクルを変えた場合は、`.codex-plugin/plugin.json` の `version`, `description`, `interface.longDescription` を確認する。
+- The top-level research unit is a proposition, not a plan.
+- A hypothesis plan tests exactly one derived hypothesis under a parent proposition.
+- Do not generate hypotheses directly from a vague topic.
+- If there is material absence, create a material-acquisition task instead of a proposition or hypothesis.
+- `under-specified`, `split-needed`, `split`, `closed`, and `contradicted` parent propositions are not plan-ready.
+- `research-plan-review` and `research-result-analysis` both start from the plan path and reconstruct local state from referenced files.
+- Result analysis does not choose final proposition or hypothesis decisions. The parent workflow updates ledgers after reviewing result-analysis evidence.
 
-- protocol / lifecycle の大きな変更は minor version を上げる。
-- 説明文は現在の公開挙動を反映する。
-- 変更後は JSON 構文チェックと関連テストを実行する。
+## Plugin Version Updates
+
+When the public protocol or lifecycle changes:
+
+- Bump `.codex-plugin/plugin.json` according to the size of the public behavior change.
+- Update `description`, `interface.shortDescription`, and `interface.longDescription` so they match current behavior.
+- Keep version-number checks out of repository tests.
+- Run JSON validation and the relevant pytest suite before committing.
+
+## Definition Of Done
+
+Before reporting completion:
+
+- The diff matches the requested scope.
+- Relevant tests or verification commands have been run and read.
+- `git diff --check` is clean.
+- The work is committed and pushed when the user requested PR-ready work.
+- The final response names the commit, branch, PR state, and verification evidence.
