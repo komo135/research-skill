@@ -101,7 +101,7 @@ Example claim record:
 
 ## Analysis weight
 
-For applied research, analysis must be sufficient for the stated practical objective and claim type. General applied claims need evidence tied to the objective, stated conditions, plausible alternatives, and limitations. ML/quant method claims use the applicable disclosure floor from `analysis.md`:
+For applied research, result analysis explains how the practical objective, method, data, evaluator, and conditions produced the observed outcome. Later claim writing still needs evidence tied to the objective, stated conditions, plausible alternatives, and limitations. ML/quant method claims use this claim-recording minimum:
 
 - Leakage probe passed
 - ≥3 seeds with reported variance (Bouthillier et al. 2021)

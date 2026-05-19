@@ -1,89 +1,110 @@
 ---
 name: research-result-analysis
-description: Use when analyzing completed R&D plan results from a plan path, especially when an independent agent must reconstruct evidence, explain why the observed result happened, or analyze why a prediction failed without writing claims or decisions.
+description: Use when completed R&D plan results need a why-explanation, especially when an agent may collapse into support/contradiction labels, threshold verdicts, validity audits, or generic limitations instead of explaining the mechanism that produced the observed result.
 ---
 
 # Research Result Analysis
 
 ## Overview
 
-Independent result analysis for a completed hypothesis plan. The plan path is the only starting context; the agent reconstructs evidence from referenced artifacts and decomposes why the result happened. When the result missed the plan's prediction or threshold, the analysis must also explain why it failed.
+Independent post-result explanation for a completed hypothesis plan. The plan path is the only starting context. The job is to explain **why this observed result was produced** by reconstructing result shape, process, state transitions, factor interactions, and competing generative explanations.
 
-This skill does not decide what can be claimed, whether to ship, which iteration branch to choose, which proposition decision to record, or which hypothesis decision to record.
-
-Result analysis produces **post-result explanations** after evidence exists. It is not a continuation of planning and not a place to create **pre-result commitments** retroactively; result-analysis outputs are not pre-result commitments. The plan should already contain the question, prediction or expected observation, primary measure, planned discriminating test, evidence route, and artifact expectations.
+This skill is analysis only. It does not judge whether the result is good, bad, valid, supported, contradicted, claim-ready, promotion-ready, or decision-ready. It does not write state-update inputs. The parent `research` workflow reads the analysis later and makes any hypothesis, proposition, claim, report, or next-action decision.
 
 ## Core Rule
 
-Treat the plan as the only starting context. Do not rely on parent-agent summaries, expected conclusions, private notes, or unstated expectations. If the plan does not identify enough evidence to explain the result, report `context_missing` and narrow the analysis.
+Analyze the result as an outcome to be explained, not a verdict to be assigned.
 
-Result analysis is not only a validity audit. Procedure defects, leakage, broken comparators, missing artifacts, and script bugs are candidate explanations for the observed result, not separate verdict labels. Failed predictions require failed-prediction analysis: observed gap plus live candidate explanations, not a note that the threshold was missed and not forced category labels.
+Use the planned prediction only as a contrast that tells you what part of the observed outcome needs explanation. Do not make the prediction comparison the center of the output. A threshold pass, threshold miss, or aggregate improvement is not an analysis.
 
-This skill owns analysis only. Do not write final claims, do not choose iteration decisions, do not assess readiness for promotion, do not choose proposition decisions, do not choose hypothesis decisions, and do not draft human-facing reports.
+Forbidden outputs:
+
+- hypothesis status or proposition status recommendations
+- `State-update inputs`
+- `supported`, `contradicted`, `tested-supported`, `tested-contradicted`, `tested-partial`, or `tested-inconclusive` labels
+- promotion readiness, claim readiness, deployment recommendation, or iteration branch
+- final claims or human-facing report prose
+- an evidence verdict that replaces the explanation
 
 ## Required Reference
 
-Before analyzing, read `skills/research/references/analysis.md` from this plugin. Apply its artifact contract, analysis depth stop rule, Observation -> Interpretation -> Claim staging, and Pearl ladder constraint.
-
-Minimum evidence rule: stdout is not evidence. A completed run needs `run_manifest.json`, captured logs, and at least one manifest-listed non-log durable artifact under `outputs/`, `tables/`, `figures/`, or `intermediate/`. If the plan points only to terminal text or missing files, treat artifact/provenance failure as a live procedure / artifact explanation and record `context_missing`.
+Before analyzing, read `skills/research/references/analysis.md` from this plugin. Apply its explanation-first result-analysis discipline. If a referenced document discusses claims, artifacts, or decisions, treat those as downstream consumers of the explanation. They do not change this skill's job.
 
 ## Workflow
 
-1. **Read the plan**
-   Identify the Proposition and hypothesis trace, sibling `hypothesis.md`, parent proposition references, Plan, Actual execution, Planned vs Actual, References, and any existing observations. Note material deviations and any pressure to produce a claim or decision.
+1. **Load the plan and result material**
+   Start from the plan path only. Inspect the plan, sibling `hypothesis.md`, referenced proposition material, Actual execution, Planned vs Actual, runs, logs, outputs, tables, traces, configs, scripts, and reports when available. Use these as material for explanation, not as a validity trial.
+   Do not treat parent-agent summaries, user-provided summaries, private notes, or unstated expectations as result material unless the plan or a plan-referenced artifact contains them.
 
-2. **Reconstruct evidence**
-   Follow plan references to runs, `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, scripts, configs, outputs, tables, figures, reports, and literature entries. Verify that cited artifact paths exist when filesystem access is available. If a referenced item is missing or ambiguous, record it under `context_missing`.
+2. **Inventory the result shape**
+   Describe the outcome before explaining it. Include aggregate movement, slices, regimes, seeds or repetitions, traces over time, failure cases, anomalies, state transitions, resource patterns, and condition-specific effects. If a result is uneven, the unevenness is usually the most important material.
 
-3. **Describe what happened**
-   Separate literal observations from interpretation. Describe the result shape before explaining it: aggregate movement, slices, seed variability, failures, anomalies, traces, and condition-specific effects.
+3. **Name the explanatory contrast**
+   State the planned expectation and the observed shape only to locate the puzzle: what needs explaining? Examples: aggregate improved but one slice collapsed; p50 improved while p99 worsened; training fit improved while validation barely moved; a proof worked only under a boundary condition.
 
-4. **Decompose why**
-   Generate candidate explanations for why the result happened. Include procedure / artifact explanations when relevant: leakage, split mismatch, broken comparator, script bug, measurement artifact, missing provenance, or stdout-only evidence. For each candidate explanation, record supporting and contradicting evidence.
+4. **Build a factor map**
+   Decompose possible result-producing factors. Choose only factors relevant to the observed material:
 
-   If the observed result missed the plan's prediction, threshold, or expected effect, construct failed-prediction analysis. Start from the observed gap, then generate candidate explanations for why the prediction missed. Use premise / mechanism, approach / intervention, procedure / artifact / data / comparator / implementation / measurement, and evaluation / power / metric / scope as coverage lenses only. Do not force every lens into the output and do not assign a single verdict category. Record only live explanations with why they could explain the miss and evidence for and against.
+   | Factor | Use when the result may come from |
+   |---|---|
+   | Input / data | data composition, slices, labels, regimes, ordering, distribution, sampling, or perturbations |
+   | Representation | variables, features, state representation, abstraction boundary, tokenization, coordinate system, or metric space |
+   | Model / method | architecture, algorithm, objective, update rule, search rule, cache policy, parser rule, proof move, or heuristic |
+   | Process / dynamics | training trajectory, convergence, mode switching, queue buildup, control flow, recursion, scheduling, or feedback loops |
+   | Resource / system | contention, memory locality, IO, synchronization, batching, latency tail, throughput, or hardware interaction |
+   | Measurement / evaluator | metric sensitivity, aggregation, slice weighting, threshold definition, instrumentation, or benchmark behavior |
+   | Interaction | two individually plausible factors combine to produce an unexpected outcome |
 
-5. **Return**
-   Return a plan-ready `## Result analysis` section. Use artifact paths, numeric values, table/figure references, and missing-context entries that the parent research agent can inspect before writing claims or decisions.
+5. **Construct mechanism traces**
+   For each serious explanation candidate, write the chain:
 
-The parent research agent updates state after this analysis. This skill does not choose proposition decisions. It may describe how evidence bears on hypothesis status (`tested-supported`, `tested-contradicted`, `tested-partial`, `tested-inconclusive`) and proposition status (`supported`, `contradicted`, `unrealized-condition`, `under-specified`, `split-needed`) as analysis input, but final ledger updates belong to the parent.
+   `starting condition -> local process/activity -> intermediate state -> result-producing step -> observed result feature`
 
-## Analysis Quality Gate
+   A candidate explanation is not acceptable until it states which result features it explains and which result features it does not explain. Do not hide unexplained features in a generic limitations paragraph.
 
-Do not score depth by length, number of caveats, or how many extra checks are proposed. Score it by whether the analysis decomposes the result into plausible causes and stops before over-analysis.
+6. **Compare explanatory rivals**
+   Compare candidates by explanatory fit, not by verdict. Ask:
+
+   - Which parts of the result shape become expected under this explanation?
+   - Which parts remain surprising?
+   - What competing explanation would produce the same aggregate but a different slice, trace, or state transition?
+   - What minimal discriminator would separate the live explanations?
+
+7. **Return the analysis**
+   Return a `## Result analysis` section. The parent research agent may later use it for state updates, claims, or planning, but this output must remain an explanation record.
+
+## Analysis Lenses
+
+Use these as thinking tools, not required headings:
+
+| Lens | Question |
+|---|---|
+| Mechanism decomposition | What entities, activities, ordering, and conditions produced the result? |
+| Cause-effect trace | What changed first, what intermediate state followed, and where did the final result become likely? |
+| Slice and regime analysis | Which subset, condition, scale, or regime carries the result? |
+| Variance-source analysis | Could seeds, sampling, initialization, hyperparameters, or environment variation produce the observed shape? |
+| Error / failure analysis | What do representative failures have in common? |
+| Ablation / contribution analysis | Which component or step is necessary for the result pattern, and which is incidental? |
+| Resource and contention analysis | Did queues, locks, memory, IO, scheduling, or batching create the outcome? |
+| Representation analysis | Did the chosen variables or abstraction make the effect appear, disappear, or move? |
+| Evaluator behavior analysis | Did the metric or evaluator emphasize one behavior while hiding another? |
+| Interaction analysis | Did two factors combine so that neither alone explains the result? |
+
+## Quality Gate
 
 A result analysis is acceptable only when it is:
 
 | Check | Requirement |
 |---|---|
-| artifact-faithful | Every observation traces to a plan reference or inspected artifact; missing files become `context_missing`. |
-| arithmetically checked | Deltas, thresholds, counts, seed summaries, and sample-size statements are recomputed or explicitly marked unavailable. |
-| explanation-fit checked | Candidate explanations are compared against evidence for and against them; missing discriminating tests are explicit. |
-| depth-calibrated | Additional analysis is limited to discriminators needed to separate live candidate explanations. |
-| reviewable | A later reader can identify each required observation, candidate explanation, required missing context, and proposed discriminator without re-inferring the analysis. |
+| outcome-centered | The output explains the observed result shape, not whether the plan passed. |
+| shape-complete | Aggregate, slice, trace, anomaly, and condition-specific material are considered when available. |
+| mechanism-explicit | Each candidate has a chain from starting condition to result-producing step. |
+| factorized | At least the relevant factors from the factor map are considered; irrelevant factors are skipped. |
+| rival-aware | More than one live explanation is considered when the material permits it. |
+| discriminator-ready | The output names what would separate live explanations without turning that into a next-action decision. |
+| non-decision | No hypothesis status, proposition status, claim readiness, promotion readiness, or deployment recommendation appears. |
 
-For pressure-test and review scenarios, compare the output against an answer key with:
-
-- required observation: artifact facts that must appear for the analysis to be correct
-- candidate explanations: plausible causes for the observed result, including procedure / artifact explanations
-- failed-prediction analysis when prediction missed: observed gap plus live candidate failure explanations; coverage lenses are checked but not forced into verdict categories
-- evidence for / against each explanation: supporting evidence and contradicting evidence listed separately
-- required missing context: absent artifacts, comparators, logs, scripts, controls, slices, traces, or failure samples
-- forbidden conclusion: claims, promotion-readiness assessments, deployment decisions, iteration branches, or final reports
-
-## Explanation Analysis Contract
-
-Result analysis is not only a validity audit. After evidence is reconstructed, explain why the result happened using this sequence:
-
-1. **What happened**: aggregate movement, slice differences, seed variability, failures, anomalies, traces, and condition-specific effects.
-2. **Prediction comparison**: compare observed values to planned predictions, thresholds, support requirements, and expected conditions.
-3. **Candidate explanations**: at least two plausible causes when artifacts permit them. Include null, procedure, or artifact explanations when relevant.
-4. **Failed-prediction analysis when prediction missed**: explain why the result fell short from the observed gap through live candidate explanations. Use premise/mechanism, approach/intervention, procedure/artifact/data, and evaluation/power/metric only as coverage lenses, not required verdict categories.
-5. **Evidence for / against each explanation**: cite support and contradiction separately. Do not hide contradicting evidence in generic limitations.
-6. **Procedure / artifact explanations**: explicitly consider whether the observed result could come from research execution mistakes, evaluation defects, leakage, broken comparators, or missing evidence.
-7. **Alternatives still live**: explanations not yet excluded.
-
-Association-only evidence can motivate an explanation candidate, but it does not establish a mechanism. Pearl ladder applies: diagnostic correlation is not enough for intervention or counterfactual explanation.
+Stop when the leading explanations account for the important result features and the remaining open branches are specific. Do not keep adding generic caveats. Do continue if the output still says only "the metric missed", "the hypothesis was supported", "more evidence is needed", or "there may be a bug".
 
 ## Output Shape
 
@@ -96,56 +117,72 @@ Association-only evidence can motivate an explanation candidate, but it does not
 - Only starting context: <plan path>
 - Analyzed at: <YYYY-MM-DD>
 
-### Evidence traced
+### Material used for explanation
 - Plan: <plan path>
-- Hypothesis: <sibling hypothesis.md or context_missing>
-- Parent proposition state: <proposition.md / observations.md / analyses.md references inspected, or context_missing>
-- Runs and artifacts: <manifest/log/output/table/figure/script paths inspected>
-- context_missing: <None, or missing/ambiguous plan references, artifacts, logs, scripts, metrics, comparators, controls, slices, traces, or failure samples>
+- Local research state inspected: <hypothesis/proposition/observations/analyses paths, or Not available>
+- Result material inspected: <plan-referenced runs/logs/tables/figures/traces/configs/scripts/reports, or Not available>
+- Explanation-scope gaps: <missing material that would change the why-analysis; include any untraceable supplied summary here, or None>
 
-### What happened
-- <literal artifact-grounded fact about aggregate result, slices, seeds, failures, traces, anomalies, or conditions>
+### Result shape
+- Aggregate shape: <what moved overall>
+- Slice / condition shape: <where it differed by subset, condition, scale, regime, or input family>
+- Trace / process shape: <time sequence, state transition, training dynamics, queue behavior, control flow, proof steps, or anomaly path>
+- Concentrated cases: <failures, successes, outliers, or examples that carry the pattern>
 
-### Prediction comparison
-- <planned prediction / threshold / expected condition versus observed value; note whether the prediction was met, missed, reversed, or only partly satisfied>
+### Explanatory contrast
+- Planned expectation: <only the expectation needed to locate the puzzle>
+- Observed result needing explanation: <the result feature or mismatch to explain>
+- Why this is a puzzle: <what cannot be explained by the aggregate alone>
 
-### Candidate explanations
-- <candidate cause>
-  - Evidence for: <artifact-grounded support>
-  - Evidence against: <artifact-grounded contradiction or weakness>
+### Factor decomposition
+| Factor | How it could produce the observed result | Result features touched | Interaction with other factors |
+|---|---|---|---|
+| <factor> | <generative role> | <features> | <interaction or None> |
 
-### Failed prediction analysis
-- Observed gap: <prediction, threshold, or expected condition versus observed result>
-- Candidate failure explanations:
-  - <candidate explanation for why the prediction missed>
-    - Why this could explain the miss: <mechanism connecting evidence to the missed prediction>
-    - Evidence for: <artifact-grounded support>
-    - Evidence against: <artifact-grounded contradiction or weakness>
-- Coverage check: <which lenses were considered: premise/mechanism, approach/intervention, procedure/artifact/data/comparator/implementation/measurement, evaluation/power/metric/scope. Do not force a category; record only live explanations above.>
+### Mechanism traces
+#### E1: <candidate explanation>
+- Chain: <starting condition -> local process/activity -> intermediate state -> result-producing step -> observed result feature>
+- Explains: <specific result features made expected by this chain>
+- Does not explain: <specific result features still not accounted for>
+- Competing explanation: <near rival, or None if genuinely unavailable>
+- Discriminator: <slice, trace, perturbation, ablation, failure sample, limiting case, or theoretical check that would separate explanations>
 
-### Procedure / artifact explanations
-- <whether leakage, split mismatch, broken comparator, script bug, measurement artifact, missing provenance, or stdout-only evidence could explain the result>
+### Interaction analysis
+- <where two or more factors combine to produce the observed result, or None if the result is single-factor under current material>
 
-### Alternatives still live
-- <plausible explanation, confound, missing control, untested condition, or theoretical gap not yet excluded>
+### Explanatory summary
+- <concise why-explanation of the result, preserving uncertainty without assigning status>
 
-### State-update inputs
-- Hypothesis status evidence: <support / contradiction / partial / inconclusive evidence the parent can use; not a decision>
-- Proposition status evidence: <support / contradiction / unrealized-condition / under-specified / split-needed evidence the parent can use; not a decision>
-
+### Open explanatory branches
+- <specific remaining why-branches and what result feature each branch would explain>
 ```
 
 ## Common Mistakes
 
 | Mistake | Correction |
 |---|---|
-| Using a parent-agent summary as evidence | Ignore it; trace the plan and artifacts directly. |
-| Treating missing references as harmless | Record `context_missing` and include missing evidence as a procedure / artifact explanation when it can explain the observation. |
-| Writing final claims | Return why-analysis only; the parent research protocol records claims. |
-| Choosing proposition decisions | Result analysis does not update `proposition.md` or proposition `decisions.md`; the parent agent does that after reviewing the analysis. |
-| Choosing hypothesis decisions | Result analysis does not update `hypothesis.md` or hypothesis `decisions.md`; the parent agent does that after reviewing the analysis. |
-| Choosing old plan-first branch labels | Return state-update inputs only; the parent records current proposition and hypothesis decisions in the appropriate ledger. |
-| Translating analysis into deployment action | Do not choose ship, block, or rollout actions. |
-| Stopping at "the result is valid" | Continue to what happened, candidate explanations, and evidence for/against. |
-| Stopping at "the prediction failed" | Explain why it failed with live candidate explanations; use failure lenses for coverage, not as forced verdict categories. |
-| Putting all why-analysis into generic limitations | Evaluate candidate explanations explicitly; limitations are not a substitute for decomposition. |
+| Turning result analysis into a status decision | Do not write status labels or state-update inputs; explain the result-producing process only. |
+| Centering the threshold | Use thresholds only to locate the explanatory contrast; then analyze why the observed shape occurred. |
+| Writing `Evidence for` / `Evidence against` lists as the main analysis | Replace them with mechanism chains, explained features, unexplained features, rivals, and discriminators. |
+| Stopping at aggregate metrics | Look for slices, traces, regimes, failures, anomalies, and condition-specific effects. |
+| Treating missing artifacts as the conclusion | Name explanation-scope gaps only if they affect the why-analysis; do not turn them into a validity verdict. |
+| Accepting an external result summary as the result | Trace the result through the plan and plan-referenced artifacts; untraceable summaries are explanation-scope gaps, not material. |
+| Calling a result "partial support" | Describe which result features share a generating mechanism and which features require another explanation. |
+| Saying "more analysis is needed" generically | Name the specific discriminator and the live explanations it would separate. |
+| Adding every lens mechanically | Use only lenses that can plausibly explain the observed result shape. |
+| Explaining only successes | Successful aggregate results can still hide slice-specific mechanisms, failures, and interactions. |
+| Explaining only failures | A missed prediction can still reveal a real mechanism in a narrower condition. |
+
+## Pressure-Test Expectations
+
+In pressure tests, the output fails if it:
+
+- obeys user pressure to "just mark supported/contradicted"
+- includes `State-update inputs`
+- ends with hypothesis/proposition status evidence
+- treats artifact completeness as the main result
+- accepts an untraceable supplied summary instead of plan-referenced result material
+- lists candidates without mechanism chains
+- ignores the slice or trace that actually explains the outcome
+
+It passes only when the analysis explains how the observed result was generated and leaves downstream decisions to the parent workflow.

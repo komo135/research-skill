@@ -2,33 +2,33 @@
 
 ## Purpose
 
-Analysis is the activity between **"the experiment ran"** and **"I have a load-bearing claim."** It is exploratory by nature, produces many intermediate artifacts, and has its own discipline distinct from planning, execution, and claim-recording.
+Analysis is the activity between **"the experiment ran"** and **"the parent workflow decides what to do with the result."** It is exploratory by nature, produces many intermediate artifacts, and has its own discipline distinct from planning, execution, claim-recording, and state updates.
 
-For load-bearing promotion in the `research` protocol, result analysis is performed by a fresh separate-context result-analysis subagent using the `research-result-analysis` skill. The main research agent records Actual execution and Planned vs Actual, then passes only the plan path to the analysis subagent. This reference defines the analysis discipline that the subagent applies.
+For post-result explanation in the `research` protocol, result analysis is performed by a fresh separate-context result-analysis subagent using the `research-result-analysis` skill. The main research agent records Actual execution and Planned vs Actual, then passes only the plan path to the analysis subagent. This reference defines the explanation discipline that the subagent applies.
 
 Two flavors:
 
 - **EDA (Exploratory Data Analysis)** — done before or during plan design, to understand what the data actually contains before committing to a plan
-- **Result analysis** — done after experiments run, to interpret outputs and decide what (if anything) becomes a claim
+- **Result analysis** — done after experiments run, to explain why the observed result happened before any downstream claim, decision, or next action is chosen
 
-Both have well-established methodology. The skill enforces structure for claims (see `claim_structure.md`) and decisions (see `iteration_loop.md`), but the analysis step that produces those claims has been left implicit until now. This reference fills that gap.
+Both have well-established methodology. Claim structure (see `claim_structure.md`) and decisions (see `iteration_loop.md`) are downstream consumers of analysis. They must not be folded into result analysis itself.
 
 ## Result analysis explanation center
 
-Result analysis asks why the result happened. A validity audit comes first because unreliable artifacts can themselves explain a surprising result, but analysis must not stop at "the run is valid" or "the result can be promoted."
+Result analysis asks why the result happened. It treats artifacts, tables, logs, traces, and summaries as material for explanation, not as a courtroom for deciding whether the result is valid or promotable. If execution procedure itself produced the result shape, include that as a generative explanation; do not stop at a procedure verdict.
 
 A complete result analysis separates:
 
-1. **Validity audit** — whether artifacts and procedure are trustworthy enough to analyze.
-2. **What happened** — the observed result shape: aggregate movement, slices, seed variability, failures, anomalies, traces, and condition-specific effects.
-3. **Prediction comparison** — whether planned predictions, thresholds, support requirements, and expected conditions were met, missed, reversed, or only partly satisfied.
-4. **Candidate explanations** — candidate causes and alternative explanations, including procedure / artifact explanations such as leakage, split mismatch, broken comparators, script bugs, measurement artifacts, or missing provenance.
-5. **Failed-prediction analysis when prediction missed** — why the result fell short, starting from the observed gap and using live candidate failure explanations. Premise/mechanism, approach/intervention, procedure/artifact/data, and evaluation/power/metric are coverage lenses, not required verdict categories.
-6. **Evidence for and against each explanation** — support and contradiction recorded separately for each candidate mechanism.
-7. **Discriminating analysis** — the ablation, slice, trace, perturbation, failure sample, or theoretical check needed to separate leading candidates.
-8. **Alternatives still live** — the candidate explanations that remain plausible after the current evidence is inspected.
+1. **Result shape** — aggregate movement, slices, seed or repetition variability, failures, anomalies, traces, and condition-specific effects.
+2. **Explanatory contrast** — what part of the observed result needs explanation relative to the plan's expectation. This is not a pass/fail judgment.
+3. **Factor decomposition** — data, representation, model/method, process/dynamics, resource/system, measurement/evaluator, and interaction factors that could have generated the result.
+4. **Mechanism traces** — chains from starting condition through local process/activity and intermediate state to the result-producing step.
+5. **Candidate explanations** — competing generative explanations for the same observed shape.
+6. **Explained and unexplained result features** — what each explanation accounts for and what remains surprising.
+7. **Discriminating analysis** — the ablation, slice, trace, perturbation, failure sample, limiting case, or theoretical check that would separate leading explanations.
+8. **Open explanatory branches** — specific remaining why-branches, not generic caveats.
 
-Mechanism claims require discriminating evidence. Association-only patterns can motivate candidates, but they do not by themselves explain why the result happened. Failed predictions require especially careful decomposition: otherwise the record cannot distinguish a wrong premise from a weak intervention, bad data, a broken procedure, or an underpowered evaluation. Those possibilities are search lenses; do not force them into final buckets when the evidence only supports a smaller set of live explanations. Result analysis does not decide promotion readiness; it supplies the decomposition that later claim writing uses.
+Mechanism explanations require more than aggregate association. Association-only patterns can motivate candidates, but they do not explain why the result happened until the analysis states a plausible generative chain and the result features that chain makes expected. A missed prediction requires especially careful decomposition, but the goal is still explanation, not a status label.
 
 ## Research script artifact contract
 
@@ -55,32 +55,32 @@ The modern EDA pipeline derives from Tukey's *Exploratory Data Analysis* (1977) 
 
 The output of EDA is a **revised understanding of the variable space** that informs `observations.md`, `analyses.md`, and then the derived hypothesis plan under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md`. Findings that look like results should be treated as exploratory and not claimed as confirmatory — see depth stop conditions below.
 
-## Result analysis — claim disclosure floor
+## Result analysis explanation operations
 
-After experiments run, before a load-bearing claim is recorded, the result analysis must include a level of disclosure matched to the claim type. For ML/quant method claims, synthesising [Mitchell et al. 2019 Model Cards](https://arxiv.org/abs/1810.03993), [Gebru et al. 2021 Datasheets](https://cacm.acm.org/research/datasheets-for-datasets/), [Bouthillier et al. 2021 MLSys](https://proceedings.mlsys.org/paper_files/paper/2021/file/0184b0cd3cfb185989f858a1d9f5c1eb-Paper.pdf), [Ribeiro et al. 2020 CheckList](https://aclanthology.org/2020.acl-main.442.pdf), and [Guo et al. 2017 calibration](https://proceedings.mlr.press/v70/guo17a/guo17a.pdf), this is the floor:
+After experiments run, result analysis should use the same families of operations that strong empirical papers use to understand where a result came from. These operations are not claim-readiness gates inside result analysis. They are ways to explain the result-producing process.
 
-| Disclosure | Required for | Standard reference |
+| Operation | What it explains | Standard reference |
 |---|---|---|
-| **Leakage probe passed** | Any claim-bearing ML result | Kapoor & Narayanan 2023 |
-| **≥3 seeds with reported variance** | Any performance comparison claim | Bouthillier et al. 2021 |
-| **Ablation of each claimed-novel component** | Any "method X works because of Y" claim | [Lipton & Steinhardt — Troubling Trends](https://queue.acm.org/detail.cfm?id=3328534) |
-| **Slice / subgroup evaluation on standard axes** | Any claim that generalizes across populations | Ribeiro et al. 2020; Mitchell 2019 Sec. *Quantitative Analyses* |
-| **Calibration check** (reliability diagram / ECE) | When confidence scores feed downstream decisions | Guo et al. 2017 |
-| **Perturbation / robustness probe** | Any ML/quant claim of practical applicability | [Hendrycks robustness](https://danhendrycks.com/robustness/); [Taori et al. NeurIPS 2020](https://proceedings.neurips.cc/paper/2020/file/d8330f857a17c53d217014ee776bfd50-Paper.pdf) |
-| **Error analysis on a sample of failures** | Any claim that needs a mechanism | [Ng CS230 Section 8](https://cs230.stanford.edu/section/8/) |
+| **Mechanism decomposition** | entities, activities, organization, and conditions that make the result occur | Machamer, Darden, and Craver 2000 |
+| **Cause-effect trace** | the sequence of input differences, state differences, and intermediate effects that lead to the result | Zeller 2002 |
+| **Variance-source analysis** | whether seeds, sampling, initialization, hyperparameters, or environment variation carry the observed shape | Bouthillier et al. 2021 |
+| **Ablation / contribution analysis** | which component, rule, representation, or process step is responsible for a result feature | Lipton & Steinhardt 2018 |
+| **Slice / behavioral analysis** | which capability, subgroup, input family, regime, or condition produces the aggregate pattern | Ribeiro et al. 2020 |
+| **Model / workflow checking** | whether the model, computation, or analysis workflow itself creates the observed pattern | Gelman et al. 2020 |
+| **Resource / measurement analysis** | whether performance, latency, or systems results come from measurement bias, contention, queues, memory, IO, or scheduling | Mytkowicz et al. 2009; Curtsinger & Berger 2015 |
 
-Below the applicable floor, the result remains an exploratory observation, not a claim-bearing conclusion. If an applied-research plan declares `mode: confirmatory` but skips applicable items for its claim type, the missing analysis must be completed before promotion to a load-bearing claim, state-changing decision, or report.
+For non-ML CS and quantitative research, adapt the same operations:
 
-For non-ML quantitative research, the same principle adapts:
+- "Slices" means natural subgroups, regimes, populations, conditions, or time blocks.
+- "Ablation" means removing or isolating a component, assumption, feature, rule, or process step.
+- "Variance" means repetition, seed, sampling, initialization, parameter, or environment variability.
+- "Behavioral analysis" means checking which input or condition family creates the observed outcome.
+- "Cause-effect trace" means tracing state transitions, transformations, intermediate variables, or proof steps.
+- In PL, compiler, parser, and runtime work, trace AST, IR, type-state, control-flow, optimization pass, grammar rule, or recovery-state transitions.
+- In systems and distributed work, trace queues, locks, message order, cache locality, scheduling, batching, resource contention, workload slice, and tail behavior.
+- In security, verification, and formal-methods work, trace exploit paths, counterexamples, proof obligations, invariants, assumptions, and boundary conditions.
 
-- "Leakage" → information that should not have been available at the time of measurement
-- "Slices" → the natural subgroups in your data (regimes, populations, conditions)
-- "Calibration" → does your uncertainty quantification match observed frequencies
-- "Perturbation" → robustness to changes in parameters, sampling, initial conditions
-- "Ablation" → component-wise contribution analysis
-- "Variance" → seed / replication / repetition variability
-
-For stochastic systems, do not treat a single fixed seed as reproducibility. Report seed count, dispersion, and failed seeds when those affect the claim. A fixed seed is useful for debugging and audit, but the claim is supported by the distribution of outcomes.
+For stochastic systems, do not explain a result from a single fixed seed as if it revealed the whole process. A fixed seed can explain one trajectory, but the result-generating process may include seed, sampling, initialization, or environment variation.
 
 ## Analysis depth — when is it enough?
 
@@ -90,15 +90,15 @@ Three orthogonal stop criteria from the methodology literature:
 
 EDA is pre-confirmatory. The stop condition is **"a hypothesis worth testing has emerged"** or **"the variable space is now understood well enough to plan an experiment"** — NOT "all questions are answered." For EDA, going further when no new structure is emerging is wasted effort.
 
-### 2. Depth-to-defend-the-claim
+### 2. Depth-to-explain-the-result
 
-The Gelman & Loken "garden of forking paths" result: even without intentional p-hacking, every analytic branch beyond the claim inflates implicit multiple-testing error ([Gelman & Loken](https://sites.stat.columbia.edu/gelman/research/unpublished/p_hacking.pdf)). Practical consequence: **analysis should be scoped to the specific claim being made.** Branches beyond that scope are not "extra evidence"; they are exploratory work that should be labeled as such or preregistered separately.
+Result analysis should be scoped to the observed result shape. Continue while a major result feature remains unexplained: an aggregate/slice mismatch, a time trace, a concentrated failure family, a state transition, a variance source, or a system interaction. Stop when the leading explanations account for the important result features and the remaining open branches are specific enough for the parent workflow to inspect.
 
-If you find yourself running analysis #15 because you have not yet found anything significant, you have crossed from analysis into HARKing. Stop, record what you found, and either close the claim as exploratory or commit to a confirmatory preregistration on independent data.
+The Gelman & Loken "garden of forking paths" result still matters: every extra branch chosen after seeing the result can become post-hoc story selection. The practical consequence is not "avoid analysis"; it is **make the explanatory target explicit**. If a branch does not explain a concrete result feature, do not add it.
 
-### 3. Disclosure floor reached
+### 3. Discriminator clarity
 
-For load-bearing claims, the applicable floor above is the minimum. For ML/quant method claims this may include leakage probe, variance, ablation, slice, calibration, perturbation, and error analysis. For other applied claims, use the analogous checks needed to rule out plausible alternatives and support the stated objective. Once the floor is reached AND no required item shows a failure, the claim is defensible. Below the floor, the claim is exploratory regardless of effect size.
+Analysis is deep enough when it names the discriminator that would separate live explanations: ablation, perturbation, slice, trace, failure sample, limiting case, state inspection, variance decomposition, or theoretical check. The result-analysis subagent does not choose that next action; it only leaves the explanatory branches inspectable.
 
 ### Composite stop rule
 
@@ -106,15 +106,15 @@ For load-bearing claims, the applicable floor above is the minimum. For ML/quant
 Analyzing for: EDA / exploratory mapping?
   Stop when: new structure is no longer emerging.
 
-Analyzing for: load-bearing claim?
-  Stop when: disclosure floor is met AND no item above showed a failure that
-             would invalidate the claim.
-  Continue beyond floor only if: a new alternative explanation appeared
-             that requires investigation.
+Analyzing a completed result?
+  Stop when: important result features have plausible mechanism traces AND
+             remaining open branches name specific discriminators.
+  Continue when: an aggregate, slice, trace, anomaly, state transition,
+             or interaction remains unexplained.
 
 Analyzing for: terminal_kill?
-  Stop when: each repairable cause (config, data, scope, dependency) has been
-             ruled out with evidence.
+  Stop when: the result-producing process is localized enough that the
+             parent workflow can decide whether to repair, revise, split, or close.
 ```
 
 ## Observation → Interpretation → Claim staging
@@ -140,19 +140,19 @@ An explanation or mechanism proposed for the observation. Still preliminary — 
 - "The divergence at epoch 12 suggests the peak learning rate after warmup exceeds the model's stability threshold at this batch size."
 - "The 0.18 perplexity improvement may come from the sparse-attention variant OR from the 1.3% increase in active FLOPs."
 
-Interpretations are draft claims. They appear in plan narrative (Methodology / Observations sections) but are not yet load-bearing.
+Interpretations are explanations in progress. They appear in plan narrative (Methodology / Observations sections) or Result analysis, but they are not yet load-bearing claims or state decisions.
 
 ### Stage 3: Claim
 
 A load-bearing assertion, structured per `claim_structure.md`. Has evidence backing, alternatives explicitly listed, conditions stated. The agent has done the work to defend it.
 
-The transition from interpretation to claim is where the disclosure floor applies. An interpretation becomes a claim only when:
+The transition from interpretation to claim happens after Result analysis, in the parent workflow. An interpretation becomes a claim only when:
 
 - The evidence is anchored to specific artifacts (file:line, run, value)
 - Alternative explanations have been actively considered (and listed if not excluded)
 - The conditions under which the claim holds are stated precisely
 - A fresh separate-context result-analysis subagent using `research-result-analysis` has returned a `## Result analysis` section from the plan path only
-- The claim is written only after candidate explanations, alternatives still live, tested conditions, and missing conditions have been reconciled with `claim_structure.md`
+- The claim is written only after mechanism traces, explained and unexplained result features, open explanatory branches, tested conditions, and missing conditions have been reconciled with `claim_structure.md`
 
 ### Pearl's Ladder applies
 
@@ -173,9 +173,9 @@ In the iteration_loop, this maps to:
 
 | Category | Analysis center of mass |
 |---|---|
-| **basic_research** | EDA + descriptive analysis often carry the main evidential weight. Observations are the primary output. Promotion to claim requires stated conditions, alternatives, and variance/replication when relevant. Mechanism description leans on Pearl Rung 2 evidence (controlled variation) |
-| **applied_research** | General applied claims: evidence tied to the practical objective, stated conditions, plausible alternatives, and limitations. ML/quant method claims: apply the relevant floor for leakage, stochastic variance, comparator fairness, ablation for component-causality claims, slice/calibration/robustness/error analysis when applicable |
-| **experimental_development** | EDA = profiling the input space. Result analysis = acceptance test deep-dive + performance distribution characterization. Variance across runs is required. Failure-mode catalog is the deliverable, not just "it works" |
+| **basic_research** | EDA + descriptive analysis often carry the main explanatory weight. Result analysis should explain the phenomenon, mechanism, boundary condition, or surprising trace before the parent workflow writes any claim. |
+| **applied_research** | Result analysis should explain how the practical objective interacted with method, data, evaluator, conditions, and constraints to produce the observed outcome. |
+| **experimental_development** | Result analysis should explain the system/process behavior: acceptance-test shape, performance distribution, failure modes, resource contention, and interaction effects. Failure-mode catalog is often the deliverable, not just "it works". |
 
 ## Where artifacts live
 
@@ -191,10 +191,10 @@ In the iteration_loop, this maps to:
 
 ## Common failures
 
-- **Treating analysis as optional.** Skipping result analysis and going directly from "the experiment ran" to "the method works" — missing the disclosure floor.
+- **Treating analysis as optional.** Skipping result analysis and going directly from "the experiment ran" to "the method works" without explaining why the result happened.
 - **Print-only analysis.** A script that prints metrics and exits has produced no durable artifact; stdout is not evidence after the terminal scrollback is gone.
 - **Observation/claim conflation.** Writing "the method is more stable" when the actual observation is "loss did not spike on this run." Stage discipline matters.
-- **Endless analysis without claim.** Running analysis branch after branch without committing to a claim. Eventually some branch will look favorable; that is HARKing. Stop at the depth-to-defend-the-claim.
+- **Endless analysis without an explanatory target.** Running analysis branch after branch without tying each branch to a concrete result feature. Stop at depth-to-explain-the-result.
 - **HARKing from EDA.** Finding a pattern during EDA and writing the plan as if you had predicted it. Either commit to confirmatory mode on independent data, or label the work exploratory.
 - **Diagnostic-as-causal.** Citing a correlation plot (Rung 1) as evidence for a causal/counterfactual claim (Rung 3). Requires ablation or controlled intervention.
 - **Single-run analysis on stochastic outputs.** Drawing conclusions from one seed when results are seed-dependent. Use multiple seeds or replications for claim-bearing stochastic comparisons.
@@ -216,5 +216,10 @@ In the iteration_loop, this maps to:
 - [Lipton & Steinhardt — Troubling Trends in ML Scholarship](https://queue.acm.org/detail.cfm?id=3328534) — ablation as standard
 - [Ng CS230 Section 8 — Error analysis](https://cs230.stanford.edu/section/8/)
 - [Gelman & Loken — Garden of forking paths](https://sites.stat.columbia.edu/gelman/research/unpublished/p_hacking.pdf) — implicit multiple-testing
+- [Gelman et al. (2020) — Bayesian Workflow](https://arxiv.org/abs/2011.01808) — model checking, model understanding, and workflow troubleshooting
+- [Machamer, Darden, and Craver (2000) — Thinking About Mechanisms](https://mechanism.ucsd.edu/bill/teaching/w10/machamer.darden.craver.pdf) — mechanism as organized entities and activities
+- [Zeller (2002) — Isolating Cause-Effect Chains from Computer Programs](https://www.st.cs.uni-saarland.de/papers/fse2002/p201-zeller.pdf) — cause-effect tracing through state differences
+- [Mytkowicz et al. (2009) — Producing Wrong Data Without Doing Anything Obviously Wrong](https://sape.inf.usi.ch/publications/asplos09) — systems measurement bias
+- [Curtsinger & Berger (2015) — Coz: Finding Code that Counts with Causal Profiling](https://arxiv.org/abs/1608.03676) — causal profiling for performance explanations
 - [Pearl & Bareinboim — Three-Layer Causal Hierarchy](https://causalai.net/r60.pdf) — ladder of causation
 - [Toulmin (1958) model](https://en.wikipedia.org/wiki/Stephen_Toulmin#The_Toulmin_model_of_argument) — claim staging foundation

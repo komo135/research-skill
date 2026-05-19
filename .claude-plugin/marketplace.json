@@ -8,8 +8,8 @@
     {
       "name": "research",
       "source": "./",
-      "description": "v3.1.0 - creating-propositions plus proposition-first R&D protocol with observation/analysis state, derived hypothesis plans, plan review, result analysis, and proposition feedback.",
-      "version": "3.1.0"
+      "description": "v3.2.0 - creating-propositions plus proposition-first R&D protocol with observation/analysis state, derived hypothesis plans, plan review, explanation-first result analysis, and proposition feedback.",
+      "version": "3.2.0"
     }
   ]
 }

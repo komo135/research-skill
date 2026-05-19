@@ -102,7 +102,7 @@ For basic research, EDA and descriptive analysis often carry the main evidential
 - For mechanism research: controlled variation across one variable at a time, with the others held constant
 - Leakage probe is less central (no train/test split needed if not training a model) but understand what the variables actually represent
 
-The claim disclosure floor adapts: variance across replications is still required when claims are made. Ablations may not apply if there is no "method" to ablate — but **controlled variation** (changing one parameter, observing the effect) is the basic-research analog.
+The claim-recording minimum adapts: variance across replications is still required when claims are made. Ablations may not apply if there is no "method" to ablate — but **controlled variation** (changing one parameter, observing the effect) is the basic-research analog.
 
 Observations are the primary output. Promote to claim sparingly — only when the observation is robust to the variations tested. See `analysis.md` for the staging discipline.
 

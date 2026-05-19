@@ -46,7 +46,7 @@ Poor fits:
 | `creating-propositions` | Lens-based upstream skill for creating parent propositions from observations and questions. It turns research material into expectation-break, mechanism, representation, constraint, responsibility, failure, invariant, regime, or measurement propositions before direct-solution prioritization or planning. |
 | `research` | Proposition-first protocol for R&D work across Frascati categories. Owns observations, analyses, proposition state, derived hypotheses, plans, claims, decisions, and reports. |
 | `research-plan-review` | Independent pre-execution review. Starts from a hypothesis plan path and checks premise, proposition trace, validation method, plan visual, prior-work grounding, and blockers. |
-| `research-result-analysis` | Independent post-execution analysis. Starts from a hypothesis plan path, reconstructs evidence, explains what happened and why, and returns state-update inputs without writing final claims or decisions. |
+| `research-result-analysis` | Independent post-execution why-analysis. Starts from a hypothesis plan path and explains how the observed result was produced through result shape, factor decomposition, mechanism traces, interactions, and open explanatory branches without writing final claims or decisions. |
 | `quant-research` | Domain extension layered on `research` for time-series and statistically rigorous quantitative R&D. Adds validation, leakage, multiple-testing, and robustness guidance. |
 
 ## Installation
@@ -99,9 +99,10 @@ the derived hypothesis and whether premise, prior-work grounding, and Plan visua
 ```
 
 ```text
-Use research-result-analysis on the completed plan path. Reconstruct the run evidence,
-explain what happened and why, and return state-update inputs. Do not write final
-claims or proposition decisions.
+Use research-result-analysis on the completed plan path. Explain why the observed
+result happened through result shape, factor decomposition, mechanism traces,
+interactions, and open explanatory branches. Do not write final claims,
+state-update inputs, proposition decisions, or hypothesis decisions.
 ```
 
 The agent may use the bundled scripts to create folders, seed ledgers, and check artifacts. Those scripts are implementation utilities for the skill workflow; the normal user interface is the agent conversation.

@@ -202,7 +202,7 @@ Run `scripts/check_run_artifacts.py` before using a run as evidence for Result a
 
 ## Result analysis and feedback
 
-After execution and Planned vs Actual, dispatch a fresh separate-context result-analysis subagent using `research-result-analysis`. Pass only the plan path. Result analysis explains what happened and why; it does not write final claims, choose proposition decisions, or choose hypothesis decisions.
+After execution and Planned vs Actual, dispatch a fresh separate-context result-analysis subagent using `research-result-analysis`. Pass only the plan path. Result analysis explains why the observed result happened through result shape, factor decomposition, mechanism traces, interactions, and open explanatory branches. It does not write final claims, return state-update inputs, choose proposition decisions, or choose hypothesis decisions.
 
 After Result analysis, the parent agent updates state in this order:
 

@@ -112,7 +112,7 @@ For experimental development, analysis takes two shapes — both required:
 - Resource consumption under load
 - Behavior at edges of the declared input space
 
-The disclosure floor for experimental development:
+The claim-recording minimum for experimental development:
 
 - Variance across multiple runs (single-run performance numbers are not characterization)
 - Edge-case coverage in acceptance tests

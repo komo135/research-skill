@@ -74,7 +74,7 @@ Examples that fail the minimum:
 
 For non-stochastic outcomes (e.g., a closed-form derivation result, a deterministic algorithm output, a one-shot measurement that does not have a sampling distribution), say so explicitly: `evidence: deterministic output of f(x=3.7) = 12.49, no sampling distribution applicable, see lib/foo.py:L42`.
 
-This minimum derives from `references/analysis.md` disclosure floor; the floor says what analyses must be run, this minimum says how their numeric outputs are reported in the claim record.
+This minimum is a claim-recording requirement. Result analysis may explain why the numeric result happened, but the claim record is where numeric outputs must be reported with point estimate, dispersion, sample size, and comparison details.
 
 ### alternatives_not_excluded
 
