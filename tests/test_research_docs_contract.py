@@ -615,6 +615,29 @@ def test_new_project_seeds_positioning_with_required_fields():
         assert field in positioning
     assert_absent(positioning, "Use the format from `references/literature_review.md`.")
 
+def test_new_project_scoping_seed_blocks_local_audit_as_prior_work():
+    script = ROOT / "skills" / "research" / "scripts" / "new_project.py"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        subprocess.run(
+            [sys.executable, str(script), str(target), "--name", "Scoping Seed Test"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        scoping = (target / "literature" / "scoping.md").read_text(encoding="utf-8")
+
+    assert_mentions(
+        scoping,
+        "benchmark baseline/comparator implementation",
+        "local file, metric, split, or competition-metadata audit is material",
+        "public baselines",
+        "competition writeups/notebooks/discussions",
+        "submit-able or minimal baseline",
+    )
+
 def test_new_project_creates_proposition_first_layout_and_next_steps():
     script = ROOT / "skills" / "research" / "scripts" / "new_project.py"
 

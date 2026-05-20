@@ -15,6 +15,7 @@ This plugin makes those transitions explicit:
 
 - classify intent with an uncertain-outcome gate before opening research state;
 - use scoping literature, material acquisition, and EDA before proposition creation;
+- keep benchmark baseline/comparator implementation behind existing-work scoping when public baselines, competition writeups, comparator conventions, or known failures may affect the safe starting point;
 - create and manage proposition workspaces before choosing direct solutions;
 - record the generated doubt, working proposition, expected consequence, observed match or break, and proposition status;
 - derive one plan-ready hypothesis from a live proposition;
@@ -132,6 +133,8 @@ flowchart TD
 
 Material absence means no proposition or hypothesis. The agent should collect observations, measurements, constraints, comparators, traces, prior-work facts, theoretical tensions, or bottleneck evidence first.
 
+For benchmark or competition work, a local file/metric/split audit is not enough to call initial research complete. Before implementing a submit-able/minimal baseline or choosing a comparator, record public baselines, competition writeups/notebooks/discussions when relevant, comparator conventions, evaluation protocol, known failures, and retrieval failures in `literature/scoping.md`; otherwise the route remains `materialization`.
+
 A contradicted, under-specified, split-needed, split, parked, or closed proposition is not a plannable parent. Record the transition, revise, split, unpark, reopen with reason, or close before deriving the next hypothesis.
 
 ## Project layout
@@ -209,6 +212,8 @@ Sections that do not apply still appear with `Not applicable:` and a reason. Pap
 The trace must include Situation question context, Generated doubt, Working proposition, Expected consequence, Proposition status, Derived hypothesis, and Hypothesis plan link. The plan may summarize proposition history but must not rewrite it.
 
 Prior-work grounding uses `literature/{papers.md,positioning.md}` when project-level prior-work state is useful. It does not replace the scoping scan in `literature/scoping.md`, and scoping does not replace plan-scoped Survey evidence and Citation-use map.
+
+For quantitative benchmark work, scoping also precedes baseline/comparator implementation even when the first run is exploratory or only needs a valid submission file. "No novelty" and "no claim yet" do not waive public-baseline and competition-writeup checks.
 
 Mid-execution literature update is required when an unfamiliar method, unexpected result, new comparator, contradiction with prior work, or missing-baseline signal appears before claim-bearing execution continues.
 

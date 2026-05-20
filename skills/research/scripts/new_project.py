@@ -111,6 +111,8 @@ def main():
         (
             "# Scoping Literature Scan\n\n"
             "Use this before proposition creation to locate existing work, comparators, known failures, datasets, and gaps.\n"
+            "Use this before benchmark baseline/comparator implementation; a local file, metric, split, or competition-metadata audit is material, not existing-work scoping.\n"
+            "For competitions, record public baselines, competition writeups/notebooks/discussions when relevant, comparator conventions, evaluation protocol, known failures, and retrieval failures before coding a submit-able or minimal baseline.\n"
             "This does not replace hypothesis-specific prior-work grounding in a plan.\n"
         ),
         encoding="utf-8",

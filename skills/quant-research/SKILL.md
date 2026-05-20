@@ -18,6 +18,8 @@ This skill is **always used together with `research`**. It does not redefine pla
 
 If you are starting a new R&D project, read `skills/research/SKILL.md` first. Come here when statistical rigor in the experiment design is a concern.
 
+This extension does not waive the base skill's existing-work scoping. For time-series, held-out benchmark, competition, or selected-best work, a "minimal baseline," valid submission CSV, or exploratory run still depends on public baselines, competition writeups/notebooks/discussions when relevant, comparator conventions, evaluation protocol, leakage risks, and known failures. If those are missing, the base route is `materialization` before baseline/comparator implementation. Quant methodology begins after that grounding; it does not replace it.
+
 ## Origin note
 
 Several references and methods in this skill originated in quantitative finance research (e.g., Combinatorial Purged Cross-Validation from López de Prado 2018, multiple-testing corrections developed for strategy selection). The underlying statistical concepts — purged cross-validation, deflation of selected-best metrics, embargoed splits, walk-forward validation — apply to **any quantitative R&D involving time-series data or selected-best-of-N model evaluation**: epidemiology, climate modeling, ML benchmarking on temporal data, neuroscience, signal processing, system identification.
@@ -61,6 +63,7 @@ These are utilities, not framework code. They produce neutral outputs (numbers, 
 
 Use the methodology references and scripts when:
 
+- Designing an initial baseline/comparator for a quantitative benchmark where public baselines, competition writeups, leakage conventions, or evaluation protocol may constrain the safe starting point
 - Designing the **plan** of a confirmatory applied-research project that involves a time-series benchmark — the plan section should cite the validation strategy
 - Running an **experiment** where the agent selects the best of N model variants — the multiple-testing correction is part of the methodology
 - Writing **Methods & Conditions** in a paper for time-series work — the paper must specify which validation protocol was used and why
@@ -69,7 +72,7 @@ Use the methodology references and scripts when:
 ## When NOT to use this skill
 
 - The work is not on time-series data and does not involve held-out statistical evaluation. The base `research` skill suffices.
-- The agent is in early exploratory phase with no held-out claim being made. Statistical rigor matters most when claims are being made.
+- The agent is in early exploratory phase with no held-out claim being made, except benchmark baseline/comparator design still follows the base `research` scoping rule. Statistical rigor matters most when claims are being made, but "exploratory" does not permit a local-data-only shortcut around public baselines or competition writeups.
 - The work is purely qualitative or focuses on system construction (experimental development) without statistical evaluation claims.
 
 ## Pitfalls this skill helps avoid

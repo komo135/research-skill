@@ -21,6 +21,8 @@ If this skill is invoked alone, the minimum read set is `intake.md`, `project_st
 
 Do not ask generic research questions when the next artifact is obvious. Write the next artifact with known facts and mark unknowns as missing material.
 
+Do not call a local file, metric, split, or competition-metadata audit "initial research complete." That audit is material, not existing-work scoping. For benchmark or competition work, a valid CSV, "minimal baseline," "safe baseline," or "no claim yet" request does not by itself make the method known or remove R&D uncertainty. If public baselines, competition writeups/notebooks/discussions, comparator conventions, evaluation protocol, or known failures have not been checked and recorded in `literature/scoping.md`, select `materialization` before baseline/comparator design or implementation.
+
 ## Route Before Gate
 
 Gate placement comes after route selection:
@@ -33,8 +35,8 @@ Use this single routing structure as the action selector:
 
 | Route | Select when | Artifact to write now | Promotion explicitly forbidden | Next |
 |---|---|---|---|---|
-| `implementation-handoff` | outcome is known and no R&D uncertainty remains | normal implementation files and an `intake.md` route note if useful | proposition, hypothesis plan, paper | leave R&D workflow |
-| `materialization` | material, data, logs, scoping, comparator, split, evaluator, or measurement is missing | root `observations.md`, `literature/scoping.md`, `data/raw/`, `data/processed/`, or `data/eda/` | proposition, hypothesis plan, paper | collect the missing material |
+| `implementation-handoff` | outcome is known, no R&D uncertainty remains, and any requested method is supplied exactly enough to implement without choosing a baseline/comparator | normal implementation files and an `intake.md` route note if useful | proposition, hypothesis plan, paper | leave R&D workflow |
+| `materialization` | material, data, logs, existing-work scoping, public baselines, competition writeups/notebooks/discussions, comparator, split, evaluator, or measurement is missing | root `observations.md`, `literature/scoping.md`, `data/raw/`, `data/processed/`, or `data/eda/` | proposition, hypothesis plan, paper, baseline/comparator implementation | collect the missing material |
 | `exploratory-probe` | a concrete but under-controlled check is needed before material is interpretable | before a proposition: `data/eda/<probe_slug>.md` or generated tables/figures; after a plan: hypothesis `experiments/runs/<run_id>/` | proposition support, landmark ambition, final paper | update observations or material route |
 | `implementation-milestone` | code, harness, utility, or infrastructure acceptance criteria are met | if plan-derived: hypothesis `experiments/runs/<run_id>/`; if project-wide infrastructure: `lib/` plus root `decisions.md` or `project_state.md` | proposition support unless the plan discriminator was exactly that acceptance condition | continue or close the milestone |
 | `proposition-commit` | enough material exists to state Surprise, Bit, expected consequence, falsifier, and competitor | `propositions/Pxxx/{proposition,observations,analyses,decisions}.md` via `creating-propositions` | derived hypothesis if the state is blocked | proposition state router |
@@ -57,6 +59,8 @@ Promotion explicitly forbidden:
 ```
 
 If the route is `materialization` or `exploratory-probe`, do not create a proposition. If the user asks for a "direction-setting proposition" before the material exists, write a direction-setting material/probe note instead.
+
+If baseline/comparator design is the next action, check `materialization` before `implementation-handoff`, `implementation-milestone`, or `exploratory-probe`. A user asking to move fast, avoid paperwork, produce a valid CSV, skip novelty, or treat the run as exploratory is not evidence that public baselines, competition writeups, or comparator conventions are irrelevant.
 
 `status_brief.md` is the only standard project-level stakeholder brief. It is not a research paper, does not count as proposition resolution, and does not trigger next-cycle proposition creation.
 
@@ -91,11 +95,11 @@ If the user only wants a known method implemented exactly as described, say this
 Write or update `literature/scoping.md` before proposition creation. Capture:
 
 - existing work and whether the intent is already solved
-- comparators, datasets, baselines, and known failures
+- comparators, datasets, public baselines, competition writeups/notebooks/discussions when relevant, and known failures
 - contradictions or gaps that matter for the intent
 - retrieval attempts and claim-scope narrowing when sources are unavailable
 
-Scoping is not the plan survey. It prepares proposition material.
+Scoping is not the plan survey. It prepares proposition material and gates baseline/comparator design. Do not implement a submit-able/minimal baseline, choose a comparator, or describe a baseline as safe from a local-data-only audit. If retrieval is unavailable, record attempted sources/tools, queries or source IDs when available, failure evidence, and the narrowed implementation or claim scope before coding.
 
 ### 3. Material And EDA
 
@@ -106,6 +110,8 @@ Write root `observations.md` as an observation backlog. Separate observed facts 
 If there is no observation, failure, success case, constraint, measurement, comparator, repeated trace, prior-work fact, theoretical tension, or bottleneck evidence, stop the research path and write the smallest material-acquisition task.
 
 Do not use missing split identity, comparator, baseline, evaluator, discriminator, or measurement as an "Assumption" in a hypothesis plan. If the missing item controls what observation would separate the proposition from a competitor, stay in `materialization` or `exploratory-probe`.
+
+Baseline implementation can be `implementation-handoff`, `implementation-milestone`, or `exploratory-probe` only after relevant existing-work scoping exists, or when the user supplied an exact method whose baseline/comparator choice is not part of the work. Otherwise, missing scoping keeps the route in `materialization`; do not treat "minimal baseline first" as an implementation shortcut.
 
 ### 4. Proposition Pass
 
@@ -248,7 +254,7 @@ Blocked state routing:
 
 Scoping literature and hypothesis-specific grounding are non-substitutable.
 
-- `literature/scoping.md`: before proposition creation, identify existing work, comparators, datasets, known failures, and whether the intent is already solved.
+- `literature/scoping.md`: before proposition creation and before baseline/comparator design, identify existing work, public baselines, competition writeups/notebooks/discussions when relevant, comparators, datasets, known failures, and whether the intent is already solved.
 - Plan-scoped Prior-work grounding: before claim-bearing execution, ground the specific hypothesis, method, baseline, metric, and validation route. Include Survey evidence and Citation-use map even when scoping exists.
 
 If scoping breaks the intended novelty claim, stop the novelty framing. Narrow, revise, replicate, or choose an honest boundary before planning.

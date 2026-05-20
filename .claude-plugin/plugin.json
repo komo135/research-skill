@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "description": "v4.0.0 - creating-propositions plus intent-to-paper proposition-first R&D workflow with scoping, EDA, proposition workspace ownership, hypothesis plans, independent reviews, result analysis, and quant research support.",
-  "version": "4.0.0",
+  "description": "v4.0.1 - creating-propositions plus intent-to-paper proposition-first R&D workflow with prior-work-gated benchmark baseline/comparator scoping, EDA, proposition workspace ownership, hypothesis plans, independent reviews, result analysis, and quant research support.",
+  "version": "4.0.1",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"

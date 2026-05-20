@@ -6,6 +6,8 @@ Document what is already known about the research question before writing the Pl
 
 Every plan needs prior-work grounding. Every plan also needs a plan-scoped paper survey before writing the Plan section. The resulting Prior-work grounding is not optional just because no novelty claim is made. The plan-scoped job is bounded but sufficient: enough to support the plan's question/objective, inherited assumptions, method choice, controls/comparators/evaluation protocol, baselines/evaluation protocol when the claim requires them, and known limitations.
 
+Early baseline/comparator design has the same dependency at scoping time. A local-data-only audit of files, target columns, metrics, splits, or competition metadata is not existing-work scoping. Before implementing a submit-able baseline, choosing a comparator, or describing a baseline as safe, record existing work, public baselines, competition writeups/notebooks/discussions when relevant, failed searches, and known limitations in `literature/scoping.md`. If that evidence is missing, the route is still `materialization`, not implementation.
+
 The job is to:
 
 1. Know what is already established so you are not re-running prior work unknowingly
@@ -30,6 +32,7 @@ Retrieval-unavailable is not a survey bypass. Use it only with a verifiable sign
 ## When to do this
 
 - At the start of any new plan, before writing the Plan section
+- Before baseline/comparator design, including a "minimal" or submit-able baseline
 - Before choosing controls, comparators, baselines when applicable, evaluation protocol, or method family
 - Before claiming a method is novel
 - Before claiming a baseline does not exist
@@ -39,6 +42,8 @@ Retrieval-unavailable is not a survey bypass. Use it only with a verifiable sign
 Comprehensive literature survey is required for strong external novelty, publication, `to our knowledge`, or `no baseline exists` claims. That is separate from the bounded but sufficient plan-scoped paper survey and prior-work grounding every plan needs.
 
 If prior work is genuinely unknown after the plan-scoped paper survey, record the named constraint in the plan and narrow or block relevant claims until the grounding is repaired. Do not treat absence of a novelty claim as permission to skip prior work. If retrieval is unavailable, record the retrieval-unavailable constraint, retrieval-unavailable evidence, and claim-scope narrowing in the plan; do not silently replace the survey with guesses.
+
+At scoping time, unknown prior work similarly narrows the next implementation step. Record attempted source/tool, query or source ID when available, failure evidence, and which baseline/comparator design decisions are blocked. Do not use "local-data-only" facts as a substitute for public baselines or competition writeups.
 
 ## Files
 
