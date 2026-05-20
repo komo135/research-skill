@@ -32,12 +32,12 @@ Mechanism explanations require more than aggregate association. Association-only
 
 ## Research script artifact contract
 
-EDA and result-analysis scripts may print progress, but stdout is not evidence. A print-only script run leaves no audit trail for later analysis, review, or report writing. Every completed research script run must write durable artifact files under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/`:
+EDA and result-analysis scripts may print progress, but stdout is not evidence. A print-only script run leaves no audit trail for later analysis, review, or paper writing. Every completed research script run must write durable artifact files under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/`:
 
 - `run_manifest.json` records the command, `status: completed`, seed or material run condition, and manifest-listed artifact paths.
 - `logs/stdout.log` and `logs/stderr.log` capture console output for debugging and provenance.
 - `intermediate/` stores intermediate data, filtered slices, derived features, sampled records, or diagnostics needed to audit how the final observation was produced.
-- `outputs/`, `tables/`, or `figures/` store metrics, tables, plots, predictions, traces, or other evidence that later claims and reports can cite.
+- `outputs/`, `tables/`, or `figures/` store metrics, tables, plots, predictions, traces, or other evidence that later claims and papers can cite.
 
 Run `scripts/check_run_artifacts.py` before promoting observations from EDA or result analysis. The checker does not impose a full experiment-tracker schema; it only rejects terminal-only evidence by requiring at least one manifest-listed non-log durable artifact.
 
@@ -183,7 +183,7 @@ In the iteration_loop, this maps to:
 |---|---|
 | EDA notebooks (before plan exists) | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/notebooks/eda_<n>.ipynb` once a derived hypothesis exists; if EDA precedes a hypothesis, record material in `observations.md` and `analyses.md` first |
 | Result-analysis notebooks (after runs) | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/notebooks/analysis_<n>.ipynb` |
-| Diagnostic plots used in reports | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/reports/<id>/figures/` (copy/regenerate, not symlink — reports are self-contained snapshots) |
+| Diagnostic plots used in papers | `propositions/Pxxx_slug/paper.md` can reference figures copied or regenerated under proposition-local `figures/` when the paper needs self-contained visuals |
 | Raw outputs analyzed | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/outputs/` |
 | Intermediate EDA/result-analysis evidence | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/intermediate/` |
 | Run manifest and logs | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/run_manifest.json`, `logs/stdout.log`, `logs/stderr.log` |

@@ -165,7 +165,7 @@ Completed runs must leave durable evidence. Print-only execution is incomplete:
 - `logs/stderr.log`
 - at least one manifest-listed non-log durable artifact under `outputs/`, `tables/`, `figures/`, or `intermediate/`
 
-Stdout is not evidence. Run `scripts/check_run_artifacts.py` before using a run for observations, Result analysis, Claims, decisions, or reports.
+Stdout is not evidence. Run `scripts/check_run_artifacts.py` before using a run for observations, Result analysis, Claims, decisions, or papers.
 
 ## Result analysis
 
@@ -185,7 +185,7 @@ The update must name whether the result supported, contradicted, under-specified
 
 ## Claims
 
-Every load-bearing claim in `plan.md` and reports uses:
+Every load-bearing claim in `plan.md` and papers uses:
 
 ```yaml
 - claim: <one sentence with specific assertion>
@@ -195,7 +195,7 @@ Every load-bearing claim in `plan.md` and reports uses:
   conditions_not_tested: [...]
 ```
 
-Run `scripts/check_claims.py` before report drafting or state-changing decisions that depend on a claim.
+Run `scripts/check_claims.py` before paper drafting or state-changing decisions that depend on a claim.
 
 ## Common failures
 

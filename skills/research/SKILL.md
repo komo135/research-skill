@@ -1,261 +1,276 @@
 ---
 name: research
-description: Use when conducting R&D work that needs proposition state, claim discipline, planning structure, or human-facing reports. Triggers when generating hypotheses, planning experiments, designing baselines, writing findings, deciding what to do after a result, characterizing a phenomenon, building a prototype, or maintaining research state across sessions.
+description: Use when conducting R&D work that needs proposition state, claim discipline, planning structure, scoping literature, EDA, research papers, or maintained research state. Triggers when starting from an intent, generating hypotheses, planning experiments, designing baselines, writing findings, deciding what to do after a result, characterizing a phenomenon, building a prototype, or maintaining research state across sessions.
 ---
 
 # Research
 
-Protocol skill for agent-driven R&D. The top-level research unit is a **proposition**, not a plan. A plan tests one derived hypothesis under one proposition. The job is to make question generation, hypothesis generation, evidence, claims, and state updates inspectable without turning the protocol into bureaucracy.
+This is an operating procedure for proposition-first R&D. Do not respond by reciting the protocol. In normal use, take the next concrete step: create or update the artifact if you can write files, or name the exact path and missing input that blocks the write.
 
-Research-level reproducibility is about whether another researcher can re-implement from the described method, material execution conditions, data, evaluation protocol, and statistical setup. Provenance is an audit pointer, not the source of reproducibility; claim-to-artifact consistency is an integrity check rather than making the method reproducible by itself.
+The top-level research unit is a **proposition**, not a standalone plan. A plan tests one derived hypothesis under one live proposition. `creating-propositions` owns proposition generation and proposition state files; this skill runs the project workflow around it.
 
-## Core lifecycle
+## First Move
+
+Before analysis, establish the project state.
+
+If this skill is invoked alone, the minimum read set is `intake.md`, `project_state.md`, root `observations.md`, `literature/scoping.md`, and current `propositions/*/proposition.md`; if they do not exist, create the project layout first.
+
+1. If there is no project root, run `scripts/new_project.py <project-root> --name "<name>"`.
+2. If a project exists, read `intake.md`, `project_state.md`, root `observations.md`, `literature/scoping.md`, and the current proposition statuses.
+3. Pick exactly one canonical route from **Route Before Gate** and take its route-specific action. Do not maintain a separate lane vocabulary.
+
+Do not ask generic research questions when the next artifact is obvious. Write the next artifact with known facts and mark unknowns as missing material.
+
+## Route Before Gate
+
+Gate placement comes after route selection:
+
+- Content Gate applies at `proposition-commit` and `ambition-elevation`, not to every exploratory action.
+- Paper-grade gate applies at `paper-route`, after proposition state resolution.
+- Material, probe, implementation milestone, and stakeholder brief work are real outputs, but they do not promote the proposition lifecycle by themselves.
+
+Use this single routing structure as the action selector:
+
+| Route | Select when | Artifact to write now | Promotion explicitly forbidden | Next |
+|---|---|---|---|---|
+| `implementation-handoff` | outcome is known and no R&D uncertainty remains | normal implementation files and an `intake.md` route note if useful | proposition, hypothesis plan, paper | leave R&D workflow |
+| `materialization` | material, data, logs, scoping, comparator, split, evaluator, or measurement is missing | root `observations.md`, `literature/scoping.md`, `data/raw/`, `data/processed/`, or `data/eda/` | proposition, hypothesis plan, paper | collect the missing material |
+| `exploratory-probe` | a concrete but under-controlled check is needed before material is interpretable | before a proposition: `data/eda/<probe_slug>.md` or generated tables/figures; after a plan: hypothesis `experiments/runs/<run_id>/` | proposition support, landmark ambition, final paper | update observations or material route |
+| `implementation-milestone` | code, harness, utility, or infrastructure acceptance criteria are met | if plan-derived: hypothesis `experiments/runs/<run_id>/`; if project-wide infrastructure: `lib/` plus root `decisions.md` or `project_state.md` | proposition support unless the plan discriminator was exactly that acceptance condition | continue or close the milestone |
+| `proposition-commit` | enough material exists to state Surprise, Bit, expected consequence, falsifier, and competitor | `propositions/Pxxx/{proposition,observations,analyses,decisions}.md` via `creating-propositions` | derived hypothesis if the state is blocked | proposition state router |
+| `ambition-elevation` | a proposition is proposed or retained as `landmark-aspirant` | proposition `analyses.md` and Content Gate fields | landmark label without a concrete load-bearing referent | keep, downgrade, under-specify, or collect material |
+| `hypothesis-plan` | parent proposition is plan-ready and source analysis has a derived hypothesis candidate | `propositions/Pxxx/hypotheses/Hxxx/{hypothesis.md,plan.md,experiments/,decisions.md}` | assumptions replacing missing discriminator, comparator, or measurement | plan review |
+| `claim-resolution` | result analysis and evidence resolve the parent proposition enough to change state | hypothesis/proposition ledgers, claim records, `project_state.md` | paper before state resolution | state update |
+| `paper-route` | proposition reaches `supported` or `contradicted` through claim-resolution | `propositions/Pxxx/paper.md` | provisional paper, stakeholder draft as paper | next-cycle scoping |
+| `stakeholder-brief` | stakeholder needs an interim deliverable before proposition resolution | root `status_brief.md` with dated entries | paper route, next-cycle trigger, proposition support | continue the current route |
+
+Do not require a route block for every ordinary step. Use it as a forcing function only when the route is non-obvious, the user is pushing to proceed despite missing material or unresolved evidence, the agent is about to promote work to proposition/hypothesis/support/`landmark-aspirant`/`paper.md`, a research category is being used as a closeout reason, or `provisional` appears around proposition state, support, or paper.
+
+Route block:
 
 ```text
-Situation question
-→ observation / analysis
-→ proposition P
-→ expected observation E if P is true
-→ compare observed O with E
-→ decide whether P is contradicted or whether P's required condition is unrealized
-→ if P remains live, derive hypothesis H that preserves, revises, splits from, or realizes a condition of P
-→ predict what should happen if H is true
-→ Hypothesis plan
-→ Plan review
-→ Execution
-→ Result analysis
-→ hypothesis status update
-→ proposition status update
+Route:
+Why this route:
+Artifact to write now:
+Gate not yet applicable:
+Promotion explicitly forbidden:
 ```
 
-Do not generate hypotheses directly from a vague topic. If there is no observation, failure, success case, constraint, measurement, comparator, repeated trace, prior-work fact, theoretical tension, or search/evaluation bottleneck, there is material absence: create a material-acquisition task, no proposition or hypothesis.
+If the route is `materialization` or `exploratory-probe`, do not create a proposition. If the user asks for a "direction-setting proposition" before the material exists, write a direction-setting material/probe note instead.
 
-The material-acquisition task should name the missing observation, comparator or expected reference, measurement or evidence form, minimal reproduction or trace, and next artifact to collect. This keeps the agent moving without inventing a proposition.
+`status_brief.md` is the only standard project-level stakeholder brief. It is not a research paper, does not count as proposition resolution, and does not trigger next-cycle proposition creation.
 
-A contradicted proposition is not a plannable parent: record the contradiction, revise, split, or close the proposition, then derive the next hypothesis under the updated proposition. Do not create a hypothesis plan under a proposition whose current state says the proposition itself is broken.
+`basic_research`, `applied_research`, and `experimental_development` classify work; they do not determine the exit artifact. Acceptance tests for a utility or harness are proposition support only if the proposition and plan made that acceptance condition the discriminator.
 
-## Proposition-first objects
+Blocked output shape:
 
-| Object | Meaning | Lifetime | File |
-|---|---|---|---|
-| Proposition | Large research-level proposition that can generate multiple derived hypotheses | Long-lived | `propositions/Pxxx_slug/proposition.md` |
-| Observation | Material used to generate or update a proposition | Until superseded | `propositions/Pxxx_slug/observations.md` |
-| Analysis | Contrast that produces a Generated doubt, Working proposition, Expected consequence, Proposition status, and possible derived hypothesis | Analysis-scoped unless it changes state | `propositions/Pxxx_slug/analyses.md` |
-| Derived hypothesis | Testable hypothesis derived from a proposition or working proposition | Plan-scoped until supported, contradicted, partial, inconclusive, parked, or killed | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/hypothesis.md` |
-| Hypothesis plan | Execution design for testing one derived hypothesis | Execution-scoped | `propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md` |
+```text
+Route: <canonical route or blocked>
+Blocking condition: <not uncertain | material absent | no Bit | non-plan-ready state | missing review>
+Missing artifact: <path or external item>
+Promotion explicitly forbidden: <proposition | hypothesis plan | support | landmark-aspirant | paper | claim>
+Next action: <single concrete action>
+```
 
-Propositions are not claims. A proposition status records the state of a research program. A claim still requires the claim structure after evidence exists.
+## Work Loop
 
-## Question generation
+### 1. Intake
 
-The skill distinguishes:
+Write or update `intake.md` with:
 
-- **Situation question**: broad user or project question.
-- **Generated doubt**: precise tension produced by analysis.
-- **Research question**: question that can generate propositions and hypotheses.
+- user intent and desired outcome
+- the uncertain-in-outcome question
+- available material
+- missing material
+- current canonical route
 
-Questions are produced by contrast operations, not by asking the agent to be creative:
+If the user only wants a known method implemented exactly as described, say this is implementation work and do not open a proposition or hypothesis lifecycle. If the user reframes toward an uncertain question, continue.
 
-| Operation | Use when | Question shape |
-|---|---|---|
-| `expectation-break` | Expected relation and observation diverge | If the expected relation should hold, what hidden condition is missing, unrealized, or false? |
-| `constraint-joint-fit` | Several constraints must hold together | What proposition makes the constraints consequences of one structure or process? |
-| `required-component-doubt` | A component is treated as necessary | Can its function be supplied by another mechanism plus minimal replacement for what is lost? |
-| `trace-meaning` | Repeated, symmetric, ratio-like, or leftover traces appear | What process, memory, control system, or mechanism would make this trace expected? |
-| `static-to-process` | Static pattern may record generation, movement, update, or decay | What process produced this pattern as historical record? |
-| `analogy-transfer` | A source-domain mechanism may map to the target domain | What proposition makes the source mechanism valid here despite mismatches? |
-| `search-or-evaluation-bottleneck` | The bottleneck is search, score, representation, or evaluator | Can the bottleneck move into an indirect, learned, or constrained process? |
-| `representation-change` | Current variables make a plausible proposition hard to realize or test | Would residuals, differences, ratios, invariants, latent variables, or proxy tasks make it testable? |
+### 2. Scoping
 
-The labels route thinking; they are less important than the written contrast and Generated doubt.
+Write or update `literature/scoping.md` before proposition creation. Capture:
 
-## Analysis contract
+- existing work and whether the intent is already solved
+- comparators, datasets, baselines, and known failures
+- contradictions or gaps that matter for the intent
+- retrieval attempts and claim-scope narrowing when sources are unavailable
 
-Every hypothesis-generating analysis must write this sequence:
+Scoping is not the plan survey. It prepares proposition material.
 
-1. Situation question.
-2. Material used: observation, measurement, comparator, trace, prior-work fact, theoretical tension, failure, success case, or bottleneck.
-3. Contrast type and explicit contrast.
-4. Generated doubt.
-5. Working proposition.
-6. Expected consequence if the working proposition is true.
-7. Observed match, break, or missing condition.
-8. Proposition status.
-9. Derived hypothesis candidate only when the status permits one. If the status blocks hypothesis creation, write `None: <reason>` instead of a candidate.
+### 3. Material And EDA
 
-Proposition status values:
+Put raw or referenced material under `data/raw/`, derived data under `data/processed/`, and exploratory notebooks/tables/figures under `data/eda/`.
 
-- `supported`: material matches the expected consequence enough to derive or continue a hypothesis.
-- `contradicted`: material breaks the proposition itself.
-- `unrealized-condition`: the proposition may hold, but the current method, representation, measurement, evaluator, or system does not realize a required condition. If the material is theoretical only and the expected consequence can be written but has not yet been empirically realized, this is `unrealized-condition`, not `under-specified`.
-- `under-specified`: the proposition cannot yet produce a discriminating expected consequence. If you were able to write the expected consequence, the proposition is not `under-specified`.
-- `split-needed`: one proposition hides multiple separable propositions.
-- `split`: child propositions have been opened; continue through children.
-- `closed`: the proposition is resolved, superseded, killed, or no longer useful.
+Write root `observations.md` as an observation backlog. Separate observed facts from interpretations. EDA can create observations, tensions, missing-measurement notes, and candidate comparators; it must not create claims.
 
-Routing:
+If there is no observation, failure, success case, constraint, measurement, comparator, repeated trace, prior-work fact, theoretical tension, or bottleneck evidence, stop the research path and write the smallest material-acquisition task.
 
-| Status | Next state action |
-|---|---|
-| `supported` | Create or continue a derived hypothesis |
-| `contradicted` | Record the contradiction, then revise, split, or close the proposition before deriving a hypothesis under the updated proposition |
-| `unrealized-condition` | Derive a hypothesis that makes the condition realizable |
-| `under-specified` | Add observation, measurement, comparator, or formulation before planning; do not create a formal derived hypothesis or plan |
-| `split-needed` | Split before planning |
-| `split` | Continue through child propositions, not the old parent |
-| `closed` | Do not derive new hypotheses from this proposition |
+Do not use missing split identity, comparator, baseline, evaluator, discriminator, or measurement as an "Assumption" in a hypothesis plan. If the missing item controls what observation would separate the proposition from a competitor, stay in `materialization` or `exploratory-probe`.
 
-This is the anti-handwave rule: a derived hypothesis is not produced until the agent can say which proposition status produced it. When the status is `under-specified`, the analysis may record the missing discriminator but must not smuggle a plausible hypothesis into the Derived hypothesis field.
+### 4. Proposition Pass
 
-## Project structure
+When material exists and the route is `proposition-commit`, switch inline to `creating-propositions` in the same context. Do not dispatch a fresh separate-context subagent for proposition generation.
+
+Expected handoff to `creating-propositions`:
+
+- relevant `intake.md` lines
+- `literature/scoping.md` findings
+- root `observations.md` entries
+- relevant prior `propositions/Pxxx/paper.md` when in a later cycle
+
+Expected return from `creating-propositions`:
+
+- opened/updated/blocked proposition path
+- current 9-state status
+- decision ledger entry written or needed
+- next research action: material acquisition, split/merge, hypothesis creation, or paper
+
+### 5. Hypothesis Planning
+
+Use `scripts/new_hypothesis.py` only after both are true:
+
+- parent proposition status is `open`, `supported`, or `unrealized-condition`
+- source analysis contains a non-placeholder derived hypothesis candidate
+
+The plan lives at `propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md`.
+
+The plan cites the parent `proposition.md`, source `analyses.md`, and `hypothesis.md`; it may summarize them but must not rewrite them. If proposition state changes before execution (for example the parent moves to `contradicted`, `split`, `under-specified`, or `parked`), amend or regenerate the plan from the updated proposition and re-run `research-plan-review`. Do not execute a plan built on stale proposition state.
+
+Every Plan section starts with `### Plan visual`. It may use Mermaid, PlantUML, ASCII, a linked figure/table, or `No diagram:` with a reason. A plan commits before execution to one hypothesis, the proposition trace, Hypothesis type, prediction, competitor, discriminator, primary measure, controls/comparators or limiting-case checks, evidence route, artifacts, material conditions, and stop/status criteria.
+
+Do not require every derived hypothesis to be mechanistic. Hypothesis type may be `predictive / performance`, `mechanistic`, `causal / intervention`, `descriptive / characterization`, `theoretical`, or `mixed`.
+
+Before execution, dispatch `research-plan-review` with only the plan path. If review blocks, update the plan or material; do not execute through the blocker.
+
+### 6. Execution Evidence
+
+Print-only output is not evidence. A completed run needs `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and at least one manifest-listed durable artifact under `outputs/`, `tables/`, `figures/`, or `intermediate/`. Run `scripts/check_run_artifacts.py` before using a run as evidence.
+
+### 7. Result Closeout
+
+After execution and Planned vs Actual are written, dispatch `research-result-analysis` with only the plan path. It explains why the observed result happened; it does not write final claims, state-update inputs, or decisions.
+
+Positive result shape is not a closeout shortcut. If a single hypothesis under a proposition has a positive aggregate result, but same-proposition hypotheses remain open or the result analysis leaves a serious measurement/evaluator artifact explanation live, do not mark the proposition `supported`, do not draft `paper.md`, and do not move to the next proposition. Close out the executed hypothesis first:
+
+- If the artifact, comparator, measurement, or evidence quality prevents interpretation, set the hypothesis to `tested-inconclusive` and record `TESTED_INCONCLUSIVE`.
+- If part of the planned discriminator is supported but a material clause or rival explanation remains unresolved, set the hypothesis to `tested-partial` and record `TESTED_PARTIAL`.
+- Update the parent proposition as still `open` or `under-specified` when the artifact branch means the proposition cannot yet support a claim.
+- Write the specific material-acquisition or discriminator artifact needed to separate the live explanations before continuing.
+
+Then the parent agent updates, in order:
+
+1. `hypothesis.md`
+2. hypothesis `decisions.md`
+3. parent proposition state files using the `creating-propositions` discipline
+4. proposition `decisions.md` when state changes
+5. root `project_state.md`
+
+Claims are evidence records, not proposition statuses. Before state-changing decisions or paper prose depends on a claim, run `scripts/check_claims.py`.
+
+`provisional support` is not a proposition state and is not a promotion basis. Informal prose may hedge uncertainty only if the route does not change to `supported`, `paper-route`, or next-cycle work.
+
+### 8. Paper And Next Cycle
+
+Create `propositions/Pxxx_slug/paper.md` only when a proposition reaches `supported` or `contradicted` through `claim-resolution`. Do not postpone the paper because per-hypothesis notes exist, because the project may continue, or because a future summary seems easier. The resolution transition is the publication trigger.
+
+Do not create a provisional `paper.md`. A stakeholder draft, meeting memo, progress report, or one-positive-result summary before proposition resolution is `stakeholder-brief` and goes to root `status_brief.md`. `status_brief.md` is not a paper and does not trigger the next cycle.
+
+The paper synthesizes across the proposition's hypotheses and must pass `scripts/check_paper.py`. Required paper-grade structure includes Related Work, Theory / Formulation, Methods & Conditions or System description, Results/Observations/Performance, Ablation / Sensitivity, Claim-to-result alignment, Discussion, Limitations, Reproducibility, and References. Numeric evidence needs sample size plus variance/dispersion, CI, effect size, significance, or an explicit non-applicability reason.
+
+In the next cycle, treat the paper as material. This is not optional and is the same strength as the resolution trigger above: two concrete writes are required before the next proposition pass.
+
+1. Re-survey literature for the new cycle and append a dated entry to `literature/scoping.md` recording the search date and the queries/sources actually attempted. A retrieval-unavailable note must still record what was attempted on this date, not just "nothing new." Reusing the original scoping unchanged does not count as a re-survey.
+2. Extract the open branches and findings of your own `paper.md` into root `observations.md` as fact-level entries citing the paper. Own research is part of the Bit source for later propositions; an unwritten "I know my own results" does not satisfy this.
+
+Do not open the next proposition before both writes exist.
+
+## Layout And Ownership
+
+`references/project_layout.md` is the layout source of truth.
 
 ```text
 project-root/
-├── README.md
-├── project_state.md
-├── decisions.md                         # project-wide decisions only
-└── propositions/
-    └── P001_slug/
-        ├── proposition.md
-        ├── observations.md
-        ├── analyses.md
-        ├── decisions.md                 # proposition state transitions
-        └── hypotheses/
-            └── H001_slug/
-                ├── hypothesis.md
-                ├── plan.md              # hypothesis plan
-                ├── experiments/
-                ├── reports/
-                └── decisions.md         # derived-hypothesis transitions
+|-- intake.md
+|-- literature/
+|   |-- scoping.md
+|   |-- papers.md
+|   `-- positioning.md
+|-- data/{raw,processed,eda}/
+|-- observations.md
+|-- status_brief.md
+|-- project_state.md
+|-- decisions.md
+|-- lib/{data,eval,viz,utils,tests}/
+`-- propositions/
+    `-- P001_slug/
+        |-- proposition.md
+        |-- observations.md
+        |-- analyses.md
+        |-- decisions.md
+        |-- paper.md
+        `-- hypotheses/
+            `-- H001_slug/
+                |-- hypothesis.md
+                |-- plan.md
+                |-- experiments/{code,configs,notebooks,runs}/
+                `-- decisions.md
 ```
 
-Use scripts:
+Ownership:
 
-- `scripts/new_project.py` initializes the project with `propositions/`.
-- `scripts/new_proposition.py` opens a proposition and appends `OPEN_PROPOSITION` to project `decisions.md`.
-- `scripts/new_hypothesis.py` creates `hypothesis.md`, `plan.md`, `experiments/`, `reports/`, and hypothesis `decisions.md` under a proposition.
-- `scripts/new_run.py` creates durable run evidence under a derived hypothesis.
+- `research`: `intake.md`, root `observations.md`, root `status_brief.md`, `literature/{scoping,papers,positioning}.md`, `data/{raw,processed,eda}/`, `project_state.md`, root `decisions.md`, `propositions/Pxxx/paper.md`, and hypothesis files.
+- `creating-propositions`: `propositions/Pxxx/{proposition,observations,analyses,decisions}.md`.
 
-There is no standalone `new_plan.py`. A top-level plan is the old lifecycle.
+Root `decisions.md` records project structure only: `OPEN_PROPOSITION`, `SPLIT_PROPOSITION`, `MERGE_PROPOSITION`, `CHANGE_SCOPE`, `CHANGE_PROTOCOL`.
 
-## Decisions
+Proposition `decisions.md` records proposition state only: `SUPPORT`, `CONTRADICT`, `UNREALIZED_CONDITION`, `UNDER_SPECIFY`, `SPLIT_NEEDED`, `PARK`, `UNPARK`, `REVISE`, `CLOSE`, `REOPEN`.
 
-Top-level `decisions.md` is for project-wide structure, scope, and protocol only.
+Hypothesis `decisions.md` records hypothesis lifecycle only: `COMMIT`, `PARK`, `KILL`, `TESTED_SUPPORTED`, `TESTED_CONTRADICTED`, `TESTED_PARTIAL`, `TESTED_INCONCLUSIVE`, `REVISE`.
 
-Decision locations:
+## Proposition State Router
 
-- Project: `decisions.md` with `OPEN_PROPOSITION`, `SPLIT_PROPOSITION`, `MERGE_PROPOSITION`, `CHANGE_SCOPE`, `CHANGE_PROTOCOL`.
-- Proposition: `propositions/Pxxx_slug/decisions.md` with `SUPPORT`, `CONTRADICT`, `UNREALIZED_CONDITION`, `UNDER_SPECIFY`, `SPLIT_NEEDED`, `SPLIT`, `CLOSE`, `REOPEN`.
-- Hypothesis: `propositions/Pxxx_slug/hypotheses/Hxxx_slug/decisions.md` with `COMMIT`, `PARK`, `KILL`, `TESTED_SUPPORTED`, `TESTED_CONTRADICTED`, `TESTED_PARTIAL`, `TESTED_INCONCLUSIVE`, `REVISE`.
+Plan-ready states are exactly `open`, `supported`, and `unrealized-condition`.
 
-A decision that does not update project, proposition, or hypothesis state belongs in analysis notes.
+All proposition states are `open`, `supported`, `unrealized-condition`, `under-specified`, `contradicted`, `split-needed`, `split`, `parked`, and `closed`.
 
-## R&D categories
+Blocked state routing:
 
-Every hypothesis plan declares exactly one category:
+- `under-specified`: acquire material or revise until a discriminating expected consequence exists.
+- `contradicted`: record the contradiction, then revise, split, or close before planning.
+- `split-needed`: split before planning.
+- `split`: continue through child propositions.
+- `parked`: satisfy the unblock condition before planning.
+- `closed`: do not plan unless reopened with a recorded reason.
 
-| Category | When to use | Default mode | Report shape |
-|---|---|---|---|
-| `basic_research` | New knowledge about underlying foundations without a particular application in view | `exploratory` | Phenomenon -> mechanism/principle -> learned -> refined proposition |
-| `applied_research` | New knowledge directed toward a specific practical aim | `confirmatory` | Objective -> method/procedure -> evidence -> limits |
-| `experimental_development` | Systematic work producing additional knowledge while creating or improving a product/process | `milestone` | System/process -> performance -> limits -> next iteration |
+`closed -> open` requires a `REOPEN` entry in proposition `decisions.md` naming the new material or reconsideration basis. `parked -> previous live state` requires `UNPARK` and evidence that the unblock condition is satisfied.
 
-Plan modes are `exploratory`, `confirmatory`, `milestone`, and `theoretical`.
+## Literature Is Two-Layered
 
-## Hypothesis plan
+Scoping literature and hypothesis-specific grounding are non-substitutable.
 
-`hypotheses/Hxxx_slug/plan.md` is the moved `rd_plan` role. It cites:
+- `literature/scoping.md`: before proposition creation, identify existing work, comparators, datasets, known failures, and whether the intent is already solved.
+- Plan-scoped Prior-work grounding: before claim-bearing execution, ground the specific hypothesis, method, baseline, metric, and validation route. Include Survey evidence and Citation-use map even when scoping exists.
 
-- parent `proposition.md`
-- source `observations.md`
-- source `analyses.md`
-- current `hypothesis.md`
+If scoping breaks the intended novelty claim, stop the novelty framing. Narrow, revise, replicate, or choose an honest boundary before planning.
 
-The plan may summarize those sources but must not rewrite them. If proposition state changes before execution, amend or regenerate the plan from the updated hypothesis.
+## Old Paths
 
-The Plan and Plan review contain **pre-result commitments**: proposition trace, hypothesis, prediction or expected observation, primary measure, controls/comparators or limiting-case checks, evidence route, artifacts, material conditions, and stop/status criteria. They do not explain why an unobserved result happened.
+Old top-level `plans/`, top-level `experiments/<id>/runs/`, `literature/differentiation.md`, and per-hypothesis `reports/` are not compatibility paths. Reject them except in explicit old-path rejection tests.
 
-Post-result explanations belong to Result analysis after evidence exists. If the claim requires one, the plan names the planned discriminating test before execution.
+There is no standalone `new_plan.py`.
 
-Prior-work grounding remains required before claim-bearing execution; projects may use `literature/papers.md` and `literature/positioning.md` for prior-work state.
+## End-Of-Turn Output
 
-Do not require every derived hypothesis to be mechanistic. Hypothesis type may be `predictive / performance`, `mechanistic`, `causal / intervention`, `descriptive / characterization`, `theoretical`, or mixed.
+When reporting progress, give the user the operational state, not a protocol summary:
 
-Every Plan section starts with `### Plan visual`. Use Mermaid, PlantUML, ASCII, a linked figure/table, or `No diagram:` with a specific reason.
+- artifact paths created or updated
+- current proposition and hypothesis state
+- blockers and exact missing artifact, if blocked
+- verification command run, if any
+- next concrete action
 
-## Plan review
+## Capability Guard
 
-Before execution, dispatch a fresh separate-context plan-review subagent using `research-plan-review`. Pass only the plan path. Because the plan lives inside `propositions/Pxxx_slug/hypotheses/Hxxx_slug/`, the reviewer reconstructs local state from sibling `hypothesis.md` and parent proposition files referenced by the plan.
+This workflow should improve reasoning, not create paperwork. Keep labels subordinate to the actual contrast, expected consequence, discriminator, evidence, and decision. Do not turn EDA into a claim, do not inflate incremental results, and do not create hypotheses from absent material.
 
-Plan review checks whether the plan actually tests the derived hypothesis produced by the source analysis, or drifted into a convenient different question. If the plan cannot trace its hypothesis to a Generated doubt, Working proposition, Expected consequence, and Proposition status, it returns `block_execution` or `revise_before_execution`.
-
-## Execution evidence
-
-For research scripts, print-only output is not evidence. stdout is not evidence. A completed run needs:
-
-- `run_manifest.json` with `status: completed`
-- `logs/stdout.log`
-- `logs/stderr.log`
-- at least one manifest-listed durable artifact under `outputs/`, `tables/`, `figures/`, or `intermediate/`
-
-Run `scripts/check_run_artifacts.py` before using a run as evidence for Result analysis, observations, claims, decisions, or reports.
-
-## Result analysis and feedback
-
-After execution and Planned vs Actual, dispatch a fresh separate-context result-analysis subagent using `research-result-analysis`. Pass only the plan path. Result analysis explains why the observed result happened through result shape, factor decomposition, mechanism traces, interactions, and open explanatory branches. It does not write final claims, return state-update inputs, choose proposition decisions, or choose hypothesis decisions.
-
-After Result analysis, the parent agent updates state in this order:
-
-1. `hypothesis.md` status.
-2. hypothesis `decisions.md`.
-3. parent `proposition.md` when proposition status, expected consequence, live hypotheses, or key material changes.
-4. proposition `decisions.md` when proposition status changes.
-5. open the next derived hypothesis only if the updated proposition state warrants it.
-
-This is the hypothesis status update and proposition status update phase of the lifecycle.
-
-Hypothesis result states:
-
-- `tested-supported`: planned discriminator supported the hypothesis against the named competitor under tested conditions.
-- `tested-contradicted`: planned discriminator contradicted the hypothesis.
-- `tested-partial`: evidence supported part of the hypothesis but left a material clause, condition, or competitor unresolved.
-- `tested-inconclusive`: execution happened but evidence quality, measurement, or comparator failure prevents interpretation.
-
-## Claims
-
-Claims are evidence records, not proposition statuses. Every load-bearing claim uses:
-
-```yaml
-- claim: <one sentence with specific assertion>
-  evidence: <file:line / numeric value / artifact path / citation>
-  alternatives_not_excluded: [...]
-  conditions_tested: <variable ranges, datasets, parameters>
-  conditions_not_tested: [...]
-```
-
-Strength is read from alternatives and tested conditions. Empty lists claim exhaustion and are open to audit.
-
-## Reports
-
-Reports live under the derived hypothesis: `propositions/Pxxx_slug/hypotheses/Hxxx_slug/reports/`. Reports are human-facing evidence artifacts. Required sections are Summary, Background, Related Work, Theory / Formulation, Methods & Conditions or category-specific equivalent, Results/Observations/Performance, Ablation / Sensitivity, Discussion, Limitations, and References. Sections that do not apply still appear with `Not applicable:` and a reason. Reports do not carry next-action or next-hypothesis queues.
-
-## Capability-uplift guard
-
-This protocol should improve reasoning:
-
-- It gives operations for producing questions.
-- It preserves intermediate state across sessions.
-- It lets multiple Generated doubts and Working propositions coexist.
-- It distinguishes `unrealized-condition`, `under-specified`, and `split-needed` from true/false.
-- It lets results feed back into propositions before the next hypothesis is generated.
-
-It must not become restrictive bureaucracy:
-
-- Do not require every contrast type.
-- Do not require every derived hypothesis to be mechanistic.
-- Do not require a plan before proposition material exists.
-- Do not force a single best hypothesis while multiple working propositions remain live.
-- Do not turn observation collection into a claim that a proposition exists.
-- Do not make labels more important than contrast, Generated doubt, Working proposition, Expected consequence, Proposition status, and Derived hypothesis trace.
-
-Hard stops for hypothesis or plan creation are material absence and a parent proposition whose current state is `contradicted`, `under-specified`, `split-needed`, `split`, or `closed`. These are not dead ends: they route to material acquisition, contradiction recording, revision, split, child propositions, or closure before the next hypothesis is generated.
+Do not force a single best hypothesis or rank live propositions while several remain plan-ready. Multiple working propositions and derived hypotheses may coexist until evidence separates them; converge because a discriminator resolved them, not because one track is more convenient.

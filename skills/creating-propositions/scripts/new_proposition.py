@@ -23,6 +23,8 @@ from pathlib import Path
 
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
+SKILLS_ROOT = SKILL_ROOT.parent
+RESEARCH_SKILL_ROOT = SKILLS_ROOT / "research"
 ASSETS = SKILL_ROOT / "assets"
 PROP_ID_RE = re.compile(r"^P\d{3}$")
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -125,7 +127,7 @@ def main() -> None:
     print(f"  2. Fill analyses in propositions/{prop_name}/analyses.md with generated doubt, working proposition, expected consequence, and proposition status")
     print(f"  3. Create a derived hypothesis only after proposition status warrants it:")
     print(
-        f"     python \"{SKILL_ROOT / 'scripts' / 'new_hypothesis.py'}\" \"{project}\" "
+        f"     python \"{RESEARCH_SKILL_ROOT / 'scripts' / 'new_hypothesis.py'}\" \"{project}\" "
         f"--proposition \"{prop_name}\" --id H001 --slug slug --title \"Title\" "
         "--category applied_research --mode confirmatory --hypothesis \"Hypothesis\" "
         "--source-analysis A001 --status supported"

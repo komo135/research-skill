@@ -9,7 +9,7 @@ on the testing scenario.
 
 - Designing a pre-registration that involves > 1 hypothesis or
   parameter combination
-- Reviewing whether a claim-bearing report package has honest multiple-testing
+- Reviewing whether a claim-bearing paper package has honest multiple-testing
   correction
 - Computing DSR or PSR (`scripts/psr_dsr.py`)
 - Running `references/review/conclusion_review.md` Section "Statistical
@@ -42,7 +42,7 @@ Both are valid; the choice depends on the cost of false positives.
 
 The takeaway: in this field, **single-test significance is a starting
 point, not a finding**. The skill treats multiple-testing correction as a hard
-requirement for claim-bearing finance report packages.
+requirement for claim-bearing finance paper packages.
 
 ## Honest trial count
 
@@ -203,7 +203,7 @@ nulls. Less conservative than FWER methods.
 
 Most projects need **at least two** of these (e.g., DSR for hyperparameter
 sweep + Romano-Wolf for cross-strategy comparison + PSR for the final
-Sharpe claim). The report package should enumerate each method based on the
+Sharpe claim). The paper package should enumerate each method based on the
 project's trial structure.
 
 ## Common failure modes

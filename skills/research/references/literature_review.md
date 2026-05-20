@@ -77,7 +77,7 @@ Two paragraphs per entry maximum. Longer summaries belong in the agent's session
 - ...
 ```
 
-Differences or novelty can be recorded in `literature/positioning.md` when claimed, but the primary purpose is grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. If the work does not differ from prior approaches in a meaningful way, this is itself an important finding. Basic-research replication is valuable, but the report should be honest about being a replication.
+Differences or novelty can be recorded in `literature/positioning.md` when claimed, but the primary purpose is grounding, inheritance, control/comparator choice when relevant, known limitations, and claim scope. If the work does not differ from prior approaches in a meaningful way, this is itself an important finding. Basic-research replication is valuable, but the paper should be honest about being a replication.
 
 ## During execution
 
@@ -88,5 +88,5 @@ A mid-execution literature update is required when execution reveals an unfamili
 - **Claiming novelty without literature search.** "To our knowledge" is not a search; it is an absence of search. If the agent has not actually searched, the claim of novelty is unsupported.
 - **Bibliography without a citation-use map.** A list of papers is not grounding. Record how each cited work is used in the plan.
 - **Listing tangentially related papers to look thorough.** Each entry should connect to the current plan, not pad a citation count.
-- **Comparing against the wrong comparator.** If you compare to a weak or outdated comparator because stronger ones are hard to run, the comparison is biased; say so explicitly in `literature/positioning.md` and in the report.
+- **Comparing against the wrong comparator.** If you compare to a weak or outdated comparator because stronger ones are hard to run, the comparison is biased; say so explicitly in `literature/positioning.md` and in the paper.
 - **Not updating papers.md mid-investigation.** When a new relevant paper appears during execution (e.g., the agent finds it while debugging), add it to `literature/papers.md` and update `literature/positioning.md` if relevant.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify a report.md against the skill's v2.4 report contract.
+"""Verify a proposition-level paper.md against the research paper contract.
 
 Checks:
 - Paper-grade required sections are present: Summary, Background, Related Work,
@@ -13,15 +13,15 @@ Checks:
 - Outcome sections include a figure, table, or explicit `No figure/table:` reason.
 - Figure references (![...](figures/X) or relative paths) resolve to actual files.
 - Limitations section is non-empty (not just placeholder text).
-- Next-action / next-hypothesis planning sections are rejected; reports are
-  evidence artifacts.
+- Next-action / next-hypothesis planning sections are rejected; papers are
+  proposition-level synthesis artifacts.
 - Numeric outcome sections include a statistical reporting minimum: sample size,
   variance/dispersion, CI, effect size, significance, or an explicit non-applicability reason.
 
 Exit code 0 if all pass, 1 if any issue.
 
 Usage:
-    python check_report.py <path_to_report.md>
+    python check_paper.py <path_to_paper.md>
 """
 import argparse
 import re
@@ -35,8 +35,10 @@ COMMON_REQUIRED = [
     "Related Work",
     "Theory / Formulation",
     "Ablation / Sensitivity",
+    "Claim-to-result alignment",
     "Discussion",
     "Limitations",
+    "Reproducibility",
     "References",
 ]
 FORBIDDEN_SECTIONS = ["Next action", "Next hypothesis", "Next hypotheses"]
@@ -63,8 +65,10 @@ NONEMPTY_IF_PRESENT = [
     "Observations",
     "Performance",
     "Ablation / Sensitivity",
+    "Claim-to-result alignment",
     "Discussion",
     "Limitations",
+    "Reproducibility",
     "References",
 ]
 
@@ -181,9 +185,9 @@ def check_section_nonempty(sections: dict, name: str) -> list:
     return issues
 
 
-def check_figures_exist(report_path: Path, refs: list) -> list:
+def check_figures_exist(paper_path: Path, refs: list) -> list:
     issues = []
-    report_dir = report_path.parent
+    paper_dir = paper_path.parent
     for line_no, ref in refs:
         # Skip external URLs.
         if ref.startswith(("http://", "https://")):
@@ -192,8 +196,8 @@ def check_figures_exist(report_path: Path, refs: list) -> list:
         if ref.endswith("<filename>.png") or "TODO" in ref or "PLACEHOLDER" in ref.upper():
             issues.append(f"  Line {line_no}: figure reference is a placeholder: '{ref}'")
             continue
-        # Resolve relative to report dir.
-        fig_path = (report_dir / ref).resolve()
+        # Resolve relative to paper dir.
+        fig_path = (paper_dir / ref).resolve()
         if not fig_path.exists():
             issues.append(f"  Line {line_no}: figure reference does not resolve: '{ref}' (looked for {fig_path})")
     return issues
@@ -212,6 +216,9 @@ def has_variability_or_inference_value(body: str) -> bool:
     patterns = [
         r"\b(?:variance|dispersion|standard deviation|std|sd)\s*(?:=|:|is|was)?\s*\d",
         r"\b(?:\d{2,3}%\s*)?ci\b\s*(?:=|:|is|was)?\s*[\[(]?\s*-?\d",
+        # Compact CI notation with the level glued after, e.g. "CI95 [..", "CI 95% =..".
+        # \bci keeps the leading word boundary so "precision" is still not matched.
+        r"\bci\s*\d{2,3}%?\s*(?:=|:|is|was)?\s*[\[(]?\s*-?\d",
         r"\bconfidence interval\s*(?:=|:|is|was)?\s*[\[(]?\s*-?\d",
         r"\beffect size\s*(?:=|:|is|was)?\s*-?\d",
         r"\bp[- ]?value\s*(?:=|:|is|was)?\s*[<=>]?\s*\d",
@@ -254,7 +261,7 @@ def check_numeric_outcome_reporting(sections: dict) -> list:
         if has_sample_size_value(body) and has_variability_or_inference_value(body):
             continue
         issues.append(
-            f"  Section '{key}' has numeric Results but numeric Results must report sample size, variance/dispersion, CI, effect size, significance, or a non-applicability reason"
+            f"  Section '{key}' has numeric Results but numeric Results must report a sample size (n=...) AND at least one of variance/dispersion, CI, effect size, or significance, or else an explicit non-applicability reason"
         )
     return issues
 
@@ -297,12 +304,16 @@ def check_proposition_first_references(text: str) -> list:
             issues.append(
                 f"  Line {line_no}: old top-level plan or run path; use propositions/<P>/hypotheses/<H>/experiments/runs/"
             )
+        if re.search(r"propositions/[^\s`'\"),]+/hypotheses/[^\s`'\"),]+/reports/", line):
+            issues.append(
+                f"  Line {line_no}: old per-hypothesis report path; synthesize into propositions/<P>/paper.md"
+            )
     return issues
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Verify report.md against skill contract.")
-    parser.add_argument("path", help="Path to report.md")
+    parser = argparse.ArgumentParser(description="Verify paper.md against skill contract.")
+    parser.add_argument("path", help="Path to paper.md")
     args = parser.parse_args()
 
     p = Path(args.path).resolve()
@@ -313,7 +324,7 @@ def main():
     text = p.read_text(encoding="utf-8")
     sections = find_sections(text)
 
-    print(f"Checking report: {p}")
+    print(f"Checking paper: {p}")
     print(f"Found {len(sections)} sections: {list(sections.keys())}")
     print()
 
@@ -351,7 +362,7 @@ def main():
             print(issue)
         sys.exit(1)
 
-    print("Report passes all contract checks.")
+    print("Paper passes all contract checks.")
 
 
 if __name__ == "__main__":

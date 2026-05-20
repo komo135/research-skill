@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify claim records in a plan or report file.
+"""Verify claim records in a plan or paper file.
 
 Parses load-bearing claim records under a "## Claims" section. Verifies:
 - All five required fields are present per claim (claim, evidence,
@@ -11,7 +11,7 @@ Parses load-bearing claim records under a "## Claims" section. Verifies:
 Exit code 0 if all claims pass, 1 if any issue is reported.
 
 Usage:
-    python check_claims.py <path_to_plan_or_report.md>
+    python check_claims.py <path_to_plan_or_paper.md>
 """
 import argparse
 import re
@@ -145,7 +145,7 @@ def check_claim(idx: int, c: dict) -> list:
 
 def main():
     parser = argparse.ArgumentParser(description="Verify claim record structure.")
-    parser.add_argument("path", help="Plan or report markdown file to check")
+    parser.add_argument("path", help="Plan or paper markdown file to check")
     args = parser.parse_args()
 
     p = Path(args.path)

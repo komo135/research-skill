@@ -21,7 +21,7 @@ The purpose is to stop execution before research time is spent on a plan that sh
 
 Review only two load-bearing questions:
 
-1. **Premise check**: is the derived hypothesis built on a wrong premise, unsupported premise, unverified premise, contradicted proposition state, missing observation, or prior-work claim that is not actually grounded?
+1. **Premise check**: is the derived hypothesis built on a wrong premise, unsupported premise, unverified premise, non-plan-ready proposition state, missing observation, or prior-work claim that is not actually grounded?
 2. **Hypothesis validation method**: can the planned experiment, analysis, derivation, evaluator, comparator, or limiting-case check really validate the stated hypothesis type?
 3. **Trace check**: does the plan actually test the derived hypothesis produced by the source analysis, or did it drift into testing a convenient different question?
 
@@ -33,7 +33,7 @@ If either answer is no, return `block_execution`. Do not downgrade to `revise_be
    Identify category, mode, `## Proposition and hypothesis trace`, Prior-work grounding, Survey evidence, Citation-use map, Divergence checkpoint, and Plan. Read sibling `hypothesis.md` and the referenced parent proposition files (`proposition.md`, `observations.md`, `analyses.md`) when available from the plan path. Prior-work grounding must cite prior work through `literature/papers.md` and `literature/positioning.md` when those files exist, or record a retrieval-unavailable constraint with evidence.
 
 2. **Check the premise first**  
-   Ask whether the derived hypothesis follows from the recorded observations, Generated doubt, Working proposition, Expected consequence, Proposition status, known failures, constraints, prior work, and Divergence checkpoint. If the plan contradicts parent proposition state or revives a closed/replaced route without new evidence, block execution. If a proxy metric has already been discredited for the stated objective, a plan using only that proxy is a wrong-premise plan.
+   Ask whether the derived hypothesis follows from the recorded observations, Generated doubt, Working proposition, Expected consequence, Proposition status, known failures, constraints, prior work, and Divergence checkpoint. Plan-ready proposition states are only `open`, `supported`, and `unrealized-condition`; block plans under `under-specified`, `contradicted`, `split-needed`, `split`, `parked`, or `closed` unless the plan documents the required revision, split, unpark, or reopen decision. If the plan contradicts parent proposition state or revives a closed/replaced route without new evidence, block execution. If a proxy metric has already been discredited for the stated objective, a plan using only that proxy is a wrong-premise plan.
 
 3. **Check the proposition trace**
    Require a trace to Generated doubt, Working proposition, Expected consequence, Proposition status, and derived hypothesis. If any of these are missing, placeholder-only, or inconsistent with sibling `hypothesis.md` or parent `analyses.md`, return `block_execution` when the missing trace affects the premise or validation method; otherwise return `revise_before_execution`.

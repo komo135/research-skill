@@ -77,6 +77,7 @@ Proposition status values:
 | Evidence after Result analysis | Hypothesis update | Proposition update |
 |---|---|---|
 | Planned discriminator supports hypothesis against competitor | `tested-supported` | usually `supported`, unless broader proposition remains under-specified |
+| Positive aggregate result, but same-proposition hypotheses remain open and the result may be a measurement/evaluator artifact | `tested-inconclusive` or `tested-partial`, depending on whether the planned discriminator is interpretable | keep `open` or move to `under-specified`; do not draft `paper.md` yet |
 | Planned discriminator contradicts hypothesis | `tested-contradicted` | `contradicted`, `unrealized-condition`, `under-specified`, or `split-needed` depending on whether the result breaks the proposition or only the realization |
 | Evidence supports part but leaves a material clause unresolved | `tested-partial` | usually `under-specified` or still `supported` with narrowed expected consequence |
 | Comparator, measurement, artifact, or evidence quality prevents interpretation | `tested-inconclusive` | usually unchanged or `under-specified` |
@@ -84,3 +85,5 @@ Proposition status values:
 | Result exposes multiple hidden propositions | `tested-partial` | `split-needed` then `split` after child propositions are opened |
 
 Do not write `NEXT_STEP`, `REFINE`, `ADJACENT`, `PARK`, or `CLOSE` as global plan branches in the new lifecycle. Those were plan-first labels. Use proposition and hypothesis status transitions instead.
+
+Do not promote one positive hypothesis result into a proposition-level `SUPPORT` decision when unresolved sibling hypotheses or live artifact explanations still affect the proposition's expected consequence. The closeout artifact in that case is the hypothesis ledger update plus a proposition-level note naming the unresolved discriminator, not a proposition paper or next-proposition handoff.

@@ -59,9 +59,11 @@ Not acceptable as completion:
 - Functional claims based on the happy path without testing edge cases
 - "Works" without specifying what input space and conditions it works for
 
-## Report shape
+## Paper shape
 
-Use `assets/report/experimental_development_report.md.template`.
+This shape applies only after `paper-route`: the parent proposition has reached `supported` or `contradicted` through claim-resolution. The `experimental_development` category alone does not require `paper.md`; milestone closeout can remain an implementation-milestone artifact or `status_brief.md`.
+
+Use `assets/paper/experimental_development_paper.md.template`.
 
 1. **Summary** — what was built and what it does
 2. **Background** — what the artifact is for, what existed before, why this iteration
@@ -119,14 +121,14 @@ The claim-recording minimum for experimental development:
 - Operational limits explicitly probed (when does it break, not just "it works in the happy path")
 - Failure-mode catalog as a first-class deliverable
 
-Performance claims are distribution claims. Report the distribution, not a single number.
+Performance claims are distribution claims. State the distribution, not a single number.
 
 ## Pitfalls
 
 - **Confusing the prototype with the result.** The artifact existing is not the result; the artifact working under stated conditions is. "I built a system" without test evidence is not a completed milestone.
 - **Demo-driven evaluation.** A demo on hand-picked inputs is not evidence the system works generally. Acceptance tests must cover the declared input space.
 - **Skipping edge cases.** Most production failures are edge cases. Completion criteria should include edge-case scenarios.
-- **Documentation debt.** A working artifact that nobody else can run is half-built. The System description in the report must let a non-author bring the artifact up.
+- **Documentation debt.** A working artifact that nobody else can run is half-built. The System description in the paper must let a non-author bring the artifact up.
 - **Promoting development to a component-causality claim without evidence.** Claiming "system S works because of component I" requires an ablation or controlled intervention. Without that evidence, the claim is "system S works under stated conditions," not "component I is the reason."
 - **Hidden infrastructure changes.** Modifying lib/ or shared infrastructure as part of development without recording it in the relevant project, proposition, or hypothesis `decisions.md` makes the change invisible to other hypotheses.
-- **Single-run performance numbers.** Performance is a distribution. Report it as one.
+- **Single-run performance numbers.** Performance is a distribution. State it as one.

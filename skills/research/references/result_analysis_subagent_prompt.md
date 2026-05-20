@@ -8,7 +8,7 @@ Use the research-result-analysis skill.
 Analyze this plan:
 <propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md>
 
-Treat the plan as the only starting context. Reconstruct necessary result material yourself from sibling hypothesis.md, referenced parent proposition files, referenced runs, run_manifest.json, logs/stdout.log, logs/stderr.log, scripts, configs, outputs, tables, figures, reports, and literature entries. Do not use parent-agent summaries, expected conclusions, private notes, or unstated expectations.
+Treat the plan as the only starting context. Reconstruct necessary result material yourself from sibling hypothesis.md, referenced parent proposition files, referenced runs, run_manifest.json, logs/stdout.log, logs/stderr.log, scripts, configs, outputs, tables, figures, proposition paper.md when present, and literature entries. Do not use parent-agent summaries, expected conclusions, private notes, or unstated expectations.
 
 Return a `## Result analysis` section that explains why the observed result happened. Include:
 1. material used for explanation
@@ -21,7 +21,7 @@ Return a `## Result analysis` section that explains why the observed result happ
 8. discriminators that would separate live explanations, without choosing a next action
 9. open explanatory branches
 
-Do not assess whether the result is good, bad, valid, supported, contradicted, claim-ready, promotion-ready, or decision-ready. Do not write final claims, proposition decisions, hypothesis decisions, state-update inputs, iteration branches, deployment recommendations, or human-facing reports.
+Do not assess whether the result is good, bad, valid, supported, contradicted, claim-ready, promotion-ready, or decision-ready. Do not write final claims, proposition decisions, hypothesis decisions, state-update inputs, iteration branches, deployment recommendations, or human-facing paper prose.
 ```
 
-The parent research agent records the returned `## Result analysis` section before writing claims, decisions, or reports. The parent updates `hypothesis.md`, hypothesis `decisions.md`, parent `proposition.md`, and proposition `decisions.md` only after separately reviewing the explanation. Do not analytically summarize, rewrite, collapse, or convert the subagent's findings into state labels; only mechanical formatting fixes are allowed.
+The parent research agent records the returned `## Result analysis` section before writing claims, decisions, or papers. The parent updates `hypothesis.md`, hypothesis `decisions.md`, parent `proposition.md`, and proposition `decisions.md` only after separately reviewing the explanation. Do not analytically summarize, rewrite, collapse, or convert the subagent's findings into state labels; only mechanical formatting fixes are allowed.

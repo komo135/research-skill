@@ -5,7 +5,7 @@ description: Use as a domain extension when the main `research` skill is in use 
 
 # Quant Research
 
-A domain extension over the `research` skill for **time-series and statistically rigorous quantitative R&D**. The base `research` skill governs the protocol — categories, plans, claims, reports, iteration. This skill adds statistical methodology specific to settings where:
+A domain extension over the `research` skill for **time-series and statistically rigorous quantitative R&D**. The base `research` skill governs the protocol — categories, plans, claims, proposition-level papers, and cycles. This skill adds statistical methodology specific to settings where:
 
 - The data has temporal order (no random shuffling)
 - A method is selected from a search space (overfitting risk)
@@ -14,7 +14,7 @@ A domain extension over the `research` skill for **time-series and statistically
 
 ## Relationship to `research`
 
-This skill is **always used together with `research`**. It does not redefine plans, claims, decisions, or reports — those still follow the base skill. It adds **methodology references** and **executable utilities** for the statistical layer.
+This skill is **always used together with `research`**. It does not redefine plans, claims, decisions, or papers — those still follow the base skill. It adds **methodology references** and **executable utilities** for the statistical layer.
 
 If you are starting a new R&D project, read `skills/research/SKILL.md` first. Come here when statistical rigor in the experiment design is a concern.
 
@@ -55,7 +55,7 @@ Domain-neutral implementations of common statistical tools:
 | `sanity_checks.py` | Standard pre-claim sanity tests |
 | `sensitivity_grid.py` | Parameter sensitivity grid for robustness battery |
 
-These are utilities, not framework code. They produce neutral outputs (numbers, JSON, csv) that the agent records as artifacts under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/`. The base `research` skill governs how those artifacts become claims and reports.
+These are utilities, not framework code. They produce neutral outputs (numbers, JSON, csv) that the agent records as artifacts under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/`. The base `research` skill governs how those artifacts become claims and proposition-level papers.
 
 ## When to use this skill
 
@@ -63,7 +63,7 @@ Use the methodology references and scripts when:
 
 - Designing the **plan** of a confirmatory applied-research project that involves a time-series benchmark — the plan section should cite the validation strategy
 - Running an **experiment** where the agent selects the best of N model variants — the multiple-testing correction is part of the methodology
-- Writing **Methods & Conditions** in a report for time-series work — the report must specify which validation protocol was used and why
+- Writing **Methods & Conditions** in a paper for time-series work — the paper must specify which validation protocol was used and why
 - Writing **Limitations** when the validation has known biases (small held-out set, single regime, overlapping labels)
 
 ## When NOT to use this skill

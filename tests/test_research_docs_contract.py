@@ -106,8 +106,8 @@ def current_status_value(text: str) -> str:
             return stripped
     return ""
 
-def test_report_templates_prompt_for_material_conditions():
-    template_dir = ROOT / "skills" / "research" / "assets" / "report"
+def test_paper_templates_prompt_for_material_conditions():
+    template_dir = ROOT / "skills" / "research" / "assets" / "paper"
 
     for template in template_dir.glob("*.template"):
         text = template.read_text(encoding="utf-8")
@@ -115,22 +115,24 @@ def test_report_templates_prompt_for_material_conditions():
         assert "when applicable" in text.lower(), template
         assert "not environment locks" in text, template
 
-def test_report_format_and_templates_define_paper_grade_contract():
-    report_format = read("skills/research/references/report_format.md")
+def test_paper_format_and_templates_define_paper_grade_contract():
+    paper_format = read("skills/research/references/paper_format.md")
     readme = read("README.md")
-    template_dir = ROOT / "skills" / "research" / "assets" / "report"
+    template_dir = ROOT / "skills" / "research" / "assets" / "paper"
 
     assert_mentions(
-        report_format,
-        "paper-grade report",
+        paper_format,
+        "paper-grade paper",
         "not a venue manuscript",
-        "standalone evidence artifact",
+        "proposition-level synthesis artifact",
         "Related Work",
         "Ablation / Sensitivity",
+        "Claim-to-result alignment",
+        "Reproducibility",
         "Discussion",
         "References",
     )
-    assert_mentions(readme, "paper-grade", "Related Work", "Ablation / Sensitivity", "Discussion", "References")
+    assert_mentions(readme, "paper-grade", "Related Work", "Ablation / Sensitivity", "Claim-to-result alignment", "Reproducibility", "Discussion", "References")
 
     for template in template_dir.glob("*.template"):
         text = template.read_text(encoding="utf-8")
@@ -143,8 +145,10 @@ def test_report_format_and_templates_define_paper_grade_contract():
         assert_ordered_fragments(
             text,
             "## Ablation / Sensitivity",
+            "## Claim-to-result alignment",
             "## Discussion",
             "## Limitations",
+            "## Reproducibility",
             "## References",
         )
         assert_absent(text, "## Next action", "## Next hypothesis", "## Next hypotheses")
@@ -155,8 +159,8 @@ def test_report_format_and_templates_define_paper_grade_contract():
             "source artifacts",
         )
 
-def test_applied_report_keeps_material_conditions_in_methods_area():
-    text = read("skills/research/assets/report/applied_research_report.md.template")
+def test_applied_paper_keeps_material_conditions_in_methods_area():
+    text = read("skills/research/assets/paper/applied_research_paper.md.template")
 
     material_position = text.index("### Material conditions")
     results_position = text.index("## Results")
@@ -429,6 +433,7 @@ def test_research_skill_docs_are_english_only():
         *sorted((ROOT / "skills" / "research" / "references").rglob("*.md")),
         *sorted((ROOT / "skills" / "research" / "assets").rglob("*.template")),
         ROOT / "skills" / "creating-propositions" / "SKILL.md",
+        *sorted((ROOT / "skills" / "creating-propositions" / "assets").rglob("*.template")),
     ]
 
     offenders = []
@@ -625,18 +630,38 @@ def test_new_project_creates_proposition_first_layout_and_next_steps():
         readme = (target / "README.md").read_text(encoding="utf-8")
         project_state = (target / "project_state.md").read_text(encoding="utf-8")
         decisions = (target / "decisions.md").read_text(encoding="utf-8")
-        propositions_exists = (target / "propositions").exists()
+        path_exists = {
+            "intake.md",
+            "observations.md",
+            "status_brief.md",
+            "literature/scoping.md",
+            "literature/papers.md",
+            "literature/positioning.md",
+            "data/raw",
+            "data/processed",
+            "data/eda",
+            "lib/data",
+            "lib/eval",
+            "lib/viz",
+            "lib/utils",
+            "lib/tests",
+            "propositions",
+        }
+        existing_paths = {relative: (target / relative).exists() for relative in path_exists}
+        differentiation_exists = (target / "literature" / "differentiation.md").exists()
 
-    assert propositions_exists
+    for relative, exists in existing_paths.items():
+        assert exists, relative
     assert_mentions(result.stdout, "new_proposition.py")
     assert_absent(result.stdout, "new_plan.py")
-    assert_mentions(readme, "proposition-first", "propositions/", "hypotheses/H")
+    assert_mentions(readme, "intent", "scoping", "EDA", "observations.md", "status_brief.md", "propositions/", "paper.md")
     assert_mentions(project_state, "Active propositions", "Live derived hypotheses")
     assert_mentions(decisions, "Project-wide", "OPEN_PROPOSITION")
+    assert not differentiation_exists
 
 def test_new_proposition_creates_state_ledgers_and_project_decision():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
 
     with tempfile.TemporaryDirectory() as tmp:
         target = Path(tmp) / "project"
@@ -685,6 +710,13 @@ def test_new_proposition_creates_state_ledgers_and_project_decision():
     assert_mentions(
         proposition,
         "## Current status",
+        "Ambition",
+        "Surprise",
+        "Load-bearing Bit",
+        "Reasonable attack",
+        "Significance",
+        "Discriminating exam",
+        "parked",
         "unrealized-condition",
         "split-needed",
         "Live working propositions",
@@ -710,7 +742,7 @@ def test_new_proposition_creates_state_ledgers_and_project_decision():
 
 def test_new_hypothesis_creates_hypothesis_plan_under_parent_proposition():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
     new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -781,7 +813,15 @@ def test_new_hypothesis_creates_hypothesis_plan_under_parent_proposition():
         hyp_dir = target / "propositions" / "P001_identity-reachability" / "hypotheses" / "H001_residual-parameterization"
         created_paths = {
             relative: (hyp_dir / relative).exists()
-            for relative in ["hypothesis.md", "plan.md", "experiments", "reports", "decisions.md"]
+            for relative in [
+                "hypothesis.md",
+                "plan.md",
+                "experiments/code",
+                "experiments/configs",
+                "experiments/notebooks",
+                "experiments/runs",
+                "decisions.md",
+            ]
         }
         hypothesis = (hyp_dir / "hypothesis.md").read_text(encoding="utf-8")
         plan = (hyp_dir / "plan.md").read_text(encoding="utf-8")
@@ -789,6 +829,7 @@ def test_new_hypothesis_creates_hypothesis_plan_under_parent_proposition():
     assert result.returncode == 0, result.stderr
     for relative, exists in created_paths.items():
         assert exists, relative
+    assert not (hyp_dir / "reports").exists()
     assert current_status_value(hypothesis) == "candidate"
     assert markdown_section(hypothesis, "## Type").strip() == "predictive / performance"
     assert_mentions(
@@ -816,9 +857,83 @@ def test_new_hypothesis_creates_hypothesis_plan_under_parent_proposition():
     )
     assert_absent(plan, "<copy the generated doubt", "<copy the working proposition", "<observable result expected")
 
+def test_new_hypothesis_accepts_numeric_thresholds_with_angle_brackets():
+    new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
+    new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        subprocess.run(
+            [sys.executable, str(new_project), str(target), "--name", "Threshold"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            [
+                sys.executable,
+                str(new_proposition),
+                str(target),
+                "--id",
+                "P001",
+                "--slug",
+                "threshold",
+                "--title",
+                "Threshold",
+                "--proposition",
+                "Numeric thresholds in analysis text must not be read as template placeholders.",
+                "--expected",
+                "A field with a real inequality passes the placeholder check.",
+            ],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        # Real content using < and > (inequalities) must not be rejected as placeholder-only.
+        fill_analysis(
+            target,
+            "P001_threshold",
+            status="supported",
+            material_used="O001 shows accuracy collapses when standardized volatility |z|>3.",
+            derived_hypothesis="If exposure is capped at z<3, the collapse should not appear.",
+        )
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(new_hypothesis),
+                str(target),
+                "--proposition",
+                "P001_threshold",
+                "--id",
+                "H001",
+                "--slug",
+                "threshold-cap",
+                "--title",
+                "Threshold Cap",
+                "--category",
+                "applied_research",
+                "--mode",
+                "confirmatory",
+                "--hypothesis",
+                "Capping standardized exposure prevents the high-volatility collapse.",
+                "--source-analysis",
+                "A001",
+                "--status",
+                "supported",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+    assert result.returncode == 0, result.stderr
+
 def test_new_hypothesis_rejects_placeholder_source_analysis_before_material_exists():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
     new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -885,7 +1000,7 @@ def test_new_hypothesis_rejects_placeholder_source_analysis_before_material_exis
 
 def test_new_hypothesis_rejects_none_material_or_none_hypothesis_candidate():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
     new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -969,7 +1084,7 @@ def test_new_hypothesis_rejects_none_material_or_none_hypothesis_candidate():
 
 def test_new_hypothesis_rejects_non_plannable_proposition_statuses():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
     new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -1004,7 +1119,7 @@ def test_new_hypothesis_rejects_non_plannable_proposition_statuses():
         )
 
         results = []
-        for index, status in enumerate(["contradicted", "under-specified", "split-needed"], start=1):
+        for index, status in enumerate(["contradicted", "under-specified", "split-needed", "split", "parked", "closed"], start=1):
             fill_analysis(
                 target,
                 "P001_status-gate",
@@ -1048,7 +1163,7 @@ def test_new_hypothesis_rejects_non_plannable_proposition_statuses():
 
 def test_new_hypothesis_rejects_contradicted_parent_current_status():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
     new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -1130,7 +1245,7 @@ def test_new_hypothesis_rejects_contradicted_parent_current_status():
 
 def test_research_scripts_reject_path_traversal_components():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
 
     with tempfile.TemporaryDirectory() as tmp:
         target = Path(tmp) / "project"
@@ -1168,10 +1283,20 @@ def test_research_scripts_reject_path_traversal_components():
 def test_standalone_new_plan_script_is_removed():
     assert not (ROOT / "skills" / "research" / "scripts" / "new_plan.py").exists()
 
+def test_proposition_and_paper_scripts_are_in_new_locations():
+    assert not (ROOT / "skills" / "research" / "scripts" / "new_proposition.py").exists()
+    assert (ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py").exists()
+    assert not (ROOT / "skills" / "research" / "scripts" / "check_report.py").exists()
+    assert not (ROOT / "skills" / "research" / "scripts" / "draft_report.py").exists()
+    assert (ROOT / "skills" / "research" / "scripts" / "check_paper.py").exists()
+    assert (ROOT / "skills" / "research" / "scripts" / "draft_paper.py").exists()
+    assert not (ROOT / "skills" / "research" / "assets" / "report").exists()
+    assert (ROOT / "skills" / "research" / "assets" / "paper").exists()
+
 def test_current_docs_do_not_use_legacy_plan_first_iteration_labels():
     paths = [
         "skills/research-result-analysis/SKILL.md",
-        "skills/research/references/report_format.md",
+        "skills/research/references/paper_format.md",
         "skills/research/references/assumption_audit.md",
         "skills/research/references/categories/basic_research.md",
         "skills/research/references/categories/applied_research.md",
@@ -1185,7 +1310,7 @@ def test_current_docs_do_not_use_legacy_plan_first_iteration_labels():
 
 def test_new_hypothesis_accepts_theoretical_mode_and_generates_theoretical_sections():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
     new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -1283,7 +1408,7 @@ def test_new_hypothesis_accepts_theoretical_mode_and_generates_theoretical_secti
 
 def test_new_run_creates_durable_artifact_scaffold():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
     new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
     new_run = ROOT / "skills" / "research" / "scripts" / "new_run.py"
 
@@ -1980,10 +2105,10 @@ def test_check_mechanism_hypothesis_record_accepts_proposition_first_template_wi
 
     assert result.returncode == 0, result.stdout + result.stderr
 
-def test_check_report_rejects_reports_without_background_section():
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+def test_check_paper_rejects_reports_without_background_section():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
 
-    report = """# Missing Background Report
+    paper = """# Missing Background Report
 
 ## Summary
 This report summarizes a complete analysis with enough substance for validation.
@@ -1996,10 +2121,10 @@ The report leaves plausible alternatives and untested conditions explicitly open
 """
 
     with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
         result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
+            [sys.executable, str(script), str(paper_path)],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -2008,10 +2133,10 @@ The report leaves plausible alternatives and untested conditions explicitly open
     assert result.returncode == 1
     assert "Missing required section: 'Background'" in result.stdout
 
-def test_check_report_rejects_reports_missing_paper_grade_sections():
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+def test_check_paper_rejects_reports_missing_paper_grade_sections():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
 
-    report = """# Thin Report
+    paper = """# Thin Report
 
 ## Summary
 This report summarizes a complete analysis with enough substance for validation.
@@ -2030,10 +2155,10 @@ The report leaves plausible alternatives and untested conditions explicitly open
 """
 
     with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
         result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
+            [sys.executable, str(script), str(paper_path)],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -2046,10 +2171,10 @@ The report leaves plausible alternatives and untested conditions explicitly open
     assert "Missing required section: 'Discussion'" in result.stdout
     assert "Missing required section: 'References'" in result.stdout
 
-def test_check_report_rejects_numeric_results_without_statistical_reporting_minimum():
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+def test_check_paper_rejects_numeric_results_without_statistical_reporting_minimum():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
 
-    report = """# Underreported Numeric Report
+    paper = """# Underreported Numeric Report
 
 ## Summary
 This report summarizes the numeric result.
@@ -2082,10 +2207,10 @@ The report names untested conditions and plausible alternative explanations.
 """
 
     with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
         result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
+            [sys.executable, str(script), str(paper_path)],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -2094,10 +2219,10 @@ The report names untested conditions and plausible alternative explanations.
     assert result.returncode == 1
     assert "numeric Results must report" in result.stdout
 
-def test_check_report_rejects_precision_ci_false_positive_and_sample_size_only():
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+def test_check_paper_rejects_precision_ci_false_positive_and_sample_size_only():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
 
-    report = """# False Positive Numeric Report
+    paper = """# False Positive Numeric Report
 
 ## Summary
 This report summarizes the numeric result.
@@ -2137,10 +2262,10 @@ The report names untested conditions and plausible alternative explanations.
 """
 
     with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
         result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
+            [sys.executable, str(script), str(paper_path)],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -2149,10 +2274,10 @@ The report names untested conditions and plausible alternative explanations.
     assert result.returncode == 1
     assert "numeric Results must report" in result.stdout
 
-def test_check_report_rejects_outcome_without_figure_table_or_reason():
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+def test_check_paper_rejects_outcome_without_figure_table_or_reason():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
 
-    report = """# No Evidence Carrier Report
+    paper = """# No Evidence Carrier Report
 
 ## Summary
 This report summarizes the descriptive result.
@@ -2188,10 +2313,10 @@ The report names untested conditions and plausible alternative explanations.
 """
 
     with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
         result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
+            [sys.executable, str(script), str(paper_path)],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -2200,10 +2325,10 @@ The report names untested conditions and plausible alternative explanations.
     assert result.returncode == 1
     assert "must include a figure, table, or 'No figure/table:' reason" in result.stdout
 
-def test_check_report_rejects_combined_section_headings():
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+def test_check_paper_rejects_combined_section_headings():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
 
-    report = """# Combined Heading Report
+    paper = """# Combined Heading Report
 
 ## Summary
 This report summarizes the numeric result.
@@ -2234,10 +2359,10 @@ The report names untested conditions and plausible alternative explanations.
 """
 
     with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
         result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
+            [sys.executable, str(script), str(paper_path)],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -2247,10 +2372,10 @@ The report names untested conditions and plausible alternative explanations.
     assert "Missing required section: 'Related Work'" in result.stdout
     assert "Missing required section: 'References'" in result.stdout
 
-def test_check_report_accepts_theoretical_report_shape():
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+def test_check_paper_accepts_theoretical_report_shape():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
 
-    report = """# Theoretical Report
+    paper = """# Theoretical Report
 
 ## Summary
 This report summarizes a derivational result.
@@ -2274,11 +2399,17 @@ No figure/table: theoretical limiting-case observation is summarized in prose; n
 ## Ablation / Sensitivity
 Not applicable: no component-causality or robustness claim is made in this theoretical report.
 
+## Claim-to-result alignment
+The derivational claim is supported by the Observations section and the cited source artifacts under the proposition hypothesis runs.
+
 ## Discussion
 The report explains why the limiting cases matter and what interpretation remains association-level or formal-only.
 
 ## Limitations
 The report names unevaluated assumptions and conditions not covered by the derivation.
+
+## Reproducibility
+The derivation route, limiting-case check, source plan, and run artifacts are listed here. Statistical reporting minimum does not apply to this symbolic limiting-case observation.
 
 ## References
 - Plan: propositions/P001_theory/hypotheses/H001_theoretical/plan.md
@@ -2287,10 +2418,10 @@ The report names unevaluated assumptions and conditions not covered by the deriv
 """
 
     with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
         result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
+            [sys.executable, str(script), str(paper_path)],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -2298,10 +2429,71 @@ The report names unevaluated assumptions and conditions not covered by the deriv
 
     assert result.returncode == 0, result.stdout + result.stderr
 
-def test_check_report_rejects_old_top_level_plan_references():
-    script = ROOT / "skills" / "research" / "scripts" / "check_report.py"
+def test_check_paper_accepts_compact_ci_notation():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
 
-    report = """# Theoretical Report
+    # The only statistical-minimum item is a confidence interval written compactly as "CI95 [..]".
+    paper = """# Compact CI Numeric Report
+
+## Summary
+This report summarizes the numeric result with a compact confidence interval.
+
+## Background
+Prior formulations motivate the comparison and define the known constraints.
+
+## Related Work
+The report positions the work against the directly relevant comparator.
+
+## Theory / Formulation
+Not applicable: the applied claim does not rest on a derivation.
+
+## Methods & Conditions
+The method and material conditions are described for re-implementation.
+
+## Results
+The high-volatility edge over the regime-conditional baseline was +0.043 (CI95 [0.021, 0.065]) across n=128 held-out windows.
+
+| Setting | Edge |
+|---|---:|
+| high-vol | +0.043 |
+
+## Ablation / Sensitivity
+Not applicable: no component-causality or robustness claim is made in this report.
+
+## Claim-to-result alignment
+The reported edge and its interval support the stated claim about the regime-conditional baseline.
+
+## Discussion
+The result is interpreted as an association-level comparison, not a causal conclusion.
+
+## Limitations
+The report names untested conditions and plausible alternative explanations.
+
+## Reproducibility
+The split dates, evaluation protocol, and run artifacts are listed for re-implementation.
+
+## References
+- Plan: propositions/P001_regime/hypotheses/H001_edge/plan.md
+- Source artifacts: propositions/P001_regime/hypotheses/H001_edge/experiments/runs/
+- Prior work: [Comparator 2024] from literature/papers.md.
+"""
+
+    with tempfile.TemporaryDirectory() as tmp:
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
+        result = subprocess.run(
+            [sys.executable, str(script), str(paper_path)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+def test_check_paper_rejects_old_top_level_plan_references():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
+
+    paper = """# Theoretical Report
 
 ## Summary
 This report summarizes a derivational result.
@@ -2325,11 +2517,17 @@ No figure/table: theoretical limiting-case observation is summarized in prose; n
 ## Ablation / Sensitivity
 Not applicable: no component-causality or robustness claim is made in this theoretical report.
 
+## Claim-to-result alignment
+The derivational claim is supported by the Observations section and the cited source artifacts under the proposition hypothesis runs.
+
 ## Discussion
 The report explains why the limiting cases matter and what interpretation remains association-level or formal-only.
 
 ## Limitations
 The report names unevaluated assumptions and conditions not covered by the derivation.
+
+## Reproducibility
+The derivation route, limiting-case check, source plan, and run artifacts are listed here. Statistical reporting minimum does not apply to this symbolic limiting-case observation.
 
 ## References
 - Plan: `plans/01_theoretical.md`
@@ -2338,10 +2536,10 @@ The report names unevaluated assumptions and conditions not covered by the deriv
 """
 
     with tempfile.TemporaryDirectory() as tmp:
-        report_path = Path(tmp) / "report.md"
-        report_path.write_text(report, encoding="utf-8")
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
         result = subprocess.run(
-            [sys.executable, str(script), str(report_path)],
+            [sys.executable, str(script), str(paper_path)],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -2352,7 +2550,7 @@ The report names unevaluated assumptions and conditions not covered by the deriv
 
 def test_new_project_next_steps_use_formal_categories_and_theoretical_mode():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
-    new_proposition = ROOT / "skills" / "research" / "scripts" / "new_proposition.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
 
     with tempfile.TemporaryDirectory() as tmp:
         target = Path(tmp) / "project"

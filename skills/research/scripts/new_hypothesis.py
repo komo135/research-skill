@@ -8,13 +8,12 @@ Usage:
         --category basic_research|applied_research|experimental_development \
         --mode exploratory|confirmatory|milestone|theoretical \
         --hypothesis "<hypothesis>" --source-analysis A001 \
-        --status supported|unrealized-condition
+        --status open|supported|unrealized-condition
 
 Creates:
     propositions/P001_slug/hypotheses/H001_slug/hypothesis.md
     propositions/P001_slug/hypotheses/H001_slug/plan.md
-    propositions/P001_slug/hypotheses/H001_slug/experiments/
-    propositions/P001_slug/hypotheses/H001_slug/reports/
+    propositions/P001_slug/hypotheses/H001_slug/experiments/{code,configs,notebooks,runs}/
     propositions/P001_slug/hypotheses/H001_slug/decisions.md
 """
 import argparse
@@ -31,7 +30,10 @@ PROP_DIR_RE = re.compile(r"^P\d{3}_[a-z0-9]+(?:-[a-z0-9]+)*$")
 HYP_ID_RE = re.compile(r"^H\d{3}$")
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ANALYSIS_ID_RE = re.compile(r"^A\d{3}$")
-PLANNABLE_STATUSES = {"supported", "unrealized-condition"}
+# Matches an unfilled template token like "<copy the working proposition>".
+# Requires a paired <...>, so real inequalities such as "|z|>3" or "p<0.05" are NOT placeholders.
+PLACEHOLDER_TOKEN_RE = re.compile(r"<[^<>]*>")
+PLANNABLE_STATUSES = {"open", "supported", "unrealized-condition"}
 PARENT_PLANNABLE_STATUSES = {"open", "supported", "unrealized-condition"}
 
 
@@ -101,8 +103,7 @@ def is_placeholder(value: str) -> bool:
         "no hypothesis yet",
     }
     return (
-        "<" in stripped
-        or ">" in stripped
+        PLACEHOLDER_TOKEN_RE.search(stripped) is not None
         or lowered in none_like
         or lowered.startswith("none:")
         or lowered.startswith("n/a:")
@@ -230,8 +231,18 @@ def main() -> None:
     parser.add_argument(
         "--status",
         required=True,
-        choices=["supported", "contradicted", "unrealized-condition", "under-specified", "split-needed"],
-        help="Source analysis proposition status; only supported and unrealized-condition can create a plan",
+        choices=[
+            "open",
+            "supported",
+            "unrealized-condition",
+            "under-specified",
+            "contradicted",
+            "split-needed",
+            "split",
+            "parked",
+            "closed",
+        ],
+        help="Source analysis proposition status; only open, supported, and unrealized-condition can create a plan",
     )
     parser.add_argument(
         "--type",
@@ -274,11 +285,9 @@ def main() -> None:
 
     hyp_dir.mkdir(parents=True)
     (hyp_dir / "experiments").mkdir()
-    (hyp_dir / "reports").mkdir()
     for sub in ["code", "configs", "runs", "notebooks"]:
         (hyp_dir / "experiments" / sub).mkdir(parents=True, exist_ok=True)
         (hyp_dir / "experiments" / sub / ".gitkeep").touch()
-    (hyp_dir / "reports" / ".gitkeep").touch()
 
     prop_title = read_title(proposition_md)
     expected_observation = args.expected or analysis["Expected consequence if the working proposition is true"]

@@ -44,6 +44,7 @@ DIRECTORIES = [
     "lib/tests",
     "data/raw",
     "data/processed",
+    "data/eda",
 ]
 
 
@@ -68,8 +69,50 @@ def main():
         dst.write_text(content, encoding="utf-8")
 
     # Seed literature/.
+    (target / "intake.md").write_text(
+        (
+            "# Intake\n\n"
+            "## Intent\n\n"
+            "<What the user wants to understand, decide, or build.>\n\n"
+            "## Uncertain in outcome gate\n\n"
+            "- Is the outcome uncertain? <yes/no>\n"
+            "- If no, route as implementation rather than R&D.\n"
+            "- If yes, name the uncertainty that makes this R&D.\n\n"
+            "## Initial material needs\n\n"
+            "- Observations needed:\n"
+            "- Comparators or expected references:\n"
+            "- Data, traces, or prior-work facts to acquire:\n"
+        ),
+        encoding="utf-8",
+    )
+    (target / "observations.md").write_text(
+        (
+            "# Project Observations\n\n"
+            "Project-level observation backlog from scoping, literature, EDA, and prior proposition papers.\n"
+            "Move proposition-specific observations into `propositions/Pxxx_slug/observations.md` when opening a proposition.\n"
+        ),
+        encoding="utf-8",
+    )
+    (target / "status_brief.md").write_text(
+        (
+            "# Status Brief\n\n"
+            "Project-level dated stakeholder brief for interim status before proposition resolution.\n"
+            "This is not `paper.md`, does not mark a proposition supported or contradicted, and does not trigger the next proposition cycle.\n\n"
+            "## Entries\n\n"
+            "<YYYY-MM-DD>: <route, current artifact, unresolved material, next action>\n"
+        ),
+        encoding="utf-8",
+    )
     (target / "literature" / "papers.md").write_text(
         "# Prior work\n\nUse the format from `references/literature_review.md`.\n",
+        encoding="utf-8",
+    )
+    (target / "literature" / "scoping.md").write_text(
+        (
+            "# Scoping Literature Scan\n\n"
+            "Use this before proposition creation to locate existing work, comparators, known failures, datasets, and gaps.\n"
+            "This does not replace hypothesis-specific prior-work grounding in a plan.\n"
+        ),
         encoding="utf-8",
     )
     (target / "literature" / "positioning.md").write_text(
@@ -78,7 +121,7 @@ def main():
     )
 
     # .gitkeep markers for empty directories.
-    for d in ["propositions", "data/raw", "data/processed"]:
+    for d in ["propositions", "data/raw", "data/processed", "data/eda"]:
         keep = target / d / ".gitkeep"
         if not any((target / d).iterdir()):
             keep.touch()
@@ -89,7 +132,7 @@ def main():
     print(f"  cd {target}")
     print("  git init && git add -A && git commit -m 'Initial project structure'")
     print(
-        f"  python \"{SKILL_ROOT / 'scripts' / 'new_proposition.py'}\" \"{target}\" "
+        f"  python \"{SKILL_ROOT.parent / 'creating-propositions' / 'scripts' / 'new_proposition.py'}\" \"{target}\" "
         "--id P001 --slug slug --title \"Title\" --proposition \"Proposition\" --expected \"Expected consequence\""
     )
 

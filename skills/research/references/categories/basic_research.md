@@ -56,9 +56,11 @@ Acceptable completion shapes:
 
 Not required: a yes/no answer to the original question. If the original question turned out to be ill-posed, the deliverable is the better-posed version. Record `UNDER_SPECIFY` on the parent proposition when more formulation is needed, or proposition-level `CLOSE` when the refinement is itself the resolved goal.
 
-## Report shape
+## Paper shape
 
-Basic research reports emphasize what was learned, not what was decided. Structure:
+This shape applies only after `paper-route`: the parent proposition has reached `supported` or `contradicted` through claim-resolution. The `basic_research` category alone does not require `paper.md`; question-refinement or stakeholder status can remain in route-appropriate artifacts.
+
+Basic research papers emphasize what was learned, not what was decided. Structure:
 
 1. **Summary** — what was investigated, what was learned
 2. **Background** — what was known before, what motivated the investigation
@@ -67,7 +69,7 @@ Basic research reports emphasize what was learned, not what was decided. Structu
 5. **Mechanism / Interpretation** — what explains the observations (and what does not)
 6. **Limitations** — what alternatives remain plausible, what conditions were not tested
 
-Use `assets/report/basic_research_report.md.template`.
+Use `assets/paper/basic_research_paper.md.template`.
 
 ## Claims in basic research
 
@@ -111,6 +113,6 @@ Observations are the primary output. Promote to claim sparingly — only when th
 - **Treating basic research as failed when no decision is reached.** A characterized phenomenon and a refined question are valid completions.
 - **Implicit confirmatory framing.** Writing "we wanted to find that X" before doing the work converts exploration into confirmation. Either commit to confirmatory mode and write a hypothesis explicitly, or stay exploratory and write a variable space.
 - **Overclaiming generality.** A finding at σ ∈ [5, 10] is not a finding about all σ. `conditions_not_tested` must say so.
-- **Building a reference object without documenting it.** A metric, dataset, reference implementation, or characterization that nobody else can inspect is not reusable research knowledge. The report's Methods section is where the object becomes a usable reference.
+- **Building a reference object without documenting it.** A metric, dataset, reference implementation, or characterization that nobody else can inspect is not reusable research knowledge. The paper's Methods section is where the object becomes a usable reference.
 - **Inventing structure for the sake of inventing it.** Not every basic-research project produces a reusable baseline. Plenty of basic research only produces a refined question. That is still a completion.
 - **Classifying by origin.** A plan is not applied research merely because it extends a prior basic-research result. If its primary purpose is still to understand, characterize, or refine the question, keep it basic research.
