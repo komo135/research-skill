@@ -133,7 +133,7 @@ flowchart TD
 
 Material absence means no proposition or hypothesis. The agent should collect observations, measurements, constraints, comparators, traces, prior-work facts, theoretical tensions, or bottleneck evidence first.
 
-For benchmark or competition work, a local file/metric/split audit is not enough to call initial research complete. Before implementing a submit-able/minimal baseline or choosing a comparator, record public baselines, competition writeups/notebooks/discussions when relevant, comparator conventions, evaluation protocol, known failures, and retrieval failures in `literature/scoping.md`; otherwise the route remains `materialization`.
+For benchmark work, count sources by what they establish, not by their labels. Task-mechanics evidence such as schemas, metrics, splits, data availability, and submission formats can contribute to scoping when it records existing approaches, baselines, comparators, evaluation conventions, or known failures. Before implementing a submit-able/minimal baseline or choosing a comparator, record those existing-work facts or retrieval failures in `literature/scoping.md`; otherwise the route remains `materialization`.
 
 A contradicted, under-specified, split-needed, split, parked, or closed proposition is not a plannable parent. Record the transition, revise, split, unpark, reopen with reason, or close before deriving the next hypothesis.
 

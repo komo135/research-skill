@@ -632,7 +632,9 @@ def test_new_project_scoping_seed_blocks_local_audit_as_prior_work():
     assert_mentions(
         scoping,
         "benchmark baseline/comparator implementation",
-        "local file, metric, split, or competition-metadata audit is material",
+        "source records count for the scoping questions they answer",
+        "Task-mechanics evidence",
+        "does not settle existing approaches or comparators unless it records them",
         "public baselines",
         "competition writeups/notebooks/discussions",
         "submit-able or minimal baseline",

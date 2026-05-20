@@ -21,7 +21,7 @@ If this skill is invoked alone, the minimum read set is `intake.md`, `project_st
 
 Do not ask generic research questions when the next artifact is obvious. Write the next artifact with known facts and mark unknowns as missing material.
 
-Do not call a local file, metric, split, or competition-metadata audit "initial research complete." That audit is material, not existing-work scoping. For benchmark or competition work, a valid CSV, "minimal baseline," "safe baseline," or "no claim yet" request does not by itself make the method known or remove R&D uncertainty. If public baselines, competition writeups/notebooks/discussions, comparator conventions, evaluation protocol, or known failures have not been checked and recorded in `literature/scoping.md`, select `materialization` before baseline/comparator design or implementation.
+Do not classify evidence by source type. A source counts for the scoping questions it actually answers. Task-mechanics evidence (schema, metric, split, available columns, submission shape, or data availability) can support materialization, and it can contribute to scoping when it records existing approaches, baselines, comparators, evaluation conventions, or known failures. It does not replace those missing prior-work facts merely because it was checked. For benchmark work, a valid CSV, "minimal baseline," "safe baseline," or "no claim yet" request does not by itself make the method known or remove R&D uncertainty. If existing approaches, public baselines, competition writeups/notebooks/discussions when relevant, comparator conventions, evaluation protocol, or known failures remain unrecorded in `literature/scoping.md`, select `materialization` before baseline/comparator design or implementation.
 
 ## Route Before Gate
 
@@ -99,7 +99,7 @@ Write or update `literature/scoping.md` before proposition creation. Capture:
 - contradictions or gaps that matter for the intent
 - retrieval attempts and claim-scope narrowing when sources are unavailable
 
-Scoping is not the plan survey. It prepares proposition material and gates baseline/comparator design. Do not implement a submit-able/minimal baseline, choose a comparator, or describe a baseline as safe from a local-data-only audit. If retrieval is unavailable, record attempted sources/tools, queries or source IDs when available, failure evidence, and the narrowed implementation or claim scope before coding.
+Scoping is not the plan survey. It prepares proposition material and gates baseline/comparator design. Do not implement a submit-able/minimal baseline, choose a comparator, or describe a baseline as safe from a task-mechanics-only record. If retrieval is unavailable, record attempted sources/tools, queries or source IDs when available, failure evidence, and the narrowed implementation or claim scope before coding.
 
 ### 3. Material And EDA
 
