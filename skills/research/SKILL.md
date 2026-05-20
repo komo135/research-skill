@@ -130,6 +130,13 @@ Print-only output is not evidence. A completed run needs `run_manifest.json`, `l
 
 After execution and Planned vs Actual are written, dispatch `research-result-analysis` with only the plan path. It explains why the observed result happened; it does not write final claims, state-update inputs, or decisions.
 
+Positive result shape is not a closeout shortcut. If a single hypothesis under a proposition has a positive aggregate result, but same-proposition hypotheses remain open or the result analysis leaves a serious measurement/evaluator artifact explanation live, do not mark the proposition `supported`, do not draft `paper.md`, and do not move to the next proposition. Close out the executed hypothesis first:
+
+- If the artifact, comparator, measurement, or evidence quality prevents interpretation, set the hypothesis to `tested-inconclusive` and record `TESTED_INCONCLUSIVE`.
+- If part of the planned discriminator is supported but a material clause or rival explanation remains unresolved, set the hypothesis to `tested-partial` and record `TESTED_PARTIAL`.
+- Update the parent proposition as still `open` or `under-specified` when the artifact branch means the proposition cannot yet support a claim.
+- Write the specific material-acquisition or discriminator artifact needed to separate the live explanations before continuing.
+
 Then the parent agent updates, in order:
 
 1. `hypothesis.md`
