@@ -126,13 +126,13 @@ Ambition: landmark-aspirant | incremental-honest
 
 Use `landmark-aspirant` only when all are credible:
 
-- **Load-bearing Bit**: at least one proxy exists: what would need rebuilding if false, how widely the assumption holds, or a known failing prediction / counterexample.
+- **Load-bearing Bit**: doubting the Bit is consequential. Show at least one proxy and name it concretely — the specific established line of work, paper, prediction, or system whose result reverses or needs rebuilding if the Bit were false. If you cannot name a concrete one, the Bit is not load-bearing; downgrade. Wide acceptance alone does not qualify: a universally true assumption has a trivial Flip and is not load-bearing. The test is whether the Flip is surprising and would force rework, not whether the Bit is commonly believed.
 - **Reasonable attack**: the Flip is tractable and testable, not just "would be nice."
 - **Significance**: who cares and what changes if supported.
 - **Discriminating exam**: the expected consequence separates this proposition from a competitor.
 - **Novelty grounding**: the Bit is grounded in scoping/prior work or prior proposition papers, and the Flip is not already the same result.
 
-Use `incremental-honest` when the work is narrow but reproducible and useful. Prefer honest incremental scope over inflated significance. If a Bit is trivial or not actually believed, find the real Bit or downgrade; do not dress weak content as landmark-level.
+Use `incremental-honest` when the work is narrow but reproducible and useful. Choosing honest incremental scope over inflated significance is required, not a preference. If a Bit is trivial, universally true, or not actually contested, find the real Bit or downgrade to `incremental-honest`; do not dress weak content as landmark-level.
 
 ## Workspace Writes
 
@@ -214,5 +214,6 @@ Stop and return to the procedure when you are about to:
 - treat EDA correlation as a claim
 - continue using old `plans/`, top-level `experiments/<id>/runs/`, or per-hypothesis `reports/`
 - rank solution slots instead of creating proposition state
+- rank or pick a single best among multiple live propositions instead of handing off the set with their states; multiple propositions may stay live until evidence separates them
 - let `research` directly edit proposition-owned files without switching to this discipline
 - reopen a closed proposition without a recorded reason

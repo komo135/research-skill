@@ -216,6 +216,9 @@ def has_variability_or_inference_value(body: str) -> bool:
     patterns = [
         r"\b(?:variance|dispersion|standard deviation|std|sd)\s*(?:=|:|is|was)?\s*\d",
         r"\b(?:\d{2,3}%\s*)?ci\b\s*(?:=|:|is|was)?\s*[\[(]?\s*-?\d",
+        # Compact CI notation with the level glued after, e.g. "CI95 [..", "CI 95% =..".
+        # \bci keeps the leading word boundary so "precision" is still not matched.
+        r"\bci\s*\d{2,3}%?\s*(?:=|:|is|was)?\s*[\[(]?\s*-?\d",
         r"\bconfidence interval\s*(?:=|:|is|was)?\s*[\[(]?\s*-?\d",
         r"\beffect size\s*(?:=|:|is|was)?\s*-?\d",
         r"\bp[- ]?value\s*(?:=|:|is|was)?\s*[<=>]?\s*\d",
@@ -258,7 +261,7 @@ def check_numeric_outcome_reporting(sections: dict) -> list:
         if has_sample_size_value(body) and has_variability_or_inference_value(body):
             continue
         issues.append(
-            f"  Section '{key}' has numeric Results but numeric Results must report sample size, variance/dispersion, CI, effect size, significance, or a non-applicability reason"
+            f"  Section '{key}' has numeric Results but numeric Results must report a sample size (n=...) AND at least one of variance/dispersion, CI, effect size, or significance, or else an explicit non-applicability reason"
         )
     return issues
 

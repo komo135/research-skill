@@ -42,6 +42,7 @@ Use this table as the execution contract under pressure:
 | Proposition is plan-ready | proposition files, source analysis | `hypotheses/Hxxx/*` | plan created and review requested | `research-plan-review` |
 | Execution finished | plan, run artifacts, Planned vs Actual | analysis/ledger updates | `research-result-analysis` reviewed | update proposition state |
 | Proposition resolved | proposition files, claims, runs | `propositions/Pxxx/paper.md` | `check_paper.py` passes | next-cycle scoping |
+| Paper exists, next cycle | prior `paper.md`, `literature/scoping.md` | dated re-survey in `literature/scoping.md` + own-paper observations in root `observations.md` | re-survey dated AND own-paper observations extracted | inline `creating-propositions` |
 
 Blocked output shape:
 
@@ -113,6 +114,8 @@ Use `scripts/new_hypothesis.py` only after both are true:
 
 The plan lives at `propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md`.
 
+The plan cites the parent `proposition.md`, source `analyses.md`, and `hypothesis.md`; it may summarize them but must not rewrite them. If proposition state changes before execution (for example the parent moves to `contradicted`, `split`, `under-specified`, or `parked`), amend or regenerate the plan from the updated proposition and re-run `research-plan-review`. Do not execute a plan built on stale proposition state.
+
 Every Plan section starts with `### Plan visual`. It may use Mermaid, PlantUML, ASCII, a linked figure/table, or `No diagram:` with a reason. A plan commits before execution to one hypothesis, the proposition trace, Hypothesis type, prediction, competitor, discriminator, primary measure, controls/comparators or limiting-case checks, evidence route, artifacts, material conditions, and stop/status criteria.
 
 Do not require every derived hypothesis to be mechanistic. Hypothesis type may be `predictive / performance`, `mechanistic`, `causal / intervention`, `descriptive / characterization`, `theoretical`, or `mixed`.
@@ -143,7 +146,12 @@ Create `propositions/Pxxx_slug/paper.md` when a proposition reaches `supported` 
 
 The paper synthesizes across the proposition's hypotheses and must pass `scripts/check_paper.py`. Required paper-grade structure includes Related Work, Theory / Formulation, Methods & Conditions or System description, Results/Observations/Performance, Ablation / Sensitivity, Claim-to-result alignment, Discussion, Limitations, Reproducibility, and References. Numeric evidence needs sample size plus variance/dispersion, CI, effect size, significance, or an explicit non-applicability reason.
 
-In the next cycle, treat the paper as material. Re-survey literature and extract observations from your own paper; own research is part of the Bit source for later propositions.
+In the next cycle, treat the paper as material. This is not optional and is the same strength as the resolution trigger above: two concrete writes are required before the next proposition pass.
+
+1. Re-survey literature for the new cycle and append a dated entry to `literature/scoping.md` recording the search date and the queries/sources actually attempted. A retrieval-unavailable note must still record what was attempted on this date, not just "nothing new." Reusing the original scoping unchanged does not count as a re-survey.
+2. Extract the open branches and findings of your own `paper.md` into root `observations.md` as fact-level entries citing the paper. Own research is part of the Bit source for later propositions; an unwritten "I know my own results" does not satisfy this.
+
+Do not open the next proposition before both writes exist.
 
 ## Layout And Ownership
 
@@ -232,3 +240,5 @@ When reporting progress, give the user the operational state, not a protocol sum
 ## Capability Guard
 
 This workflow should improve reasoning, not create paperwork. Keep labels subordinate to the actual contrast, expected consequence, discriminator, evidence, and decision. Do not turn EDA into a claim, do not inflate incremental results, and do not create hypotheses from absent material.
+
+Do not force a single best hypothesis or rank live propositions while several remain plan-ready. Multiple working propositions and derived hypotheses may coexist until evidence separates them; converge because a discriminator resolved them, not because one track is more convenient.

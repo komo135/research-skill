@@ -30,6 +30,9 @@ PROP_DIR_RE = re.compile(r"^P\d{3}_[a-z0-9]+(?:-[a-z0-9]+)*$")
 HYP_ID_RE = re.compile(r"^H\d{3}$")
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ANALYSIS_ID_RE = re.compile(r"^A\d{3}$")
+# Matches an unfilled template token like "<copy the working proposition>".
+# Requires a paired <...>, so real inequalities such as "|z|>3" or "p<0.05" are NOT placeholders.
+PLACEHOLDER_TOKEN_RE = re.compile(r"<[^<>]*>")
 PLANNABLE_STATUSES = {"open", "supported", "unrealized-condition"}
 PARENT_PLANNABLE_STATUSES = {"open", "supported", "unrealized-condition"}
 
@@ -100,8 +103,7 @@ def is_placeholder(value: str) -> bool:
         "no hypothesis yet",
     }
     return (
-        "<" in stripped
-        or ">" in stripped
+        PLACEHOLDER_TOKEN_RE.search(stripped) is not None
         or lowered in none_like
         or lowered.startswith("none:")
         or lowered.startswith("n/a:")

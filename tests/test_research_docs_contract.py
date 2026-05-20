@@ -856,6 +856,80 @@ def test_new_hypothesis_creates_hypothesis_plan_under_parent_proposition():
     )
     assert_absent(plan, "<copy the generated doubt", "<copy the working proposition", "<observable result expected")
 
+def test_new_hypothesis_accepts_numeric_thresholds_with_angle_brackets():
+    new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
+    new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
+    new_hypothesis = ROOT / "skills" / "research" / "scripts" / "new_hypothesis.py"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        subprocess.run(
+            [sys.executable, str(new_project), str(target), "--name", "Threshold"],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            [
+                sys.executable,
+                str(new_proposition),
+                str(target),
+                "--id",
+                "P001",
+                "--slug",
+                "threshold",
+                "--title",
+                "Threshold",
+                "--proposition",
+                "Numeric thresholds in analysis text must not be read as template placeholders.",
+                "--expected",
+                "A field with a real inequality passes the placeholder check.",
+            ],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        # Real content using < and > (inequalities) must not be rejected as placeholder-only.
+        fill_analysis(
+            target,
+            "P001_threshold",
+            status="supported",
+            material_used="O001 shows accuracy collapses when standardized volatility |z|>3.",
+            derived_hypothesis="If exposure is capped at z<3, the collapse should not appear.",
+        )
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(new_hypothesis),
+                str(target),
+                "--proposition",
+                "P001_threshold",
+                "--id",
+                "H001",
+                "--slug",
+                "threshold-cap",
+                "--title",
+                "Threshold Cap",
+                "--category",
+                "applied_research",
+                "--mode",
+                "confirmatory",
+                "--hypothesis",
+                "Capping standardized exposure prevents the high-volatility collapse.",
+                "--source-analysis",
+                "A001",
+                "--status",
+                "supported",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+    assert result.returncode == 0, result.stderr
+
 def test_new_hypothesis_rejects_placeholder_source_analysis_before_material_exists():
     new_project = ROOT / "skills" / "research" / "scripts" / "new_project.py"
     new_proposition = ROOT / "skills" / "creating-propositions" / "scripts" / "new_proposition.py"
@@ -2340,6 +2414,67 @@ The derivation route, limiting-case check, source plan, and run artifacts are li
 - Plan: propositions/P001_theory/hypotheses/H001_theoretical/plan.md
 - Source artifacts: propositions/P001_theory/hypotheses/H001_theoretical/experiments/runs/
 - Prior work: [Foundation 1948] from literature/papers.md.
+"""
+
+    with tempfile.TemporaryDirectory() as tmp:
+        paper_path = Path(tmp) / "paper.md"
+        paper_path.write_text(paper, encoding="utf-8")
+        result = subprocess.run(
+            [sys.executable, str(script), str(paper_path)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+
+def test_check_paper_accepts_compact_ci_notation():
+    script = ROOT / "skills" / "research" / "scripts" / "check_paper.py"
+
+    # The only statistical-minimum item is a confidence interval written compactly as "CI95 [..]".
+    paper = """# Compact CI Numeric Report
+
+## Summary
+This report summarizes the numeric result with a compact confidence interval.
+
+## Background
+Prior formulations motivate the comparison and define the known constraints.
+
+## Related Work
+The report positions the work against the directly relevant comparator.
+
+## Theory / Formulation
+Not applicable: the applied claim does not rest on a derivation.
+
+## Methods & Conditions
+The method and material conditions are described for re-implementation.
+
+## Results
+The high-volatility edge over the regime-conditional baseline was +0.043 (CI95 [0.021, 0.065]) across n=128 held-out windows.
+
+| Setting | Edge |
+|---|---:|
+| high-vol | +0.043 |
+
+## Ablation / Sensitivity
+Not applicable: no component-causality or robustness claim is made in this report.
+
+## Claim-to-result alignment
+The reported edge and its interval support the stated claim about the regime-conditional baseline.
+
+## Discussion
+The result is interpreted as an association-level comparison, not a causal conclusion.
+
+## Limitations
+The report names untested conditions and plausible alternative explanations.
+
+## Reproducibility
+The split dates, evaluation protocol, and run artifacts are listed for re-implementation.
+
+## References
+- Plan: propositions/P001_regime/hypotheses/H001_edge/plan.md
+- Source artifacts: propositions/P001_regime/hypotheses/H001_edge/experiments/runs/
+- Prior work: [Comparator 2024] from literature/papers.md.
 """
 
     with tempfile.TemporaryDirectory() as tmp:
