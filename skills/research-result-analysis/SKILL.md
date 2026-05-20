@@ -9,7 +9,7 @@ description: Use when completed R&D plan results need a why-explanation, especia
 
 Independent post-result explanation for a completed hypothesis plan. The plan path is the only starting context. The job is to explain **why this observed result was produced** by reconstructing result shape, process, state transitions, factor interactions, and competing generative explanations.
 
-This skill is analysis only. It does not judge whether the result is good, bad, valid, supported, contradicted, claim-ready, promotion-ready, or decision-ready. It does not write state-update inputs. The parent `research` workflow reads the analysis later and makes any hypothesis, proposition, claim, report, or next-action decision.
+This skill is analysis only. It does not judge whether the result is good, bad, valid, supported, contradicted, claim-ready, promotion-ready, or decision-ready. It does not write state-update inputs. The parent `research` workflow reads the analysis later and makes any hypothesis, proposition, claim, paper, or next-action decision.
 
 ## Core Rule
 
@@ -23,7 +23,7 @@ Forbidden outputs:
 - `State-update inputs`
 - `supported`, `contradicted`, `tested-supported`, `tested-contradicted`, `tested-partial`, or `tested-inconclusive` labels
 - promotion readiness, claim readiness, deployment recommendation, or iteration branch
-- final claims or human-facing report prose
+- final claims or human-facing paper prose
 - an evidence verdict that replaces the explanation
 
 ## Required Reference
@@ -33,7 +33,7 @@ Before analyzing, read `skills/research/references/analysis.md` from this plugin
 ## Workflow
 
 1. **Load the plan and result material**
-   Start from the plan path only. Inspect the plan, sibling `hypothesis.md`, referenced proposition material, Actual execution, Planned vs Actual, runs, logs, outputs, tables, traces, configs, scripts, and reports when available. Use these as material for explanation, not as a validity trial.
+   Start from the plan path only. Inspect the plan, sibling `hypothesis.md`, referenced proposition material, Actual execution, Planned vs Actual, runs, logs, outputs, tables, traces, configs, scripts, and proposition `paper.md` when available. Use these as material for explanation, not as a validity trial.
    Do not treat parent-agent summaries, user-provided summaries, private notes, or unstated expectations as result material unless the plan or a plan-referenced artifact contains them.
 
 2. **Inventory the result shape**
@@ -120,7 +120,7 @@ Stop when the leading explanations account for the important result features and
 ### Material used for explanation
 - Plan: <plan path>
 - Local research state inspected: <hypothesis/proposition/observations/analyses paths, or Not available>
-- Result material inspected: <plan-referenced runs/logs/tables/figures/traces/configs/scripts/reports, or Not available>
+- Result material inspected: <plan-referenced runs/logs/tables/figures/traces/configs/scripts/paper.md, or Not available>
 - Explanation-scope gaps: <missing material that would change the why-analysis; include any untraceable supplied summary here, or None>
 
 ### Result shape

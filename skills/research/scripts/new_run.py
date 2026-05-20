@@ -108,7 +108,7 @@ def main() -> None:
         f"- logs/stdout.log and logs/stderr.log — captured console output\n"
         f"- intermediate/ — intermediate outputs needed to audit EDA or result analysis\n"
         f"- outputs/ — metrics, predictions, serialized results, diagnostics, or other durable artifact files\n"
-        f"- tables/ and figures/ — report-ready evidence snapshots when applicable\n\n"
+        f"- tables/ and figures/ — paper-ready evidence snapshots when applicable\n\n"
         f"Before promoting observations, run:\n\n"
         f"```bash\n"
         f"python {checker} {run_dir}\n"

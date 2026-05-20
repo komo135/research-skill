@@ -48,7 +48,7 @@ Acceptable completion shapes:
 - Stated practical objective or success criterion is not met, with an explicit negative result and diagnosis
 - Method, model, or procedure works under specific conditions but not others — scoped claim
 - Improvement over a comparator is demonstrated when an improvement claim was part of the objective
-- Proposed improvement is not demonstrated, or is dominated by a simpler comparator — also a result; report it honestly
+- Proposed improvement is not demonstrated, or is dominated by a simpler comparator — also a result; state it honestly
 
 Not acceptable as completion:
 
@@ -58,9 +58,9 @@ Not acceptable as completion:
 - Improvement that disappears under reasonable perturbation (different seeds, different splits, slightly different hyperparameters)
 - Improvement only on the specific evaluation the agent chose; failure on the standard evaluation glossed over
 
-## Report shape
+## Paper shape
 
-Applied research reports describe the practical objective, the method/procedure or operational form tested, the evaluation evidence, and the scoped finding. Use `assets/report/applied_research_report.md.template`.
+Applied research papers describe the practical objective, the method/procedure or operational form tested, the evaluation evidence, and the scoped finding. Use `assets/paper/applied_research_paper.md.template`.
 
 1. **Summary** — what was tried, what was found, the headline evidence
 2. **Background** — what prior work this builds on (cite a handful, not dozens)
@@ -122,10 +122,10 @@ Pearl Rung 2 (intervention via ablation) is the standard warrant for "component 
 - **No evaluable objective.** A specific practical aim still needs an evaluation route: a criterion, measurement, test, or decision rule that can show whether the objective was met.
 - **Unsubstantiated improvement claim.** If you claim a method is better, faster, cheaper, safer, or more accurate, you need an appropriate comparator and a fair comparison protocol.
 - **Single-seed comparative claims.** For stochastic comparisons, variance across seeds is part of the result. Run multiple seeds for claim-bearing comparisons.
-- **Hyperparameter asymmetry.** If your method got more hyperparameter tuning than the comparator, the comparison is biased. Report tuning effort explicitly.
+- **Hyperparameter asymmetry.** If your method got more hyperparameter tuning than the comparator, the comparison is biased. State tuning effort explicitly.
 - **In-sample tuning.** Methods tuned on the test set are not tested. Use a validation split for tuning; test only at the end.
 - **Metric shopping.** If the primary success criterion was not met, do not switch to a different criterion and present it as a success. If a secondary criterion is more relevant, update the hypothesis/proposition state and draft a new derived hypothesis before any claim is made.
-- **Compute apples-vs-oranges.** Comparing a 10× larger model to a smaller comparator tells you about scale, not about your method. Hold compute constant or report scaling curves.
-- **Ablation theater.** Single-component ablations on isolated runs do not isolate causal contribution if the components interact. Report joint ablations when interactions matter.
+- **Compute apples-vs-oranges.** Comparing a 10× larger model to a smaller comparator tells you about scale, not about your method. Hold compute constant or state scaling curves.
+- **Ablation theater.** Single-component ablations on isolated runs do not isolate causal contribution if the components interact. State joint ablations when interactions matter.
 - **Skipping the negative-result writeup.** A method that did not improve is still a result. Document it; the next agent should not re-run it.
 - **Origin-only classification.** "This extends basic research" is not enough. The applied-research label requires new knowledge directed primarily toward a specific practical aim or objective. In ML method work, that practical aim is usually operationalized through a target metric and intended use; baseline comparison is required when the plan makes an improvement claim.

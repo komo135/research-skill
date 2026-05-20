@@ -12,7 +12,7 @@ Analysis is where questions are born. Each entry must name the contrast that pro
 - Working proposition: <proposition that would make the generated doubt meaningful>
 - Expected consequence if the working proposition is true: <what should be observed under stated conditions>
 - Observed match, break, or missing condition: <comparison between expected consequence and observed material>
-- Proposition status assessment: supported | contradicted | unrealized-condition | under-specified | split-needed
+- Proposition status assessment: open | supported | unrealized-condition | under-specified | contradicted | split-needed | split | parked | closed
 - Derived hypothesis candidate: <testable hypothesis, or `None: <reason>` if material is too early>
 - What evidence would update this analysis: <observation, measurement, comparator, discriminator, or formulation needed>
 

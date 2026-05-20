@@ -1,7 +1,7 @@
 {
   "name": "research",
-  "version": "3.2.0",
-  "description": "v3.2.0 - Parent-proposition creation plus proposition-first R&D protocol with observation/analysis state, derived hypothesis plans, plan review, explanation-first result analysis, and proposition feedback.",
+  "version": "4.0.0",
+  "description": "v4.0.0 - Intent-to-paper proposition-first R&D workflow with scoping, EDA, proposition workspace ownership, hypothesis plans, independent reviews, result analysis, and quant research support.",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"
@@ -21,8 +21,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Research",
-    "shortDescription": "Parent-proposition creation and proposition-first R&D protocol",
-    "longDescription": "v3.2.0 - Agent-driven R&D skills for creating parent propositions before direct solutions and then managing proposition-first research. creating-propositions is the upstream skill for turning material into observations, questions, parent propositions, direct-solution hypothesis slots, expected observations, falsifiers, competing propositions, and conclusion states before prioritization or planning. research remains the formal proposition-first lifecycle owner across the three OECD Frascati Manual 2015 categories: basic_research, applied_research, and experimental_development. The top-level research unit is a proposition, not a standalone plan. Research starts from material such as observations, failures, constraints, comparators, traces, prior-work facts, theoretical tensions, or search/evaluation bottlenecks; analysis then records a contrast, Generated doubt, Working proposition, Expected consequence, observed match/break/missing condition, Proposition status, and only then a derived hypothesis when the status permits one. The project layout stores proposition state under propositions/Pxxx_slug/ with observations.md, analyses.md, decisions.md, and hypotheses/Hxxx_slug/ ledgers. Hypothesis plans live under the derived hypothesis and test one hypothesis traced to the parent proposition and source analysis. Material absence creates a material-acquisition task, not a proposition or hypothesis. Contradicted, under-specified, split-needed, split, and closed proposition states block hypothesis-plan creation until the proposition is revised, split, supplied with more material, routed to children, or closed. Plans retain pre-result commitments including proposition trace, hypothesis type, prediction or expected observation, primary measure, comparator/control when required, evidence route, artifacts, material conditions, Plan visual, and stop/status criteria. research-plan-review remains the plan-path-only pre-execution stop gate for wrong or unsupported premises, invalid validation methods, missing proposition trace, weak Plan visuals, and ungrounded prior-work survey evidence. research-result-analysis remains the plan-path-only post-execution why-analysis skill: it explains how the observed result was produced through result shape, factor decomposition, mechanism traces, interactions, and open explanatory branches. It does not write final claims, state-update inputs, or proposition or hypothesis decisions. quant-research remains the domain extension for time-series validation, leakage checks, multiple-testing risk, and robustness. Reports remain paper-grade evidence artifacts under derived hypotheses with required Related Work, Theory/Formulation, Methods/Conditions, Results/Observations, Ablation/Sensitivity, Discussion, Limitations, and References sections, without next-action or next-hypothesis queues.",
+    "shortDescription": "Intent-to-paper proposition-first R&D workflow",
+    "longDescription": "v4.0.0 - Agent-driven R&D skills for moving from intent through intake, uncertain-outcome gating, scoping literature, material acquisition, EDA, project observations, proposition workspace creation, hypothesis plans, evidence, result analysis, claims, and proposition-level research papers. creating-propositions owns proposition generation and proposition state files under propositions/Pxxx_slug/ with the unified states open, supported, unrealized-condition, under-specified, contradicted, split-needed, split, parked, and closed. research orchestrates the workflow, generated project layout, derived hypotheses, plans, plan review, execution artifacts, result analysis, claim records, decision ledgers, and paper creation at propositions/Pxxx_slug/paper.md when a proposition reaches supported or contradicted. The canonical layout includes intake.md, literature/scoping.md, literature/papers.md, literature/positioning.md, data/raw, data/processed, data/eda, observations.md, lib/{data,eval,viz,utils,tests}, and propositions/. Old top-level plans, top-level experiment runs, literature/differentiation.md, and per-hypothesis reports are not compatibility paths. research-plan-review remains the plan-path-only pre-execution review skill. research-result-analysis remains the plan-path-only post-execution why-analysis skill. quant-research remains the domain extension for time-series validation, leakage checks, multiple-testing risk, and robustness.",
     "developerName": "komoootv",
     "category": "Research",
     "capabilities": [
@@ -33,10 +33,10 @@
     "privacyPolicyURL": "https://github.com/komo135/research-skill",
     "termsOfServiceURL": "https://github.com/komo135/research-skill/blob/main/LICENSE",
     "defaultPrompt": [
-      "Create parent propositions from these observations before planning",
-      "Design an R&D plan for this investigation",
-      "Help me decide what to do after this experimental result",
-      "Write a human-readable report from this plan and runs"
+      "Start this R&D project from intent through intake and scoping",
+      "Create proposition workspaces from these observations",
+      "Design a hypothesis plan under this proposition",
+      "Draft a proposition-level research paper from this resolved proposition"
     ],
     "brandColor": "#2563EB",
     "screenshots": []

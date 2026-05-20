@@ -1,7 +1,6 @@
-# <Report Title>
+# <Paper Title>
 
-**Report ID:** <report-id>
-**Source plan:** propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/plan.md
+**Proposition:** <proposition-path>
 **Date:** YYYY-MM-DD
 **Category:** applied_research
 
@@ -27,7 +26,7 @@ Not applicable: <state why the applied claim does not rest on a derivation, if t
 
 ## Methods & Conditions
 
-<Substantive description, enough for re-implementation. See propositions/<Pxxx_slug>/hypotheses/<Hxxx_slug>/plan.md Methodology for full re-implementation detail.>
+<Substantive description, enough for re-implementation. Synthesize the relevant hypothesis plans and runs under this proposition. Include enough detail for re-implementation.>
 
 ### Proposed approach
 
@@ -79,6 +78,10 @@ Not applicable: <state why the applied claim does not rest on a derivation, if t
 
 Not applicable: <state why no component-causality or robustness claim is made.>
 
+## Claim-to-result alignment
+
+<For each load-bearing claim, point to the result, derivation, table, figure, run, or citation that supports it. State the generalization boundary.>
+
 ## Discussion
 
 <Mechanism interpretation, surprises, contradicted expectations, implications for the evidence boundary or decision, and Pearl's-ladder honesty for any causal language.>
@@ -88,6 +91,10 @@ Not applicable: <state why no component-causality or robustness claim is made.>
 <- Conditions not tested>
 <- Possible confounds, such as hyperparameter asymmetry, single dataset, or comparator weakness>
 <- Failure modes observed>
+
+## Reproducibility
+
+<Commands, data access, evaluation protocol, material conditions, and enough method detail for another researcher to re-implement. Include error bars / CI or a reason statistical uncertainty does not apply when the paper uses numeric evidence.>
 
 ## References
 

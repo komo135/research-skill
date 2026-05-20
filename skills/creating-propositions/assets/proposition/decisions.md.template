@@ -2,7 +2,7 @@
 
 Proposition-level state transitions only. Routine analysis notes belong in `analyses.md`.
 
-Allowed labels: `SUPPORT`, `CONTRADICT`, `UNREALIZED_CONDITION`, `UNDER_SPECIFY`, `SPLIT_NEEDED`, `SPLIT`, `CLOSE`, `REOPEN`.
+Allowed labels: `SUPPORT`, `CONTRADICT`, `UNREALIZED_CONDITION`, `UNDER_SPECIFY`, `SPLIT_NEEDED`, `PARK`, `UNPARK`, `REVISE`, `CLOSE`, `REOPEN`.
 
 ## <YYYY-MM-DD> - <DECISION_LABEL>: <short title>
 

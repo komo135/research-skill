@@ -8,9 +8,15 @@
 
 open
 
+## Ambition
+
+incremental-honest
+
+Allowed ambitions: landmark-aspirant | incremental-honest
+
 ## Allowed statuses
 
-open | supported | contradicted | unrealized-condition | under-specified | split-needed | split | closed
+open | supported | unrealized-condition | under-specified | contradicted | split-needed | split | parked | closed
 
 ## Why it matters
 
@@ -19,6 +25,28 @@ open | supported | contradicted | unrealized-condition | under-specified | split
 ## Current expected consequence
 
 <expected_consequence>
+
+## Content gate
+
+### Surprise
+
+<What observation, result, constraint, prior-work fact, or trace is surprising.>
+
+### Load-bearing Bit
+
+<The prior belief, common assumption, expected relation, or inherited premise that the surprise violates. Name at least one proxy for load-bearing-ness: what would need rebuilding if false, how widely the assumption holds, or the known failing prediction / counterexample.>
+
+### Flip / reasonable attack
+
+<The tractable proposition move that could explain the surprise without pretending the result is already proven.>
+
+### Significance
+
+<Who should care and what changes if the proposition is supported. If significance would be inflated, keep Ambition as incremental-honest.>
+
+### Discriminating exam
+
+<The expected consequence, falsifier, and competing proposition that separate this proposition from alternatives.>
 
 ## Live working propositions
 
@@ -41,4 +69,5 @@ open | supported | contradicted | unrealized-condition | under-specified | split
 - Mark under-specified if: <the proposition cannot yet produce a discriminating expected consequence>
 - Mark split-needed if: <one proposition hides multiple separable propositions>
 - Split if: <child propositions are opened and the parent is no longer the active route>
+- Park if: <the proposition is live but blocked by external material, priority, access, or dependency>
 - Close if: <the proposition is resolved, superseded, killed, or no longer useful>

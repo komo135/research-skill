@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Every load-bearing claim in `propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md` and `propositions/Pxxx_slug/hypotheses/Hxxx_slug/reports/<id>_<slug>/report.md` uses an explicit, structured record. The structure does two jobs:
+Every load-bearing claim in `propositions/Pxxx_slug/hypotheses/Hxxx_slug/plan.md` and `propositions/Pxxx_slug/paper.md` uses an explicit, structured record. The structure does two jobs:
 
 1. **It forces the agent to articulate what the claim actually rests on and what it does not exclude** — preventing claims that read confidently but are actually thin on evidence.
 2. **It makes claims machine-checkable.** `scripts/check_claims.py` parses the structure and verifies required fields are present and non-empty where required.
@@ -45,7 +45,7 @@ Specific = states *what* improved, *by how much*, *under what conditions*, *with
 A pointer to the specific basis for the claim. This is an evidence-integrity anchor, not by itself a reproducibility guarantee: it lets a reviewer check that the reported value is connected to a concrete artifact, value, or citation, while the method and tested conditions still carry the reproducibility burden. Acceptable forms:
 
 - **file:line** — `propositions/P001_phase-transition/hypotheses/H001_probe/experiments/runs/H001__003__seed42/outputs/metrics.json:L8`
-- **Numeric value with provenance** — `mean BLEU 28.4 (SE 0.3) across 5 seeds, see Table 2 of reports/R02/report.md`
+- **Numeric value with provenance** — `mean BLEU 28.4 (SE 0.3) across 5 seeds, see Table 2 of propositions/P001_translation/paper.md`
 - **Artifact path** — `propositions/P001_phase-transition/hypotheses/H001_probe/experiments/runs/H001__005__seed0/outputs/convergence.csv`
 - **Citation** — `Vaswani et al. 2017, Table 1`
 
@@ -63,7 +63,7 @@ A numeric `evidence` field for an empirical claim must specify at least:
 Examples of compliant evidence:
 
 - Quant: `IR 1.12 (95% CI [0.78, 1.46], n=240 monthly returns, walk_forward 3 folds), Delta vs benchmark IR 0.42 (p<0.01 with Bonferroni correction across 18 tested signals); see propositions/P001_signal-quality/hypotheses/H001_walk-forward/experiments/runs/H001__005__seed0/outputs/walk_forward_results.csv`
-- ML: `BLEU 28.4 (SE 0.3, n=5 seeds), Δ vs baseline 27.3 = 1.1 (Cohen's d 2.8, paired t-test p<0.001); see reports/R02/tables/translation_results.csv`
+- ML: `BLEU 28.4 (SE 0.3, n=5 seeds), Delta vs baseline 27.3 = 1.1 (Cohen's d 2.8, paired t-test p<0.001); see propositions/P001_translation/paper.md`
 - Basic research: `phase transition observed at T_c = 2.27 +/- 0.05 (n=12 independent runs, sigma/sqrt(n) reported); see propositions/P001_phase-transition/hypotheses/H001_temperature-scan/experiments/runs/H001__012__seed0/outputs/transition_temps.csv`
 
 Examples that fail the minimum:
@@ -127,7 +127,7 @@ The skill does not assign labels like "A4" or "supported." The structure itself 
 
 A claim is load-bearing — and therefore requires this structure — when:
 
-- It appears in a derived-hypothesis report Summary, Results, or Conclusions section
+- It appears in a proposition paper Summary, Results, or Claim-to-result alignment section
 - It triggers a proposition or hypothesis `decisions.md` entry when a state transition depends on it
 - It is cited by another claim
 - It is communicated externally (to a collaborator, a publication, a deployment decision)
@@ -145,11 +145,11 @@ Casual observations during exploratory work do not need the structure. The agent
 
 ## Verification
 
-`scripts/check_claims.py` parses the structure from hypothesis `plan.md` and report `report.md` files and reports:
+`scripts/check_claims.py` parses the structure from hypothesis `plan.md` and proposition `paper.md` files and reports:
 
 - Missing fields
 - Claim text that is vague (no metric, no specifics, no condition reference)
 - Evidence pointers that don't resolve to existing files
 - Suspicious patterns — e.g., empty `alternatives_not_excluded` for a claim that mentions "better than baseline" without an ablation citation
 
-Run it before any external sharing or proposition/hypothesis `decisions.md` entry that depends on the claim. Run it before drafting a report.
+Run it before any external sharing or proposition/hypothesis `decisions.md` entry that depends on the claim. Run it before drafting a paper.

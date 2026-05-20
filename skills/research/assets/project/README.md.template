@@ -8,15 +8,20 @@
 
 ## Navigate
 
+- `intake.md` — intent, uncertain-in-outcome gate, and material needs
 - `project_state.md` — active propositions, live derived hypotheses, blockers, priorities
 - `decisions.md` — project-wide structure, scope, and protocol decisions only
+- `observations.md` — project-level observation backlog from scoping, EDA, and prior papers
+- `literature/scoping.md` — initial scoping scan; this does not replace plan-scoped grounding
+- `data/eda/` — exploratory data analysis artifacts and notebooks
 - `propositions/` — proposition-first research state
 - `propositions/Pxxx_slug/proposition.md` — long-lived proposition ledger
 - `propositions/Pxxx_slug/observations.md` — material used to generate or update the proposition
 - `propositions/Pxxx_slug/analyses.md` — generated doubt, working proposition, expected consequence, proposition status, and derived hypothesis candidates
-- `propositions/Pxxx_slug/hypotheses/Hxxx_slug/` — one derived hypothesis, its plan, experiments, reports, and decisions
+- `propositions/Pxxx_slug/paper.md` — proposition-level research paper created when the proposition reaches supported or contradicted
+- `propositions/Pxxx_slug/hypotheses/Hxxx_slug/` — one derived hypothesis, its plan, experiments, and decisions
 - `lib/` — shared, curated code when the project has reusable implementation
-- `literature/` — prior work and `literature/positioning.md`, when project-level prior-work state is useful
+- `literature/` — scoping, papers, and positioning prior-work state
 
 ## Getting started
 
@@ -34,8 +39,8 @@
 
 ## Working in this project
 
-This project uses the `research` skill in proposition-first mode. Hypothesis generation state lives under `propositions/Pxxx_slug/`: observations create generated doubts, generated doubts create working propositions, working propositions create expected consequences, proposition status determines whether a derived hypothesis is allowed, and each derived hypothesis owns one hypothesis plan under `hypotheses/Hxxx_slug/plan.md`.
+This project uses the `research` skill in proposition-first mode. Start from intent in `intake.md`, perform scoping and material/EDA work, record project-level observations in `observations.md`, then use `creating-propositions` inline to create or update `propositions/Pxxx_slug/`. Proposition status determines whether a derived hypothesis is allowed, and each derived hypothesis owns one hypothesis plan under `hypotheses/Hxxx_slug/plan.md`.
 
 Plans declare a category and mode; plans are checked before execution with `research-plan-review`, results are analyzed after execution with `research-result-analysis`, and claims are recorded in the hypothesis plan. State-changing decisions are not global iteration notes: project-wide decisions stay in top-level `decisions.md`, proposition decisions stay in `propositions/Pxxx_slug/decisions.md`, and hypothesis decisions stay in `propositions/Pxxx_slug/hypotheses/Hxxx_slug/decisions.md`.
 
-Research scripts should run through `new_run.py` and leave evidence under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/`. Print-only output is not a completed result: stdout is not evidence. Each completed run needs `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and at least one manifest-listed durable artifact in `outputs/`, `tables/`, `figures/`, or `intermediate/`. Run `check_run_artifacts.py` before using a run for Result analysis, observations, claims, decisions, or reports.
+Research scripts should run through `new_run.py` and leave evidence under `propositions/Pxxx_slug/hypotheses/Hxxx_slug/experiments/runs/<run_id>/`. Print-only output is not a completed result: stdout is not evidence. Each completed run needs `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and at least one manifest-listed durable artifact in `outputs/`, `tables/`, `figures/`, or `intermediate/`. Run `check_run_artifacts.py` before using a run for Result analysis, observations, claims, decisions, or the proposition-level paper.
