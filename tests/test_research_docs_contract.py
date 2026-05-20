@@ -633,6 +633,7 @@ def test_new_project_creates_proposition_first_layout_and_next_steps():
         path_exists = {
             "intake.md",
             "observations.md",
+            "status_brief.md",
             "literature/scoping.md",
             "literature/papers.md",
             "literature/positioning.md",
@@ -653,7 +654,7 @@ def test_new_project_creates_proposition_first_layout_and_next_steps():
         assert exists, relative
     assert_mentions(result.stdout, "new_proposition.py")
     assert_absent(result.stdout, "new_plan.py")
-    assert_mentions(readme, "intent", "scoping", "EDA", "observations.md", "propositions/", "paper.md")
+    assert_mentions(readme, "intent", "scoping", "EDA", "observations.md", "status_brief.md", "propositions/", "paper.md")
     assert_mentions(project_state, "Active propositions", "Live derived hypotheses")
     assert_mentions(decisions, "Project-wide", "OPEN_PROPOSITION")
     assert not differentiation_exists

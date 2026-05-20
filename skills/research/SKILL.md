@@ -17,40 +17,58 @@ If this skill is invoked alone, the minimum read set is `intake.md`, `project_st
 
 1. If there is no project root, run `scripts/new_project.py <project-root> --name "<name>"`.
 2. If a project exists, read `intake.md`, `project_state.md`, root `observations.md`, `literature/scoping.md`, and the current proposition statuses.
-3. Pick exactly one lane:
-   - known implementation only: route out of R&D, no proposition lifecycle
-   - missing intake: write/update `intake.md`
-   - missing material: write a material-acquisition task and the target artifact path
-   - material exists but no proposition: switch inline to `creating-propositions`
-   - plan-ready proposition exists: create or continue one derived hypothesis
-   - execution happened: run result analysis, then update ledgers
-   - proposition reached `supported` or `contradicted`: draft/check `paper.md`
+3. Pick exactly one canonical route from **Route Before Gate** and take its route-specific action. Do not maintain a separate lane vocabulary.
 
 Do not ask generic research questions when the next artifact is obvious. Write the next artifact with known facts and mark unknowns as missing material.
 
-## Route Table
+## Route Before Gate
 
-Use this table as the execution contract under pressure:
+Gate placement comes after route selection:
 
-| Trigger | Read | Write | Stop condition | Next action |
+- Content Gate applies at `proposition-commit` and `ambition-elevation`, not to every exploratory action.
+- Paper-grade gate applies at `paper-route`, after proposition state resolution.
+- Material, probe, implementation milestone, and stakeholder brief work are real outputs, but they do not promote the proposition lifecycle by themselves.
+
+Use this single routing structure as the action selector:
+
+| Route | Select when | Artifact to write now | Promotion explicitly forbidden | Next |
 |---|---|---|---|---|
-| No project exists | user request | generated project layout | `new_project.py` succeeds | fill `intake.md` |
-| Intent is known implementation | user request, `intake.md` if present | `intake.md` route note | outcome is not uncertain | leave R&D workflow |
-| Intent is uncertain but underspecified | user request | `intake.md` | uncertain question and missing material named | material acquisition |
-| Material missing | `intake.md`, `literature/scoping.md`, root `observations.md` | root `observations.md` or material-acquisition note | smallest missing artifact named | collect material |
-| Material exists, no proposition | intake/scoping/observations/material | proposition handoff summary | handoff bundle ready | inline `creating-propositions` |
-| Proposition is plan-ready | proposition files, source analysis | `hypotheses/Hxxx/*` | plan created and review requested | `research-plan-review` |
-| Execution finished | plan, run artifacts, Planned vs Actual | analysis/ledger updates | `research-result-analysis` reviewed | update proposition state |
-| Proposition resolved | proposition files, claims, runs | `propositions/Pxxx/paper.md` | `check_paper.py` passes | next-cycle scoping |
-| Paper exists, next cycle | prior `paper.md`, `literature/scoping.md` | dated re-survey in `literature/scoping.md` + own-paper observations in root `observations.md` | re-survey dated AND own-paper observations extracted | inline `creating-propositions` |
+| `implementation-handoff` | outcome is known and no R&D uncertainty remains | normal implementation files and an `intake.md` route note if useful | proposition, hypothesis plan, paper | leave R&D workflow |
+| `materialization` | material, data, logs, scoping, comparator, split, evaluator, or measurement is missing | root `observations.md`, `literature/scoping.md`, `data/raw/`, `data/processed/`, or `data/eda/` | proposition, hypothesis plan, paper | collect the missing material |
+| `exploratory-probe` | a concrete but under-controlled check is needed before material is interpretable | before a proposition: `data/eda/<probe_slug>.md` or generated tables/figures; after a plan: hypothesis `experiments/runs/<run_id>/` | proposition support, landmark ambition, final paper | update observations or material route |
+| `implementation-milestone` | code, harness, utility, or infrastructure acceptance criteria are met | if plan-derived: hypothesis `experiments/runs/<run_id>/`; if project-wide infrastructure: `lib/` plus root `decisions.md` or `project_state.md` | proposition support unless the plan discriminator was exactly that acceptance condition | continue or close the milestone |
+| `proposition-commit` | enough material exists to state Surprise, Bit, expected consequence, falsifier, and competitor | `propositions/Pxxx/{proposition,observations,analyses,decisions}.md` via `creating-propositions` | derived hypothesis if the state is blocked | proposition state router |
+| `ambition-elevation` | a proposition is proposed or retained as `landmark-aspirant` | proposition `analyses.md` and Content Gate fields | landmark label without a concrete load-bearing referent | keep, downgrade, under-specify, or collect material |
+| `hypothesis-plan` | parent proposition is plan-ready and source analysis has a derived hypothesis candidate | `propositions/Pxxx/hypotheses/Hxxx/{hypothesis.md,plan.md,experiments/,decisions.md}` | assumptions replacing missing discriminator, comparator, or measurement | plan review |
+| `claim-resolution` | result analysis and evidence resolve the parent proposition enough to change state | hypothesis/proposition ledgers, claim records, `project_state.md` | paper before state resolution | state update |
+| `paper-route` | proposition reaches `supported` or `contradicted` through claim-resolution | `propositions/Pxxx/paper.md` | provisional paper, stakeholder draft as paper | next-cycle scoping |
+| `stakeholder-brief` | stakeholder needs an interim deliverable before proposition resolution | root `status_brief.md` with dated entries | paper route, next-cycle trigger, proposition support | continue the current route |
+
+Do not require a route block for every ordinary step. Use it as a forcing function only when the route is non-obvious, the user is pushing to proceed despite missing material or unresolved evidence, the agent is about to promote work to proposition/hypothesis/support/`landmark-aspirant`/`paper.md`, a research category is being used as a closeout reason, or `provisional` appears around proposition state, support, or paper.
+
+Route block:
+
+```text
+Route:
+Why this route:
+Artifact to write now:
+Gate not yet applicable:
+Promotion explicitly forbidden:
+```
+
+If the route is `materialization` or `exploratory-probe`, do not create a proposition. If the user asks for a "direction-setting proposition" before the material exists, write a direction-setting material/probe note instead.
+
+`status_brief.md` is the only standard project-level stakeholder brief. It is not a research paper, does not count as proposition resolution, and does not trigger next-cycle proposition creation.
+
+`basic_research`, `applied_research`, and `experimental_development` classify work; they do not determine the exit artifact. Acceptance tests for a utility or harness are proposition support only if the proposition and plan made that acceptance condition the discriminator.
 
 Blocked output shape:
 
 ```text
-Route: blocked
+Route: <canonical route or blocked>
 Blocking condition: <not uncertain | material absent | no Bit | non-plan-ready state | missing review>
 Missing artifact: <path or external item>
-Do not create: <proposition | hypothesis | paper | claim>
+Promotion explicitly forbidden: <proposition | hypothesis plan | support | landmark-aspirant | paper | claim>
 Next action: <single concrete action>
 ```
 
@@ -64,7 +82,7 @@ Write or update `intake.md` with:
 - the uncertain-in-outcome question
 - available material
 - missing material
-- current route: R&D, implementation, or blocked
+- current canonical route
 
 If the user only wants a known method implemented exactly as described, say this is implementation work and do not open a proposition or hypothesis lifecycle. If the user reframes toward an uncertain question, continue.
 
@@ -87,9 +105,11 @@ Write root `observations.md` as an observation backlog. Separate observed facts 
 
 If there is no observation, failure, success case, constraint, measurement, comparator, repeated trace, prior-work fact, theoretical tension, or bottleneck evidence, stop the research path and write the smallest material-acquisition task.
 
+Do not use missing split identity, comparator, baseline, evaluator, discriminator, or measurement as an "Assumption" in a hypothesis plan. If the missing item controls what observation would separate the proposition from a competitor, stay in `materialization` or `exploratory-probe`.
+
 ### 4. Proposition Pass
 
-When material exists, switch inline to `creating-propositions` in the same context. Do not dispatch a fresh separate-context subagent for proposition generation.
+When material exists and the route is `proposition-commit`, switch inline to `creating-propositions` in the same context. Do not dispatch a fresh separate-context subagent for proposition generation.
 
 Expected handoff to `creating-propositions`:
 
@@ -147,9 +167,13 @@ Then the parent agent updates, in order:
 
 Claims are evidence records, not proposition statuses. Before state-changing decisions or paper prose depends on a claim, run `scripts/check_claims.py`.
 
+`provisional support` is not a proposition state and is not a promotion basis. Informal prose may hedge uncertainty only if the route does not change to `supported`, `paper-route`, or next-cycle work.
+
 ### 8. Paper And Next Cycle
 
-Create `propositions/Pxxx_slug/paper.md` when a proposition reaches `supported` or `contradicted`. Do not postpone the paper because per-hypothesis notes exist, because the project may continue, or because a future summary seems easier. The resolution transition is the publication trigger.
+Create `propositions/Pxxx_slug/paper.md` only when a proposition reaches `supported` or `contradicted` through `claim-resolution`. Do not postpone the paper because per-hypothesis notes exist, because the project may continue, or because a future summary seems easier. The resolution transition is the publication trigger.
+
+Do not create a provisional `paper.md`. A stakeholder draft, meeting memo, progress report, or one-positive-result summary before proposition resolution is `stakeholder-brief` and goes to root `status_brief.md`. `status_brief.md` is not a paper and does not trigger the next cycle.
 
 The paper synthesizes across the proposition's hypotheses and must pass `scripts/check_paper.py`. Required paper-grade structure includes Related Work, Theory / Formulation, Methods & Conditions or System description, Results/Observations/Performance, Ablation / Sensitivity, Claim-to-result alignment, Discussion, Limitations, Reproducibility, and References. Numeric evidence needs sample size plus variance/dispersion, CI, effect size, significance, or an explicit non-applicability reason.
 
@@ -173,6 +197,7 @@ project-root/
 |   `-- positioning.md
 |-- data/{raw,processed,eda}/
 |-- observations.md
+|-- status_brief.md
 |-- project_state.md
 |-- decisions.md
 |-- lib/{data,eval,viz,utils,tests}/
@@ -193,7 +218,7 @@ project-root/
 
 Ownership:
 
-- `research`: `intake.md`, root `observations.md`, `literature/{scoping,papers,positioning}.md`, `data/{raw,processed,eda}/`, `project_state.md`, root `decisions.md`, `propositions/Pxxx/paper.md`, and hypothesis files.
+- `research`: `intake.md`, root `observations.md`, root `status_brief.md`, `literature/{scoping,papers,positioning}.md`, `data/{raw,processed,eda}/`, `project_state.md`, root `decisions.md`, `propositions/Pxxx/paper.md`, and hypothesis files.
 - `creating-propositions`: `propositions/Pxxx/{proposition,observations,analyses,decisions}.md`.
 
 Root `decisions.md` records project structure only: `OPEN_PROPOSITION`, `SPLIT_PROPOSITION`, `MERGE_PROPOSITION`, `CHANGE_SCOPE`, `CHANGE_PROTOCOL`.

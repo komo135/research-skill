@@ -14,6 +14,7 @@ project-root/
 │   ├── processed/
 │   └── eda/
 ├── observations.md
+├── status_brief.md
 ├── project_state.md
 ├── decisions.md
 ├── lib/
@@ -44,6 +45,7 @@ project-root/
 Rules:
 
 - Root `decisions.md` contains project structure, scope, and protocol decisions only.
+- Root `status_brief.md` is the only standard stakeholder brief before proposition resolution; it is not `paper.md` and does not trigger the next proposition cycle.
 - `creating-propositions` owns `propositions/Pxxx_slug/{proposition,observations,analyses,decisions}.md`.
 - `research` owns `propositions/Pxxx_slug/paper.md` and `propositions/Pxxx_slug/hypotheses/Hxxx_slug/*`.
 - Do not create top-level `plans/`, top-level `experiments/<id>/runs/`, `literature/differentiation.md`, or per-hypothesis `reports/`.

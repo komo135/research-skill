@@ -12,6 +12,7 @@
 - `project_state.md` — active propositions, live derived hypotheses, blockers, priorities
 - `decisions.md` — project-wide structure, scope, and protocol decisions only
 - `observations.md` — project-level observation backlog from scoping, EDA, and prior papers
+- `status_brief.md` — dated stakeholder status notes before proposition resolution; not a paper and not a next-cycle trigger
 - `literature/scoping.md` — initial scoping scan; this does not replace plan-scoped grounding
 - `data/eda/` — exploratory data analysis artifacts and notebooks
 - `propositions/` — proposition-first research state

@@ -60,6 +60,8 @@ Not acceptable as completion:
 
 ## Paper shape
 
+This shape applies only after `paper-route`: the parent proposition has reached `supported` or `contradicted` through claim-resolution. The `applied_research` category alone does not require `paper.md`; interim stakeholder deliverables use `status_brief.md`.
+
 Applied research papers describe the practical objective, the method/procedure or operational form tested, the evaluation evidence, and the scoped finding. Use `assets/paper/applied_research_paper.md.template`.
 
 1. **Summary** — what was tried, what was found, the headline evidence

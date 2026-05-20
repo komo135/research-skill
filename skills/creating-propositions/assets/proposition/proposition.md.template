@@ -34,7 +34,7 @@ open | supported | unrealized-condition | under-specified | contradicted | split
 
 ### Load-bearing Bit
 
-<The prior belief, common assumption, expected relation, or inherited premise that the surprise violates. Name at least one proxy for load-bearing-ness: what would need rebuilding if false, how widely the assumption holds, or the known failing prediction / counterexample.>
+<The prior belief, common assumption, expected relation, or inherited premise that the surprise violates. Name the concrete load-bearing referent: the line of work, paper, method family, benchmark assumption, known prediction, or system behavior that would need rework if false.>
 
 ### Flip / reasonable attack
 
@@ -65,7 +65,7 @@ open | supported | unrealized-condition | under-specified | contradicted | split
 
 - Support if: <observed material matches the current expected consequence under stated conditions>
 - Contradict if: <observed material breaks the proposition itself, not merely an implementation condition>
-- Mark unrealized-condition if: <the proposition may hold, but a required condition, representation, search path, measurement, or evaluator is not realized>
+- Mark unrealized-condition if: <the proposition is already discriminating, but a required condition, representation, search path, measurement, or evaluator is not realized>
 - Mark under-specified if: <the proposition cannot yet produce a discriminating expected consequence>
 - Mark split-needed if: <one proposition hides multiple separable propositions>
 - Split if: <child propositions are opened and the parent is no longer the active route>

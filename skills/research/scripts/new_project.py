@@ -93,6 +93,16 @@ def main():
         ),
         encoding="utf-8",
     )
+    (target / "status_brief.md").write_text(
+        (
+            "# Status Brief\n\n"
+            "Project-level dated stakeholder brief for interim status before proposition resolution.\n"
+            "This is not `paper.md`, does not mark a proposition supported or contradicted, and does not trigger the next proposition cycle.\n\n"
+            "## Entries\n\n"
+            "<YYYY-MM-DD>: <route, current artifact, unresolved material, next action>\n"
+        ),
+        encoding="utf-8",
+    )
     (target / "literature" / "papers.md").write_text(
         "# Prior work\n\nUse the format from `references/literature_review.md`.\n",
         encoding="utf-8",

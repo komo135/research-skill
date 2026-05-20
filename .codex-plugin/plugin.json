@@ -1,7 +1,7 @@
 {
   "name": "research",
   "version": "4.0.0",
-  "description": "v4.0.0 - Intent-to-paper proposition-first R&D workflow with scoping, EDA, proposition workspace ownership, hypothesis plans, independent reviews, result analysis, and quant research support.",
+  "description": "v4.0.0 - Route-before-gate proposition-first R&D workflow with scoping, EDA, proposition ownership, hypothesis plans, result analysis, papers, and quant research support.",
   "author": {
     "name": "komoootv",
     "email": "komoootv@gmail.com"
@@ -21,8 +21,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Research",
-    "shortDescription": "Intent-to-paper proposition-first R&D workflow",
-    "longDescription": "v4.0.0 - Agent-driven R&D skills for moving from intent through intake, uncertain-outcome gating, scoping literature, material acquisition, EDA, project observations, proposition workspace creation, hypothesis plans, evidence, result analysis, claims, and proposition-level research papers. creating-propositions owns proposition generation and proposition state files under propositions/Pxxx_slug/ with the unified states open, supported, unrealized-condition, under-specified, contradicted, split-needed, split, parked, and closed. research orchestrates the workflow, generated project layout, derived hypotheses, plans, plan review, execution artifacts, result analysis, claim records, decision ledgers, and paper creation at propositions/Pxxx_slug/paper.md when a proposition reaches supported or contradicted. The canonical layout includes intake.md, literature/scoping.md, literature/papers.md, literature/positioning.md, data/raw, data/processed, data/eda, observations.md, lib/{data,eval,viz,utils,tests}, and propositions/. Old top-level plans, top-level experiment runs, literature/differentiation.md, and per-hypothesis reports are not compatibility paths. research-plan-review remains the plan-path-only pre-execution review skill. research-result-analysis remains the plan-path-only post-execution why-analysis skill. quant-research remains the domain extension for time-series validation, leakage checks, multiple-testing risk, and robustness.",
+    "shortDescription": "Route-before-gate proposition-first R&D workflow",
+    "longDescription": "v4.0.0 - Agent-driven R&D skills for moving from intent through a route-before-gate workflow: implementation handoff, materialization, exploratory probes, implementation milestones, proposition commit, ambition elevation, hypothesis plans, claim resolution, paper route, and stakeholder briefs. creating-propositions owns proposition generation and proposition state files under propositions/Pxxx_slug/ with the unified states open, supported, unrealized-condition, under-specified, contradicted, split-needed, split, parked, and closed. research orchestrates generated project layout, scoping literature, material acquisition, EDA, project observations, derived hypotheses, plan review, execution artifacts, result analysis, claim records, decision ledgers, status_brief.md for interim stakeholder updates, and proposition-level paper.md creation only when a proposition reaches supported or contradicted. The canonical layout includes intake.md, literature/scoping.md, literature/papers.md, literature/positioning.md, data/raw, data/processed, data/eda, observations.md, status_brief.md, lib/{data,eval,viz,utils,tests}, and propositions/. Old top-level plans, top-level experiment runs, literature/differentiation.md, per-hypothesis reports, and provisional paper.md drafts are not compatibility paths. research-plan-review remains the plan-path-only pre-execution review skill. research-result-analysis remains the plan-path-only post-execution why-analysis skill. quant-research remains the domain extension for time-series validation, leakage checks, multiple-testing risk, and robustness.",
     "developerName": "komoootv",
     "category": "Research",
     "capabilities": [

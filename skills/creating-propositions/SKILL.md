@@ -27,18 +27,26 @@ Read only what is needed for the current proposition pass:
 Under pressure, stop with one of these concrete outputs instead of rationalizing through the blocker:
 
 ```text
-State: under-specified
-Missing material: <observation, comparator, trace, prior-work fact, measurement, or paper>
+Route: materialization
+Missing material: <observation, comparator, trace, prior-work fact, measurement, split, evaluator, or paper>
 Smallest next artifact: <data/raw/... | data/eda/... | observations.md | literature/scoping.md>
-Do not create: proposition, hypothesis, plan, method, architecture, or evaluation
+Promotion explicitly forbidden: proposition, hypothesis plan, method, architecture, evaluation, paper
 Next handoff: research material acquisition
 ```
 
 ```text
-State: under-specified
+Route: exploratory-probe
+Probe needed: <concrete under-controlled check needed before the material is interpretable>
+Smallest next artifact: <data/eda/<probe_slug>.md | generated table/figure | hypothesis experiments/runs/<run_id> if a plan already exists>
+Promotion explicitly forbidden: proposition support, landmark-aspirant, final paper
+Next handoff: research probe execution
+```
+
+```text
+Route: materialization
 Missing Bit: <the assumption or prior belief that is not yet identified>
 Smallest next artifact: <scoping note, observation, comparator, or prior paper excerpt>
-Do not create: proposition or derived-hypothesis slot
+Promotion explicitly forbidden: proposition, derived-hypothesis slot, landmark-aspirant
 Next handoff: research scoping/material acquisition
 ```
 
@@ -50,6 +58,7 @@ Surprise: <one sentence>
 Bit: <one sentence or missing>
 Discriminating expected consequence: <one sentence or missing>
 Ledger: <decision label and file>
+Promotion explicitly forbidden: <hypothesis plan | support | paper | none>
 Next research action: <material acquisition | new_hypothesis.py | split | paper | no R&D route>
 ```
 
@@ -58,19 +67,20 @@ Next research action: <material acquisition | new_hypothesis.py | split | paper 
 Follow this sequence.
 
 1. State that direct solutions are not being proposed yet.
-2. Inventory material as facts, not interpretations.
-3. If material is absent, return `State: under-specified`, name the smallest missing material, and stop.
-4. Name the Surprise: what observation or prior-work tension is not explained by the default expectation?
-5. Name the load-bearing Bit: what prior belief, common assumption, expected relation, or inherited premise does the Surprise violate?
-6. If the Bit is missing, return a Bit/material-acquisition task and stop.
-7. Run two to four relevant lenses to create candidate Flips.
-8. Write one or more candidate propositions as Spark statements.
-9. For each candidate, write the discriminating expected consequence, falsifier, and competing proposition.
-10. Merge duplicates, split mixed propositions, park blocked ones, and kill candidates without a discriminator.
-11. Choose Ambition: `landmark-aspirant` or `incremental-honest`.
-12. Assign one 9-state status and write the correct decision ledger entry.
-13. Create or update `propositions/Pxxx_slug/{proposition,observations,analyses,decisions}.md`.
-14. Return control to `research` with the next action.
+2. If route is not already established, choose whether this pass is `materialization`, `exploratory-probe`, `proposition-commit`, or `ambition-elevation`. If the route is `materialization` or `exploratory-probe`, return the route stop output and do not create or update a proposition.
+3. Inventory material as facts, not interpretations.
+4. If material is absent, return `Route: materialization`, name the smallest missing material, and stop.
+5. Name the Surprise: what observation or prior-work tension is not explained by the default expectation?
+6. Name the load-bearing Bit: what prior belief, common assumption, expected relation, or inherited premise does the Surprise violate?
+7. If the Bit is missing, return a Bit/material-acquisition task and stop.
+8. Run two to four relevant lenses to create candidate Flips.
+9. Write one or more candidate propositions as Spark statements.
+10. For each candidate, write the discriminating expected consequence, falsifier, and competing proposition.
+11. Merge duplicates, split mixed propositions, park blocked ones, and kill candidates without a discriminator.
+12. Choose Ambition: `landmark-aspirant` or `incremental-honest`; this is the Content Gate point for ambition.
+13. Assign one 9-state status and write the correct decision ledger entry. Do not use `provisional open`, `provisional support`, or any provisional state escape.
+14. Create or update `propositions/Pxxx_slug/{proposition,observations,analyses,decisions}.md`.
+15. Return control to `research` with the next action.
 
 If a step does not apply, write `Not applicable: <reason>` in the artifact. Do not silently skip it.
 
@@ -79,6 +89,10 @@ If a step does not apply, write `Not applicable: <reason>` in the artifact. Do n
 Material can be an observation, failure, success case, comparator, trace, workload shift, measurement, constraint, prior-work fact, theoretical tension, EDA finding, or prior proposition paper.
 
 No material means no proposition, no derived-hypothesis slot, and no architecture/method/evaluation proposal. The correct output is a material-acquisition need with the target artifact path, such as `data/raw/...`, `data/eda/...`, root `observations.md`, or `literature/scoping.md`.
+
+Missing split identity, comparator, baseline, evaluator, discriminator, or measurement cannot be moved into a plan as an "Assumption." If the missing item controls what observation would separate this proposition from its competitor, route to `materialization` or `exploratory-probe`.
+
+Use `unrealized-condition` only after the proposition is already grounded enough to commit: Surprise, Bit, expected consequence, falsifier, and competitor are present, but a required condition, representation, measurement, or evaluator must still be built to test it. Do not use `unrealized-condition` merely to avoid admitting material absence.
 
 ## Abductive Engine
 
@@ -124,6 +138,8 @@ Every `proposition.md` includes:
 Ambition: landmark-aspirant | incremental-honest
 ```
 
+Content Gate applies when committing a proposition, revising a proposition from `under-specified` to `open`, or choosing/retaining `landmark-aspirant`. It is not a reason to block material acquisition or exploratory probes.
+
 Use `landmark-aspirant` only when all are credible:
 
 - **Load-bearing Bit**: doubting the Bit is consequential. Show at least one proxy and name it concretely — the specific established line of work, paper, prediction, or system whose result reverses or needs rebuilding if the Bit were false. If you cannot name a concrete one, the Bit is not load-bearing; downgrade. Wide acceptance alone does not qualify: a universally true assumption has a trivial Flip and is not load-bearing. The test is whether the Flip is surprising and would force rework, not whether the Bit is commonly believed.
@@ -164,7 +180,7 @@ Use one vocabulary:
 |---|---|---|
 | `open` | Live, newly opened or still being tested. | yes |
 | `supported` | Evidence supports the proposition without claiming proof. | yes |
-| `unrealized-condition` | The proposition may hold, but a condition, representation, measurement, or evaluator is missing. | yes |
+| `unrealized-condition` | The proposition is already discriminating, but a condition, representation, measurement, or evaluator must be realized before testing. | yes |
 | `under-specified` | No discriminating expected consequence yet. | no |
 | `contradicted` | Material breaks the proposition itself. | no |
 | `split-needed` | Multiple propositions are mixed. | no |
@@ -175,6 +191,7 @@ Use one vocabulary:
 Blocked state actions:
 
 - `under-specified`: write the missing material or Bit needed to continue.
+- `unrealized-condition`: plan only the work that realizes the named condition; do not treat missing discriminator-critical material as this state.
 - `contradicted`: record why the proposition itself broke; revise, split, or close.
 - `split-needed`: create child proposition plan before any hypothesis plan.
 - `split`: continue only through children.
@@ -196,10 +213,12 @@ Record proposition state decisions in `propositions/Pxxx_slug/decisions.md`: `SU
 End every proposition pass with:
 
 ```text
+Route: <materialization | exploratory-probe | proposition-commit | ambition-elevation>
 Proposition action: opened | updated | split-needed | parked | blocked | closed
 Path: propositions/Pxxx_slug/...
 State: <9-state value>
 Ledger: <decision label and file>
+Promotion explicitly forbidden: <hypothesis plan | support | paper | none>
 Next research action: <material acquisition | new_hypothesis.py | split | paper | no R&D route>
 ```
 
@@ -209,8 +228,11 @@ Stop and return to the procedure when you are about to:
 
 - propose a named method, architecture, algorithm, runtime, experiment, or evaluation before a proposition exists
 - generate propositions from no material
+- call a missing discriminator, comparator, baseline, evaluator, or measurement an assumption so planning can proceed
+- call a proposition `open` or `supported` only because it is provisional
 - name a Surprise without a Bit
 - use a trivial Bit and call it landmark-level
+- assign `landmark-aspirant` without naming a concrete load-bearing referent
 - treat EDA correlation as a claim
 - continue using old `plans/`, top-level `experiments/<id>/runs/`, or per-hypothesis `reports/`
 - rank solution slots instead of creating proposition state

@@ -58,6 +58,8 @@ Not required: a yes/no answer to the original question. If the original question
 
 ## Paper shape
 
+This shape applies only after `paper-route`: the parent proposition has reached `supported` or `contradicted` through claim-resolution. The `basic_research` category alone does not require `paper.md`; question-refinement or stakeholder status can remain in route-appropriate artifacts.
+
 Basic research papers emphasize what was learned, not what was decided. Structure:
 
 1. **Summary** — what was investigated, what was learned

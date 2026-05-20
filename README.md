@@ -150,6 +150,7 @@ The agent creates and maintains this proposition-first structure:
 │   ├── processed/
 │   └── eda/
 ├── observations.md
+├── status_brief.md                    # interim stakeholder brief, not paper
 ├── README.md
 ├── project_state.md
 ├── decisions.md                         # project-wide decisions only
@@ -173,7 +174,7 @@ The agent creates and maintains this proposition-first structure:
                 └── decisions.md         # hypothesis decisions
 ```
 
-This layout is canonical. Do not use top-level `plans/`, top-level `experiments/<id>/runs/`, `literature/differentiation.md`, or per-hypothesis report directories.
+This layout is canonical. Use root `status_brief.md` for interim stakeholder notes before proposition resolution. Do not use top-level `plans/`, top-level `experiments/<id>/runs/`, `literature/differentiation.md`, per-hypothesis report directories, or provisional `paper.md` drafts.
 
 ## Research contract
 
@@ -185,7 +186,7 @@ Research scripts still need evidence. Print-only output is incomplete, and stdou
 
 ## Research papers
 
-Research papers are paper-grade proposition-level synthesis artifacts at `propositions/Pxxx_slug/paper.md`, created when a proposition reaches `supported` or `contradicted`. They include Related Work, Theory / Formulation, Methods & Conditions, Results or Observations, Ablation / Sensitivity, Claim-to-result alignment, Discussion, Limitations, Reproducibility, and References.
+Research papers are paper-grade proposition-level synthesis artifacts at `propositions/Pxxx_slug/paper.md`, created only when a proposition reaches `supported` or `contradicted`. They are not stakeholder briefs, meeting memos, or provisional wrappers around one positive result. They include Related Work, Theory / Formulation, Methods & Conditions, Results or Observations, Ablation / Sensitivity, Claim-to-result alignment, Discussion, Limitations, Reproducibility, and References.
 
 Sections that do not apply still appear with `Not applicable:` and a reason. Papers should be understandable without replaying the full agent session and become material for the next research cycle.
 

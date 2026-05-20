@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Research papers are for humans. They live at `propositions/Pxxx_slug/paper.md` after a proposition reaches `supported` or `contradicted`, and are the proposition-level synthesis artifact a reader uses to make a decision or understand what was done without opening the agent's plans, runs, or code.
+Research papers are for humans. They live at `propositions/Pxxx_slug/paper.md` after a proposition reaches `supported` or `contradicted`, and are the proposition-level synthesis artifact a reader uses to make a decision or understand what was done without opening the agent's plans, runs, or code. Do not use `paper.md` for provisional stakeholder drafts; route those to root `status_brief.md`.
 
 A paper is a snapshot. Once written, it does not get retroactively rewritten when later work changes the picture. Subsequent work produces subsequent papers. Each paper stands on its own.
 

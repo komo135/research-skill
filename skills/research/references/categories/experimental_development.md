@@ -61,6 +61,8 @@ Not acceptable as completion:
 
 ## Paper shape
 
+This shape applies only after `paper-route`: the parent proposition has reached `supported` or `contradicted` through claim-resolution. The `experimental_development` category alone does not require `paper.md`; milestone closeout can remain an implementation-milestone artifact or `status_brief.md`.
+
 Use `assets/paper/experimental_development_paper.md.template`.
 
 1. **Summary** — what was built and what it does
