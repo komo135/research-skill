@@ -5,76 +5,102 @@ description: Use when generating or managing research propositions before direct
 
 # Creating Propositions
 
-Turn research material into proposition workspaces under `propositions/Pxxx_slug/`, then manage proposition state. This is an inline sub-skill of `research`: use the same context that contains intake, scoping, EDA, observations, and prior proposition papers. Do not use a separate fresh subagent for proposition generation.
+This is the proposition workbench for `research`. When invoked, turn material into proposition workspace changes or return a precise blocker. Do not end with a theory of the protocol; end with files changed, state chosen, and the next research action.
 
-## Required Checklist
+Use the same context as `research`. Proposition generation depends on intake, scoping, EDA, observations, and prior proposition papers; do not use a fresh separate-context subagent.
 
-Create this checklist before proposing architectures, methods, algorithms, interventions, evaluations, experiments, or plans:
+## Inputs To Read
 
-- [ ] State that direct solutions are not being proposed yet.
-- [ ] Confirm material exists, or return a material-acquisition need.
-- [ ] Separate observed facts from interpretations.
-- [ ] Name the Surprise.
-- [ ] Name the load-bearing Bit the Surprise violates.
-- [ ] Run a lens pass over the material.
-- [ ] Generate and manage questions: sharpen, merge, park, or kill.
-- [ ] Write proposition candidates with Ambition.
-- [ ] Write expected observations, falsifiers, and competing propositions.
-- [ ] Assign one 9-state proposition status.
-- [ ] Create or update `propositions/Pxxx_slug/{proposition,observations,analyses,decisions}.md`.
-- [ ] Only then hand back to `research` for prioritization, hypothesis planning, execution, result analysis, and papers.
+If this skill is invoked alone, first read `intake.md`, `literature/scoping.md`, root `observations.md`, and any existing `propositions/*/{proposition,analyses,decisions}.md`. If those files do not exist, return to `research` to create the project layout and intake.
 
-If an item does not apply, write `Not applicable: <reason>`. Do not silently skip phases.
+Read only what is needed for the current proposition pass:
+
+- `intake.md`: intent and uncertain question
+- `literature/scoping.md`: existing work, comparators, known failures, gaps
+- root `observations.md`: project-level observations from EDA/material
+- `data/eda/` summaries when the observation depends on them
+- prior `propositions/Pxxx/paper.md` files when running a later cycle
+- existing `propositions/Pxxx/{proposition,observations,analyses,decisions}.md` when revising, splitting, parking, reopening, supporting, or contradicting
+
+## Stop Outputs
+
+Under pressure, stop with one of these concrete outputs instead of rationalizing through the blocker:
+
+```text
+State: under-specified
+Missing material: <observation, comparator, trace, prior-work fact, measurement, or paper>
+Smallest next artifact: <data/raw/... | data/eda/... | observations.md | literature/scoping.md>
+Do not create: proposition, hypothesis, plan, method, architecture, or evaluation
+Next handoff: research material acquisition
+```
+
+```text
+State: under-specified
+Missing Bit: <the assumption or prior belief that is not yet identified>
+Smallest next artifact: <scoping note, observation, comparator, or prior paper excerpt>
+Do not create: proposition or derived-hypothesis slot
+Next handoff: research scoping/material acquisition
+```
+
+```text
+Proposition action: opened | updated | split-needed | parked | blocked | closed
+Path: propositions/Pxxx_slug/...
+State: <9-state value>
+Surprise: <one sentence>
+Bit: <one sentence or missing>
+Discriminating expected consequence: <one sentence or missing>
+Ledger: <decision label and file>
+Next research action: <material acquisition | new_hypothesis.py | split | paper | no R&D route>
+```
+
+## Proposition Pass
+
+Follow this sequence.
+
+1. State that direct solutions are not being proposed yet.
+2. Inventory material as facts, not interpretations.
+3. If material is absent, return `State: under-specified`, name the smallest missing material, and stop.
+4. Name the Surprise: what observation or prior-work tension is not explained by the default expectation?
+5. Name the load-bearing Bit: what prior belief, common assumption, expected relation, or inherited premise does the Surprise violate?
+6. If the Bit is missing, return a Bit/material-acquisition task and stop.
+7. Run two to four relevant lenses to create candidate Flips.
+8. Write one or more candidate propositions as Spark statements.
+9. For each candidate, write the discriminating expected consequence, falsifier, and competing proposition.
+10. Merge duplicates, split mixed propositions, park blocked ones, and kill candidates without a discriminator.
+11. Choose Ambition: `landmark-aspirant` or `incremental-honest`.
+12. Assign one 9-state status and write the correct decision ledger entry.
+13. Create or update `propositions/Pxxx_slug/{proposition,observations,analyses,decisions}.md`.
+14. Return control to `research` with the next action.
+
+If a step does not apply, write `Not applicable: <reason>` in the artifact. Do not silently skip it.
 
 ## Material Gate
 
-No material means no proposition. Material can be an observation, failure, success case, comparator, trace, workload shift, measurement, constraint, prior-work fact, theoretical tension, EDA finding, or prior proposition paper.
+Material can be an observation, failure, success case, comparator, trace, workload shift, measurement, constraint, prior-work fact, theoretical tension, EDA finding, or prior proposition paper.
 
-When material is absent:
-
-- do not write a proposition
-- do not fill derived-hypothesis slots
-- write `State: under-specified`
-- list the smallest material that would unlock proposition creation
-- hand off only the material-acquisition need
+No material means no proposition, no derived-hypothesis slot, and no architecture/method/evaluation proposal. The correct output is a material-acquisition need with the target artifact path, such as `data/raw/...`, `data/eda/...`, root `observations.md`, or `literature/scoping.md`.
 
 ## Abductive Engine
 
-Use this order:
+Write this chain into `analyses.md` in this order:
 
-1. **Surprise**: name the observation or prior-work tension.
-2. **Bit**: name the prior belief, common assumption, expected relation, or inherited premise the Surprise violates.
-3. **Flip**: use lenses as possible ways to flip the Bit into a proposition.
-4. **Spark**: write the proposition as a principle, mechanism, constraint, representation, boundary, invariant, or regime.
-5. **Discriminating expected consequence**: state what should be observed if the proposition is useful.
-6. **Falsifier and competing proposition**: state what would break it and what else could explain the same material.
-7. **9-state decision**: assign the current proposition state and record the decision.
+```text
+Surprise -> Bit -> Flip -> Spark -> discriminating expected consequence -> falsifier + competitor -> 9-state decision
+```
 
-If the Bit is not identifiable, do not make a proposition. Return a Bit/material-acquisition task. "This is interesting" is not enough.
+- `Surprise`: the observation or prior-work tension.
+- `Bit`: the prior belief or inherited premise violated by the Surprise.
+- `Flip`: a lens-driven inversion of the Bit.
+- `Spark`: the proposition as a principle, mechanism, constraint, representation, boundary, invariant, or regime.
+- `Discriminating expected consequence`: what should be observed if the proposition is useful and not if the competitor is right.
+- `Falsifier and competing proposition`: what would break it and what else could explain the material.
+- `9-state decision`: the chosen status and why the next action follows.
 
-## Ambition Lanes
-
-Every `proposition.md` includes:
-
-`Ambition: landmark-aspirant | incremental-honest`
-
-Use `landmark-aspirant` only when the Bit is load-bearing, the Flip is a reasonable attack, significance is real, novelty is grounded, and the discriminating exam separates competitors. Use `incremental-honest` when the work is narrow but reproducible and useful. Prefer honest incremental scope over inflated significance.
-
-## Content Gate
-
-Before accepting a proposition, check:
-
-- **Load-bearing Bit**: at least one proxy exists: what would need rebuilding if false, how widely the assumption holds, or a known failing prediction / counterexample.
-- **Reasonable attack**: the Flip is tractable and testable, not just "would be nice."
-- **Significance**: who cares and what changes if supported.
-- **Discriminating exam**: the expected consequence separates this proposition from a competitor.
-- **Novelty grounding**: the Bit is grounded in scoping/prior work or prior proposition papers, and the Flip is not already the same result.
-
-Quality judgment is not a string checklist. If a Bit is trivial or not actually believed, find the real Bit or downgrade to `incremental-honest`. Do not dress weak content as landmark-level.
+"This is interesting" is not a Bit. If the Bit is not identifiable, stop and return the missing material.
 
 ## Lens Pass
 
-Run only lenses triggered by material. Usually two to four lenses are enough.
+Run only lenses triggered by material. Usually two to four lenses are enough. Do not dump the catalog. In `analyses.md`, record only selected lenses as `Lens / material signal / question asked / resulting Flip or Not applicable: <reason>`.
 
 | Lens | Ask this | Proposition form |
 |---|---|---|
@@ -90,11 +116,27 @@ Run only lenses triggered by material. Usually two to four lenses are enough.
 | Regime and scale shift | Does the phenomenon change across scale, workload, latency, memory, depth, concurrency, or distribution? | The proposition is regime-conditioned. |
 | Measurement mismatch | Is the result controlled by the wrong metric, proxy, comparator, or slice? | The phenomenon is mediated by measurement/evaluation conditions. |
 
-Do not dump the catalog. A lens is a question generator, not evidence.
+## Ambition And Content Gate
 
-## Proposition Workspace
+Every `proposition.md` includes:
 
-Use `scripts/new_proposition.py` to open a workspace after the proposition passes the gate:
+```text
+Ambition: landmark-aspirant | incremental-honest
+```
+
+Use `landmark-aspirant` only when all are credible:
+
+- **Load-bearing Bit**: at least one proxy exists: what would need rebuilding if false, how widely the assumption holds, or a known failing prediction / counterexample.
+- **Reasonable attack**: the Flip is tractable and testable, not just "would be nice."
+- **Significance**: who cares and what changes if supported.
+- **Discriminating exam**: the expected consequence separates this proposition from a competitor.
+- **Novelty grounding**: the Bit is grounded in scoping/prior work or prior proposition papers, and the Flip is not already the same result.
+
+Use `incremental-honest` when the work is narrow but reproducible and useful. Prefer honest incremental scope over inflated significance. If a Bit is trivial or not actually believed, find the real Bit or downgrade; do not dress weak content as landmark-level.
+
+## Workspace Writes
+
+Use `scripts/new_proposition.py` to open a new workspace:
 
 ```text
 propositions/Pxxx_slug/
@@ -105,9 +147,16 @@ propositions/Pxxx_slug/
   hypotheses/
 ```
 
-`creating-propositions` owns `proposition.md`, `observations.md`, `analyses.md`, and `decisions.md`. `research` owns `paper.md` and all hypothesis files.
+Then fill the files:
 
-## State Machine
+- `proposition.md`: statement, Ambition, current status, expected consequence, falsifier, competitor, content gate.
+- `observations.md`: fact-level observations, evidence form, comparator or expected reference, missing material.
+- `analyses.md`: Surprise/Bit/Flip/Spark chain, lens pass, candidate triage, derived hypothesis candidate when allowed.
+- `decisions.md`: proposition state changes only.
+
+`creating-propositions` owns those four files. `research` owns `paper.md` and all hypothesis files.
+
+## State Router
 
 Use one vocabulary:
 
@@ -123,9 +172,18 @@ Use one vocabulary:
 | `parked` | Live but blocked by material, priority, access, or dependency. | no |
 | `closed` | Terminal: resolved, merged, killed, or no longer useful. | no |
 
+Blocked state actions:
+
+- `under-specified`: write the missing material or Bit needed to continue.
+- `contradicted`: record why the proposition itself broke; revise, split, or close.
+- `split-needed`: create child proposition plan before any hypothesis plan.
+- `split`: continue only through children.
+- `parked`: record unblock condition; do not create a hypothesis until `UNPARK`.
+- `closed`: reopen only with new material or reconsideration basis.
+
 Do not use `rejected` or `inconclusive` as proposition states. A hypothesis result may be inconclusive while the proposition remains `open`; if the discriminator is too weak, move the proposition to `under-specified`.
 
-## Decisions
+## Decision Ledgers
 
 Record project structure decisions in root `decisions.md`: `OPEN_PROPOSITION`, `SPLIT_PROPOSITION`, `MERGE_PROPOSITION`, `CHANGE_SCOPE`, `CHANGE_PROTOCOL`.
 
@@ -133,9 +191,21 @@ Record proposition state decisions in `propositions/Pxxx_slug/decisions.md`: `SU
 
 `closed -> open` requires `REOPEN` with the new material or reconsideration reason. `parked -> previous live state` requires `UNPARK` with the satisfied unblock condition.
 
+## Return Shape
+
+End every proposition pass with:
+
+```text
+Proposition action: opened | updated | split-needed | parked | blocked | closed
+Path: propositions/Pxxx_slug/...
+State: <9-state value>
+Ledger: <decision label and file>
+Next research action: <material acquisition | new_hypothesis.py | split | paper | no R&D route>
+```
+
 ## Red Flags
 
-Stop and return to the checklist when you are about to:
+Stop and return to the procedure when you are about to:
 
 - propose a named method, architecture, algorithm, runtime, experiment, or evaluation before a proposition exists
 - generate propositions from no material
