@@ -6,6 +6,7 @@ Assumption verification for math models, and overfit checks for ML models.
 
 - The conclusion depends on the validity of model assumptions
 - An ML model has just finished training and overfit is a concern
+- A prediction, forecast, or held-out evaluation missed its expected result and the analysis needs to explain why
 
 ## Math-model assumption verification
 
@@ -91,6 +92,28 @@ For regression problems, examine prediction residuals:
 - Residual vs. prediction (heteroscedasticity)
 - Residual time series (autocorrelation)
 - Residual distribution (heavy tails)
+
+### Prediction-miss diagnosis
+
+When the planned prediction missed, first describe the error shape, then explain the generating process. Do not stop at "regime shift" or "feature failed."
+
+| Check | What it separates |
+|---|---|
+| Error sign by slice/regime/horizon | bias versus symmetric noise |
+| Residual ACF/PACF by slice | unused temporal structure versus independent miss |
+| Train/validation/test slice curves | overfit or training dynamics versus deployment-only shift |
+| Feature importance or contribution by time block | representation gap versus model capacity problem |
+| Calibration or prediction distribution by slice | confidence failure versus ranking failure |
+| Distribution shift on X and label/target relation checks | covariate shift versus concept/label relationship shift |
+| Ablation of the changed feature/component | component effect versus correlated implementation change |
+| Multiple seeds or rolling origins | stochastic variance versus stable failure mechanism |
+
+Write the result as a causal factor tree:
+
+- Proximate trigger: nearest observed error pattern.
+- Contributing factors: data composition, feature representation, objective, evaluator weighting, split, seed, or implementation change.
+- Current root-cause candidate: deepest supported factor, control gap, or interaction.
+- Evidence boundary: what cannot be inferred without ablation, new split, additional seed, or controlled intervention.
 
 ## What to do when assumptions fail
 
