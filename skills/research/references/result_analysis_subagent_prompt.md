@@ -14,12 +14,17 @@ Return a `## Result analysis` section that explains why the observed result happ
 1. material used for explanation
 2. result shape: aggregate, slice / condition, trace / process, and concentrated cases
 3. explanatory contrast: planned expectation only as context for what needs explaining
-4. factor decomposition across relevant data, representation, method, process, resource, measurement, and interaction factors
-5. mechanism traces for live candidate explanations
-6. what each explanation explains and does not explain
-7. interaction analysis when multiple factors combine
-8. discriminators that would separate live explanations, without choosing a next action
-9. open explanatory branches
+4. factor decomposition across relevant data, representation, method, process, resource, measurement, change/intervention, control/barrier, and interaction factors
+5. causal factor tree: proximate triggers, contributing factors, current root-cause candidates, why they are deeper than the trigger, and evidence boundary
+6. mechanism traces for live candidate explanations
+7. what each explanation explains and does not explain
+8. interaction analysis when multiple factors combine
+9. discriminators that would separate live explanations, without choosing a next action
+10. open explanatory branches
+
+For a missed prediction, decompose the error by slice, regime, horizon, sign, magnitude, residual autocorrelation, validation trajectory, and tail cases when available. Do not announce a root cause unless the explanation states why the proximate factor existed, dominated, or escaped the plan's controls and what rival explanation remains live. If the material does not support a root-cause conclusion, say no root cause is identified yet and name the discriminator.
+
+If the user asks for a quick or concise answer, shorten each field but keep result shape, causal factor tree, at least one mechanism trace, root-cause evidence boundary, and discriminator.
 
 Do not assess whether the result is good, bad, valid, supported, contradicted, claim-ready, promotion-ready, or decision-ready. Do not write final claims, proposition decisions, hypothesis decisions, state-update inputs, iteration branches, deployment recommendations, or human-facing paper prose.
 ```

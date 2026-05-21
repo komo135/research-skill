@@ -21,7 +21,7 @@ A complete result analysis separates:
 
 1. **Result shape** — aggregate movement, slices, seed or repetition variability, failures, anomalies, traces, and condition-specific effects.
 2. **Explanatory contrast** — what part of the observed result needs explanation relative to the plan's expectation. This is not a pass/fail judgment.
-3. **Factor decomposition** — data, representation, model/method, process/dynamics, resource/system, measurement/evaluator, and interaction factors that could have generated the result.
+3. **Factor decomposition** — data, representation, model/method, process/dynamics, resource/system, measurement/evaluator, change/intervention, control/barrier, and interaction factors that could have generated the result.
 4. **Mechanism traces** — chains from starting condition through local process/activity and intermediate state to the result-producing step.
 5. **Candidate explanations** — competing generative explanations for the same observed shape.
 6. **Explained and unexplained result features** — what each explanation accounts for and what remains surprising.
@@ -29,6 +29,10 @@ A complete result analysis separates:
 8. **Open explanatory branches** — specific remaining why-branches, not generic caveats.
 
 Mechanism explanations require more than aggregate association. Association-only patterns can motivate candidates, but they do not explain why the result happened until the analysis states a plausible generative chain and the result features that chain makes expected. A missed prediction requires especially careful decomposition, but the goal is still explanation, not a status label.
+
+Root-cause analysis is a deeper version of the same discipline. It must not be a single proximate label or a single "5 whys" chain. For research results, a root-cause candidate is the deepest currently supported result-generating factor, control gap, or factor interaction that explains the observed shape and why the proximate trigger existed or escaped the plan's controls. If the artifacts do not support that depth, the analysis should say that no root cause is identified yet and leave live causal branches with discriminators.
+
+For missed predictions, explain why the prediction failed, not only where it failed. Decompose forecast or prediction error by sign, magnitude, horizon, regime, time trace, residual autocorrelation, calibration, validation trajectory, and tail cases when available. Then compare the planned result-producing chain with the observed chain: data-generating shift, representation gap, method limitation, training or process dynamics, evaluator weighting, implementation change, variance source, or interaction. Do not claim a counterfactual root cause without an ablation, intervention, limiting-case check, or equivalent causal structure.
 
 ## Research script artifact contract
 
@@ -63,11 +67,18 @@ After experiments run, result analysis should use the same families of operation
 |---|---|---|
 | **Mechanism decomposition** | entities, activities, organization, and conditions that make the result occur | Machamer, Darden, and Craver 2000 |
 | **Cause-effect trace** | the sequence of input differences, state differences, and intermediate effects that lead to the result | Zeller 2002 |
+| **Causal-factor tree / root-cause analysis** | proximate triggers, contributing conditions, deeper causal factors, and the control gap or interaction that explains why the result recurs | DOE-NE-STD-1004-92; U.S. Department of Education RCA guide |
+| **Change analysis** | which changes between the expected/non-failing and observed/failing condition generated the result feature | DOE-NE-STD-1004-92 |
+| **Barrier / control analysis** | which planned guard, validation check, comparator, ablation, metric, or constraint failed to prevent or expose the result shape | DOE-NE-STD-1004-92; Joint Commission RCA2 |
 | **Variance-source analysis** | whether seeds, sampling, initialization, hyperparameters, or environment variation carry the observed shape | Bouthillier et al. 2021 |
 | **Ablation / contribution analysis** | which component, rule, representation, or process step is responsible for a result feature | Lipton & Steinhardt 2018 |
 | **Slice / behavioral analysis** | which capability, subgroup, input family, regime, or condition produces the aggregate pattern | Ribeiro et al. 2020 |
+| **Forecast-error diagnostics** | bias, residual autocorrelation, horizon effects, test-vs-training error, and whether errors contain unused information | Hyndman and Athanasopoulos FPP3 |
+| **Distribution-shift decomposition** | whether degradation comes from harder familiar examples, changed feature-outcome relationships, or rare/unseen examples | Cai, Namkoong, and Yadlowsky 2023 |
 | **Model / workflow checking** | whether the model, computation, or analysis workflow itself creates the observed pattern | Gelman et al. 2020 |
 | **Resource / measurement analysis** | whether performance, latency, or systems results come from measurement bias, contention, queues, memory, IO, or scheduling | Mytkowicz et al. 2009; Curtsinger & Berger 2015 |
+
+Use simple root-cause tools as scaffolding, not as proof. "5 whys" can prompt deeper questions, but it tends to force a single path and a single root cause. Complex research results often require a tree: multiple causal branches, shared controls, and interactions. Each branch needs evidence, an explained result feature, an unexplained feature, and a discriminator.
 
 For non-ML CS and quantitative research, adapt the same operations:
 
@@ -95,6 +106,8 @@ EDA is pre-confirmatory. The stop condition is **"a hypothesis worth testing has
 Result analysis should be scoped to the observed result shape. Continue while a major result feature remains unexplained: an aggregate/slice mismatch, a time trace, a concentrated failure family, a state transition, a variance source, or a system interaction. Stop when the leading explanations account for the important result features and the remaining open branches are specific enough for the parent workflow to inspect.
 
 The Gelman & Loken "garden of forking paths" result still matters: every extra branch chosen after seeing the result can become post-hoc story selection. The practical consequence is not "avoid analysis"; it is **make the explanatory target explicit**. If a branch does not explain a concrete result feature, do not add it.
+
+For root-cause depth, continue past a proximate description until the analysis answers why that proximate factor existed, dominated, or escaped the plan's controls. Stop before speculation: when the next "why" lacks artifact support, mark it as the evidence boundary and name the discriminator that would test it.
 
 ### 3. Discriminator clarity
 
@@ -197,6 +210,9 @@ In the iteration_loop, this maps to:
 - **Endless analysis without an explanatory target.** Running analysis branch after branch without tying each branch to a concrete result feature. Stop at depth-to-explain-the-result.
 - **HARKing from EDA.** Finding a pattern during EDA and writing the plan as if you had predicted it. Either commit to confirmatory mode on independent data, or label the work exploratory.
 - **Diagnostic-as-causal.** Citing a correlation plot (Rung 1) as evidence for a causal/counterfactual claim (Rung 3). Requires ablation or controlled intervention.
+- **Proximate-cause-as-root-cause.** Writing "the regime feature failed" or "the parser recursed" without explaining why that factor existed, dominated, escaped controls, and generated the specific slice or trace.
+- **Single-chain RCA.** Following one "why" path and calling the last answer the root cause while ignoring rivals, interactions, and control failures.
+- **Counterfactual overclaim after a missed prediction.** Saying the prediction would have held with one missing feature or one different setting when no ablation, intervention, or causal structure supports that counterfactual.
 - **Single-run analysis on stochastic outputs.** Drawing conclusions from one seed when results are seed-dependent. Use multiple seeds or replications for claim-bearing stochastic comparisons.
 - **Skipping slice / subgroup analysis.** Reporting only aggregate metrics when the claim covers distinct subgroups. Hides failure modes that matter.
 - **Cherry-picking the favorable analysis.** Doing many analyses, reporting only the supportive ones. This is selective reporting — disclose ALL analyses run, even those that did not support the claim.
@@ -215,10 +231,16 @@ In the iteration_loop, this maps to:
 - [Hendrycks robustness benchmarks](https://danhendrycks.com/robustness/); [Taori et al. NeurIPS 2020](https://proceedings.neurips.cc/paper/2020/file/d8330f857a17c53d217014ee776bfd50-Paper.pdf) — perturbation probes
 - [Lipton & Steinhardt — Troubling Trends in ML Scholarship](https://queue.acm.org/detail.cfm?id=3328534) — ablation as standard
 - [Ng CS230 Section 8 — Error analysis](https://cs230.stanford.edu/section/8/)
+- [DOE-NE-STD-1004-92 — Root Cause Analysis Guidance Document](https://www.energy.gov/ehss/articles/doe-ne-std-1004-92) — causal factors, change analysis, and barrier analysis
+- [U.S. Department of Education — Approaches to Root Cause Analysis](https://www.ed.gov/teaching-and-administration/lead-and-manage-my-school/state-support-network/ssn-resources/approaches-to-root-cause-analysis) — RCA as multiple methods for contributing and foundational causes
+- [Card (2017) — The problem with '5 whys'](https://qualitysafety.bmj.com/content/26/8/671) — warning against single-path, single-root simplification
 - [Gelman & Loken — Garden of forking paths](https://sites.stat.columbia.edu/gelman/research/unpublished/p_hacking.pdf) — implicit multiple-testing
 - [Gelman et al. (2020) — Bayesian Workflow](https://arxiv.org/abs/2011.01808) — model checking, model understanding, and workflow troubleshooting
 - [Machamer, Darden, and Craver (2000) — Thinking About Mechanisms](https://mechanism.ucsd.edu/bill/teaching/w10/machamer.darden.craver.pdf) — mechanism as organized entities and activities
 - [Zeller (2002) — Isolating Cause-Effect Chains from Computer Programs](https://www.st.cs.uni-saarland.de/papers/fse2002/p201-zeller.pdf) — cause-effect tracing through state differences
+- [Hyndman and Athanasopoulos — Forecasting: Principles and Practice, residual diagnostics](https://otexts.com/fpp3/diagnostics.html) — forecast residual bias and autocorrelation checks
+- [Hyndman and Athanasopoulos — Forecasting: Principles and Practice, time-series cross-validation](https://otexts.com/fpp3/tscv.html) — rolling-origin evaluation
+- [Cai, Namkoong, and Yadlowsky (2023) — Diagnosing Model Performance Under Distribution Shift](https://arxiv.org/abs/2303.02011) — decomposing performance drops under distribution shift
 - [Mytkowicz et al. (2009) — Producing Wrong Data Without Doing Anything Obviously Wrong](https://sape.inf.usi.ch/publications/asplos09) — systems measurement bias
 - [Curtsinger & Berger (2015) — Coz: Finding Code that Counts with Causal Profiling](https://arxiv.org/abs/1608.03676) — causal profiling for performance explanations
 - [Pearl & Bareinboim — Three-Layer Causal Hierarchy](https://causalai.net/r60.pdf) — ladder of causation
