@@ -11,8 +11,6 @@ After every interpreted result:
 5. Append a proposition decision when proposition status changes.
 6. Open the next derived hypothesis only if the updated proposition state warrants it.
 
-Step 6 first chooses `Next step shape`: `Parent hypothesis`, `Material/protocol work`, or `Side observation`. Open a hypothesis only for `Parent hypothesis`; write material/protocol work or a side-observation note as the next artifact otherwise.
-
 ## Hypothesis decisions
 
 Allowed labels:

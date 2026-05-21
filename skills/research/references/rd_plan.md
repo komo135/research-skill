@@ -183,8 +183,6 @@ After Result analysis, update state in this order:
 
 The update must name whether the result supported, contradicted, under-specified, showed `split-needed`, completed a `split`, or showed an `unrealized-condition` for the parent proposition.
 
-Before opening the next derived hypothesis, choose `Next step shape`: `Parent hypothesis`, `Material/protocol work`, or `Side observation`.
-
 ## Claims
 
 Every load-bearing claim in `plan.md` and papers uses:
