@@ -4,7 +4,7 @@
 
 Analysis is the activity between **"the experiment ran"** and **"the parent workflow decides what to do with the result."** It is exploratory by nature, produces many intermediate artifacts, and has its own discipline distinct from planning, execution, claim-recording, and state updates.
 
-For post-result explanation in the `research` protocol, result analysis is performed by a fresh separate-context result-analysis subagent using the `research-result-analysis` skill. The main research agent records Actual execution and Planned vs Actual, then passes only the plan path to the analysis subagent. This reference defines the explanation discipline that the subagent applies.
+For post-result explanation in the `research` protocol, result analysis is performed by a fresh separate-context result-analysis subagent using the `research-result-analysis` skill. The main research agent records Actual execution and Planned vs Actual, then passes only the plan path to the analysis subagent. This reference defines the shared explanation discipline. The result-analysis agent's operational workflow and method catalog live in `skills/research-result-analysis/references/analysis_workflow.md`.
 
 Two flavors:
 

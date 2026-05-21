@@ -47,7 +47,7 @@ Poor fits:
 | `creating-propositions` | Proposition workspace owner. It turns research material into Surprise/Bit/Flip propositions, creates and manages `propositions/Pxxx_slug/{proposition,observations,analyses,decisions}.md`, and owns the 9-state proposition vocabulary before direct-solution prioritization or planning. |
 | `research` | Workflow orchestrator for R&D work across Frascati categories. Owns intake, scoping literature, material/EDA, project observations, derived hypotheses, plans, claims, evidence, decisions, proposition-level papers, and research cycles. |
 | `research-plan-review` | Independent pre-execution review. Starts from a hypothesis plan path and checks premise, proposition trace, validation method, plan visual, prior-work grounding, and blockers. |
-| `research-result-analysis` | Independent post-execution why-analysis. Starts from a hypothesis plan path and explains how the observed result was produced through result shape, causal factor decomposition, root-cause candidates, mechanism traces, interactions, discriminators, and open explanatory branches without writing final claims or decisions. |
+| `research-result-analysis` | Independent post-execution why-analysis. Starts from a hypothesis plan path, builds a result-feature ledger, routes to the relevant analysis method, and explains how the observed result was produced through causal factor decomposition, root-cause candidates, mechanism traces, interactions, discriminators, and open explanatory branches without writing final claims or decisions. |
 | `quant-research` | Domain extension layered on `research` for time-series and statistically rigorous quantitative R&D. Adds validation, leakage, multiple-testing, and robustness guidance. |
 
 ## Installation
@@ -101,10 +101,11 @@ the derived hypothesis and whether premise, prior-work grounding, and Plan visua
 
 ```text
 Use research-result-analysis on the completed plan path. Explain why the observed
-result happened through result shape, causal factor decomposition, root-cause
-candidates, mechanism traces, interactions, discriminators, and open explanatory
-branches. Do not write final claims, state-update inputs, proposition decisions,
-or hypothesis decisions.
+result happened. Build the result-feature ledger first, choose the method route
+from the observed shape, then write causal factor trees, root-cause candidates,
+mechanism traces, interactions, discriminators, and open explanatory branches.
+Do not write final claims, state-update inputs, proposition decisions, or
+hypothesis decisions.
 ```
 
 The agent may use the bundled scripts to create folders, seed ledgers, and check artifacts. Those scripts are implementation utilities for the skill workflow; the normal user interface is the agent conversation.
