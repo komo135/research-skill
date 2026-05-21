@@ -259,14 +259,20 @@ In all pressure cases, return to diagnosis before committing.
 
 When a failed hypothesis has a test, evaluator, derivation, or observation result, treat that failure as a new observation. Do not return to a new list of ideas.
 
+Before writing a revised record, choose `Next step shape`: `Parent hypothesis`, `Material/protocol work`, or `Side observation`. Use `Parent hypothesis` only when the revised record states how it could support, contradict, narrow, split, or realize the parent proposition. Use the other shapes for failure-cause fixes, evaluator or implementation repairs, measurement cleanup, or interesting findings outside the parent proposition.
+
 Record:
 
 - failed hypothesis:
 - hypothesis type:
+- parent proposition or intended claim:
 - new observation:
 - what explanation, prediction, comparator, threshold, or mechanism was ruled out:
 - which alternatives remain live:
-- revised typed hypothesis-generation record:
+- next step shape:
+- parent proposition contribution, if `Parent hypothesis`:
+- revised typed hypothesis-generation record, if `Parent hypothesis`; otherwise `None: <why this is material/protocol work or a side observation>`:
+- next material/protocol/side-observation artifact, if not a parent hypothesis:
 - Decision: commit / park / kill
 
 If executable feedback exists, it must leave durable artifacts. Print-only output is not evidence: completed evaluator runs need `run_manifest.json`, `logs/stdout.log`, `logs/stderr.log`, and at least one durable artifact under `outputs/`, `tables/`, `figures/`, or `intermediate/`. stdout is not evidence.

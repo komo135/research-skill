@@ -165,6 +165,11 @@ Then the parent agent updates, in order:
 4. proposition `decisions.md` when state changes
 5. root `project_state.md`
 
+Before opening the next derived hypothesis, choose `Next step shape`:
+- `Parent hypothesis`: the next hypothesis states how it could support, contradict, narrow, split, or realize the parent proposition.
+- `Material/protocol work`: the failed-hypothesis cause, evaluator repair, implementation fix, or measurement cleanup must be done before the parent proposition is testable.
+- `Side observation`: interesting material outside the current parent proposition; record it as material for later scoping, not as the next hypothesis.
+
 Claims are evidence records, not proposition statuses. Before state-changing decisions or paper prose depends on a claim, run `scripts/check_claims.py`.
 
 `provisional support` is not a proposition state and is not a promotion basis. Informal prose may hedge uncertainty only if the route does not change to `supported`, `paper-route`, or next-cycle work.
